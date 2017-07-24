@@ -1,0 +1,1 @@
+-c -frealloc-lhs -std=f2008 -fall-intrinsics -cpp -fdefault-real-8 -g -Wall -fcheck=all -ffree-line-length-none -fdefault-real-8 -O2 -DDOUBLEP -DLINUX

@@ -1,0 +1,32 @@
+[modes]
+modes = tests-gnu
+
+[common-variables]
+$CSTATIC_GNU = -c -frealloc-lhs -std=f2008 -fall-intrinsics -cpp -fdefault-real-8 -g -Wall -fcheck=all -ffree-line-length-none -fdefault-real-8
+$DEBUG_GNU   = -O0 -g3 -Warray-bounds -Wcharacter-truncation -Wline-truncation -Wimplicit-interface -Wimplicit-procedure -Wunderflow -fcheck=all -fmodule-private -ffree-line-length-132 -fimplicit-none -fbacktrace -fdump-core -finit-real=nan
+$OPTIMIZE    = -O2
+$EXDIRS      = src/dev
+
+# main modes
+[tests-gnu]
+template  = template-static-gnu
+build_dir = app
+
+
+# templates
+[template-static-gnu]
+compiler        = gnu
+exclude_dirs    = $EXDIRS
+src             = src/
+cflags          = $CSTATIC_GNU $OPTIMIZE
+lflags          = $OPTIMIZE
+cflags_heritage = True
+colors          = True
+quiet           = False
+log             = False
+jobs            = 10
+preproc         = -DDOUBLEP -DLINUX
+mpi             = False
+include         = /home/superfun/app/hdf5/include
+libs            = /home/superfun/app/hdf5/lib/libhdf5_fortran.so /home/superfun/app/hdf5/lib/libhdf5hl_fortran.so
+ext_libs        =
