@@ -308,7 +308,7 @@ contains
     call self%add(name)
 
 
-    call h5ltmake_dataset_f(self%lid, name, rank, dim, H5T_NATIVE_INTEGER, value, ierr)
+    call h5ltmake_dataset_f(self%lid, name, rank, dim, H5T_NATIVE_DOUBLE, value, ierr)
 
   end subroutine hdf_add_real1d
   !=============================================================================
@@ -326,7 +326,7 @@ contains
 
     call self%add(name)
 
-    call h5ltmake_dataset_f(self%lid, name, rank, dim, H5T_NATIVE_INTEGER, value, ierr)
+    call h5ltmake_dataset_f(self%lid, name, rank, dim, H5T_NATIVE_DOUBLE, value, ierr)
 
   end subroutine hdf_add_real2d
   !=============================================================================
@@ -344,7 +344,7 @@ contains
 
     call self%add(name)
 
-    call h5ltmake_dataset_f(self%lid, name, rank, dim, H5T_NATIVE_INTEGER, value, ierr)
+    call h5ltmake_dataset_f(self%lid, name, rank, dim, H5T_NATIVE_DOUBLE, value, ierr)
 
   end subroutine hdf_add_real3d
   !=============================================================================
@@ -513,7 +513,7 @@ contains
     allocate(value(dim(1)))
 
     ! read dataset
-    call h5dread_f(set_id, H5T_NATIVE_INTEGER, value,dim, ierr)
+    call h5dread_f(set_id, H5T_NATIVE_DOUBLE, value,dim, ierr)
 
     ! close dataset
     call h5dclose_f(set_id, ierr)
@@ -545,7 +545,7 @@ contains
     allocate(value(dim(1),dim(2)))
 
     ! read dataset
-    call h5dread_f(set_id, H5T_NATIVE_INTEGER, value,dim, ierr)
+    call h5dread_f(set_id, H5T_NATIVE_DOUBLE, value,dim, ierr)
 
     ! close dataset
     call h5dclose_f(set_id, ierr)
@@ -578,7 +578,7 @@ contains
     allocate(value(dim(1),dim(2),dim(3)))
 
     ! read dataset
-    call h5dread_f(set_id, H5T_NATIVE_INTEGER, value,dim, ierr)
+    call h5dread_f(set_id, H5T_NATIVE_DOUBLE, value,dim, ierr)
 
     ! close dataset
     call h5dclose_f(set_id, ierr)

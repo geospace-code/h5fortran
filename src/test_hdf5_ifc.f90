@@ -1,4 +1,5 @@
 program test_hdf5_ifc
+  use penf
   use hdf5_interface
   implicit none
 
@@ -7,6 +8,9 @@ program test_hdf5_ifc
   integer :: one = 1
   real    :: ro = 1.0
   integer, allocatable :: i1t(:),i2t(:,:)
+  integer :: ng,nn,pn
+  real, allocatable :: flux(:,:),fo(:)
+
   integer :: i
 
   do i = 1,size(i1)
@@ -39,6 +43,24 @@ program test_hdf5_ifc
   call h5f%get('/test/group2/ai2',i2t)
   print*,i2t
 
+  call h5f%finalize()
+
+  !> more group
+
+  pn = 5
+  nn = 100
+  ng = 69
+  allocate(flux(nn,ng),fo(nn))
+  flux = ro
+  call h5f%initialize('p'//trim(str('(i0)',pn))//'.h5',status='NEW',action='WRITE')
+  do i = 1,ng
+    call h5f%add('/group'//trim(str('(i0)',i))//'/flux_node',flux(1:ng,i))
+  enddo
+
+  call h5f%get('/group1/flux_node',fo)
+  do i = 1,ng
+    print*, fo(i)
+  enddo
 
   call h5f%finalize()
 
