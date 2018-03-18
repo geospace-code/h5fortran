@@ -125,7 +125,7 @@ contains
   subroutine hdf_add_group(self, gname)
 
     class(hdf5_file), intent(in) :: self
-    character(len=*), intent(in) :: gname    !< relative path to group
+    character(*), intent(in) :: gname    !< relative path to group
 
     integer(HID_T)  :: gid
 
@@ -137,7 +137,6 @@ contains
     ep = 0
 
     do
-
        ep = index(gname(sp+1:sl), "/")
 
        ! no subgroup found
@@ -151,7 +150,6 @@ contains
          call h5gcreate_f(self%lid, gname(1:sp-1), gid, ierr)
          call h5gclose_f(gid, ierr)
        endif
-
     end do
 
   end subroutine hdf_add_group
@@ -183,11 +181,8 @@ contains
     character(*), intent(in) :: dname
     integer, intent(in)      :: value
 
-    integer(HSIZE_T):: dims(1)
     integer(HID_T)  :: sid,did
     integer         :: ierr
-
-    dims  = [0]
 
     call self%add(dname)
 
@@ -198,7 +193,7 @@ contains
     call h5dcreate_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), sid, did, ierr)
 
     !> write dataset
-    call h5dwrite_f(did, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims, ierr)
+    call h5dwrite_f(did, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, int(shape(value),HSIZE_T), ierr)
 
     !> close space and dataset
     call h5dclose_f(did, ierr)
@@ -213,15 +208,12 @@ contains
     character(*), intent(in) :: dname
     integer, intent(in)      :: value(:)
 
-    integer(HSIZE_T):: dims(1)
     integer         :: ierr
-
-    dims  = size(value)
 
     call self%add(dname)
 
 
-    call h5ltmake_dataset_f(self%lid, dname, rank(value), dims, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, ierr)
+    call h5ltmake_dataset_f(self%lid, dname, rank(value), int(shape(value),HSIZE_T), h5kind_to_type(kind(value),H5_INTEGER_KIND), value, ierr)
 
   end subroutine hdf_add_int1d
   !=============================================================================
@@ -288,7 +280,6 @@ contains
     integer         :: ierr
 
     call self%add(dname)
-
 
     call h5ltmake_dataset_f(self%lid, dname, &
       rank(value), int(shape(value),HSIZE_T), h5kind_to_type(kind(value),H5_REAL_KIND), value, ierr)
