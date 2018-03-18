@@ -83,7 +83,7 @@ contains
 
     !> Initialize FORTRAN interface.
     call h5open_f(ierr)
-    if (ierr /= 0 ) error stop 'Error: HDF5 file initialize Failed!'
+    if (ierr /= 0 ) error stop 'Error: HDF5 library initialize Failed!'
 
     lstatus = 'NEW'
     if(present(status)) lstatus = status
@@ -91,23 +91,21 @@ contains
     laction = 'READWRITE'
     if(present(action)) laction = action
 
-    if(lstatus == 'OLD') then
-      if(laction == 'READ') then
-        !> Open an existing file.
-        call h5fopen_f(filename,H5F_ACC_RDONLY_F,self%lid,ierr)
-      elseif(laction == 'WRITE' .or. laction == 'READWRITE') then
-        call h5fopen_f(filename,H5F_ACC_RDWR_F,self%lid,ierr)
-      else
-        error stop 'Error: Unsupported action ->'//laction
-      endif
-    elseif(lstatus == 'NEW') then
-      call h5fcreate_f(filename,H5F_ACC_TRUNC_F,self%lid,ierr)
-    elseif(status == 'REPLACE') then
-      call deletefile(filename)
-      call h5fcreate_f(filename,H5F_ACC_TRUNC_F,self%lid,ierr)
-    else
-      error stop 'Error: Unsupported status ->'//status
-    endif
+    select case(lstatus)
+      case ('OLD')
+        select case(laction)
+          case('READ')  !> Open an existing file.
+            call h5fopen_f(filename,H5F_ACC_RDONLY_F,self%lid,ierr)
+          case('WRITE','READWRITE')
+            call h5fopen_f(filename,H5F_ACC_RDWR_F,self%lid,ierr)
+          case default
+            error stop 'Error: Unsupported action ->'//laction
+          endselect
+      case('NEW','REPLACE')
+        call h5fcreate_f(filename,H5F_ACC_TRUNC_F,self%lid,ierr)
+      case default
+        error stop 'Error: Unsupported status ->'//status
+    endselect
 
   end subroutine hdf_initialize
   !=============================================================================
@@ -587,25 +585,5 @@ contains
 
 
   end subroutine hdf_get_real3d
-  
-  
-  
-  subroutine deletefile(fn)
-  ! Fortran standard compilant file deletion
-  ! Michael Hirsch, Ph.D.
-    character(*), intent(in) :: fn
-    integer :: u, ios
-    logical :: fexist
-
-  ! Fortran-standard way to delete a file.
-    open(newunit=u, file=fn, status='old',iostat=ios)
-    if (ios/=0) error stop fn//' does not exist.'
-    close(u, status='delete', iostat=ios)
-    if (ios/=0) error stop 'failed to delete: '//fn
-    
-    inquire(file=fn, exist=fexist)
-    if (fexist) error stop 'failed to delete: '//fn
-
-  end subroutine deletefile
 
 end module hdf5_interface

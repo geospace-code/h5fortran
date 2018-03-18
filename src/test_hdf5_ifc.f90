@@ -1,5 +1,7 @@
 program test_hdf5_ifc
+
   use hdf5_interface
+  
   implicit none
 
   type(hdf5_file) :: h5f
@@ -19,7 +21,11 @@ program test_hdf5_ifc
 
   do concurrent (i = 1:size(i1))
     i1(i) = i
-    i2(i,:) = i
+  enddo
+  
+  i2(1,:) = i1
+  do concurrent (i = 1:size(i2,2))
+    i2(i,:) = i2(1,:) * i
   enddo
   
   print *,'real kind bits: ',cs
