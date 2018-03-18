@@ -438,16 +438,14 @@ contains
     character(*), intent(in)      :: dname
     real, intent(out)             :: value
 
-    integer(SIZE_T) :: dims(1)
     integer(HID_T)  :: set_id
     integer :: ierr
 
-    dims = [0]
     ! open dataset
     call h5dopen_f(self%lid, dname, set_id, ierr)
 
     ! read dataset
-    call h5dread_f(set_id, h5kind_to_type(kind(value),H5_REAL_KIND), value,dims, ierr)
+    call h5dread_f(set_id, h5kind_to_type(kind(value),H5_REAL_KIND), value,int(shape(value),HSIZE_T), ierr)
 
     ! close dataset
     call h5dclose_f(set_id, ierr)
