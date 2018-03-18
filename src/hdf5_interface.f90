@@ -2,8 +2,7 @@
 module hdf5_interface
 
   use H5LT
-  use H5D ! yes we need this
-  
+
   implicit none
 
   public :: hdf5_file
@@ -213,7 +212,8 @@ contains
     call self%add(dname)
 
 
-    call h5ltmake_dataset_f(self%lid, dname, rank(value), int(shape(value),HSIZE_T), h5kind_to_type(kind(value),H5_INTEGER_KIND), value, ierr)
+    call h5ltmake_dataset_f(self%lid, dname, &
+      rank(value), int(shape(value),HSIZE_T), h5kind_to_type(kind(value),H5_INTEGER_KIND), value, ierr)
 
   end subroutine hdf_add_int1d
   !=============================================================================
