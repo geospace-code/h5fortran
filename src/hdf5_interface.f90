@@ -1,7 +1,9 @@
 !> hdf5_interface
 module hdf5_interface
-  use HDF5
+
   use H5LT
+  use H5D ! yes we need this
+  
   implicit none
 
   public :: hdf5_file
@@ -68,11 +70,11 @@ module hdf5_interface
 
 contains
   !=============================================================================
-  subroutine hdf_initialize(self,file,status,action)
+  subroutine hdf_initialize(self,filename,status,action)
     !< Opens hdf5 file
 
     class(hdf5_file), intent(inout)    :: self
-    character(*), intent(in)           :: file
+    character(*), intent(in)           :: filename
     character(*), intent(in), optional :: status
     character(*), intent(in), optional :: action
 
@@ -92,17 +94,17 @@ contains
     if(lstatus == 'OLD') then
       if(laction == 'READ') then
         !> Open an existing file.
-        call h5fopen_f(file,H5F_ACC_RDONLY_F,self%lid,ierr)
+        call h5fopen_f(filename,H5F_ACC_RDONLY_F,self%lid,ierr)
       elseif(laction == 'WRITE' .or. laction == 'READWRITE') then
-        call h5fopen_f(file,H5F_ACC_RDWR_F,self%lid,ierr)
+        call h5fopen_f(filename,H5F_ACC_RDWR_F,self%lid,ierr)
       else
         error stop 'Error: Unsupported action ->'//laction
       endif
     elseif(lstatus == 'NEW') then
-      call h5fcreate_f(file,H5F_ACC_TRUNC_F,self%lid,ierr)
+      call h5fcreate_f(filename,H5F_ACC_TRUNC_F,self%lid,ierr)
     elseif(status == 'REPLACE') then
-      call system("rm -f "//file)
-      call h5fcreate_f(file,H5F_ACC_TRUNC_F,self%lid,ierr)
+      call deletefile(filename)
+      call h5fcreate_f(filename,H5F_ACC_TRUNC_F,self%lid,ierr)
     else
       error stop 'Error: Unsupported status ->'//status
     endif
@@ -122,33 +124,33 @@ contains
 
   end subroutine hdf_finalize
   !=============================================================================
-  subroutine hdf_add_group(self, name)
+  subroutine hdf_add_group(self, gname)
 
     class(hdf5_file), intent(in) :: self
-    character(len=*), intent(in) :: name    !< relative path to group
+    character(len=*), intent(in) :: gname    !< relative path to group
 
     integer(HID_T)  :: gid
 
     integer :: ierr, sp, ep, sl
-    logical :: exist
+    logical :: gexist
 
-    sl = len(name)
+    sl = len(gname)
     sp = 1
     ep = 0
 
     do
 
-       ep = index(name(sp+1:sl), "/")
+       ep = index(gname(sp+1:sl), "/")
 
        ! no subgroup found
        if (ep == 0) exit
 
        ! check subgroup exists
        sp = sp + ep
-       call h5lexists_f(self%lid, name(1:sp-1), exist, ierr)
+       call h5lexists_f(self%lid, gname(1:sp-1), gexist, ierr)
 
-       if(.not.exist) then
-         call h5gcreate_f(self%lid, name(1:sp-1), gid, ierr)
+       if(.not.gexist) then
+         call h5gcreate_f(self%lid, gname(1:sp-1), gid, ierr)
          call h5gclose_f(gid, ierr)
        endif
 
@@ -156,13 +158,13 @@ contains
 
   end subroutine hdf_add_group
   !=============================================================================
-  subroutine hdf_open_group(self,name)
+  subroutine hdf_open_group(self,gname)
     class(hdf5_file), intent(inout) :: self
-    character(*), intent(in)        :: name
+    character(*), intent(in)        :: gname
 
     integer :: ierr
 
-    call h5gopen_f(self%lid, name, self%gid, ierr)
+    call h5gopen_f(self%lid, gname, self%gid, ierr)
     self%glid = self%lid
     self%lid  = self%gid
 
@@ -178,27 +180,27 @@ contains
 
   end subroutine hdf_close_group
   !=============================================================================
-  subroutine hdf_add_int(self,name,value)
+  subroutine hdf_add_int(self,dname,value)
     class(hdf5_file), intent(in) :: self
-    character(*), intent(in) :: name
+    character(*), intent(in) :: dname
     integer, intent(in)      :: value
 
-    integer(HSIZE_T):: dim(1)
+    integer(HSIZE_T):: dims(1)
     integer(HID_T)  :: sid,did
     integer         :: ierr
 
-    dim  = (/0/)
+    dims  = [0]
 
-    call self%add(name)
+    call self%add(dname)
 
     !> create dataspace
     call h5screate_f(H5S_SCALAR_F, sid, ierr)
 
     !> create dataset
-    call h5dcreate_f(self%lid, name, H5T_NATIVE_INTEGER, sid, did, ierr)
+    call h5dcreate_f(self%lid, dname, H5T_NATIVE_INTEGER, sid, did, ierr)
 
     !> write dataset
-    call h5dwrite_f(did, H5T_NATIVE_INTEGER, value, dim, ierr)
+    call h5dwrite_f(did, H5T_NATIVE_INTEGER, value, dims, ierr)
 
     !> close space and dataset
     call h5dclose_f(did, ierr)
@@ -208,82 +210,82 @@ contains
 
   end subroutine hdf_add_int
   !=============================================================================
-  subroutine hdf_add_int1d(self,name,value)
+  subroutine hdf_add_int1d(self,dname,value)
     class(hdf5_file), intent(in) :: self
-    character(*), intent(in) :: name
+    character(*), intent(in) :: dname
     integer, intent(in)      :: value(:)
 
     integer         :: rank
-    integer(HSIZE_T):: dim(1)
+    integer(HSIZE_T):: dims(1)
     integer         :: ierr
 
     rank = 1
-    dim  = size(value)
+    dims  = size(value)
 
-    call self%add(name)
+    call self%add(dname)
 
 
-    call h5ltmake_dataset_f(self%lid, name, rank, dim, H5T_NATIVE_INTEGER, value, ierr)
+    call h5ltmake_dataset_f(self%lid, dname, rank, dims, H5T_NATIVE_INTEGER, value, ierr)
 
   end subroutine hdf_add_int1d
   !=============================================================================
-  subroutine hdf_add_int2d(self,name,value)
+  subroutine hdf_add_int2d(self,dname,value)
     class(hdf5_file), intent(in) :: self
-    character(*), intent(in) :: name
+    character(*), intent(in) :: dname
     integer, intent(in)      :: value(:,:)
 
     integer         :: rank
-    integer(HSIZE_T):: dim(2)
+    integer(HSIZE_T):: dims(2)
     integer         :: ierr
 
     rank = 2
-    dim  = shape(value)
+    dims  = shape(value)
 
-    call self%add(name)
+    call self%add(dname)
 
-    call h5ltmake_dataset_f(self%lid, name, rank, dim, H5T_NATIVE_INTEGER, value, ierr)
+    call h5ltmake_dataset_f(self%lid, dname, rank, dims, H5T_NATIVE_INTEGER, value, ierr)
 
   end subroutine hdf_add_int2d
   !=============================================================================
-  subroutine hdf_add_int3d(self,name,value)
+  subroutine hdf_add_int3d(self,dname,value)
     class(hdf5_file), intent(in) :: self
-    character(*), intent(in) :: name
+    character(*), intent(in) :: dname
     integer, intent(in)      :: value(:,:,:)
 
     integer         :: rank
-    integer(HSIZE_T):: dim(3)
+    integer(HSIZE_T):: dims(3)
     integer         :: ierr
 
     rank = 3
-    dim  = shape(value)
+    dims  = shape(value)
 
-    call self%add(name)
+    call self%add(dname)
 
-    call h5ltmake_dataset_f(self%lid, name, rank, dim, H5T_NATIVE_INTEGER, value, ierr)
+    call h5ltmake_dataset_f(self%lid, dname, rank, dims, H5T_NATIVE_INTEGER, value, ierr)
 
   end subroutine hdf_add_int3d
   !=============================================================================
-  subroutine hdf_add_real(self,name,value)
+  subroutine hdf_add_real(self,dname,value)
     class(hdf5_file), intent(in) :: self
-    character(*), intent(in) :: name
+    character(*), intent(in) :: dname
     real, intent(in)      :: value
 
-    integer(HSIZE_T):: dim(1)
+    integer(HSIZE_T):: dims(1)
     integer(HID_T)  :: sid,did
     integer         :: ierr
 
-    dim  = (/0/)
+    dims  = [0]
 
-    call self%add(name)
+    call self%add(dname)
 
     !> create dataspace
     call h5screate_f(H5S_SCALAR_F, sid, ierr)
 
     !> create dataset
-    call h5dcreate_f(self%lid, name, H5T_NATIVE_DOUBLE, sid, did, ierr)
+    call h5dcreate_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), sid, did, ierr)
 
     !> write dataset
-    call h5dwrite_f(did, H5T_NATIVE_DOUBLE, value, dim, ierr)
+    call h5dwrite_f(did, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims, ierr)
 
     !> close space and dataset
     call h5dclose_f(did, ierr)
@@ -293,140 +295,140 @@ contains
 
   end subroutine hdf_add_real
   !=============================================================================
-  subroutine hdf_add_real1d(self,name,value)
+  subroutine hdf_add_real1d(self,dname,value)
     class(hdf5_file), intent(in) :: self
-    character(*), intent(in) :: name
+    character(*), intent(in) :: dname
     real, intent(in)      :: value(:)
 
     integer         :: rank
-    integer(HSIZE_T):: dim(1)
+    integer(HSIZE_T):: dims(1)
     integer         :: ierr
 
     rank = 1
-    dim  = size(value)
+    dims  = size(value)
 
-    call self%add(name)
+    call self%add(dname)
 
 
-    call h5ltmake_dataset_f(self%lid, name, rank, dim, H5T_NATIVE_DOUBLE, value, ierr)
+    call h5ltmake_dataset_f(self%lid, dname, rank, dims, h5kind_to_type(kind(value),H5_REAL_KIND), value, ierr)
 
   end subroutine hdf_add_real1d
   !=============================================================================
-  subroutine hdf_add_real2d(self,name,value)
+  subroutine hdf_add_real2d(self,dname,value)
     class(hdf5_file), intent(in) :: self
-    character(*), intent(in) :: name
+    character(*), intent(in) :: dname
     real, intent(in)      :: value(:,:)
 
     integer         :: rank
-    integer(HSIZE_T):: dim(2)
+    integer(HSIZE_T):: dims(2)
     integer         :: ierr
 
     rank = 2
-    dim  = shape(value)
+    dims  = shape(value)
 
-    call self%add(name)
+    call self%add(dname)
 
-    call h5ltmake_dataset_f(self%lid, name, rank, dim, H5T_NATIVE_DOUBLE, value, ierr)
+    call h5ltmake_dataset_f(self%lid, dname, rank, dims, h5kind_to_type(kind(value),H5_REAL_KIND), value, ierr)
 
   end subroutine hdf_add_real2d
   !=============================================================================
-  subroutine hdf_add_real3d(self,name,value)
+  subroutine hdf_add_real3d(self,dname,value)
     class(hdf5_file), intent(in) :: self
-    character(*), intent(in) :: name
+    character(*), intent(in) :: dname
     real, intent(in)      :: value(:,:,:)
 
     integer         :: rank
-    integer(HSIZE_T):: dim(3)
+    integer(HSIZE_T):: dims(3)
     integer         :: ierr
 
     rank = 3
-    dim  = shape(value)
+    dims  = shape(value)
 
-    call self%add(name)
+    call self%add(dname)
 
-    call h5ltmake_dataset_f(self%lid, name, rank, dim, H5T_NATIVE_DOUBLE, value, ierr)
+    call h5ltmake_dataset_f(self%lid, dname, rank, dims, h5kind_to_type(kind(value),H5_REAL_KIND), value, ierr)
 
   end subroutine hdf_add_real3d
   !=============================================================================
-  subroutine hdf_get_int(self, name, value)
+  subroutine hdf_get_int(self, dname, value)
 
     class(hdf5_file), intent(in)     :: self
-    character(*), intent(in)         :: name
+    character(*), intent(in)         :: dname
     integer, intent(out)             :: value
 
-    integer(SIZE_T) :: dim(1)
+    integer(SIZE_T) :: dims(1)
     integer(HID_T)  :: set_id
     integer :: ierr
 
-    dim = (/0/)
+    dims = [0]
     ! open dataset
-    call h5dopen_f(self%lid, name, set_id, ierr)
+    call h5dopen_f(self%lid, dname, set_id, ierr)
 
     ! read dataset
-    call h5dread_f(set_id, H5T_NATIVE_INTEGER, value,dim, ierr)
+    call h5dread_f(set_id, H5T_NATIVE_INTEGER, value,dims, ierr)
 
     ! close dataset
     call h5dclose_f(set_id, ierr)
 
   end subroutine hdf_get_int
   !=============================================================================
-  subroutine hdf_get_int1d(self, name, value)
+  subroutine hdf_get_int1d(self, dname, value)
 
     class(hdf5_file), intent(in)     :: self
-    character(*), intent(in)         :: name
+    character(*), intent(in)         :: dname
     integer, intent(out),allocatable :: value(:)
 
     integer :: rank
-    integer(SIZE_T) :: dim(1),maxdim(1)
+    integer(SIZE_T) :: dims(1),maxdim(1)
     integer(HID_T)  :: set_id,space_id
     integer :: ierr
 
     rank = 1
     ! open dataset
-    call h5dopen_f(self%lid, name, set_id, ierr)
+    call h5dopen_f(self%lid, dname, set_id, ierr)
 
     ! get dataspace
     call h5dget_space_f(set_id, space_id, ierr)
 
     ! get dims
-    call h5sget_simple_extent_dims_f(space_id, dim, maxdim, ierr)
+    call h5sget_simple_extent_dims_f(space_id, dims, maxdim, ierr)
 
-    allocate(value(dim(1)))
+    allocate(value(dims(1)))
 
     ! read dataset
-    call h5dread_f(set_id, H5T_NATIVE_INTEGER, value,dim, ierr)
+    call h5dread_f(set_id, H5T_NATIVE_INTEGER, value,dims, ierr)
 
     ! close dataset
     call h5dclose_f(set_id, ierr)
 
   end subroutine hdf_get_int1d
   !=============================================================================
-  subroutine hdf_get_int2d(self, name, value)
+  subroutine hdf_get_int2d(self, dname, value)
 
     class(hdf5_file), intent(in)     :: self
-    character(*), intent(in)         :: name
+    character(*), intent(in)         :: dname
     integer, intent(out),allocatable :: value(:,:)
 
     integer :: rank
-    integer(SIZE_T) :: dim(2),maxdim(2)
+    integer(SIZE_T) :: dims(2),maxdim(2)
     integer(HID_T)  :: set_id, space_id
     integer :: ierr
 
     rank = 2
 
     ! open dataset
-    call h5dopen_f(self%lid, name, set_id, ierr)
+    call h5dopen_f(self%lid, dname, set_id, ierr)
 
     ! get dataspace
     call h5dget_space_f(set_id, space_id, ierr)
 
     ! get dims
-    call h5sget_simple_extent_dims_f(space_id, dim, maxdim, ierr)
+    call h5sget_simple_extent_dims_f(space_id, dims, maxdim, ierr)
 
-    allocate(value(dim(1),dim(2)))
+    allocate(value(dims(1),dims(2)))
 
     ! read dataset
-    call h5dread_f(set_id, H5T_NATIVE_INTEGER, value,dim, ierr)
+    call h5dread_f(set_id, H5T_NATIVE_INTEGER, value,dims, ierr)
 
     ! close dataset
     call h5dclose_f(set_id, ierr)
@@ -434,32 +436,32 @@ contains
 
   end subroutine hdf_get_int2d
   !=============================================================================
-  subroutine hdf_get_int3d(self, name, value)
+  subroutine hdf_get_int3d(self, dname, value)
 
     class(hdf5_file), intent(in)     :: self
-    character(*), intent(in)         :: name
+    character(*), intent(in)         :: dname
     integer, intent(out),allocatable :: value(:,:,:)
 
     integer :: rank
-    integer(SIZE_T) :: dim(3),maxdim(3)
+    integer(SIZE_T) :: dims(3),maxdim(3)
     integer(HID_T)  :: set_id, space_id
     integer :: ierr
 
     rank = 3
 
     ! open dataset
-    call h5dopen_f(self%lid, name, set_id, ierr)
+    call h5dopen_f(self%lid, dname, set_id, ierr)
 
     ! get dataspace
     call h5dget_space_f(set_id, space_id, ierr)
 
     ! get dims
-    call h5sget_simple_extent_dims_f(space_id, dim, maxdim, ierr)
+    call h5sget_simple_extent_dims_f(space_id, dims, maxdim, ierr)
 
-    allocate(value(dim(1),dim(2),dim(3)))
+    allocate(value(dims(1),dims(2),dims(3)))
 
     ! read dataset
-    call h5dread_f(set_id, H5T_NATIVE_INTEGER, value,dim, ierr)
+    call h5dread_f(set_id, H5T_NATIVE_INTEGER, value,dims, ierr)
 
     ! close dataset
     call h5dclose_f(set_id, ierr)
@@ -467,85 +469,85 @@ contains
 
   end subroutine hdf_get_int3d
   !=============================================================================
-  subroutine hdf_get_real(self, name, value)
+  subroutine hdf_get_real(self, dname, value)
 
     class(hdf5_file), intent(in)  :: self
-    character(*), intent(in)      :: name
+    character(*), intent(in)      :: dname
     real, intent(out)             :: value
 
-    integer(SIZE_T) :: dim(1)
+    integer(SIZE_T) :: dims(1)
     integer(HID_T)  :: set_id
     integer :: ierr
 
-    dim = (/0/)
+    dims = [0]
     ! open dataset
-    call h5dopen_f(self%lid, name, set_id, ierr)
+    call h5dopen_f(self%lid, dname, set_id, ierr)
 
     ! read dataset
-    call h5dread_f(set_id, H5T_NATIVE_DOUBLE, value,dim, ierr)
+    call h5dread_f(set_id, h5kind_to_type(kind(value),H5_REAL_KIND), value,dims, ierr)
 
     ! close dataset
     call h5dclose_f(set_id, ierr)
 
   end subroutine hdf_get_real
   !=============================================================================
-  subroutine hdf_get_real1d(self, name, value)
+  subroutine hdf_get_real1d(self, dname, value)
 
     class(hdf5_file), intent(in)     :: self
-    character(*), intent(in)         :: name
+    character(*), intent(in)         :: dname
     real, intent(out),allocatable :: value(:)
 
     integer :: rank
-    integer(SIZE_T) :: dim(1),maxdim(1)
+    integer(SIZE_T) :: dims(1),maxdim(1)
     integer(HID_T)  :: set_id,space_id
     integer :: ierr
 
     rank = 1
     ! open dataset
-    call h5dopen_f(self%lid, name, set_id, ierr)
+    call h5dopen_f(self%lid, dname, set_id, ierr)
 
     ! get dataspace
     call h5dget_space_f(set_id, space_id, ierr)
 
     ! get dims
-    call h5sget_simple_extent_dims_f(space_id, dim, maxdim, ierr)
+    call h5sget_simple_extent_dims_f(space_id, dims, maxdim, ierr)
 
-    allocate(value(dim(1)))
+    allocate(value(dims(1)))
 
     ! read dataset
-    call h5dread_f(set_id, H5T_NATIVE_DOUBLE, value,dim, ierr)
+    call h5dread_f(set_id, h5kind_to_type(kind(value),H5_REAL_KIND), value,dims, ierr)
 
     ! close dataset
     call h5dclose_f(set_id, ierr)
 
   end subroutine hdf_get_real1d
   !=============================================================================
-  subroutine hdf_get_real2d(self, name, value)
+  subroutine hdf_get_real2d(self, dname, value)
 
     class(hdf5_file), intent(in)     :: self
-    character(*), intent(in)         :: name
+    character(*), intent(in)         :: dname
     real, intent(out),allocatable :: value(:,:)
 
     integer :: rank
-    integer(SIZE_T) :: dim(2),maxdim(2)
+    integer(SIZE_T) :: dims(2),maxdim(2)
     integer(HID_T)  :: set_id, space_id
     integer :: ierr
 
     rank = 2
 
     ! open dataset
-    call h5dopen_f(self%lid, name, set_id, ierr)
+    call h5dopen_f(self%lid, dname, set_id, ierr)
 
     ! get dataspace
     call h5dget_space_f(set_id, space_id, ierr)
 
     ! get dims
-    call h5sget_simple_extent_dims_f(space_id, dim, maxdim, ierr)
+    call h5sget_simple_extent_dims_f(space_id, dims, maxdim, ierr)
 
-    allocate(value(dim(1),dim(2)))
+    allocate(value(dims(1),dims(2)))
 
     ! read dataset
-    call h5dread_f(set_id, H5T_NATIVE_DOUBLE, value,dim, ierr)
+    call h5dread_f(set_id, h5kind_to_type(kind(value),H5_REAL_KIND), value,dims, ierr)
 
     ! close dataset
     call h5dclose_f(set_id, ierr)
@@ -553,37 +555,57 @@ contains
 
   end subroutine hdf_get_real2d
   !=============================================================================
-  subroutine hdf_get_real3d(self, name, value)
+  subroutine hdf_get_real3d(self, dname, value)
 
     class(hdf5_file), intent(in)     :: self
-    character(*), intent(in)         :: name
+    character(*), intent(in)         :: dname
     real, intent(out),allocatable :: value(:,:,:)
 
     integer :: rank
-    integer(SIZE_T) :: dim(3),maxdim(3)
+    integer(SIZE_T) :: dims(3),maxdim(3)
     integer(HID_T)  :: set_id, space_id
     integer :: ierr
 
     rank = 3
 
     ! open dataset
-    call h5dopen_f(self%lid, name, set_id, ierr)
+    call h5dopen_f(self%lid, dname, set_id, ierr)
 
     ! get dataspace
     call h5dget_space_f(set_id, space_id, ierr)
 
     ! get dims
-    call h5sget_simple_extent_dims_f(space_id, dim, maxdim, ierr)
+    call h5sget_simple_extent_dims_f(space_id, dims, maxdim, ierr)
 
-    allocate(value(dim(1),dim(2),dim(3)))
+    allocate(value(dims(1),dims(2),dims(3)))
 
     ! read dataset
-    call h5dread_f(set_id, H5T_NATIVE_DOUBLE, value,dim, ierr)
+    call h5dread_f(set_id, h5kind_to_type(kind(value),H5_REAL_KIND), value,dims, ierr)
 
     ! close dataset
     call h5dclose_f(set_id, ierr)
 
 
   end subroutine hdf_get_real3d
+  
+  
+  
+  subroutine deletefile(fn)
+  ! Fortran standard compilant file deletion
+  ! Michael Hirsch, Ph.D.
+    character(*), intent(in) :: fn
+    integer :: u, ios
+    logical :: fexist
+
+  ! Fortran-standard way to delete a file.
+    open(newunit=u, file=fn, status='old',iostat=ios)
+    if (ios/=0) error stop fn//' does not exist.'
+    close(u, status='delete', iostat=ios)
+    if (ios/=0) error stop 'failed to delete: '//fn
+    
+    inquire(file=fn, exist=fexist)
+    if (fexist) error stop 'failed to delete: '//fn
+
+  end subroutine deletefile
 
 end module hdf5_interface

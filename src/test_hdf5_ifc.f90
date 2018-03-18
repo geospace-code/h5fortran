@@ -1,5 +1,4 @@
 program test_hdf5_ifc
-  use penf
   use hdf5_interface
   implicit none
 
@@ -7,29 +6,37 @@ program test_hdf5_ifc
   integer :: i1(4),i2(4,4)
   integer :: one = 1
   real    :: ro = 1.0
+  integer, parameter :: realbits = storage_size(ro)
+
   integer, allocatable :: i1t(:),i2t(:,:)
   integer :: ng,nn,pn
   real, allocatable :: flux(:,:),fo(:)
 
   integer :: i
+  character(2) :: ic, pnc, cs
+  
+  write(cs,'(I2)') realbits
 
-  do i = 1,size(i1)
+  do concurrent (i = 1:size(i1))
     i1(i) = i
     i2(i,:) = i
   enddo
+  
+  print *,'real kind bits: ',cs
 
   print*, 'initialize ...'
-  call h5f%initialize('test.h5',status='NEW',action='WRITE')
+  call h5f%initialize('test_'//cs//'.h5',status='NEW',action='WRITE')
 
 
   print*, 'add dataset ...'
   call h5f%add('/test/ai1', i1)
-  print*,i1
-
+ 
   print*, 'get dataset ...'
   call h5f%get('/test/ai1',i1t)
-  print*,i1t
+ 
+  if (.not.all(i1==i1t)) error stop 'read does not match write'
 
+ 
   call h5f%open('/test/')
   call h5f%add('group3/scalar',one)
     call h5f%add('group3/scalar_real',ro)
@@ -37,11 +44,10 @@ program test_hdf5_ifc
 
   print*, 'add dataset ...'
   call h5f%add('/test/group2/ai2', i2)
-  print*,i2
 
   print*, 'get dataset ...'
   call h5f%get('/test/group2/ai2',i2t)
-  print*,i2t
+  if (.not.all(i2==i2t)) error stop 'read does not match write'
 
   call h5f%finalize()
 
@@ -52,15 +58,15 @@ program test_hdf5_ifc
   ng = 69
   allocate(flux(nn,ng),fo(nn))
   flux = ro
-  call h5f%initialize('p'//trim(str('(i0)',pn))//'.h5',status='NEW',action='WRITE')
+  write(pnc,'(I2)') pn
+  call h5f%initialize('p'//trim(adjustl(pnc))//'_'//cs//'.h5',status='NEW',action='WRITE')
   do i = 1,ng
-    call h5f%add('/group'//trim(str('(i0)',i))//'/flux_node',flux(1:ng,i))
+    write(ic,'(I2)') i
+    call h5f%add('/group'//trim(adjustl(ic))//'/flux_node',flux(:ng,i))
   enddo
 
   call h5f%get('/group1/flux_node',fo)
-  do i = 1,ng
-    print*, fo(i)
-  enddo
+  if (.not.all(fo(:ng)==flux(:69,1))) error stop 'read does not match write'
 
   call h5f%finalize()
 
