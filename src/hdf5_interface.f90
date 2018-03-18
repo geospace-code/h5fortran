@@ -17,7 +17,7 @@ module hdf5_interface
 
 
   contains
-    !> initialize hfd5 file
+    !> initialize HDF5 file
     procedure :: initialize => hdf_initialize
     procedure :: finalize   => hdf_finalize
 

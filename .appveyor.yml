@@ -1,0 +1,41 @@
+image:
+- Visual Studio 2017
+
+stack: python 3
+
+environment:
+  MINGW_DIR: C:\mingw-w64\x86_64-7.2.0-posix-seh-rt_v5-rev1\mingw64\bin
+  PY_DIR: C:\Miniconda3-x64
+
+clone_depth: 3
+
+before_build:
+- cmd: set PATH=%MINGW_DIR%;%PY_DIR%;%PY_DIR%\Scripts;%PATH%
+# fix CMake sh.exe issue, by removing Git path.
+- cmd: set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
+- cmd: set FC=%MINGW_DIR%\gfortran 
+- cmd: mklink app\make.exe %MINGW_DIR%\mingw32-make.exe
+
+- sh: sudo -E apt-add-repository -y "ppa:ubuntu-toolchain-r/test" > /dev/null
+- sh: sudo apt-get -yq update > /dev/null
+- sh: sudo apt-get install -yq --no-install-suggests --no-install-recommends gfortran libhdf5-dev cmake make > /dev/null
+- sh: export FC=/usr/bin/gfortran
+
+#- cmd: conda update -y conda
+#- cmd: conda install -y hdf5
+
+- ps: iex (new-object net.webclient).downloadstring('https://get.scoop.sh')
+- ps: scoop install cmake make hdf5 gcc
+
+build_script:
+- cd app
+- cmd: cmake -G "MinGW Makefiles" ../src
+- sh: cmake ../src
+- make
+  
+after_build:
+- make test
+
+on_failure:
+- ctest -V
+
