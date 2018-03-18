@@ -459,7 +459,7 @@ contains
     allocate(value(dims(1),dims(2),dims(3)))
 
     ! read dataset
-    call h5dread_f(set_id, H5T_NATIVE_INTEGER, value,dims, ierr)
+    call h5dread_f(set_id, h5kind_to_type(kind(value),H5_INTEGER_KIND), value,dims, ierr)
 
     ! close dataset
     call h5dclose_f(set_id, ierr)
