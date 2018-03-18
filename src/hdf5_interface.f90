@@ -213,17 +213,15 @@ contains
     character(*), intent(in) :: dname
     integer, intent(in)      :: value(:)
 
-    integer         :: rank
     integer(HSIZE_T):: dims(1)
     integer         :: ierr
 
-    rank = 1
     dims  = size(value)
 
     call self%add(dname)
 
 
-    call h5ltmake_dataset_f(self%lid, dname, rank, dims, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, ierr)
+    call h5ltmake_dataset_f(self%lid, dname, rank(value), dims, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, ierr)
 
   end subroutine hdf_add_int1d
   !=============================================================================
@@ -232,16 +230,12 @@ contains
     character(*), intent(in) :: dname
     integer, intent(in)      :: value(:,:)
 
-    integer         :: rank
-    integer(HSIZE_T):: dims(2)
     integer         :: ierr
-
-    rank = 2
-    dims  = shape(value)
 
     call self%add(dname)
 
-    call h5ltmake_dataset_f(self%lid, dname, rank, dims, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, ierr)
+    call h5ltmake_dataset_f(self%lid, dname, &
+      rank(value), int(shape(value),HSIZE_T), h5kind_to_type(kind(value),H5_INTEGER_KIND), value, ierr)
 
   end subroutine hdf_add_int2d
   !=============================================================================
@@ -250,16 +244,12 @@ contains
     character(*), intent(in) :: dname
     integer, intent(in)      :: value(:,:,:)
 
-    integer         :: rank
-    integer(HSIZE_T):: dims(3)
     integer         :: ierr
-
-    rank = 3
-    dims  = shape(value)
 
     call self%add(dname)
 
-    call h5ltmake_dataset_f(self%lid, dname, rank, dims, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, ierr)
+    call h5ltmake_dataset_f(self%lid, dname, &
+      rank(value), int(shape(value),HSIZE_T), h5kind_to_type(kind(value),H5_INTEGER_KIND), value, ierr)
 
   end subroutine hdf_add_int3d
   !=============================================================================
@@ -268,11 +258,8 @@ contains
     character(*), intent(in) :: dname
     real, intent(in)      :: value
 
-    integer(HSIZE_T):: dims(1)
     integer(HID_T)  :: sid,did
     integer         :: ierr
-
-    dims  = [0]
 
     call self%add(dname)
 
@@ -283,7 +270,7 @@ contains
     call h5dcreate_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), sid, did, ierr)
 
     !> write dataset
-    call h5dwrite_f(did, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims, ierr)
+    call h5dwrite_f(did, h5kind_to_type(kind(value),H5_REAL_KIND), value, int(shape(value),HSIZE_T), ierr)
 
     !> close space and dataset
     call h5dclose_f(did, ierr)
@@ -298,17 +285,13 @@ contains
     character(*), intent(in) :: dname
     real, intent(in)      :: value(:)
 
-    integer         :: rank
-    integer(HSIZE_T):: dims(1)
     integer         :: ierr
-
-    rank = 1
-    dims  = size(value)
 
     call self%add(dname)
 
 
-    call h5ltmake_dataset_f(self%lid, dname, rank, dims, h5kind_to_type(kind(value),H5_REAL_KIND), value, ierr)
+    call h5ltmake_dataset_f(self%lid, dname, &
+      rank(value), int(shape(value),HSIZE_T), h5kind_to_type(kind(value),H5_REAL_KIND), value, ierr)
 
   end subroutine hdf_add_real1d
   !=============================================================================
@@ -317,16 +300,12 @@ contains
     character(*), intent(in) :: dname
     real, intent(in)      :: value(:,:)
 
-    integer         :: rank
-    integer(HSIZE_T):: dims(2)
     integer         :: ierr
-
-    rank = 2
-    dims  = shape(value)
 
     call self%add(dname)
 
-    call h5ltmake_dataset_f(self%lid, dname, rank, dims, h5kind_to_type(kind(value),H5_REAL_KIND), value, ierr)
+    call h5ltmake_dataset_f(self%lid, dname, &
+      rank(value), int(shape(value),HSIZE_T), h5kind_to_type(kind(value),H5_REAL_KIND), value, ierr)
 
   end subroutine hdf_add_real2d
   !=============================================================================
@@ -335,16 +314,12 @@ contains
     character(*), intent(in) :: dname
     real, intent(in)      :: value(:,:,:)
 
-    integer         :: rank
-    integer(HSIZE_T):: dims(3)
     integer         :: ierr
-
-    rank = 3
-    dims  = shape(value)
 
     call self%add(dname)
 
-    call h5ltmake_dataset_f(self%lid, dname, rank, dims, h5kind_to_type(kind(value),H5_REAL_KIND), value, ierr)
+    call h5ltmake_dataset_f(self%lid, dname, &
+      rank(value), int(shape(value),HSIZE_T), h5kind_to_type(kind(value),H5_REAL_KIND), value, ierr)
 
   end subroutine hdf_add_real3d
   !=============================================================================
@@ -354,16 +329,14 @@ contains
     character(*), intent(in)         :: dname
     integer, intent(out)             :: value
 
-    integer(SIZE_T) :: dims(1)
     integer(HID_T)  :: set_id
     integer :: ierr
-
-    dims = [0]
+    
     ! open dataset
     call h5dopen_f(self%lid, dname, set_id, ierr)
 
     ! read dataset
-    call h5dread_f(set_id, h5kind_to_type(kind(value),H5_INTEGER_KIND), value,dims, ierr)
+    call h5dread_f(set_id, h5kind_to_type(kind(value),H5_INTEGER_KIND), value,int(shape(value),HSIZE_T), ierr)
 
     ! close dataset
     call h5dclose_f(set_id, ierr)
@@ -376,12 +349,10 @@ contains
     character(*), intent(in)         :: dname
     integer, intent(out),allocatable :: value(:)
 
-    integer :: rank
     integer(SIZE_T) :: dims(1),maxdim(1)
     integer(HID_T)  :: set_id,space_id
     integer :: ierr
 
-    rank = 1
     ! open dataset
     call h5dopen_f(self%lid, dname, set_id, ierr)
 
@@ -407,12 +378,9 @@ contains
     character(*), intent(in)         :: dname
     integer, intent(out),allocatable :: value(:,:)
 
-    integer :: rank
     integer(SIZE_T) :: dims(2),maxdim(2)
     integer(HID_T)  :: set_id, space_id
     integer :: ierr
-
-    rank = 2
 
     ! open dataset
     call h5dopen_f(self%lid, dname, set_id, ierr)
@@ -440,12 +408,9 @@ contains
     character(*), intent(in)         :: dname
     integer, intent(out),allocatable :: value(:,:,:)
 
-    integer :: rank
     integer(SIZE_T) :: dims(3),maxdim(3)
     integer(HID_T)  :: set_id, space_id
     integer :: ierr
-
-    rank = 3
 
     ! open dataset
     call h5dopen_f(self%lid, dname, set_id, ierr)
@@ -495,12 +460,10 @@ contains
     character(*), intent(in)         :: dname
     real, intent(out),allocatable :: value(:)
 
-    integer :: rank
     integer(SIZE_T) :: dims(1),maxdim(1)
     integer(HID_T)  :: set_id,space_id
     integer :: ierr
 
-    rank = 1
     ! open dataset
     call h5dopen_f(self%lid, dname, set_id, ierr)
 
@@ -526,12 +489,9 @@ contains
     character(*), intent(in)         :: dname
     real, intent(out),allocatable :: value(:,:)
 
-    integer :: rank
     integer(SIZE_T) :: dims(2),maxdim(2)
     integer(HID_T)  :: set_id, space_id
     integer :: ierr
-
-    rank = 2
 
     ! open dataset
     call h5dopen_f(self%lid, dname, set_id, ierr)
@@ -559,12 +519,9 @@ contains
     character(*), intent(in)         :: dname
     real, intent(out),allocatable :: value(:,:,:)
 
-    integer :: rank
     integer(SIZE_T) :: dims(3),maxdim(3)
     integer(HID_T)  :: set_id, space_id
     integer :: ierr
-
-    rank = 3
 
     ! open dataset
     call h5dopen_f(self%lid, dname, set_id, ierr)
