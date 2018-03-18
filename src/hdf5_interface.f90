@@ -195,10 +195,10 @@ contains
     call h5screate_f(H5S_SCALAR_F, sid, ierr)
 
     !> create dataset
-    call h5dcreate_f(self%lid, dname, H5T_NATIVE_INTEGER, sid, did, ierr)
+    call h5dcreate_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), sid, did, ierr)
 
     !> write dataset
-    call h5dwrite_f(did, H5T_NATIVE_INTEGER, value, dims, ierr)
+    call h5dwrite_f(did, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims, ierr)
 
     !> close space and dataset
     call h5dclose_f(did, ierr)
@@ -223,7 +223,7 @@ contains
     call self%add(dname)
 
 
-    call h5ltmake_dataset_f(self%lid, dname, rank, dims, H5T_NATIVE_INTEGER, value, ierr)
+    call h5ltmake_dataset_f(self%lid, dname, rank, dims, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, ierr)
 
   end subroutine hdf_add_int1d
   !=============================================================================
@@ -241,7 +241,7 @@ contains
 
     call self%add(dname)
 
-    call h5ltmake_dataset_f(self%lid, dname, rank, dims, H5T_NATIVE_INTEGER, value, ierr)
+    call h5ltmake_dataset_f(self%lid, dname, rank, dims, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, ierr)
 
   end subroutine hdf_add_int2d
   !=============================================================================
@@ -259,7 +259,7 @@ contains
 
     call self%add(dname)
 
-    call h5ltmake_dataset_f(self%lid, dname, rank, dims, H5T_NATIVE_INTEGER, value, ierr)
+    call h5ltmake_dataset_f(self%lid, dname, rank, dims, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, ierr)
 
   end subroutine hdf_add_int3d
   !=============================================================================
@@ -363,7 +363,7 @@ contains
     call h5dopen_f(self%lid, dname, set_id, ierr)
 
     ! read dataset
-    call h5dread_f(set_id, H5T_NATIVE_INTEGER, value,dims, ierr)
+    call h5dread_f(set_id, h5kind_to_type(kind(value),H5_INTEGER_KIND), value,dims, ierr)
 
     ! close dataset
     call h5dclose_f(set_id, ierr)
@@ -394,7 +394,7 @@ contains
     allocate(value(dims(1)))
 
     ! read dataset
-    call h5dread_f(set_id, H5T_NATIVE_INTEGER, value,dims, ierr)
+    call h5dread_f(set_id, h5kind_to_type(kind(value),H5_INTEGER_KIND), value,dims, ierr)
 
     ! close dataset
     call h5dclose_f(set_id, ierr)
@@ -426,7 +426,7 @@ contains
     allocate(value(dims(1),dims(2)))
 
     ! read dataset
-    call h5dread_f(set_id, H5T_NATIVE_INTEGER, value,dims, ierr)
+    call h5dread_f(set_id, h5kind_to_type(kind(value),H5_INTEGER_KIND), value,dims, ierr)
 
     ! close dataset
     call h5dclose_f(set_id, ierr)
