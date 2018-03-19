@@ -5,12 +5,19 @@ os:
   - linux
   - osx
   
-env: FC=gfortran
+env: FC=gfortran-5
 
 group: travis_latest
 
 git:
   depth: 3
+  
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - gfortran-5
 
 before_install:
   - if [[ $TRAVIS_OS_NAME == osx ]]; then
