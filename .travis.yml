@@ -2,6 +2,7 @@ language: c
 fast_finish: true
 
 os:
+  - linux
   - osx
   
 env: FC=gfortran
