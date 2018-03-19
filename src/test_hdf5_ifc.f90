@@ -43,6 +43,9 @@ program test_hdf5_ifc
     ! Fortran 2003 allocatable string
     hello_alloc = trim(toLower(hello))
     if (.not.(hello_alloc=='hell0 th3re !>?')) error stop 'Allocatable lowercase conversion error'
+    
+    
+    if(.not.all(toLower(['Hi','hI'])==['hi','hi'])) error stop 'error on array conversion'
 
   end subroutine test_lowercase
 

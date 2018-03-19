@@ -534,7 +534,7 @@ contains
 
 !----- Helper functions
 
-  pure function toLower(str)
+  elemental function toLower(str)
   ! can be trivially extended to non-ASCII
     character(*), intent(in) :: str
     character(len(str)) :: toLower
