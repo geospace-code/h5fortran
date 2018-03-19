@@ -15,14 +15,14 @@ Read/write integer / real32/64:
 
 via polymorphism.
 
-Tested on systems including Mac OS X (via homebrew), Ubuntu 16.04/18.04 (gfortran &ge; 5.5) with HDF5 1.8 and 1.10 and Windows Subsystem for Linux.
+Tested on systems including Mac OS X (via homebrew), Ubuntu 16.04/18.04 (gfortran &ge; 5.4.1) with HDF5 1.8 and 1.10 and Windows Subsystem for Linux.
 
 
 ## Build
 
 Requirements:
 
-* modern Fortran 2018 compiler (such as gfortran &ge; 5.5, etc.)
+* modern Fortran 2018 compiler (such as gfortran &ge; 5.4.1, etc.)
 * HDF5 library (1.8 or 1.10)
 
 * Mac: `brew install gcc hdf5`
