@@ -322,7 +322,7 @@ contains
 
     integer(HID_T)  :: set_id
     integer :: ierr
-    
+
     ! open dataset
     call h5dopen_f(self%lid, dname, set_id, ierr)
 
