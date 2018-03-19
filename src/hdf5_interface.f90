@@ -5,7 +5,7 @@ module hdf5_interface
 
   implicit none
 
-  public :: hdf5_file
+  public :: hdf5_file, toLower
 
   private
 
@@ -84,26 +84,26 @@ contains
     call h5open_f(ierr)
     if (ierr /= 0 ) error stop 'Error: HDF5 library initialize Failed!'
 
-    lstatus = 'NEW'
-    if(present(status)) lstatus = status
+    lstatus = 'old'
+    if(present(status)) lstatus = toLower(status)
 
-    laction = 'READWRITE'
-    if(present(action)) laction = action
+    laction = 'rw'
+    if(present(action)) laction = toLower(action)
 
     select case(lstatus)
-      case ('OLD')
+      case ('old')
         select case(laction)
-          case('READ')  !> Open an existing file.
+          case('read','r')  !> Open an existing file.
             call h5fopen_f(filename,H5F_ACC_RDONLY_F,self%lid,ierr)
-          case('WRITE','READWRITE')
+          case('write','readwrite','w','rw')
             call h5fopen_f(filename,H5F_ACC_RDWR_F,self%lid,ierr)
           case default
-            error stop 'Error: Unsupported action ->'//laction
+            error stop 'Error: Unsupported action ->'// laction
           endselect
-      case('NEW','REPLACE')
+      case('new','replace')
         call h5fcreate_f(filename,H5F_ACC_TRUNC_F,self%lid,ierr)
       case default
-        error stop 'Error: Unsupported status ->'//status
+        error stop 'Error: Unsupported status ->'// lstatus
     endselect
 
   end subroutine hdf_initialize
@@ -531,5 +531,24 @@ contains
 
 
   end subroutine hdf_get_real3d
+
+!----- Helper functions
+
+  pure function toLower(str)
+  ! can be trivially extended to non-ASCII
+    character(*), intent(in) :: str
+    character(len(str)) :: toLower
+    character(*), parameter :: lower="abcdefghijklmnopqrstuvwxyz", &
+                               upper="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    integer :: i,j
+
+    toLower = str
+
+    do concurrent (i = 1:len(str))
+      j = index(upper,str(i:i))
+      if (j > 0) toLower(i:i) = lower(j:j)
+    end do
+
+  end function toLower
 
 end module hdf5_interface
