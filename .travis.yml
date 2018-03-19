@@ -18,6 +18,7 @@ addons:
       - ubuntu-toolchain-r-test
     packages:
       - gfortran-5
+      - libhdf5-dev
 
 before_install:
   - if [[ $TRAVIS_OS_NAME == osx ]]; then
