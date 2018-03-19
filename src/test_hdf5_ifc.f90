@@ -7,15 +7,13 @@ program test_hdf5_ifc
 
   type(hdf5_file) :: h5f
   integer :: i1(4)
-  integer :: one = 1
-  real    :: ro = 1.0
   real    :: nan,nant
-  integer, parameter :: realbits = storage_size(ro)
+  integer, parameter :: realbits = storage_size(nan)
 
   integer, allocatable :: i1t(:),i2t(:,:)
 
   integer :: i
-  character(2) :: ic, cs
+  character(2) :: cs
 
   nan = ieee_value(1.0, ieee_quiet_nan)
 
@@ -65,6 +63,8 @@ program test_hdf5_ifc
  subroutine testAddHDF5()
 
   integer :: i2(4,4)
+  integer :: one = 1
+  real    :: ro = 1.0
 
   i2(1,:) = i1
   do concurrent (i = 1:size(i2,2))
@@ -96,11 +96,11 @@ subroutine testrwHDF5(ng, nn, pn)
   integer, intent(in) :: ng, nn, pn
 
   real, allocatable :: flux(:,:),fo(:)
-  character(2) :: pnc
+  character(2) :: pnc,ic
   integer :: i
 
   allocate(flux(nn,ng),fo(nn))
-  flux = ro
+  flux = 1.0
   write(pnc,'(I2)') pn
 
   call h5f%initialize('p'//trim(adjustl(pnc))//'_'//cs//'.h5',status='new',action='w')
