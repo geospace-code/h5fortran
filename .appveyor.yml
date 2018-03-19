@@ -1,19 +1,20 @@
 image: Ubuntu
 
 environment:
-  FC: gfortran
+  FC: gfortran-6
 
 clone_depth: 3
 
 before_build:
+- sudo -E apt-add-repository -y "ppa:ubuntu-toolchain-r/test" > /dev/null
 - sudo apt-get -yq update > /dev/null
-- sudo apt-get install -yq --no-install-suggests --no-install-recommends gfortran libhdf5-dev cmake make > /dev/null
+- sudo apt-get install -yq --no-install-suggests --no-install-recommends gfortran-6 libhdf5-dev cmake make > /dev/null
 
 build_script:
 - cd app
 - cmake ../src
 - make
-  
+
 after_build: make test
 
 on_failure: ctest -V
