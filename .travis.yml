@@ -2,23 +2,14 @@ language: c
 fast_finish: true
 
 os:
-  - linux
   - osx
   
-env: FC=gfortran-6
+env: FC=gfortran
 
 group: travis_latest
 
 git:
   depth: 3
-
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - gfortran-6
-      - libhdf5-dev
 
 before_install:
   - if [[ $TRAVIS_OS_NAME == osx ]]; then
@@ -27,22 +18,12 @@ before_install:
       brew link --overwrite gcc;
       export FC=gfortran;
       brew install hdf5;
-    else
-      wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
-      bash miniconda.sh -b -p $HOME/miniconda;
-      export PATH=$HOME/miniconda/bin:$PATH;
-      hash -r;
-
-      conda config --set always_yes yes --set changeps1 no;
-      conda update -q conda;
-  
-      conda install hdf5;
     fi
 
 install:
   - cd app
   - cmake ../src
-  - make -k || true
+  - make
 
 script:
   - make test

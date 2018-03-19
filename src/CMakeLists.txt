@@ -6,14 +6,16 @@ if(${CMAKE_Fortran_COMPILER_ID} STREQUAL Intel)
     list(APPEND FFLAGS -check all -traceback -warn -debug extended)
     set(F64 -r8)
 elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU)  # gfortran >= 6
-    list(APPEND FFLAGS -march=native -Wall -Wextra -Wpedantic -Werror=array-bounds -fbacktrace -fcheck=all)
+    list(APPEND FFLAGS -std=f2008ts -march=native -Wall -Wextra -Wpedantic -Werror=array-bounds -fbacktrace -fcheck=all)
     set(F64 -fdefault-real-8)
 endif()
 
 add_compile_options(-O3 -g ${FFLAGS})
 #------------------------
 find_package(HDF5 REQUIRED COMPONENTS Fortran Fortran_HL)
-include_directories(${HDF5_Fortran_INCLUDE_DIRS})
+
+# need BOTH includes, for some older systems!
+include_directories(${HDF5_INCLUDE_DIRS} ${HDF5_Fortran_INCLUDE_DIRS})
 
 
 add_library(hdf5iface_32 hdf5_interface.f90)
