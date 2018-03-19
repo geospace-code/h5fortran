@@ -4,7 +4,7 @@
 # Object-oriented Fortran 2018 HDF5 interface
 
 Very simple single-file/module access to HDF5.
-More [advanced object-oriented Fortran HDF5 access](https://github.com/rjgtorres/oo_hdf) also available.
+More [advanced object-oriented Fortran HDF5 access](https://github.com/rjgtorres/oo_hdf) also available, but not compatible with HDF5 1.10 like this program.
 
 Read/write integer / real32/64:
 
