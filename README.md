@@ -22,13 +22,16 @@ HDF5 1.10 is expected.
 
 * Mac: `brew install gcc hdf5`
 * Linux: `apt install gfortran libhdf5-dev`    (Ubuntu 18.04)
-  For other/older Linux, you can use [Miniconda](https://conda.io/miniconda.html) to provide HDF5 by:
+  For older Linux, you can use [Miniconda](https://conda.io/miniconda.html) to provide HDF5 by:
   ```sh
   conda install hdf5
   ```
+  Yes, with Miniconda in your PATH, CMake will find its HDF5 library.
 * Windows: at this time, 
   [Scoop](https://www.scivision.co/brew-install-scoop-for-windows/) 
-  didn't have HDF5, so consider using
+  didn't have HDF5, possibly due to
+  [difficulties with HDF5 and gfortran on Windows](https://stackoverflow.com/a/30056831),
+  so consider using
   [Windows Subsystem for Linux](https://www.scivision.co/install-windows-subsystem-for-linux/)
 
 and then:
