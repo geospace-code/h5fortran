@@ -5,14 +5,14 @@
 Straightforward single-file/module access to HDF5.
 Abstracts away the messy parts of HDF5 so that you can read/write various types/ranks of data with a single command.
 
-Read/write integer / real32/64:
+Polymorphic API with read/write integer / real32/64:
 
 * scalar
 * 1-D
 * 2-D
 * 3-D
 
-via polymorphism.  
+as well as character (string) variables and attributes.
 If you'd like higher-rank arrays, let us know via GitHub Issue.
 
 Tested on systems including Mac OS X (via homebrew), Ubuntu 16.04/18.04 (gfortran &ge; 5.4.1) with HDF5 1.8 and 1.10 and Windows Subsystem for Linux.
@@ -77,6 +77,21 @@ call h5f%add('/value1', 123.)
 
 call h5f%finalize()
 ```
+
+### Add gzip compressed 3-D array "value2" to existing HDF5 file "test.h5"
+
+```fortran
+
+real :: val2(1000,1000,3) = 0.
+
+call h5f%initialize('test.h5',status='old',action='rw')
+
+call h5f%add('/value2', val2, comp_lvl=1)
+
+call h5f%finalize()
+```
+
+chunk_size may optionally be set in the `%add()` method.
 
 ## Notes
 
