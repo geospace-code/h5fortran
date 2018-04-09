@@ -1,6 +1,5 @@
-[![Build Status](https://travis-ci.org/scivision/hdf5_interface.svg?branch=master)](https://travis-ci.org/scivision/hdf5_interface)
-[![Build status](https://ci.appveyor.com/api/projects/status/9c0c6adudwyrg9yv?svg=true)](https://ci.appveyor.com/project/scivision/hdf5-interface)
-
+[![Build Status](https://travis-ci.org/scivision/oo-hdf5-fortran.svg?branch=master)](https://travis-ci.org/scivision/oo-hdf5-fortran)
+[![Build status](https://ci.appveyor.com/api/projects/status/9njjb04mol8l2sjx?svg=true)](https://ci.appveyor.com/project/scivision/oo-hdf5-fortran)
 # Object-oriented Fortran 2018 HDF5 interface
 
 Straightforward single-file/module access to HDF5.
