@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/scivision/oo-hdf5-fortran.svg?branch=master)](https://travis-ci.org/scivision/oo-hdf5-fortran)
+[![Build Status](https://travis-ci.org/scivision/oo_hdf5_fortran.svg?branch=master)](https://travis-ci.org/scivision/oo_hdf5_fortran)
 [![Build status](https://ci.appveyor.com/api/projects/status/9njjb04mol8l2sjx?svg=true)](https://ci.appveyor.com/project/scivision/oo-hdf5-fortran)
 # Object-oriented Fortran 2018 HDF5 interface
 
