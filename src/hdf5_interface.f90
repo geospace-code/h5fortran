@@ -11,544 +11,693 @@ module hdf5_interface
 
   type :: hdf5_file
 
-    integer(HID_T) :: lid    !< location identifier
+    character(256)  :: filename  ! FIXME: character, allocatable gave only single (first) character with gfortran 7.2
+    integer(HID_T) :: lid   !< location identifier
     integer(HID_T) :: gid    !< group identifier
     integer(HID_T) :: glid   !< group location identifier
+    integer :: comp_lvl = 0 !< compression level (1-9)  0: disable compression
+    integer(HSIZE_T) :: chunk_size(3) = [64,64,1]  !< chunk size per dimension
+    logical :: verbose=.false.
 
 
   contains
     !> initialize HDF5 file
-    procedure :: initialize => hdf_initialize
-    procedure :: finalize   => hdf_finalize
+    procedure :: initialize => hdf_initialize, finalize => hdf_finalize
 
     !> open and close hdf5 group
-    procedure :: open       => hdf_open_group
-    procedure :: close      => hdf_close_group
+    procedure :: open => hdf_open_group, close => hdf_close_group
 
     !> add group or dataset integer/real 0-3d
-    generic   :: add => hdf_add_group,&
-                        hdf_add_int,&
-                        hdf_add_int1d,&
-                        hdf_add_int2d,&
-                        hdf_add_int3d,&
-                        hdf_add_real,&
-                        hdf_add_real1d,&
-                        hdf_add_real2d,&
-                        hdf_add_real3d
+    generic   :: add => hdf_add_group, hdf_add_int, hdf_add_int1d, hdf_add_int2d, hdf_add_int3d, hdf_add_real, hdf_add_real1d,&
+                        hdf_add_real2d, hdf_add_real3d, hdf_add_string
 
     !> get dataset integer/real 0-3d
-    generic   :: get => hdf_get_int,&
-                        hdf_get_int1d,&
-                        hdf_get_int2d,&
-                        hdf_get_int3d,&
-                        hdf_get_real,&
-                        hdf_get_real1d,&
-                        hdf_get_real2d,&
-                        hdf_get_real3d
+    generic   :: get => hdf_get_int, hdf_get_int1d, hdf_get_int2d, hdf_get_int3d,&
+                        hdf_get_real, hdf_get_real1d, hdf_get_real2d, hdf_get_real3d,&
+                        hdf_get_string
 
-
+    
     !> private methods
-    procedure,private :: hdf_add_group
-    procedure,private :: hdf_add_int
-    procedure,private :: hdf_get_int
-    procedure,private :: hdf_add_int1d
-    procedure,private :: hdf_get_int1d
-    procedure,private :: hdf_add_int2d
-    procedure,private :: hdf_get_int2d
-    procedure,private :: hdf_add_int3d
-    procedure,private :: hdf_get_int3d
-    procedure,private :: hdf_add_real
-    procedure,private :: hdf_get_real
-    procedure,private :: hdf_add_real1d
-    procedure,private :: hdf_get_real1d
-    procedure,private :: hdf_add_real2d
-    procedure,private :: hdf_get_real2d
-    procedure,private :: hdf_add_real3d
-    procedure,private :: hdf_get_real3d
+    procedure,private :: hdf_add_group, hdf_add_int, hdf_get_int,hdf_add_int1d, hdf_get_int1d, hdf_add_int2d, hdf_get_int2d, &
+      hdf_add_int3d, hdf_get_int3d, hdf_add_real, hdf_get_real, hdf_add_real1d, hdf_get_real1d, hdf_add_real2d, hdf_get_real2d, &
+      hdf_add_real3d, hdf_get_real3d, hdf_add_string, hdf_get_string
+      
   end type hdf5_file
 
 contains
-  !=============================================================================
-  subroutine hdf_initialize(self,filename,status,action)
-    !< Opens hdf5 file
+!=============================================================================
+subroutine hdf_initialize(self,filename,status,action,comp_lvl,chunk_size)
+  !< Opens hdf5 file
 
-    class(hdf5_file), intent(inout)    :: self
-    character(*), intent(in)           :: filename
-    character(*), intent(in), optional :: status
-    character(*), intent(in), optional :: action
+  class(hdf5_file), intent(inout)    :: self
+  character(*), intent(in)           :: filename
+  character(*), intent(in), optional :: status
+  character(*), intent(in), optional :: action
+  integer, intent(in), optional      :: comp_lvl
+  integer, intent(in), optional      :: chunk_size(3)
 
-    character(:), allocatable :: lstatus, laction
-    integer :: ierr
+  character(:), allocatable :: lstatus, laction
+  integer :: ierr
+  
+  self%filename = filename
+  
+  if (present(comp_lvl)) self%comp_lvl = comp_lvl
+  if (present(chunk_size)) self%chunk_size = chunk_size
 
-    !> Initialize FORTRAN interface.
-    call h5open_f(ierr)
-    if (ierr /= 0 ) error stop 'Error: HDF5 library initialize Failed!'
+  !> Initialize FORTRAN interface.
+  call h5open_f(ierr)
+  if (ierr /= 0) error stop 'Error: HDF5 library initialize Failed!'
 
-    lstatus = 'old'
-    if(present(status)) lstatus = toLower(status)
+  lstatus = 'old'  ! not merge() due to unequal character length
+  if(present(status)) lstatus = toLower(status)
 
-    laction = 'rw'
-    if(present(action)) laction = toLower(action)
+  laction = 'rw'  ! not merge() due to unequal character length
+  if(present(action)) laction = toLower(action)
 
-    select case(lstatus)
-      case ('old')
-        select case(laction)
-          case('read','r')  !> Open an existing file.
-            call h5fopen_f(filename,H5F_ACC_RDONLY_F,self%lid,ierr)
-          case('write','readwrite','w','rw')
-            call h5fopen_f(filename,H5F_ACC_RDWR_F,self%lid,ierr)
-          case default
-            error stop 'Error: Unsupported action ->'// laction
-          endselect
-      case('new','replace')
-        call h5fcreate_f(filename,H5F_ACC_TRUNC_F,self%lid,ierr)
-      case default
-        error stop 'Error: Unsupported status ->'// lstatus
-    endselect
 
-  end subroutine hdf_initialize
-  !=============================================================================
-  subroutine hdf_finalize(self)
-    class(hdf5_file), intent(in) :: self
+  select case(lstatus)
+    case ('old')
+      select case(laction)
+        case('read','r')  !> Open an existing file.
+          call h5fopen_f(filename,H5F_ACC_RDONLY_F,self%lid,ierr)
+        case('write','readwrite','w','rw')
+          call h5fopen_f(filename,H5F_ACC_RDWR_F,self%lid,ierr)
+        case default
+          error stop 'Error: Unsupported action ->'// laction
+        endselect
+    case('new','replace')
+      call h5fcreate_f(filename,H5F_ACC_TRUNC_F,self%lid,ierr)
+    case default
+      error stop 'Error: Unsupported status ->'// lstatus
+  endselect
+  
+  if (ierr /= 0) error stop 'Error: HDF5 open/create failed: '//filename
+  
+end subroutine hdf_initialize
+!=============================================================================
+subroutine hdf_finalize(self)
+  class(hdf5_file), intent(in) :: self
 
-    integer :: ierr
+  integer :: ierr
 
-    !> close hdf5 file
-    call h5fclose_f(self%lid, ierr)
+  !> close hdf5 file
+  call h5fclose_f(self%lid, ierr)
 
-    !>  Close FORTRAN interface.
-    call h5close_f(ierr)
+  !>  Close FORTRAN interface.
+  call h5close_f(ierr)
+  
+  if (ierr /= 0) error stop 'Error: HDF5 finalization: '//self%filename
 
-  end subroutine hdf_finalize
-  !=============================================================================
-  subroutine hdf_add_group(self, gname)
+end subroutine hdf_finalize
+!=============================================================================
+subroutine hdf_add_group(self, gname)
 
-    class(hdf5_file), intent(in) :: self
-    character(*), intent(in) :: gname    !< relative path to group
+  class(hdf5_file), intent(in) :: self
+  character(*), intent(in) :: gname    !< relative path to group
 
-    integer(HID_T)  :: gid
+  integer(HID_T)  :: gid
 
-    integer :: ierr, sp, ep, sl
-    logical :: gexist
+  integer :: ierr, sp, ep, sl
+  logical :: gexist
 
-    sl = len(gname)
-    sp = 1
-    ep = 0
+  sl = len(gname)
+  sp = 1
+  ep = 0
 
-    do
-       ep = index(gname(sp+1:sl), "/")
+  do
+     ep = index(gname(sp+1:sl), "/")
 
-       ! no subgroup found
-       if (ep == 0) exit
+     ! no subgroup found
+     if (ep == 0) exit
 
-       ! check subgroup exists
-       sp = sp + ep
-       call h5lexists_f(self%lid, gname(1:sp-1), gexist, ierr)
+     ! check subgroup exists
+     sp = sp + ep
+     call h5lexists_f(self%lid, gname(1:sp-1), gexist, ierr)
+     if (ierr /= 0) error stop 'problem finding group '//gname
 
-       if(.not.gexist) then
-         call h5gcreate_f(self%lid, gname(1:sp-1), gid, ierr)
-         call h5gclose_f(gid, ierr)
-       endif
-    end do
+     if(.not.gexist) then
+       call h5gcreate_f(self%lid, gname(1:sp-1), gid, ierr)
+       if (ierr /= 0) error stop 'problem creating group '//gname
+       
+       call h5gclose_f(gid, ierr)
+       if (ierr /= 0) error stop 'problem closing group '//gname
+     endif
+  end do
 
-  end subroutine hdf_add_group
-  !=============================================================================
-  subroutine hdf_open_group(self,gname)
-    class(hdf5_file), intent(inout) :: self
-    character(*), intent(in)        :: gname
+end subroutine hdf_add_group
+!=============================================================================
+subroutine hdf_open_group(self, gname)
+  class(hdf5_file), intent(inout) :: self
+  character(*), intent(in)        :: gname
 
-    integer :: ierr
+  integer :: ierr
 
-    call h5gopen_f(self%lid, gname, self%gid, ierr)
-    self%glid = self%lid
-    self%lid  = self%gid
+  call h5gopen_f(self%lid, gname, self%gid, ierr)
+  if (ierr /= 0) error stop 'problem opening group '//gname
+  
+  self%glid = self%lid
+  self%lid  = self%gid
 
-  end subroutine hdf_open_group
-  !=============================================================================
-  subroutine hdf_close_group(self)
-    class(hdf5_file), intent(inout) :: self
+end subroutine hdf_open_group
+!=============================================================================
+subroutine hdf_close_group(self)
+  class(hdf5_file), intent(inout) :: self
 
-    integer :: ierr
+  integer :: ierr
 
-    call h5gclose_f(self%gid, ierr)
-    self%lid = self%glid
+  call h5gclose_f(self%gid, ierr)
+  if (ierr /= 0) error stop 'problem closing group '//self%filename
+  
+  self%lid = self%glid
 
-  end subroutine hdf_close_group
-  !=============================================================================
-  subroutine hdf_add_int(self,dname,value)
-    class(hdf5_file), intent(in) :: self
-    character(*), intent(in) :: dname
-    integer, intent(in)      :: value
+end subroutine hdf_close_group
+!=============================================================================
+subroutine hdf_set_deflate(self, dims, pid)
+  class(hdf5_file), intent(in) :: self
+  integer(HSIZE_T), intent(in) :: dims(:)
+  integer(HID_T), intent(out) :: pid
 
-    integer(HID_T)  :: sid,did
-    integer         :: ierr
+  integer :: ierr, ndims, i
+  integer(HSIZE_T), allocatable :: chunk_size(:)
+  
+  ndims = size(dims)
+  allocate(chunk_size(ndims))
+  
+  do concurrent (i=1:ndims)
+    chunk_size(i) = min(self%chunk_size(i), dims(i))
+  enddo
+  
+  if (self%verbose) print *,'dims: ',dims,'chunk size: ',chunk_size
+ 
+ 
+  call h5pcreate_f(H5P_DATASET_CREATE_F, pid, ierr)
+  if (ierr /= 0) error stop 'error creating property '//self%filename
+  
+  call h5pset_chunk_f(pid, ndims, chunk_size, ierr)
+  if (ierr /= 0) error stop 'error setting chunk '//self%filename
+  
+  call h5pset_shuffle_f(pid, ierr)
+  if (ierr /= 0) error stop 'error enabling Shuffle '//self%filename
+   
+  call h5pset_deflate_f(pid, self%comp_lvl, ierr)
+  if (ierr /= 0) error stop 'error enabling Deflate compression '//self%filename
 
-    call self%add(dname)
+end subroutine hdf_set_deflate  
+!===================================
+subroutine hdf_add_int(self,dname,value,attr,attrval)
+  class(hdf5_file), intent(in) :: self
+  character(*), intent(in) :: dname
+  integer, intent(in)      :: value
+  character(*), intent(in), optional :: attr, attrval
 
-    !> create dataspace
-    call h5screate_f(H5S_SCALAR_F, sid, ierr)
+  integer(HID_T) :: sid,did
+  integer         :: ierr
 
-    !> create dataset
-    call h5dcreate_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), sid, did, ierr)
+  call self%add(dname)
+  
+  ! HDF5 >= 1.10
+  !call h5ltmake_dataset_f(self%lid, dname, &
+  !  rank(value), int(shape(value),HSIZE_T), h5kind_to_type(kind(value),H5_INTEGER_KIND), value, ierr)
+  !if (ierr /= 0) error stop 'error on dataset '//dname//' write '//self%filename
+      
+  !  HDF5 1.8 compatbility below:
+  !> create dataspace
+  call h5screate_f(H5S_SCALAR_F, sid, ierr)
+  if (ierr /= 0) error stop 'error create dataspace '//dname//' write '//self%filename
 
-    !> write dataset
-    call h5dwrite_f(did, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, int(shape(value),HSIZE_T), ierr)
+  !> create dataset
+  call h5dcreate_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), sid, did, ierr)
+  if (ierr /= 0) error stop 'error create dataet '//dname//' write '//self%filename
 
-    !> close space and dataset
-    call h5dclose_f(did, ierr)
+  !> write dataset
+  call h5dwrite_f(did, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, int(shape(value),HSIZE_T), ierr)
+  if (ierr /= 0) error stop 'error write dataspace '//dname//' write '//self%filename
 
+  !> close space and dataset
+  call h5dclose_f(did, ierr)
+  call h5sclose_f(sid, ierr)
+  if (ierr /= 0) error stop 'error close dataspace '//dname//' write '//self%filename
+  
+  
+  if (present(attr)) call h5ltset_attribute_string_f(self%lid, dname, attr, attrval, ierr)
+  if (ierr /= 0) error stop 'problem writing attribute '//attr//' to '//dname//' file '//self%filename
+  
+end subroutine hdf_add_int
+!=============================================================================
+subroutine hdf_add_int1d(self,dname,value,attr,attrval)
+  class(hdf5_file), intent(in) :: self
+  character(*), intent(in) :: dname
+  integer, intent(in)      :: value(:)
+  character(*), intent(in), optional :: attr, attrval
+
+  integer         :: ierr
+
+  call self%add(dname)
+
+  call h5ltmake_dataset_f(self%lid, dname, &
+    rank(value), int(shape(value),HSIZE_T), h5kind_to_type(kind(value),H5_INTEGER_KIND), value, ierr)
+  if (ierr /= 0) error stop 'error on dataset '//dname//' write '//self%filename
+  
+  if (present(attr)) call h5ltset_attribute_string_f(self%lid, dname, attr, attrval, ierr)
+  if (ierr /= 0) error stop 'problem writing attribute '//attr//' to '//dname//' file '//self%filename
+
+end subroutine hdf_add_int1d
+!=============================================================================
+subroutine hdf_add_int2d(self,dname,value,attr,attrval)
+  class(hdf5_file), intent(in) :: self
+  character(*), intent(in) :: dname
+  integer, intent(in)      :: value(:,:)
+  character(*), intent(in), optional :: attr, attrval
+
+  integer         :: ierr
+  integer(HID_T)  :: pid, sid, did, dtype
+  integer(HSIZE_T) :: dims(rank(value))
+
+
+  dims = shape(value)
+  dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
+
+  call self%add(dname)
+
+  
+  if (self%comp_lvl < 1) then
+      call h5ltmake_dataset_f(self%lid, dname, rank(value), dims, dtype, value, ierr)
+    if (ierr /= 0) error stop 'error on dataset '//dname//' write '//self%filename
+  else
+    call hdf_set_deflate(self, dims, pid)
+
+    call h5screate_simple_f(rank(value), dims, sid, ierr)
+    if (ierr /= 0) error stop 'error on dataspace '//dname//' '//self%filename
+    
+    call h5dcreate_f(self%lid, dname, dtype, sid, did, ierr, pid)
+    if (ierr /= 0) error stop 'error on dataset '//dname//' '//self%filename
+    
+    call h5dwrite_f(did, dtype, value, dims, ierr)
+    if (ierr /= 0) error stop 'error on dataset '//dname//' write '//self%filename
+    
     call h5sclose_f(sid, ierr)
-
-
-  end subroutine hdf_add_int
-  !=============================================================================
-  subroutine hdf_add_int1d(self,dname,value)
-    class(hdf5_file), intent(in) :: self
-    character(*), intent(in) :: dname
-    integer, intent(in)      :: value(:)
-
-    integer         :: ierr
-
-    call self%add(dname)
-
-
-    call h5ltmake_dataset_f(self%lid, dname, &
-      rank(value), int(shape(value),HSIZE_T), h5kind_to_type(kind(value),H5_INTEGER_KIND), value, ierr)
-
-  end subroutine hdf_add_int1d
-  !=============================================================================
-  subroutine hdf_add_int2d(self,dname,value)
-    class(hdf5_file), intent(in) :: self
-    character(*), intent(in) :: dname
-    integer, intent(in)      :: value(:,:)
-
-    integer         :: ierr
-
-    call self%add(dname)
-
-    call h5ltmake_dataset_f(self%lid, dname, &
-      rank(value), int(shape(value),HSIZE_T), h5kind_to_type(kind(value),H5_INTEGER_KIND), value, ierr)
-
-  end subroutine hdf_add_int2d
-  !=============================================================================
-  subroutine hdf_add_int3d(self,dname,value)
-    class(hdf5_file), intent(in) :: self
-    character(*), intent(in) :: dname
-    integer, intent(in)      :: value(:,:,:)
-
-    integer         :: ierr
-
-    call self%add(dname)
-
-    call h5ltmake_dataset_f(self%lid, dname, &
-      rank(value), int(shape(value),HSIZE_T), h5kind_to_type(kind(value),H5_INTEGER_KIND), value, ierr)
-
-  end subroutine hdf_add_int3d
-  !=============================================================================
-  subroutine hdf_add_real(self,dname,value)
-    class(hdf5_file), intent(in) :: self
-    character(*), intent(in) :: dname
-    real, intent(in)      :: value
-
-    integer(HID_T)  :: sid,did
-    integer         :: ierr
-
-    call self%add(dname)
-
-    !> create dataspace
-    call h5screate_f(H5S_SCALAR_F, sid, ierr)
-
-    !> create dataset
-    call h5dcreate_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), sid, did, ierr)
-
-    !> write dataset
-    call h5dwrite_f(did, h5kind_to_type(kind(value),H5_REAL_KIND), value, int(shape(value),HSIZE_T), ierr)
-
-    !> close space and dataset
+    call h5pclose_f(pid, ierr)
     call h5dclose_f(did, ierr)
+    if (ierr /= 0) error stop 'error on closing dataset '//dname//' write '//self%filename
+  endif
+  
+  if (present(attr)) call h5ltset_attribute_string_f(self%lid, dname, attr, attrval, ierr)
+  if (ierr /= 0) error stop 'problem writing attribute '//attr//' to '//dname//' file '//self%filename
 
+end subroutine hdf_add_int2d
+!=============================================================================
+subroutine hdf_add_int3d(self,dname,value,attr,attrval)
+  class(hdf5_file), intent(in) :: self
+  character(*), intent(in) :: dname
+  integer, intent(in)      :: value(:,:,:)
+  character(*), intent(in), optional :: attr, attrval
+
+  integer         :: ierr
+  integer(HID_T)  :: pid, sid, did, dtype
+  integer(HSIZE_T) :: dims(rank(value))
+
+
+  dims = shape(value)
+  dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
+
+  call self%add(dname)
+
+  
+  if (self%comp_lvl < 1) then
+      call h5ltmake_dataset_f(self%lid, dname, rank(value), dims, dtype, value, ierr)
+    if (ierr /= 0) error stop 'error on dataset '//dname//' write '//self%filename
+  else
+    call hdf_set_deflate(self, dims, pid)
+
+    call h5screate_simple_f(rank(value), dims, sid, ierr)
+    if (ierr /= 0) error stop 'error on dataspace '//dname//' '//self%filename
+    
+    call h5dcreate_f(self%lid, dname, dtype, sid, did, ierr, pid)
+    if (ierr /= 0) error stop 'error on dataset '//dname//' '//self%filename
+    
+    call h5dwrite_f(did, dtype, value, dims, ierr)
+    if (ierr /= 0) error stop 'error on dataset '//dname//' write '//self%filename
+    
     call h5sclose_f(sid, ierr)
+    call h5pclose_f(pid, ierr)
+    call h5dclose_f(did, ierr)
+    if (ierr /= 0) error stop 'error on closing dataset '//dname//' write '//self%filename
+  endif
+  
+  if (present(attr)) call h5ltset_attribute_string_f(self%lid, dname, attr, attrval, ierr)
+  if (ierr /= 0) error stop 'problem writing attribute '//attr//' to '//dname//' file '//self%filename
+
+end subroutine hdf_add_int3d
+!=============================================================================
+subroutine hdf_add_real(self,dname,value,attr,attrval)
+  class(hdf5_file), intent(in) :: self
+  character(*), intent(in) :: dname
+  real, intent(in)      :: value
+  character(*), intent(in), optional :: attr, attrval
+
+  integer(HID_T) :: sid,did
+  integer         :: ierr
+
+  call self%add(dname)
+
+  ! HDF5 >= 1.10 
+  !call h5ltmake_dataset_f(self%lid, dname, &
+ !   rank(value), int(shape(value),HSIZE_T), h5kind_to_type(kind(value),H5_REAL_KIND), value, ierr)
+  !if (ierr /= 0) error stop 'error on dataset '//dname//' write '//self%filename
+  
+  ! HDF5 1.8 compatbility below:
+  !> create dataspace
+  call h5screate_f(H5S_SCALAR_F, sid, ierr)
+  if (ierr /= 0) error stop 'error create dataspace '//dname//' write '//self%filename
+
+  !> create dataset
+  call h5dcreate_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), sid, did, ierr)
+  if (ierr /= 0) error stop 'error create dataset '//dname//' write '//self%filename
+
+  !> write dataset
+  call h5dwrite_f(did, h5kind_to_type(kind(value),H5_REAL_KIND), value, int(shape(value),HSIZE_T), ierr)
+  if (ierr /= 0) error stop 'error write dataset '//dname//' write '//self%filename
+
+  !> close space and dataset
+  call h5dclose_f(did, ierr)
+  call h5sclose_f(sid, ierr)
+  if (ierr /= 0) error stop 'error close dataspace '//dname//' write '//self%filename
+  
+  if (present(attr)) call h5ltset_attribute_string_f(self%lid, dname, attr, attrval, ierr)
+  if (ierr /= 0) error stop 'problem writing attribute '//attr//' to '//dname//' file '//self%filename
 
 
-  end subroutine hdf_add_real
-  !=============================================================================
-  subroutine hdf_add_real1d(self,dname,value)
-    class(hdf5_file), intent(in) :: self
-    character(*), intent(in) :: dname
-    real, intent(in)      :: value(:)
+end subroutine hdf_add_real
+!=============================================================================
+subroutine hdf_add_real1d(self,dname,value,attr,attrval)
+  class(hdf5_file), intent(in) :: self
+  character(*), intent(in) :: dname
+  real, intent(in)      :: value(:)
+  character(*), intent(in), optional :: attr, attrval
 
-    integer         :: ierr
+  integer         :: ierr
 
-    call self%add(dname)
+  call self%add(dname)
 
+  call h5ltmake_dataset_f(self%lid, dname, &
+    rank(value), int(shape(value),HSIZE_T), h5kind_to_type(kind(value),H5_REAL_KIND), value, ierr)
+  if (ierr /= 0) error stop 'error on dataset '//dname//' write '//self%filename
+  
+  if (present(attr)) call h5ltset_attribute_string_f(self%lid, dname, attr, attrval, ierr)
+  if (ierr /= 0) error stop 'problem writing attribute '//attr//' to '//dname//' file '//self%filename
+
+end subroutine hdf_add_real1d
+!=============================================================================
+subroutine hdf_add_real2d(self,dname,value,attr,attrval)
+  class(hdf5_file), intent(in) :: self
+  character(*), intent(in) :: dname
+  real, intent(in)      :: value(:,:)
+  character(*), intent(in), optional :: attr, attrval
+
+  integer         :: ierr
+  integer(HID_T)  :: pid, sid, did, dtype
+  integer(HSIZE_T) :: dims(rank(value))
+
+
+  dims = shape(value)
+  dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
+
+  call self%add(dname)
+
+  if (self%comp_lvl < 1) then
+    call h5ltmake_dataset_f(self%lid, dname, rank(value), dims, dtype, value, ierr)
+    if (ierr /= 0) error stop 'error on dataset '//dname//' write '//self%filename
+  else
+    call hdf_set_deflate(self, dims, pid)
+
+    call h5screate_simple_f(rank(value), dims, sid, ierr)
+    if (ierr /= 0) error stop 'error on dataspace '//dname//' '//self%filename
+    
+    call h5dcreate_f(self%lid, dname, dtype, sid, did, ierr, pid)
+    if (ierr /= 0) error stop 'error on dataset '//dname//' '//self%filename
+    
+    call h5dwrite_f(did, dtype, value, dims, ierr)
+    if (ierr /= 0) error stop 'error on dataset '//dname//' write '//self%filename
+    
+    call h5sclose_f(sid, ierr)
+    call h5pclose_f(pid, ierr)
+    call h5dclose_f(did, ierr)
+    if (ierr /= 0) error stop 'error on closing dataset '//dname//' write '//self%filename
+  endif
+  
+  if (present(attr)) call h5ltset_attribute_string_f(self%lid, dname, attr, attrval, ierr)
+  if (ierr /= 0) error stop 'problem writing attribute '//attr//' to '//dname//' file '//self%filename
+ 
+
+end subroutine hdf_add_real2d
+
+
+subroutine hdf_add_real3d(self,dname,value,attr,attrval)
+  class(hdf5_file), intent(in) :: self
+  character(*), intent(in) :: dname
+  real, intent(in)      :: value(:,:,:)
+  character(*), intent(in), optional :: attr, attrval
+
+  integer         :: ierr
+  integer(HID_T)  :: pid, sid, did, dtype
+  integer(HSIZE_T) :: dims(rank(value))
+
+
+  dims = shape(value)
+  dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
+
+  call self%add(dname)
+
+  if (self%comp_lvl < 1) then
     call h5ltmake_dataset_f(self%lid, dname, &
       rank(value), int(shape(value),HSIZE_T), h5kind_to_type(kind(value),H5_REAL_KIND), value, ierr)
+    if (ierr /= 0) error stop 'error on dataset '//dname//' write '//self%filename
+  else
+    call hdf_set_deflate(self, dims, pid)
 
-  end subroutine hdf_add_real1d
-  !=============================================================================
-  subroutine hdf_add_real2d(self,dname,value)
-    class(hdf5_file), intent(in) :: self
-    character(*), intent(in) :: dname
-    real, intent(in)      :: value(:,:)
+    call h5screate_simple_f(rank(value), dims, sid, ierr)
+    if (ierr /= 0) error stop 'error on dataspace '//dname//' '//self%filename
+    
+    call h5dcreate_f(self%lid, dname, dtype, sid, did, ierr, pid)
+    if (ierr /= 0) error stop 'error on dataset '//dname//' '//self%filename
+    
+    call h5dwrite_f(did, dtype, value, dims, ierr)
+    if (ierr /= 0) error stop 'error on dataset '//dname//' write '//self%filename
+    
+    call h5sclose_f(sid, ierr)
+    call h5pclose_f(pid, ierr)
+    call h5dclose_f(did, ierr)
+    if (ierr /= 0) error stop 'error on closing dataset '//dname//' write '//self%filename
+  endif
+  
+  if (present(attr)) call h5ltset_attribute_string_f(self%lid, dname, attr, attrval, ierr)
+  if (ierr /= 0) error stop 'problem writing attribute '//attr//' to '//dname//' file '//self%filename
+  
+end subroutine hdf_add_real3d
 
-    integer         :: ierr
 
-    call self%add(dname)
+subroutine hdf_add_string(self,dname, value)
 
-    call h5ltmake_dataset_f(self%lid, dname, &
-      rank(value), int(shape(value),HSIZE_T), h5kind_to_type(kind(value),H5_REAL_KIND), value, ierr)
+  class(hdf5_file), intent(in)     :: self
+  character(*), intent(in)         :: dname, value
+  integer :: ierr
 
-  end subroutine hdf_add_real2d
-  !=============================================================================
-  subroutine hdf_add_real3d(self,dname,value)
-    class(hdf5_file), intent(in) :: self
-    character(*), intent(in) :: dname
-    real, intent(in)      :: value(:,:,:)
+  call h5ltmake_dataset_string_f(self%lid, dname, value, ierr)
+  if (ierr /= 0) error stop 'error on dataset '//dname//' write '//self%filename
 
-    integer         :: ierr
 
-    call self%add(dname)
+end subroutine hdf_add_string
 
-    call h5ltmake_dataset_f(self%lid, dname, &
-      rank(value), int(shape(value),HSIZE_T), h5kind_to_type(kind(value),H5_REAL_KIND), value, ierr)
+!====== READ =====================================
 
-  end subroutine hdf_add_real3d
-  !=============================================================================
-  subroutine hdf_get_int(self, dname, value)
+subroutine hdf_get_string(self,dname, value)
 
-    class(hdf5_file), intent(in)     :: self
-    character(*), intent(in)         :: dname
-    integer, intent(out)             :: value
+  class(hdf5_file), intent(in)     :: self
+  character(*), intent(in)         :: dname
+  character(*), intent(out)        :: value
+  
+  integer :: ierr
 
-    integer(HID_T)  :: set_id
-    integer :: ierr
+  call h5ltread_dataset_string_f(self%lid, dname, value, ierr)
+  if (ierr /= 0) error stop 'error on dataset '//dname//' read '//self%filename
 
-    ! open dataset
-    call h5dopen_f(self%lid, dname, set_id, ierr)
 
-    ! read dataset
-    call h5dread_f(set_id, h5kind_to_type(kind(value),H5_INTEGER_KIND), value,int(shape(value),HSIZE_T), ierr)
+end subroutine hdf_get_string
 
-    ! close dataset
-    call h5dclose_f(set_id, ierr)
+subroutine hdf_get_int(self, dname, value)
 
-  end subroutine hdf_get_int
-  !=============================================================================
-  subroutine hdf_get_int1d(self, dname, value)
+  class(hdf5_file), intent(in)     :: self
+  character(*), intent(in)         :: dname
+  integer, intent(out)             :: value
 
-    class(hdf5_file), intent(in)     :: self
-    character(*), intent(in)         :: dname
-    integer, intent(out),allocatable :: value(:)
+  integer(HID_T)  :: did
+  integer :: ierr
 
-    integer(SIZE_T) :: dims(1),maxdim(1)
-    integer(HID_T)  :: set_id,space_id
-    integer :: ierr
+  ! open dataset
+  call h5dopen_f(self%lid, dname, did, ierr)
+  if (ierr /= 0) error stop 'error open dataset '//dname//' read '//self%filename
 
-    ! open dataset
-    call h5dopen_f(self%lid, dname, set_id, ierr)
+  ! read dataset
+  call h5dread_f(did, h5kind_to_type(kind(value),H5_INTEGER_KIND), value,int(shape(value),HSIZE_T), ierr)
+  if (ierr /= 0) error stop 'error read dataset '//dname//' read '//self%filename
 
-    ! get dataspace
-    call h5dget_space_f(set_id, space_id, ierr)
+  ! close dataset
+  call h5dclose_f(did, ierr)
+  if (ierr /= 0) error stop 'error close dataset '//dname//' read '//self%filename
 
-    ! get dims
-    call h5sget_simple_extent_dims_f(space_id, dims, maxdim, ierr)
+end subroutine hdf_get_int
+!=============================================================================
+subroutine hdf_get_int1d(self, dname, value)
 
-    allocate(value(dims(1)))
+  class(hdf5_file), intent(in)     :: self
+  character(*), intent(in)         :: dname
+  integer, intent(out),allocatable :: value(:)
 
-    ! read dataset
-    call h5dread_f(set_id, h5kind_to_type(kind(value),H5_INTEGER_KIND), value,dims, ierr)
+  integer(SIZE_T) :: dims(1), dsize
+  integer :: ierr, dtype
 
-    ! close dataset
-    call h5dclose_f(set_id, ierr)
+  call h5ltget_dataset_info_f(self%lid, dname, dims, dtype, dsize, ierr)
+  if (ierr /= 0) error stop 'error open dataset '//dname//' read '//self%filename
 
-  end subroutine hdf_get_int1d
-  !=============================================================================
-  subroutine hdf_get_int2d(self, dname, value)
+  allocate(value(dims(1)))
 
-    class(hdf5_file), intent(in)     :: self
-    character(*), intent(in)         :: dname
-    integer, intent(out),allocatable :: value(:,:)
+  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
+  if (ierr /= 0) error stop 'error read dataset '//dname//' read '//self%filename
 
-    integer(SIZE_T) :: dims(2),maxdim(2)
-    integer(HID_T)  :: set_id, space_id
-    integer :: ierr
+end subroutine hdf_get_int1d
+!=============================================================================
+subroutine hdf_get_int2d(self, dname, value)
 
-    ! open dataset
-    call h5dopen_f(self%lid, dname, set_id, ierr)
+  class(hdf5_file), intent(in)     :: self
+  character(*), intent(in)         :: dname
+  integer, intent(out),allocatable :: value(:,:)
 
-    ! get dataspace
-    call h5dget_space_f(set_id, space_id, ierr)
+  integer(SIZE_T) :: dims(2),dsize
+  integer :: ierr, dtype
 
-    ! get dims
-    call h5sget_simple_extent_dims_f(space_id, dims, maxdim, ierr)
+  call h5ltget_dataset_info_f(self%lid, dname, dims, dtype, dsize, ierr)
+  if (ierr /= 0) error stop 'error open dataset '//dname//' read '//self%filename
 
-    allocate(value(dims(1),dims(2)))
+  allocate(value(dims(1),dims(2)))
 
-    ! read dataset
-    call h5dread_f(set_id, h5kind_to_type(kind(value),H5_INTEGER_KIND), value,dims, ierr)
+  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
+  if (ierr /= 0) error stop 'error read dataset '//dname//' read '//self%filename
 
-    ! close dataset
-    call h5dclose_f(set_id, ierr)
+end subroutine hdf_get_int2d
+!=============================================================================
+subroutine hdf_get_int3d(self, dname, value)
 
+  class(hdf5_file), intent(in)     :: self
+  character(*), intent(in)         :: dname
+  integer, intent(out),allocatable :: value(:,:,:)
 
-  end subroutine hdf_get_int2d
-  !=============================================================================
-  subroutine hdf_get_int3d(self, dname, value)
+  integer(SIZE_T) :: dims(3),dsize
+  integer :: ierr, dtype
 
-    class(hdf5_file), intent(in)     :: self
-    character(*), intent(in)         :: dname
-    integer, intent(out),allocatable :: value(:,:,:)
+  call h5ltget_dataset_info_f(self%lid, dname, dims, dtype, dsize, ierr)
+  if (ierr /= 0) error stop 'error open dataset '//dname//' read '//self%filename
 
-    integer(SIZE_T) :: dims(3),maxdim(3)
-    integer(HID_T)  :: set_id, space_id
-    integer :: ierr
+  allocate(value(dims(1),dims(2),dims(3)))
 
-    ! open dataset
-    call h5dopen_f(self%lid, dname, set_id, ierr)
+  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
+  if (ierr /= 0) error stop 'error read dataset '//dname//' read '//self%filename
 
-    ! get dataspace
-    call h5dget_space_f(set_id, space_id, ierr)
+end subroutine hdf_get_int3d
+!=============================================================================
+subroutine hdf_get_real(self, dname, value)
 
-    ! get dims
-    call h5sget_simple_extent_dims_f(space_id, dims, maxdim, ierr)
+  class(hdf5_file), intent(in)  :: self
+  character(*), intent(in)      :: dname
+  real, intent(out)             :: value
 
-    allocate(value(dims(1),dims(2),dims(3)))
+  integer(HID_T)  :: set_id
+  integer :: ierr
 
-    ! read dataset
-    call h5dread_f(set_id, h5kind_to_type(kind(value),H5_INTEGER_KIND), value,dims, ierr)
+  ! open dataset
+  call h5dopen_f(self%lid, dname, set_id, ierr)
 
-    ! close dataset
-    call h5dclose_f(set_id, ierr)
+  ! read dataset
+  call h5dread_f(set_id, h5kind_to_type(kind(value),H5_REAL_KIND), value,int(shape(value),HSIZE_T), ierr)
 
+  ! close dataset
+  call h5dclose_f(set_id, ierr)
 
-  end subroutine hdf_get_int3d
-  !=============================================================================
-  subroutine hdf_get_real(self, dname, value)
+end subroutine hdf_get_real
+!=============================================================================
+subroutine hdf_get_real1d(self, dname, value)
 
-    class(hdf5_file), intent(in)  :: self
-    character(*), intent(in)      :: dname
-    real, intent(out)             :: value
+  class(hdf5_file), intent(in)     :: self
+  character(*), intent(in)         :: dname
+  real, intent(out),allocatable :: value(:)
 
-    integer(HID_T)  :: set_id
-    integer :: ierr
+  integer(SIZE_T) :: dims(1),dsize
+  integer :: ierr, dtype
 
-    ! open dataset
-    call h5dopen_f(self%lid, dname, set_id, ierr)
+  call h5ltget_dataset_info_f(self%lid, dname, dims, dtype, dsize, ierr)
+  if (ierr /= 0) error stop 'error open dataset '//dname//' read '//self%filename
 
-    ! read dataset
-    call h5dread_f(set_id, h5kind_to_type(kind(value),H5_REAL_KIND), value,int(shape(value),HSIZE_T), ierr)
+  allocate(value(dims(1)))
 
-    ! close dataset
-    call h5dclose_f(set_id, ierr)
+  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
+  if (ierr /= 0) error stop 'error read dataset '//dname//' read '//self%filename
+  
+end subroutine hdf_get_real1d
+!=============================================================================
+subroutine hdf_get_real2d(self, dname, value)
 
-  end subroutine hdf_get_real
-  !=============================================================================
-  subroutine hdf_get_real1d(self, dname, value)
+  class(hdf5_file), intent(in)     :: self
+  character(*), intent(in)         :: dname
+  real, intent(out),allocatable :: value(:,:)
 
-    class(hdf5_file), intent(in)     :: self
-    character(*), intent(in)         :: dname
-    real, intent(out),allocatable :: value(:)
+  integer(SIZE_T) :: dims(2),dsize
+  integer :: ierr, dtype
 
-    integer(SIZE_T) :: dims(1),maxdim(1)
-    integer(HID_T)  :: set_id,space_id
-    integer :: ierr
+  call h5ltget_dataset_info_f(self%lid, dname, dims, dtype, dsize, ierr)
+  if (ierr /= 0) error stop 'error open dataset '//dname//' read '//self%filename
 
-    ! open dataset
-    call h5dopen_f(self%lid, dname, set_id, ierr)
+  allocate(value(dims(1),dims(2)))
 
-    ! get dataspace
-    call h5dget_space_f(set_id, space_id, ierr)
+  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
+  if (ierr /= 0) error stop 'error read dataset '//dname//' read '//self%filename
 
-    ! get dims
-    call h5sget_simple_extent_dims_f(space_id, dims, maxdim, ierr)
+end subroutine hdf_get_real2d
+!=============================================================================
+subroutine hdf_get_real3d(self, dname, value)
 
-    allocate(value(dims(1)))
+  class(hdf5_file), intent(in)     :: self
+  character(*), intent(in)         :: dname
+  real, intent(out),allocatable :: value(:,:,:)
 
-    ! read dataset
-    call h5dread_f(set_id, h5kind_to_type(kind(value),H5_REAL_KIND), value,dims, ierr)
+  integer(SIZE_T) :: dims(3),dsize
+  integer :: ierr, dtype
 
-    ! close dataset
-    call h5dclose_f(set_id, ierr)
+  call h5ltget_dataset_info_f(self%lid, dname, dims, dtype, dsize, ierr)
+  if (ierr /= 0) error stop 'error open dataset '//dname//' read '//self%filename
 
-  end subroutine hdf_get_real1d
-  !=============================================================================
-  subroutine hdf_get_real2d(self, dname, value)
+  allocate(value(dims(1),dims(2),dims(3)))
 
-    class(hdf5_file), intent(in)     :: self
-    character(*), intent(in)         :: dname
-    real, intent(out),allocatable :: value(:,:)
+  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
+  if (ierr /= 0) error stop 'error read dataset '//dname//' read '//self%filename
 
-    integer(SIZE_T) :: dims(2),maxdim(2)
-    integer(HID_T)  :: set_id, space_id
-    integer :: ierr
-
-    ! open dataset
-    call h5dopen_f(self%lid, dname, set_id, ierr)
-
-    ! get dataspace
-    call h5dget_space_f(set_id, space_id, ierr)
-
-    ! get dims
-    call h5sget_simple_extent_dims_f(space_id, dims, maxdim, ierr)
-
-    allocate(value(dims(1),dims(2)))
-
-    ! read dataset
-    call h5dread_f(set_id, h5kind_to_type(kind(value),H5_REAL_KIND), value,dims, ierr)
-
-    ! close dataset
-    call h5dclose_f(set_id, ierr)
-
-
-  end subroutine hdf_get_real2d
-  !=============================================================================
-  subroutine hdf_get_real3d(self, dname, value)
-
-    class(hdf5_file), intent(in)     :: self
-    character(*), intent(in)         :: dname
-    real, intent(out),allocatable :: value(:,:,:)
-
-    integer(SIZE_T) :: dims(3),maxdim(3)
-    integer(HID_T)  :: set_id, space_id
-    integer :: ierr
-
-    ! open dataset
-    call h5dopen_f(self%lid, dname, set_id, ierr)
-
-    ! get dataspace
-    call h5dget_space_f(set_id, space_id, ierr)
-
-    ! get dims
-    call h5sget_simple_extent_dims_f(space_id, dims, maxdim, ierr)
-
-    allocate(value(dims(1),dims(2),dims(3)))
-
-    ! read dataset
-    call h5dread_f(set_id, h5kind_to_type(kind(value),H5_REAL_KIND), value,dims, ierr)
-
-    ! close dataset
-    call h5dclose_f(set_id, ierr)
-
-
-  end subroutine hdf_get_real3d
+end subroutine hdf_get_real3d
 
 !----- Helper functions
 
-  elemental function toLower(str)
-  ! can be trivially extended to non-ASCII
-    character(*), intent(in) :: str
-    character(len(str)) :: toLower
-    character(*), parameter :: lower="abcdefghijklmnopqrstuvwxyz", &
-                               upper="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    integer :: i,j
+elemental function toLower(str)
+! can be trivially extended to non-ASCII
+  character(*), intent(in) :: str
+  character(len(str)) :: toLower
+  character(*), parameter :: lower="abcdefghijklmnopqrstuvwxyz", &
+                             upper="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+  integer :: i,j
 
-    toLower = str
+  toLower = str
 
-    do concurrent (i = 1:len(str))
-      j = index(upper,str(i:i))
-      if (j > 0) toLower(i:i) = lower(j:j)
-    end do
+  do concurrent (i = 1:len(str))
+    j = index(upper,str(i:i))
+    if (j > 0) toLower(i:i) = lower(j:j)
+  end do
 
-  end function toLower
+end function toLower
 
 end module hdf5_interface
