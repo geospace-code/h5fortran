@@ -1,30 +1,24 @@
 program test_hdf5_ifc
 
   use, intrinsic:: ieee_arithmetic, only: ieee_value, ieee_quiet_nan, ieee_is_nan
-  use, intrinsic:: iso_fortran_env, only: int64 
+  use, intrinsic:: iso_fortran_env, only: int64, real32, real64
   use hdf5_interface, only: hdf5_file, toLower
 
   implicit none
 
   type(hdf5_file) :: h5f
   integer :: i1(4)
-  real    :: nan, r1(4), r2(4,4)
-  integer, parameter :: realbits = storage_size(nan)
+  real(real32)    :: nan, r1(4), r2(4,4)
 
   integer :: i
-  character(2) :: cs
 
   nan = ieee_value(1.0, ieee_quiet_nan)
-
-  write(cs,'(I2)') realbits
 
   do concurrent (i = 1:size(i1))
     i1(i) = i
   enddo
   
   r1 = i1
-  
-  print *,'real kind bits: ',cs
 
   call test_lowercase()
   call testNewHDF5()
@@ -56,11 +50,11 @@ contains
 
   subroutine testNewHDF5()
   
-    real, allocatable :: rr1(:)
-    real :: rt
+    real(real32), allocatable :: rr1(:)
+    real(real32) :: rt
     integer, allocatable :: i1t(:)
 
-    call h5f%initialize('test_'//cs//'.h5',status='new',action='w')
+    call h5f%initialize('test.h5',status='new',action='w')
 
     call h5f%add('/test/scalar_int',42)
     call h5f%add('/test/scalar_real',42.)
@@ -80,9 +74,9 @@ contains
     if (.not.all(i1==i1t)) error stop 'integer: read does not match write'
     
     
-    print *,trim(h5f%filename)
+    print *, h5f%filename
     
-    if (.not. h5f%filename == 'test_'//cs//'.h5') error stop h5f%filename//' mismatch filename'
+    if (.not. h5f%filename == 'test.h5') error stop h5f%filename//' mismatch filename'
     
  end subroutine testNewHDF5
 
@@ -91,9 +85,9 @@ subroutine testAddHDF5()
 
   integer :: i2(4,4)
   integer, allocatable :: i2t(:,:)
-  real, allocatable :: rr2(:,:)
+  real(real32), allocatable :: rr2(:,:)
   integer :: one = 1
-  real    :: ro = 1.0, nant
+  real(real32)   :: ro = 1.0, nant
 
   i2(1,:) = i1
   do concurrent (i = 1:size(i2,2))
@@ -103,7 +97,7 @@ subroutine testAddHDF5()
   r2 = i2
 
 ! tests that compression doesn't fail for very small datasets, where it really shouldn't be used (makes file bigger)
-  call h5f%initialize('test_'//cs//'.h5',status='old',action='rw',comp_lvl=1)
+  call h5f%initialize('test.h5',status='old',action='rw',comp_lvl=1)
 
   call h5f%open('/test/')
   call h5f%add('group3/scalar',one)
@@ -132,16 +126,16 @@ subroutine test_hdf5_deflate()
   integer(int64), parameter :: N=1000
   integer(int64) :: crat
   integer ::  fsize, ibig2(N,N) = 0, ibig3(N,N,4) = 0
-  real :: big2(N,N) = 0., big3(N,N,4) = 0.
+  real(real32) :: big2(N,N) = 0., big3(N,N,4) = 0.
 
 
-  call h5f%initialize('test_deflate'//cs//'.h5',status='new',action='rw',comp_lvl=1,chunk_size=[100,100,1])
+  call h5f%initialize('test_deflate.h5',status='new',action='rw',comp_lvl=1)
 
-  call h5f%add('/big2', big2)
+  call h5f%add('/big2', big2, chunk_size=[100,100])
   
   call h5f%finalize()
   
-  inquire(file='test_deflate'//cs//'.h5', size=fsize)
+  inquire(file='test_deflate.h5', size=fsize)
   crat = (N*N*storage_size(big2)/8) / fsize
   
   print '(A,F6.2,A,I6)','filesize (Mbytes): ',fsize/1e6, '   2D compression ratio:',crat
@@ -149,39 +143,39 @@ subroutine test_hdf5_deflate()
   if (h5f%comp_lvl > 0 .and. crat < 10) print *,'warning: 2D low compression' 
   
 !======================================
-  call h5f%initialize('test_deflate'//cs//'.h5',status='new',action='rw',comp_lvl=1,chunk_size=[100,100,1])
+  call h5f%initialize('test_deflate.h5',status='new',action='rw',comp_lvl=1)
 
-  call h5f%add('/big3', big3)
+  call h5f%add('/big3', big3, chunk_size=[100,100,1])
   
   call h5f%finalize()
   
-  inquire(file='test_deflate'//cs//'.h5', size=fsize)
+  inquire(file='test_deflate.h5', size=fsize)
   crat = (N*N*storage_size(big3)/8) / fsize
   
   print '(A,F6.2,A,I6)','filesize (Mbytes): ',fsize/1e6, '   3D compression ratio:',crat
   
   if (h5f%comp_lvl > 0 .and. crat < 10) print *,'warning: 3D low compression' 
 !======================================
-  call h5f%initialize('test_deflate'//cs//'.h5',status='new',action='rw',comp_lvl=1,chunk_size=[100,100,1])
+  call h5f%initialize('test_deflate.h5',status='new',action='rw',comp_lvl=1)
 
-  call h5f%add('/ibig3', ibig3)
+  call h5f%add('/ibig3', ibig3, chunk_size=[1000,100,1])
   
   call h5f%finalize()
   
-  inquire(file='test_deflate'//cs//'.h5', size=fsize)
+  inquire(file='test_deflate.h5', size=fsize)
   crat = (N*N*storage_size(ibig3)/8) / fsize
   
   print '(A,F6.2,A,I6)','filesize (Mbytes): ',fsize/1e6, '   3D compression ratio:',crat
   
   if (h5f%comp_lvl > 0 .and. crat < 10) print *,'warning: 3D low compression' 
 !======================================
-  call h5f%initialize('test_deflate'//cs//'.h5',status='new',action='rw',comp_lvl=1,chunk_size=[100,100,1])
+  call h5f%initialize('test_deflate.h5',status='new',action='rw',comp_lvl=1)
 
-  call h5f%add('/ibig2', ibig2)
+  call h5f%add('/ibig2', ibig2, chunk_size=[100,100])
   
   call h5f%finalize()
   
-  inquire(file='test_deflate'//cs//'.h5', size=fsize)
+  inquire(file='test_deflate.h5', size=fsize)
   crat = (N*N*storage_size(ibig2)/8) / fsize
   
   print '(A,F6.2,A,I6)','filesize (Mbytes): ',fsize/1e6, '   3D compression ratio:',crat
@@ -194,9 +188,9 @@ end subroutine test_hdf5_deflate
 
 subroutine test_write_attributes()
 
-    call h5f%initialize('test_deflate'//cs//'.h5')
+    call h5f%initialize('test_deflate.h5')
 
-    call h5f%add('/little',42,'note','this is just a little number')
+    call h5f%writeattr('/little/','note','this is just a little number')
 
     call h5f%finalize()
 
@@ -212,7 +206,6 @@ subroutine test_string_rw()
     call h5f%add('/little','42')
     
     call h5f%get('/little',value)
-
     
     if (.not.value=='42') error stop 'string dataset read/write verification failure'
 
@@ -226,7 +219,7 @@ subroutine testrwHDF5(ng, nn, pn)
 
   integer, intent(in) :: ng, nn, pn
 
-  real, allocatable :: flux(:,:),fo(:)
+  real(real32), allocatable :: flux(:,:),fo(:)
   character(2) :: pnc,ic
   integer :: i
 
@@ -234,7 +227,7 @@ subroutine testrwHDF5(ng, nn, pn)
   flux = 1.0
   write(pnc,'(I2)') pn
 
-  call h5f%initialize('p'//trim(adjustl(pnc))//'_'//cs//'.h5',status='new',action='w')
+  call h5f%initialize('p'//trim(adjustl(pnc))//'.h5',status='new',action='w')
 
   do i = 1,ng
     write(ic,'(I2)') i

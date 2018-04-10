@@ -8,9 +8,7 @@ Abstracts away the messy parts of HDF5 so that you can read/write various types/
 Polymorphic API with read/write integer / real32/64:
 
 * scalar
-* 1-D
-* 2-D
-* 3-D
+* 1-D .. 6-D
 
 as well as character (string) variables and attributes.
 If you'd like higher-rank arrays, let us know via GitHub Issue.
@@ -42,6 +40,8 @@ make
 
 make test
 ```
+
+The library `libh5oo` is built, link it into your program as usual.
 
 ## Usage
 
@@ -84,7 +84,7 @@ call h5f%finalize()
 
 real :: val2(1000,1000,3) = 0.
 
-call h5f%initialize('test.h5',status='old',action='rw', comp_lvl=1)
+call h5f%initialize('test.h5', comp_lvl=1)
 
 call h5f%add('/value2', val2)
 
