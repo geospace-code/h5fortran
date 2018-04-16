@@ -24,21 +24,19 @@ module hdf5_interface
 
   contains
     !> initialize HDF5 file
-    procedure :: initialize => hdf_initialize, finalize => hdf_finalize, writeattr
+    procedure, public :: initialize => hdf_initialize, finalize => hdf_finalize, writeattr, &
+                         open => hdf_open_group, close => hdf_close_group
 
-    !> open and close hdf5 group
-    procedure :: open => hdf_open_group, close => hdf_close_group
-
-    !> add group or dataset integer/real 0-3d
-    generic   :: add => hdf_add_group, hdf_add_int, hdf_add_int1d, hdf_add_int2d, hdf_add_int3d, &
+    !> add group or dataset integer/real 
+    generic, public   :: add => hdf_add_group, hdf_add_int, hdf_add_int1d, hdf_add_int2d, hdf_add_int3d, &
                         hdf_add_real32, hdf_add_real32_1d, hdf_add_real32_2d, hdf_add_real32_3d, &
                         hdf_add_real32_4d, hdf_add_real32_5d,  hdf_add_real32_6d, &
                         hdf_add_real64, hdf_add_real64_1d, hdf_add_real64_2d, hdf_add_real64_3d, &
                         hdf_add_real64_4d, hdf_add_real64_5d,  hdf_add_real64_6d, &
                         hdf_add_string
 
-    !> get dataset integer/real 0-3d
-    generic   :: get => hdf_get_int, hdf_get_int1d, hdf_get_int2d, hdf_get_int3d,&
+    !> get dataset integer/real
+    generic, public   :: get => hdf_get_int, hdf_get_int1d, hdf_get_int2d, hdf_get_int3d,&
                         hdf_get_real32, hdf_get_real32_1d, hdf_get_real32_2d, hdf_get_real32_3d,&
                         hdf_get_real64, hdf_get_real64_1d, hdf_get_real64_2d, hdf_get_real64_3d,&
                         hdf_get_string
@@ -192,6 +190,7 @@ subroutine hdf_set_deflate(self, dims)
   integer :: ierr, ndims, i
   integer(HSIZE_T), allocatable :: chunk_size(:)
   
+  
   ndims = size(dims)
   allocate(chunk_size(ndims))
   
@@ -201,12 +200,14 @@ subroutine hdf_set_deflate(self, dims)
   
   if (self%verbose) print *,'dims: ',dims,'chunk size: ',chunk_size
  
- 
   call h5pcreate_f(H5P_DATASET_CREATE_F, self%pid, ierr)
   if (ierr /= 0) error stop 'error creating property '//self%filename
   
   call h5pset_chunk_f(self%pid, ndims, chunk_size, ierr)
   if (ierr /= 0) error stop 'error setting chunk '//self%filename
+
+  if (self%comp_lvl < 1 .or. self%comp_lvl > 9) return
+ 
   
   call h5pset_shuffle_f(self%pid, ierr)
   if (ierr /= 0) error stop 'error enabling Shuffle '//self%filename
