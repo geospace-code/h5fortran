@@ -1,17 +1,12 @@
 image:
-- Ubuntu
-
-environment:
-  FC: gfortran-6
+- ubuntu1804
 
 clone_depth: 3
 
 build: off
 
 init:
-- sudo -E apt-add-repository -y "ppa:ubuntu-toolchain-r/test" > /dev/null
-- sudo apt-get -yq update > /dev/null
-- sudo apt-get install -yq --no-install-suggests --no-install-recommends gfortran-6 libhdf5-dev > /dev/null
+- sudo apt-get install -yq --no-install-suggests --no-install-recommends libhdf5-dev > /dev/null
 
 install:
 - cd app
