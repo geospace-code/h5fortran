@@ -13,5 +13,5 @@ install:
 - cmake ../src
 - cmake --build .
 
-test_script: ctest -V
+test_script: ctest --output-on-failure
 

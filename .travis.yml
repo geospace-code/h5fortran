@@ -1,33 +1,32 @@
 language: c
 group: travis_latest
+dist: xenial
 
 git:
   depth: 3
   quiet: true
 
-os:
-- osx
-
-env: FC=gfortran
-
 addons:
   apt:
+    sources: ubuntu-toolchain-r-test
     packages:
-    - gfortran
+    - gfortran-6
     - libhdf5-dev
 
-before_install:
-- if [[ $TRAVIS_OS_NAME == osx ]]; then
-    brew update > /dev/null;
-    brew install gcc > /dev/null || brew link --overwrite gcc > /dev/null;
-    export FC=gfortran;
-    brew install hdf5 > /dev/null;
-  fi
+matrix:
+  include:
+  - os: linux
+    env: FC=gfortran-6
+  - os: osx
+    env: FC=gfortran
+    before_install:
+    - brew install gcc > /dev/null
+    - brew install hdf5 > /dev/null
 
 install:
 - cd app
 - cmake ../src
 - cmake --build .
 
-script: ctest -V
+script: ctest --output-on-failure
 

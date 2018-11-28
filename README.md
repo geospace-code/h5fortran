@@ -29,11 +29,11 @@ Requirements:
   * Mac: `brew install gcc hdf5`
   * Linux: `apt install gfortran libhdf5-dev`
   * Windows: at this time,
-    [Scoop](https://www.scivision.co/brew-install-scoop-for-windows/)
-    didn't have HDF5, possibly due to
-    [difficulties with HDF5 and gfortran on Windows](https://stackoverflow.com/a/30056831),
-    so consider using
-    [Windows Subsystem for Linux](https://www.scivision.co/install-windows-subsystem-for-linux/)
+    [Scoop](https://www.scivision.co/brew-install-scoop-for-windows/) and Chocolatey
+    do not have HDF5, possibly due to difficulties with 
+    [HDF5 and gfortran on Windows](https://stackoverflow.com/a/30056831).
+    Consider using
+    [Windows Subsystem for Linux](https://www.scivision.co/install-windows-subsystem-for-linux/).
 
 
 Build this HDF5 OO Fortran interface:
