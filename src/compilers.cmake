@@ -30,3 +30,8 @@ elseif(CMAKE_Fortran_COMPILER_ID STREQUAL Flang)
 elseif(CMAKE_Fortran_COMPILER_ID STREQUAL NAG)
   list(APPEND FFLAGS -u -C=all)
 endif()
+
+
+include(CheckFortranSourceCompiles)
+check_fortran_source_compiles("program a; character :: b; error stop b; end" f18errorstop
+                              SRC_EXT f90)
