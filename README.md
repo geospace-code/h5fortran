@@ -4,7 +4,7 @@
 # Object-oriented Fortran 2018 HDF5 interface
 
 Straightforward single-file/module access to HDF5.
-Abstracts away the messy parts of HDF5 so that you can read/write various types/ranks of data with a single command.
+This thin object-oriented modern Fortran library abstracts away the messy parts of HDF5 so that you can read/write various types/ranks of data with a single command.
 
 Polymorphic API with read/write integer / real32/64:
 
@@ -39,14 +39,20 @@ Requirements:
 Build this HDF5 OO Fortran interface:
 
 ```sh
-cd app
-cmake ../src
+cd bin
+cmake ..
+
 cmake --build .
 
 ctest -V
 ```
 
 The library `libh5oo` is built, link it into your program as usual.
+
+
+---
+
+If you need to specify a particular HDF5 library, use `cmake -DHDF5_ROOT=/path/to/hdf5lib ..`
 
 ## Usage
 
@@ -58,7 +64,8 @@ type(hdf5_file) :: h5f
 ```
 
 
-* gzip compression may be applied for rank &ge; 2 arrays by setting `comp_lvl` to a value betwen 1 and 9. Shuffle filter is automatically applied for better compression
+* gzip compression may be applied for rank &ge; 2 arrays by setting `comp_lvl` to a value betwen 1 and 9. 
+  Shuffle filter is automatically applied for better compression
 * string attributes may be applied to any variable at time of writing or later.
 * `chunk_size` option may be set for better compression
 
