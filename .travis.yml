@@ -24,8 +24,8 @@ matrix:
     - brew install hdf5 > /dev/null
 
 install:
-- cd app
-- cmake ../src
+- cd bin
+- cmake ..
 - cmake --build .
 
 script: ctest --output-on-failure

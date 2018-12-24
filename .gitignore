@@ -1,7 +1,5 @@
-app/
-.cache/
-kind.txt
-cmake_install.cmake
+bin/
+.cache
 
 *.pyd
 __pycache__/
