@@ -1,5 +1,5 @@
-# real32, real64 supported by HDF5 1.10 https://support.hdfgroup.org/HDF5/doc/RM/PredefDTypes.html
-cmake_minimum_required (VERSION 3.10)
+# 3.12: Fortran submodule
+cmake_minimum_required (VERSION 3.12)
 project(hdf5iface Fortran)
 enable_testing()
 
@@ -7,7 +7,9 @@ include(cmake/compilers.cmake)
 
 include(cmake/hdf5.cmake)
 
-add_library(hdf5oo src/hdf5_interface.f90)
+add_library(hdf5oo src/hdf5_interface.f90 
+  src/read.f90 src/read_real64.f90 src/read_real32.f90 src/read_int.f90
+  src/write.f90 src/write_real64.f90 src/write_real32.f90 src/write_int.f90)
 # need BOTH includes, for some systems!
 target_include_directories(hdf5oo PRIVATE ${HDF5_INCLUDE_DIRS} ${HDF5_Fortran_INCLUDE_DIRS})
 target_link_libraries(hdf5oo PRIVATE ${HDF5_Fortran_LIBRARIES} ${HDF5_Fortran_HL_LIBRARIES})

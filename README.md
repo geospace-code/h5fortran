@@ -4,6 +4,7 @@
 # Object-oriented Fortran 2018 HDF5 interface
 
 Straightforward single-file/module access to HDF5.
+Uses Fortran 2008 `submodule` for clean, templatable structure.
 This thin object-oriented modern Fortran library abstracts away the messy parts of HDF5 so that you can read/write various types/ranks of data with a single command.
 
 Polymorphic API with read/write integer / real32/64:

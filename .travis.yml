@@ -20,6 +20,7 @@ matrix:
   - os: osx
     env: FC=gfortran
     before_install:
+    - brew upgrade cmake > /dev/null
     - brew install gcc > /dev/null
     - brew install hdf5 > /dev/null
 
