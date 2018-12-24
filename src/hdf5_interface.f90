@@ -28,17 +28,15 @@ procedure, public :: initialize => hdf_initialize, finalize => hdf_finalize, wri
 !> add group or dataset integer/real 
 generic, public   :: add => &
 hdf_add_group, hdf_add_int, hdf_add_int_1d, hdf_add_int_2d, hdf_add_int_3d, &
-hdf_add_real32, hdf_add_real32_1d, hdf_add_real32_2d, hdf_add_real32_3d, &
-hdf_add_real32_4d, hdf_add_real32_5d,  hdf_add_real32_6d, &
-hdf_add_real64, hdf_add_real64_1d, hdf_add_real64_2d, hdf_add_real64_3d, &
-hdf_add_real64_4d, hdf_add_real64_5d,  hdf_add_real64_6d, &
+hdf_add_real32, hdf_add_real32_1d, hdf_add_real32_2d, hdf_add_real32_3d, hdf_add_real32_4d, hdf_add_real32_5d, hdf_add_real32_6d, &
+hdf_add_real64, hdf_add_real64_1d, hdf_add_real64_2d, hdf_add_real64_3d, hdf_add_real64_4d, hdf_add_real64_5d, hdf_add_real64_6d, &
 hdf_add_string
 
 !> get dataset integer/real
 generic, public   :: get => &
 hdf_get_int, hdf_get_int_1d, hdf_get_int_2d, hdf_get_int_3d,&
-hdf_get_real32, hdf_get_real32_1d, hdf_get_real32_2d, hdf_get_real32_3d,&
-hdf_get_real64, hdf_get_real64_1d, hdf_get_real64_2d, hdf_get_real64_3d,&
+hdf_get_real32, hdf_get_real32_1d, hdf_get_real32_2d, hdf_get_real32_3d, hdf_get_real32_4d, hdf_get_real32_5d, hdf_get_real32_6d, &
+hdf_get_real64, hdf_get_real64_1d, hdf_get_real64_2d, hdf_get_real64_3d, hdf_get_real64_4d, hdf_get_real64_5d, hdf_get_real64_6d, &
 hdf_get_string
 
 
@@ -46,12 +44,10 @@ hdf_get_string
 procedure,private :: hdf_add_group, &
 hdf_add_int, hdf_add_int_1d, hdf_add_int_2d, hdf_add_int_3d, &
 hdf_get_int, hdf_get_int_1d, hdf_get_int_2d, hdf_get_int_3d, &
-hdf_add_real32, hdf_add_real32_1d, hdf_add_real32_2d, hdf_add_real32_3d, &
-hdf_add_real32_4d, hdf_add_real32_5d,  hdf_add_real32_6d, &
-hdf_add_real64, hdf_add_real64_1d, hdf_add_real64_2d, hdf_add_real64_3d, &
-hdf_add_real64_4d, hdf_add_real64_5d,  hdf_add_real64_6d, &
-hdf_get_real32, hdf_get_real32_1d, hdf_get_real32_2d, hdf_get_real32_3d, &
-hdf_get_real64, hdf_get_real64_1d, hdf_get_real64_2d, hdf_get_real64_3d, &
+hdf_add_real32, hdf_add_real32_1d, hdf_add_real32_2d, hdf_add_real32_3d, hdf_add_real32_4d, hdf_add_real32_5d,  hdf_add_real32_6d, &
+hdf_add_real64, hdf_add_real64_1d, hdf_add_real64_2d, hdf_add_real64_3d, hdf_add_real64_4d, hdf_add_real64_5d, hdf_add_real64_6d, &
+hdf_get_real32, hdf_get_real32_1d, hdf_get_real32_2d, hdf_get_real32_3d, hdf_get_real32_4d, hdf_get_real32_5d, hdf_get_real32_6d, &
+hdf_get_real64, hdf_get_real64_1d, hdf_get_real64_2d, hdf_get_real64_3d, hdf_get_real64_4d, hdf_get_real64_5d, hdf_get_real64_6d, &
 hdf_add_string, hdf_get_string
   
 end type hdf5_file
