@@ -90,4 +90,84 @@ call hdf_wrapup(self)
 end procedure hdf_add_int_3d
 
 
+module procedure hdf_add_int_4d
+
+integer         :: ierr
+integer(HID_T)  :: dtype
+integer(HSIZE_T) :: dims(rank(value))
+
+
+dims = shape(value)
+dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
+
+call hdf_setup_write(self,dname,dtype,dims, chunk_size)
+  
+call h5dwrite_f(self%did, dtype, value, dims, ierr)
+if (ierr /= 0) error stop 'error on dataset '//dname//' write '//self%filename
+
+call hdf_wrapup(self)
+  
+end procedure hdf_add_int_4d
+
+
+module procedure hdf_add_int_5d
+
+integer         :: ierr
+integer(HID_T)  :: dtype
+integer(HSIZE_T) :: dims(rank(value))
+
+
+dims = shape(value)
+dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
+
+call hdf_setup_write(self,dname,dtype,dims, chunk_size)
+  
+call h5dwrite_f(self%did, dtype, value, dims, ierr)
+if (ierr /= 0) error stop 'error on dataset '//dname//' write '//self%filename
+
+call hdf_wrapup(self)
+  
+end procedure hdf_add_int_5d
+
+
+module procedure hdf_add_int_6d
+
+integer         :: ierr
+integer(HID_T)  :: dtype
+integer(HSIZE_T) :: dims(rank(value))
+
+
+dims = shape(value)
+dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
+
+call hdf_setup_write(self,dname,dtype,dims, chunk_size)
+  
+call h5dwrite_f(self%did, dtype, value, dims, ierr)
+if (ierr /= 0) error stop 'error on dataset '//dname//' write '//self%filename
+
+call hdf_wrapup(self)
+  
+end procedure hdf_add_int_6d
+
+
+module procedure hdf_add_int_7d
+
+integer         :: ierr
+integer(HID_T)  :: dtype
+integer(HSIZE_T) :: dims(rank(value))
+
+
+dims = shape(value)
+dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
+
+call hdf_setup_write(self,dname,dtype,dims, chunk_size)
+  
+call h5dwrite_f(self%did, dtype, value, dims, ierr)
+if (ierr /= 0) error stop 'error on dataset '//dname//' write '//self%filename
+
+call hdf_wrapup(self)
+  
+end procedure hdf_add_int_7d
+
+
 end submodule write_int

@@ -27,27 +27,35 @@ procedure, public :: initialize => hdf_initialize, finalize => hdf_finalize, wri
 
 !> add group or dataset integer/real 
 generic, public   :: add => &
-hdf_add_group, hdf_add_int, hdf_add_int_1d, hdf_add_int_2d, hdf_add_int_3d, &
-hdf_add_real32, hdf_add_real32_1d, hdf_add_real32_2d, hdf_add_real32_3d, hdf_add_real32_4d, hdf_add_real32_5d, hdf_add_real32_6d, &
-hdf_add_real64, hdf_add_real64_1d, hdf_add_real64_2d, hdf_add_real64_3d, hdf_add_real64_4d, hdf_add_real64_5d, hdf_add_real64_6d, &
+hdf_add_group, hdf_add_int, hdf_add_int_1d, hdf_add_int_2d, hdf_add_int_3d, hdf_add_int_5d, hdf_add_int_6d, hdf_add_int_7d,&
+hdf_add_real32, hdf_add_real32_1d, hdf_add_real32_2d, hdf_add_real32_3d, &
+  hdf_add_real32_4d, hdf_add_real32_5d, hdf_add_real32_6d, hdf_add_real32_7d, &
+hdf_add_real64, hdf_add_real64_1d, hdf_add_real64_2d, hdf_add_real64_3d, &
+  hdf_add_real64_4d, hdf_add_real64_5d, hdf_add_real64_6d, hdf_add_real64_7d, &
 hdf_add_string
 
 !> get dataset integer/real
 generic, public   :: get => &
-hdf_get_int, hdf_get_int_1d, hdf_get_int_2d, hdf_get_int_3d,&
-hdf_get_real32, hdf_get_real32_1d, hdf_get_real32_2d, hdf_get_real32_3d, hdf_get_real32_4d, hdf_get_real32_5d, hdf_get_real32_6d, &
-hdf_get_real64, hdf_get_real64_1d, hdf_get_real64_2d, hdf_get_real64_3d, hdf_get_real64_4d, hdf_get_real64_5d, hdf_get_real64_6d, &
+hdf_get_int, hdf_get_int_1d, hdf_get_int_2d, hdf_get_int_3d, hdf_get_int_4d,hdf_get_int_5d, hdf_get_int_6d, hdf_get_int_7d,&
+hdf_get_real32, hdf_get_real32_1d, hdf_get_real32_2d, hdf_get_real32_3d, &
+  hdf_get_real32_4d, hdf_get_real32_5d, hdf_get_real32_6d, hdf_get_real32_7d, &
+hdf_get_real64, hdf_get_real64_1d, hdf_get_real64_2d, hdf_get_real64_3d, &
+  hdf_get_real64_4d, hdf_get_real64_5d, hdf_get_real64_6d, hdf_get_real64_7d,  &
 hdf_get_string
 
 
 !> private methods
 procedure,private :: hdf_add_group, &
-hdf_add_int, hdf_add_int_1d, hdf_add_int_2d, hdf_add_int_3d, &
-hdf_get_int, hdf_get_int_1d, hdf_get_int_2d, hdf_get_int_3d, &
-hdf_add_real32, hdf_add_real32_1d, hdf_add_real32_2d, hdf_add_real32_3d, hdf_add_real32_4d, hdf_add_real32_5d,  hdf_add_real32_6d, &
-hdf_add_real64, hdf_add_real64_1d, hdf_add_real64_2d, hdf_add_real64_3d, hdf_add_real64_4d, hdf_add_real64_5d, hdf_add_real64_6d, &
-hdf_get_real32, hdf_get_real32_1d, hdf_get_real32_2d, hdf_get_real32_3d, hdf_get_real32_4d, hdf_get_real32_5d, hdf_get_real32_6d, &
-hdf_get_real64, hdf_get_real64_1d, hdf_get_real64_2d, hdf_get_real64_3d, hdf_get_real64_4d, hdf_get_real64_5d, hdf_get_real64_6d, &
+hdf_add_int, hdf_add_int_1d, hdf_add_int_2d, hdf_add_int_3d, hdf_add_int_4d, hdf_add_int_5d, hdf_add_int_6d, hdf_add_int_7d, &
+hdf_get_int, hdf_get_int_1d, hdf_get_int_2d, hdf_get_int_3d, hdf_get_int_4d, hdf_get_int_5d, hdf_get_int_6d, hdf_get_int_7d, &
+hdf_add_real32, hdf_add_real32_1d, hdf_add_real32_2d, hdf_add_real32_3d, &
+  hdf_add_real32_4d, hdf_add_real32_5d, hdf_add_real32_6d, hdf_add_real32_7d, &
+hdf_add_real64, hdf_add_real64_1d, hdf_add_real64_2d, hdf_add_real64_3d, &
+  hdf_add_real64_4d, hdf_add_real64_5d, hdf_add_real64_6d, hdf_add_real64_7d, &
+hdf_get_real32, hdf_get_real32_1d, hdf_get_real32_2d, hdf_get_real32_3d, &
+  hdf_get_real32_4d, hdf_get_real32_5d, hdf_get_real32_6d, hdf_get_real32_7d, &
+hdf_get_real64, hdf_get_real64_1d, hdf_get_real64_2d, hdf_get_real64_3d, &
+  hdf_get_real64_4d, hdf_get_real64_5d, hdf_get_real64_6d, hdf_get_real64_7d, &
 hdf_add_string, hdf_get_string
   
 end type hdf5_file
@@ -104,6 +112,34 @@ integer, intent(in) :: value(:,:,:)
 integer, intent(in), optional :: chunk_size(:)
 end subroutine hdf_add_int_3d
 
+module subroutine hdf_add_int_4d(self,dname,value, chunk_size)
+class(hdf5_file), intent(inout) :: self
+character(*), intent(in) :: dname
+integer, intent(in) :: value(:,:,:,:)
+integer, intent(in), optional :: chunk_size(:)
+end subroutine hdf_add_int_4d
+
+module subroutine hdf_add_int_5d(self,dname,value, chunk_size)
+class(hdf5_file), intent(inout) :: self
+character(*), intent(in) :: dname
+integer, intent(in) :: value(:,:,:,:,:)
+integer, intent(in), optional :: chunk_size(:)
+end subroutine hdf_add_int_5d
+
+module subroutine hdf_add_int_6d(self,dname,value, chunk_size)
+class(hdf5_file), intent(inout) :: self
+character(*), intent(in) :: dname
+integer, intent(in) :: value(:,:,:,:,:,:)
+integer, intent(in), optional :: chunk_size(:)
+end subroutine hdf_add_int_6d
+
+module subroutine hdf_add_int_7d(self,dname,value, chunk_size)
+class(hdf5_file), intent(inout) :: self
+character(*), intent(in) :: dname
+integer, intent(in) :: value(:,:,:,:,:,:,:)
+integer, intent(in), optional :: chunk_size(:)
+end subroutine hdf_add_int_7d
+
 module subroutine hdf_add_real64(self,dname,value)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
@@ -150,6 +186,13 @@ character(*), intent(in) :: dname
 real(real64), intent(in) :: value(:,:,:,:,:,:)
 integer, intent(in), optional :: chunk_size(:)
 end subroutine hdf_add_real64_6d
+
+module subroutine hdf_add_real64_7d(self,dname,value, chunk_size)
+class(hdf5_file), intent(inout) :: self
+character(*), intent(in) :: dname
+real(real64), intent(in) :: value(:,:,:,:,:,:,:)
+integer, intent(in), optional :: chunk_size(:)
+end subroutine hdf_add_real64_7d
 
 module subroutine hdf_add_real32(self,dname,value)
 class(hdf5_file), intent(in) :: self
@@ -198,6 +241,13 @@ real(real32), intent(in) :: value(:,:,:,:,:,:)
 integer, intent(in), optional :: chunk_size(:)
 end subroutine hdf_add_real32_6d
 
+module subroutine hdf_add_real32_7d(self,dname,value, chunk_size)
+class(hdf5_file), intent(inout) :: self
+character(*), intent(in) :: dname
+real(real32), intent(in) :: value(:,:,:,:,:,:,:)
+integer, intent(in), optional :: chunk_size(:)
+end subroutine hdf_add_real32_7d
+
 module subroutine hdf_get_shape(self, dname, dims)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
@@ -233,6 +283,31 @@ class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 integer, intent(out),allocatable :: value(:,:,:)
 end subroutine hdf_get_int_3d
+
+module subroutine hdf_get_int_4d(self, dname, value)
+class(hdf5_file), intent(in)     :: self
+character(*), intent(in)         :: dname
+integer, intent(out),allocatable :: value(:,:,:,:)
+end subroutine hdf_get_int_4d
+
+module subroutine hdf_get_int_5d(self, dname, value)
+class(hdf5_file), intent(in)     :: self
+character(*), intent(in)         :: dname
+integer, intent(out),allocatable :: value(:,:,:,:,:)
+end subroutine hdf_get_int_5d
+
+module subroutine hdf_get_int_6d(self, dname, value)
+class(hdf5_file), intent(in)     :: self
+character(*), intent(in)         :: dname
+integer, intent(out),allocatable :: value(:,:,:,:,:,:)
+end subroutine hdf_get_int_6d
+
+module subroutine hdf_get_int_7d(self, dname, value)
+class(hdf5_file), intent(in)     :: self
+character(*), intent(in)         :: dname
+integer, intent(out),allocatable :: value(:,:,:,:,:,:,:)
+end subroutine hdf_get_int_7d
+
 
 module subroutine hdf_get_real32(self, dname, value)
 class(hdf5_file), intent(in)  :: self
@@ -276,6 +351,12 @@ character(*), intent(in)      :: dname
 real(real32), intent(out),allocatable :: value(:,:,:,:,:,:)
 end subroutine hdf_get_real32_6d
 
+module subroutine hdf_get_real32_7d(self, dname, value)
+class(hdf5_file), intent(in)  :: self
+character(*), intent(in)      :: dname
+real(real32), intent(out),allocatable :: value(:,:,:,:,:,:,:)
+end subroutine hdf_get_real32_7d
+
 module subroutine hdf_get_real64(self, dname, value)
 class(hdf5_file), intent(in)  :: self
 character(*), intent(in)      :: dname
@@ -317,6 +398,12 @@ class(hdf5_file), intent(in)  :: self
 character(*), intent(in)      :: dname
 real(real64), intent(out),allocatable :: value(:,:,:,:,:,:)
 end subroutine hdf_get_real64_6d
+
+module subroutine hdf_get_real64_7d(self, dname, value)
+class(hdf5_file), intent(in)  :: self
+character(*), intent(in)      :: dname
+real(real64), intent(out),allocatable :: value(:,:,:,:,:,:,:)
+end subroutine hdf_get_real64_7d
 
 module subroutine hdf_open_group(self, gname)
 class(hdf5_file), intent(inout) :: self

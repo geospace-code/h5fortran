@@ -7,13 +7,12 @@ Straightforward single-file/module access to HDF5.
 Uses Fortran 2008 `submodule` for clean, templatable structure.
 This thin object-oriented modern Fortran library abstracts away the messy parts of HDF5 so that you can read/write various types/ranks of data with a single command.
 
-Polymorphic API with read/write integer / real32/64:
+Polymorphic API with read/write for types integer, real32, real64 with rank:
 
-* scalar
-* 1-D .. 6-D
+* scalar (0-D)
+* 1-D .. 7-D
 
 as well as character (string) variables and attributes.
-If you'd like higher-rank arrays, let us know via GitHub Issue.
 
 Tested on systems including 
 
