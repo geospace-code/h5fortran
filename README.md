@@ -21,6 +21,8 @@ Tested on systems including
 * Ubuntu 16.04/18.04 (gfortran &ge; 5.4.1) with HDF5 1.8 and 1.10 
 * Windows Subsystem for Linux.
 
+Note: Currently, Cygwin does not have Fortran HDF5 libraries.
+
 ## Build
 
 Requirements:

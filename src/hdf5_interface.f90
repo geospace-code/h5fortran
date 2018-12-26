@@ -23,7 +23,7 @@ logical :: verbose=.false.
 contains
 !> initialize HDF5 file
 procedure, public :: initialize => hdf_initialize, finalize => hdf_finalize, writeattr, &
-  open => hdf_open_group, close => hdf_close_group
+  open => hdf_open_group, close => hdf_close_group, shape => hdf_get_shape
 
 !> add group or dataset integer/real 
 generic, public   :: add => &
@@ -198,6 +198,12 @@ real(real32), intent(in) :: value(:,:,:,:,:,:)
 integer, intent(in), optional :: chunk_size(:)
 end subroutine hdf_add_real32_6d
 
+module subroutine hdf_get_shape(self, dname, dims)
+class(hdf5_file), intent(in)     :: self
+character(*), intent(in)         :: dname
+integer(HSIZE_T), intent(out),allocatable :: dims(:)
+end subroutine hdf_get_shape
+
 module subroutine hdf_get_string(self,dname, value)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
@@ -329,7 +335,7 @@ end subroutine writeattr
 end interface
 
 
-public :: hdf5_file, toLower
+public :: hdf5_file, toLower, hsize_t
 
 private
 
@@ -390,6 +396,7 @@ integer :: ierr
 
 !> close hdf5 file
 call h5fclose_f(self%lid, ierr)
+if (ierr /= 0) error stop 'Error: HDF5 file close: '//self%filename
 
 !>  Close Fortran interface.
 call h5close_f(ierr)

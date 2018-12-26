@@ -1,7 +1,7 @@
 if(CMAKE_BUILD_TYPE STREQUAL Debug)
-  add_compile_options(-g -O0)
+  add_compile_options(-g -O1)  # O0 will throw SIGFPE intermittantly on whatever last subroutine called was.
 else()
-  add_compile_options(-O3)
+  add_compile_options(-g -O3)
 endif()
 
 if(CMAKE_Fortran_COMPILER_ID STREQUAL Intel)
@@ -19,6 +19,8 @@ elseif(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
   
   if(CMAKE_Fortran_COMPILER_VERSION VERSION_GREATER_EQUAL 8)
     list(APPEND FFLAGS -std=f2018)
+  else()
+    list(APPEND FFLAGS -std=f2008)
   endif()
   
   list(APPEND FFLAGS -Wall -Wextra -Wpedantic -Werror=array-bounds -Warray-temporaries)

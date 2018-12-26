@@ -6,19 +6,19 @@ contains
 
 module procedure hdf_get_int
 
-integer(HID_T)  :: did
+integer(HID_T)  :: dsid
 integer :: ierr
 
-! open dataset
-call h5dopen_f(self%lid, dname, did, ierr)
+!> open dataset
+call h5dopen_f(self%lid, dname, dsid, ierr)
 if (ierr /= 0) error stop 'error open dataset '//dname//' read '//self%filename
 
 ! read dataset
-call h5dread_f(did, h5kind_to_type(kind(value),H5_INTEGER_KIND), value,int(shape(value),HSIZE_T), ierr)
+call h5dread_f(dsid, h5kind_to_type(kind(value),H5_INTEGER_KIND), value,int(shape(value),HSIZE_T), ierr)
 if (ierr /= 0) error stop 'error read dataset '//dname//' read '//self%filename
 
-! close dataset
-call h5dclose_f(did, ierr)
+!> close dataset
+call h5dclose_f(dsid, ierr)
 if (ierr /= 0) error stop 'error close dataset '//dname//' read '//self%filename
 
 end procedure hdf_get_int
@@ -26,7 +26,8 @@ end procedure hdf_get_int
 
 module procedure hdf_get_int_1d
 
-integer(SIZE_T) :: dims(1), dsize
+integer(HSIZE_T) :: dims(1)
+integer(SIZE_T) :: dsize
 integer :: ierr, dtype
 
 call h5ltget_dataset_info_f(self%lid, dname, dims, dtype, dsize, ierr)
@@ -42,7 +43,8 @@ end procedure hdf_get_int_1d
 
 module procedure hdf_get_int_2d
 
-integer(SIZE_T) :: dims(2),dsize
+integer(HSIZE_T) :: dims(2)
+integer(SIZE_T) :: dsize
 integer :: ierr, dtype
 
 call h5ltget_dataset_info_f(self%lid, dname, dims, dtype, dsize, ierr)
@@ -58,7 +60,8 @@ end procedure hdf_get_int_2d
 
 module procedure hdf_get_int_3d
 
-integer(SIZE_T) :: dims(3),dsize
+integer(HSIZE_T) :: dims(3)
+integer(SIZE_T) :: dsize
 integer :: ierr, dtype
 
 call h5ltget_dataset_info_f(self%lid, dname, dims, dtype, dsize, ierr)

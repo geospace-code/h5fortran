@@ -25,8 +25,9 @@ call testNewHDF5()
 call testAddHDF5()
 call test_hdf5_deflate()
 call test_write_attributes()
-call test_string_rw()
+
 call testrwHDF5(ng=69, nn=100, pn=5)
+call test_string_rw()
 
 
 contains
@@ -238,6 +239,7 @@ call h5f%get('/group1/flux_node',fo)
 if (.not.all(fo(:ng)==flux(:ng,1))) error stop 'test_read_write: read does not match write'
 
 call h5f%finalize()
+
 
 end subroutine testrwHDF5
 

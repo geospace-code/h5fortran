@@ -19,3 +19,6 @@ add_executable(testh5 src/test_hdf5_ifc.f90)
 target_link_libraries(testh5 PRIVATE hdf5oo)
 target_compile_options(testh5 PRIVATE -Wno-compare-reals)
 add_test(NAME h5oo COMMAND testh5)
+
+add_executable(shaper src/GetShape.f90)
+target_link_libraries(shaper PRIVATE hdf5oo)

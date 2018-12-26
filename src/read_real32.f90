@@ -6,24 +6,28 @@ contains
 
 module procedure hdf_get_real32
 
-integer(HID_T)  :: set_id
+integer(HID_T)  :: dsid
 integer :: ierr
 
-! open dataset
-call h5dopen_f(self%lid, dname, set_id, ierr)
+!> open dataset
+call h5dopen_f(self%lid, dname, dsid, ierr)
+if (ierr /= 0) error stop 'error open dataset '//dname//' read '//self%filename
 
-! read dataset
-call h5dread_f(set_id, h5kind_to_type(kind(value),H5_REAL_KIND), value,int(shape(value),HSIZE_T), ierr)
+!> read dataset
+call h5dread_f(dsid, h5kind_to_type(kind(value),H5_REAL_KIND), value,int(shape(value),HSIZE_T), ierr)
+if (ierr /= 0) error stop 'error read dataset '//dname//' read '//self%filename
 
-! close dataset
-call h5dclose_f(set_id, ierr)
+!> close dataset
+call h5dclose_f(dsid, ierr)
+if (ierr /= 0) error stop 'error close dataset '//dname//' read '//self%filename
 
 end procedure hdf_get_real32
 
 
 module procedure hdf_get_real32_1d
 
-integer(SIZE_T) :: dims(1),dsize
+integer(HSIZE_T) :: dims(1)
+integer(SIZE_T) :: dsize
 integer :: ierr, dtype
 
 call h5ltget_dataset_info_f(self%lid, dname, dims, dtype, dsize, ierr)
@@ -39,7 +43,8 @@ end procedure hdf_get_real32_1d
 
 module procedure hdf_get_real32_2d
 
-integer(SIZE_T) :: dims(2),dsize
+integer(HSIZE_T) :: dims(2)
+integer(SIZE_T) :: dsize
 integer :: ierr, dtype
 
 call h5ltget_dataset_info_f(self%lid, dname, dims, dtype, dsize, ierr)
@@ -55,7 +60,8 @@ end procedure hdf_get_real32_2d
 
 module procedure hdf_get_real32_3d
 
-integer(SIZE_T) :: dims(3),dsize
+integer(HSIZE_T) :: dims(3)
+integer(SIZE_T) :: dsize
 integer :: ierr, dtype
 
 call h5ltget_dataset_info_f(self%lid, dname, dims, dtype, dsize, ierr)
@@ -71,7 +77,8 @@ end procedure hdf_get_real32_3d
 
 module procedure hdf_get_real32_4d
 
-integer(SIZE_T) :: dims(4),dsize
+integer(HSIZE_T) :: dims(4)
+integer(SIZE_T) :: dsize
 integer :: ierr, dtype
 
 call h5ltget_dataset_info_f(self%lid, dname, dims, dtype, dsize, ierr)
@@ -87,7 +94,8 @@ end procedure hdf_get_real32_4d
 
 module procedure hdf_get_real32_5d
 
-integer(SIZE_T) :: dims(5),dsize
+integer(HSIZE_T) :: dims(5)
+integer(SIZE_T) :: dsize
 integer :: ierr, dtype
 
 call h5ltget_dataset_info_f(self%lid, dname, dims, dtype, dsize, ierr)
@@ -103,7 +111,8 @@ end procedure hdf_get_real32_5d
 
 module procedure hdf_get_real32_6d
 
-integer(SIZE_T) :: dims(6),dsize
+integer(HSIZE_T) :: dims(6)
+integer(SIZE_T) :: dsize
 integer :: ierr, dtype
 
 call h5ltget_dataset_info_f(self%lid, dname, dims, dtype, dsize, ierr)
