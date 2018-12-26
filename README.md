@@ -1,3 +1,4 @@
+[![DOI](https://zenodo.org/badge/128736984.svg)](https://zenodo.org/badge/latestdoi/128736984)
 [![Build Status](https://travis-ci.org/scivision/oo_hdf5_fortran.svg?branch=master)](https://travis-ci.org/scivision/oo_hdf5_fortran)
 [![Build status](https://ci.appveyor.com/api/projects/status/9njjb04mol8l2sjx?svg=true)](https://ci.appveyor.com/project/scivision/oo-hdf5-fortran)
 
