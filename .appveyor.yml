@@ -9,7 +9,7 @@ init:
 - sudo apt-get install -yq --no-install-suggests --no-install-recommends libhdf5-dev > /dev/null
 
 install:
-- cd bin
+- cd build
 - cmake ..
 - cmake --build .
 

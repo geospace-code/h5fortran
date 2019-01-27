@@ -42,7 +42,7 @@ Requirements:
 Build this HDF5 OO Fortran interface:
 
 ```sh
-cd bin
+cd build
 cmake ..
 
 cmake --build .
