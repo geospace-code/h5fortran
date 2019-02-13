@@ -1,4 +1,5 @@
 project('Object-oriented HDF5 Fortran', 'fortran',
+  meson_version : '0.49.999',
   version : '1.0.0')
 
 add_global_arguments('-g', language : 'fortran')
@@ -22,13 +23,13 @@ ooh5 = library('oohdf5', 'src/hdf5_interface.f90','src/read.f90', 'src/read_real
   dependencies: hdf5)
 
 # --- testing
-testh5 = executable('test_hdf5', 'src/test_hdf5_ifc.f90', 
+testh5 = executable('test_hdf5', 'src/test_hdf5_ifc.f90',
   dependencies: hdf5,
   link_with: ooh5,
   fortran_args: quiet)
 test('Test HDF5 OO', testh5, is_parallel: false)
 
-shapes = executable('shapes_hdf5', 'src/GetShape.f90', 
+shapes = executable('shapes_hdf5', 'src/GetShape.f90',
   dependencies: hdf5,
   link_with: ooh5,
   fortran_args: quiet)
