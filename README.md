@@ -15,10 +15,10 @@ Polymorphic API with read/write for types integer, real32, real64 with rank:
 
 as well as character (string) variables and attributes.
 
-Tested on systems including 
+Tested on systems including
 
 * MacOS (via homebrew)
-* Ubuntu 16.04/18.04 (gfortran &ge; 5.4.1) with HDF5 1.8 and 1.10 
+* Ubuntu 16.04/18.04 (gfortran &ge; 5.4.1) with HDF5 1.8 and 1.10
 * Windows Subsystem for Linux.
 
 Note: Currently, Cygwin does not have Fortran HDF5 libraries.
@@ -33,13 +33,26 @@ Requirements:
   * Linux: `apt install gfortran libhdf5-dev`
   * Windows: at this time,
     [Scoop](https://www.scivision.co/brew-install-scoop-for-windows/) and Chocolatey
-    do not have HDF5, possibly due to difficulties with 
+    do not have HDF5, possibly due to difficulties with
     [HDF5 and gfortran on Windows](https://stackoverflow.com/a/30056831).
     Consider using
     [Windows Subsystem for Linux](https://www.scivision.co/install-windows-subsystem-for-linux/).
 
 
-Build this HDF5 OO Fortran interface:
+Build this HDF5 OO Fortran interface with other Meson or CMake.
+The library `libh5oo` is built, link it into your program as usual.
+
+### Meson
+
+```sh
+meson build
+
+ninja -C build
+
+ninja test -C build
+```
+
+### CMake
 
 ```sh
 cd build
@@ -49,13 +62,8 @@ cmake --build .
 
 ctest -V
 ```
-
-The library `libh5oo` is built, link it into your program as usual.
-
-
----
-
 If you need to specify a particular HDF5 library, use `cmake -DHDF5_ROOT=/path/to/hdf5lib ..`
+
 
 ## Usage
 
@@ -67,7 +75,7 @@ type(hdf5_file) :: h5f
 ```
 
 
-* gzip compression may be applied for rank &ge; 2 arrays by setting `comp_lvl` to a value betwen 1 and 9. 
+* gzip compression may be applied for rank &ge; 2 arrays by setting `comp_lvl` to a value betwen 1 and 9.
   Shuffle filter is automatically applied for better compression
 * string attributes may be applied to any variable at time of writing or later.
 * `chunk_size` option may be set for better compression

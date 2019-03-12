@@ -1,12 +1,12 @@
 project('Object-oriented HDF5 Fortran', 'fortran',
-  meson_version : '0.49.999',
+  meson_version : '>=0.50',
   version : '1.0.0')
 
 add_global_arguments('-g', language : 'fortran')
 
 fc = meson.get_compiler('fortran')
 if fc.get_id() == 'gcc'
-  add_global_arguments( '-O', '-fimplicit-none', '-Wall', '-Wextra', '-Wpedantic', language : 'fortran')
+  add_global_arguments( '-O', '-fimplicit-none', '-Wextra', '-Wpedantic', language : 'fortran')
   quiet = ['-Wno-compare-reals', '-Wno-maybe-uninitialized']
 else
   quiet = ['-w']
