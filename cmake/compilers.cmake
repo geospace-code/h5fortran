@@ -1,15 +1,11 @@
-if(CMAKE_BUILD_TYPE STREQUAL Debug)
-  add_compile_options(-g -O1)  # O0 will throw SIGFPE intermittantly on whatever last subroutine called was.
-else()
-  add_compile_options(-g -O3)
-endif()
 
 if(CMAKE_Fortran_COMPILER_ID STREQUAL Intel)
 
   if(CMAKE_BUILD_TYPE STREQUAL Debug)
     list(APPEND FFLAGS -debug extended -check all -heap-arrays -fp-stack-check)
+    list(APPEND FFLAGS -warn -traceback)
   endif()
-  list(APPEND FFLAGS -warn -traceback)
+
 elseif(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
   list(APPEND FFLAGS -march=native -fimplicit-none)
 
@@ -27,7 +23,7 @@ elseif(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
 elseif(CMAKE_Fortran_COMPILER_ID STREQUAL PGI)
 
 elseif(CMAKE_Fortran_COMPILER_ID STREQUAL Flang)
-  list(APPEND FFLAGS -Mallocatable=03)
+
 elseif(CMAKE_Fortran_COMPILER_ID STREQUAL NAG)
   list(APPEND FFLAGS -u -C=all)
 endif()

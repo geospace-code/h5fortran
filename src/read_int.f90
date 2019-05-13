@@ -1,5 +1,5 @@
 submodule (hdf5_interface:read) read_int
-
+implicit none
 
 contains
 
@@ -11,15 +11,15 @@ integer :: ierr
 
 !> open dataset
 call h5dopen_f(self%lid, dname, dsid, ierr)
-if (ierr /= 0) error stop 'error open dataset '//dname//' read '//self%filename
+if (ierr /= 0) error stop 'error open scalar integer dataset ' //dname// ' read file ' //self%filename
 
 !> read dataset
-call h5dread_f(dsid, h5kind_to_type(kind(value),H5_REAL_KIND), value,int(shape(value),HSIZE_T), ierr)
-if (ierr /= 0) error stop 'error read dataset '//dname//' read '//self%filename
+call h5dread_f(dsid, h5kind_to_type(kind(value), H5_INTEGER_KIND), value,int(shape(value),HSIZE_T), ierr)
+if (ierr /= 0) error stop 'error read scalar integer dataset ' //dname// ' read file ' //self%filename
 
 !> close dataset
 call h5dclose_f(dsid, ierr)
-if (ierr /= 0) error stop 'error close dataset '//dname//' read '//self%filename
+if (ierr /= 0) error stop 'error close scalar integer dataset ' //dname// ' read file ' //self%filename
 
 end procedure hdf_get_int
 
@@ -31,12 +31,12 @@ integer(SIZE_T) :: dsize
 integer :: ierr, dtype
 
 call h5ltget_dataset_info_f(self%lid, dname, dims, dtype, dsize, ierr)
-if (ierr /= 0) error stop 'error open dataset '//dname//' read '//self%filename
+if (ierr /= 0) error stop 'error open dataset ' //dname// ' read '//self%filename
 
 allocate(value(dims(1)))
 
 call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
-if (ierr /= 0) error stop 'error read dataset '//dname//' read '//self%filename
+if (ierr /= 0) error stop 'error read dataset ' //dname// ' read '//self%filename
 
 end procedure hdf_get_int_1d
 
@@ -48,12 +48,12 @@ integer(SIZE_T) :: dsize
 integer :: ierr, dtype
 
 call h5ltget_dataset_info_f(self%lid, dname, dims, dtype, dsize, ierr)
-if (ierr /= 0) error stop 'error open dataset '//dname//' read '//self%filename
+if (ierr /= 0) error stop 'error open dataset ' //dname// ' read '//self%filename
 
 allocate(value(dims(1),dims(2)))
 
 call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
-if (ierr /= 0) error stop 'error read dataset '//dname//' read '//self%filename
+if (ierr /= 0) error stop 'error read dataset ' //dname// ' read '//self%filename
 
 end procedure hdf_get_int_2d
 
@@ -65,12 +65,12 @@ integer(SIZE_T) :: dsize
 integer :: ierr, dtype
 
 call h5ltget_dataset_info_f(self%lid, dname, dims, dtype, dsize, ierr)
-if (ierr /= 0) error stop 'error open dataset '//dname//' read '//self%filename
+if (ierr /= 0) error stop 'error open dataset ' //dname// ' read ' //self%filename
 
 allocate(value(dims(1),dims(2),dims(3)))
 
 call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
-if (ierr /= 0) error stop 'error read dataset '//dname//' read '//self%filename
+if (ierr /= 0) error stop 'error read dataset ' //dname// ' read ' //self%filename
 
 end procedure hdf_get_int_3d
 
@@ -82,7 +82,7 @@ integer(SIZE_T) :: dsize
 integer :: ierr, dtype
 
 call h5ltget_dataset_info_f(self%lid, dname, dims, dtype, dsize, ierr)
-if (ierr /= 0) error stop 'error open dataset '//dname//' read '//self%filename
+if (ierr /= 0) error stop 'error open dataset ' //dname// ' read ' //self%filename
 
 allocate(value(dims(1),dims(2),dims(3),dims(4)))
 

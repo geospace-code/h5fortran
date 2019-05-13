@@ -1,9 +1,9 @@
-language: c
+language: minimal
 group: travis_latest
 dist: xenial
 
 git:
-  depth: 3
+  depth: 25
   quiet: true
 
 addons:
@@ -20,7 +20,7 @@ matrix:
   - os: osx
     env: FC=gfortran
     before_install:
-    - brew update
+    - brew update > /dev/null
     - brew upgrade cmake > /dev/null
     - brew install gcc > /dev/null
     - brew install hdf5 > /dev/null
@@ -28,7 +28,6 @@ matrix:
 install:
 - cd build
 - cmake ..
-- cmake --build .
+- cmake --build . -j
 
 script: ctest --output-on-failure
-

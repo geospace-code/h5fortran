@@ -19,15 +19,10 @@ if h5run.returncode() != 0
   error('HDF5 linking problems: ' + h5run.stderr())
 endif
 
-ooh5 = library('oohdf5', 'src/hdf5_interface.f90','src/read.f90', 'src/read_real64.f90', 'src/read_real32.f90', 'src/read_int.f90', 'src/write.f90', 'src/write_real64.f90', 'src/write_real32.f90', 'src/write_int.f90',
-  dependencies: hdf5)
+ooh5 = library('oohdf5', hdf5_src, dependencies: hdf5)
 
 # --- testing
-testh5 = executable('test_hdf5', 'src/test_hdf5_ifc.f90',
-  dependencies: hdf5,
-  link_with: ooh5,
-  fortran_args: quiet)
-test('Test HDF5 OO', testh5, is_parallel: false)
+subdir(tests)
 
 shapes = executable('shapes_hdf5', 'src/GetShape.f90',
   dependencies: hdf5,

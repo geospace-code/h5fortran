@@ -1,8 +1,10 @@
 module hdf5_interface
 !! HDF5 object-oriented polymorphic interface
 
-use, intrinsic:: iso_fortran_env, only: real32, real64, stderr=>error_unit
+use, intrinsic:: iso_fortran_env, only: real32, real64, int32, stderr=>error_unit
 use H5LT
+
+use string_utils, only : toLower, strip_trailing_null
 
 implicit none
 
@@ -15,8 +17,8 @@ integer(HID_T) :: lid, &   !< location identifier
                   glid, &   !< group location identifier
                   sid, did, pid
 
-integer :: comp_lvl = 0 !< compression level (1-9)  0: disable compression
-integer(HSIZE_T) :: chunk_size(6) = [64,64,1,1,1,1]  !< chunk size per dimension (arbitrary)
+integer  :: comp_lvl = 0 !< compression level (1-9)  0: disable compression
+integer(HSIZE_T) :: chunk_size(7) = [64,64,1,1,1,1,1]  !< chunk size per dimension (arbitrary)
 logical :: verbose=.false.
 
 
@@ -25,7 +27,7 @@ contains
 procedure, public :: initialize => hdf_initialize, finalize => hdf_finalize, writeattr, &
   open => hdf_open_group, close => hdf_close_group, shape => hdf_get_shape
 
-!> add group or dataset integer/real 
+!> add group or dataset integer/real
 generic, public   :: add => &
 hdf_add_group, hdf_add_int, hdf_add_int_1d, hdf_add_int_2d, hdf_add_int_3d, hdf_add_int_5d, hdf_add_int_6d, hdf_add_int_7d,&
 hdf_add_real32, hdf_add_real32_1d, hdf_add_real32_2d, hdf_add_real32_3d, &
@@ -57,7 +59,7 @@ hdf_get_real32, hdf_get_real32_1d, hdf_get_real32_2d, hdf_get_real32_3d, &
 hdf_get_real64, hdf_get_real64_1d, hdf_get_real64_2d, hdf_get_real64_3d, &
   hdf_get_real64_4d, hdf_get_real64_5d, hdf_get_real64_6d, hdf_get_real64_7d, &
 hdf_add_string, hdf_get_string
-  
+
 end type hdf5_file
 
 
@@ -89,26 +91,26 @@ end subroutine hdf_add_string
 module subroutine hdf_add_int(self,dname,value)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
-integer, intent(in) :: value
+integer(int32), intent(in) :: value
 end subroutine hdf_add_int
 
 module subroutine hdf_add_int_1d(self,dname,value)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
-integer, intent(in) :: value(:)
+integer(int32), intent(in) :: value(:)
 end subroutine hdf_add_int_1d
 
 module subroutine hdf_add_int_2d(self,dname,value, chunk_size)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
-integer, intent(in) :: value(:,:)
+integer(int32), intent(in) :: value(:,:)
 integer, intent(in), optional :: chunk_size(:)
 end subroutine hdf_add_int_2d
 
 module subroutine hdf_add_int_3d(self,dname,value, chunk_size)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
-integer, intent(in) :: value(:,:,:)
+integer(int32), intent(in) :: value(:,:,:)
 integer, intent(in), optional :: chunk_size(:)
 end subroutine hdf_add_int_3d
 
@@ -122,21 +124,21 @@ end subroutine hdf_add_int_4d
 module subroutine hdf_add_int_5d(self,dname,value, chunk_size)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
-integer, intent(in) :: value(:,:,:,:,:)
+integer(int32), intent(in) :: value(:,:,:,:,:)
 integer, intent(in), optional :: chunk_size(:)
 end subroutine hdf_add_int_5d
 
 module subroutine hdf_add_int_6d(self,dname,value, chunk_size)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
-integer, intent(in) :: value(:,:,:,:,:,:)
+integer(int32), intent(in) :: value(:,:,:,:,:,:)
 integer, intent(in), optional :: chunk_size(:)
 end subroutine hdf_add_int_6d
 
 module subroutine hdf_add_int_7d(self,dname,value, chunk_size)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
-integer, intent(in) :: value(:,:,:,:,:,:,:)
+integer(int32), intent(in) :: value(:,:,:,:,:,:,:)
 integer, intent(in), optional :: chunk_size(:)
 end subroutine hdf_add_int_7d
 
@@ -263,49 +265,49 @@ end subroutine hdf_get_string
 module subroutine hdf_get_int(self, dname, value)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-integer, intent(out)             :: value
+integer(int32), intent(out)             :: value
 end subroutine hdf_get_int
 
 module subroutine hdf_get_int_1d(self, dname, value)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-integer, intent(out),allocatable :: value(:)
+integer(int32), intent(out),allocatable :: value(:)
 end subroutine hdf_get_int_1d
 
 module subroutine hdf_get_int_2d(self, dname, value)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-integer, intent(out),allocatable :: value(:,:)
+integer(int32), intent(out),allocatable :: value(:,:)
 end subroutine hdf_get_int_2d
 
 module subroutine hdf_get_int_3d(self, dname, value)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-integer, intent(out),allocatable :: value(:,:,:)
+integer(int32), intent(out),allocatable :: value(:,:,:)
 end subroutine hdf_get_int_3d
 
 module subroutine hdf_get_int_4d(self, dname, value)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-integer, intent(out),allocatable :: value(:,:,:,:)
+integer(int32), intent(out),allocatable :: value(:,:,:,:)
 end subroutine hdf_get_int_4d
 
 module subroutine hdf_get_int_5d(self, dname, value)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-integer, intent(out),allocatable :: value(:,:,:,:,:)
+integer(int32), intent(out),allocatable :: value(:,:,:,:,:)
 end subroutine hdf_get_int_5d
 
 module subroutine hdf_get_int_6d(self, dname, value)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-integer, intent(out),allocatable :: value(:,:,:,:,:,:)
+integer(int32), intent(out),allocatable :: value(:,:,:,:,:,:)
 end subroutine hdf_get_int_6d
 
 module subroutine hdf_get_int_7d(self, dname, value)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-integer, intent(out),allocatable :: value(:,:,:,:,:,:,:)
+integer(int32), intent(out),allocatable :: value(:,:,:,:,:,:,:)
 end subroutine hdf_get_int_7d
 
 
@@ -422,7 +424,7 @@ end subroutine writeattr
 end interface
 
 
-public :: hdf5_file, toLower, hsize_t
+public :: hdf5_file, toLower, hsize_t, strip_trailing_null
 
 private
 
@@ -446,12 +448,12 @@ if (present(comp_lvl)) self%comp_lvl = comp_lvl
 
 !> Initialize FORTRAN interface.
 call h5open_f(ierr)
-if (ierr /= 0) error stop 'Error: HDF5 library initialize Failed!'
+if (ierr /= 0) error stop 'Error: HDF5 library initialize Failed for ' // self%filename
 
-lstatus = 'old'  ! not merge() due to unequal character length
+lstatus = 'old'
 if(present(status)) lstatus = toLower(status)
 
-laction = 'rw'  ! not merge() due to unequal character length
+laction = 'rw'
 if(present(action)) laction = toLower(action)
 
 
@@ -487,7 +489,6 @@ if (ierr /= 0) error stop 'Error: HDF5 file close: '//self%filename
 
 !>  Close Fortran interface.
 call h5close_f(ierr)
-
 if (ierr /= 0) error stop 'Error: HDF5 finalization: '//self%filename
 
 end subroutine hdf_finalize
@@ -517,38 +518,17 @@ do
   ! check subgroup exists
   sp = sp + ep
   call h5lexists_f(self%lid, gname(1:sp-1), gexist, ierr)
-  if (ierr /= 0) error stop 'problem finding group '//gname
+  if (ierr /= 0) error stop 'did not find group ' // gname // ' in ' // self%filename
 
   if(.not.gexist) then
     call h5gcreate_f(self%lid, gname(1:sp-1), gid, ierr)
-    if (ierr /= 0) error stop 'problem creating group '//gname
-   
+    if (ierr /= 0) error stop 'problem creating group ' // gname // ' in ' // self%filename
+
     call h5gclose_f(gid, ierr)
-    if (ierr /= 0) error stop 'problem closing group '//gname
+    if (ierr /= 0) error stop 'problem closing group ' // gname // ' in ' // self%filename
   endif
 end do
 
 end subroutine hdf_add_group
-
-
-
-!----- Helper functions
-
-elemental function toLower(str)
-! can be trivially extended to non-ASCII
-character(*), intent(in) :: str
-character(len(str)) :: toLower
-character(*), parameter :: lower="abcdefghijklmnopqrstuvwxyz", &
-                           upper="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-integer :: i,j
-
-toLower = str
-
-do concurrent (i = 1:len(str))
-  j = index(upper,str(i:i))
-  if (j > 0) toLower(i:i) = lower(j:j)
-end do
-
-end function toLower
 
 end module hdf5_interface

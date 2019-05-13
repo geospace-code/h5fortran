@@ -104,7 +104,6 @@ call h5f%finalize()
 ### Add gzip compressed 3-D array "value2" to existing HDF5 file "test.h5"
 
 ```fortran
-
 real :: val2(1000,1000,3) = 0.
 
 call h5f%initialize('test.h5', comp_lvl=1)
@@ -116,8 +115,21 @@ call h5f%finalize()
 
 chunk_size may optionally be set in the `%add()` method.
 
+### Create group "scope"
+
+```fortran
+real :: val2(1000,1000,3) = 0.
+
+call h5f%initialize('test.h5')
+
+call h5f%add('/scope/')
+
+call h5f%finalize()
+```
+
+Note the trailing `/` on `/scope/`, that tells the API you are creating a group instead of a variable.
 ## Notes
 
-The first character of the filename should be a character, NOT whitespace to avoid file open/creation errors.
-
-Using compilers like PGI or Flang may require first compiling the HDF5 library yourself.
+* The first character of the filename should be a character, NOT whitespace to avoid file open/creation errors.
+* Using compilers like PGI or Flang may require first compiling the HDF5 library yourself.
+* Polymorphic array rank is implemented by explicit code internally. We could have used pointers, but the code is simple enough to avoid the risk associated with explicit array pointers.

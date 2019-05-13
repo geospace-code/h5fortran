@@ -1,0 +1,8 @@
+add_executable(testh5 test_hdf5_ifc.f90)
+target_link_libraries(testh5 PRIVATE hdf5oo)
+set_target_properties(testh5 PROPERTIES Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR})
+add_test(NAME h5oo COMMAND testh5)
+set_tests_properties(h5oo PROPERTIES FIXTURES_SETUP h5files)
+if(${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU)
+  target_compile_options(testh5 PRIVATE -Wno-compare-reals)
+endif()
