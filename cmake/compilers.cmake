@@ -1,9 +1,13 @@
 
+message(STATUS "CMake Build Type: ${CMAKE_BUILD_TYPE}")
+
 if(CMAKE_Fortran_COMPILER_ID STREQUAL Intel)
 
-  if(CMAKE_BUILD_TYPE STREQUAL Debug)
-    list(APPEND FFLAGS -debug extended -check all -heap-arrays -fp-stack-check)
-    list(APPEND FFLAGS -warn -traceback)
+  if(NOT WIN32)
+    set(FFLAGS -stand f18 -implicitnone -traceback -warn -heap-arrays)
+  else()
+    set(FFLAGS /stand:f18 /4Yd /traceback /warn /heap-arrays)
+    # Note: -g is /debug:full for ifort Windows
   endif()
 
 elseif(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
@@ -15,8 +19,6 @@ elseif(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
 
   if(CMAKE_Fortran_COMPILER_VERSION VERSION_GREATER_EQUAL 8)
     list(APPEND FFLAGS -std=f2018)
-  else()
-    list(APPEND FFLAGS -std=f2008)
   endif()
 
   list(APPEND FFLAGS -Wall -Wextra -Wpedantic -Werror=array-bounds -Warray-temporaries)
