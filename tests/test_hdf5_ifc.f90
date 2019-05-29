@@ -2,6 +2,7 @@ program test_hdf5_ifc
 
 use, intrinsic:: ieee_arithmetic, only: ieee_value, ieee_quiet_nan, ieee_is_nan
 use, intrinsic:: iso_fortran_env, only: int64, int32, real32, real64, stderr=>error_unit
+use, intrinsic:: iso_c_binding, only: c_null_char
 use hdf5_interface, only: hdf5_file, toLower, strip_trailing_null
 
 implicit none
@@ -61,7 +62,7 @@ subroutine test_strip_null()
 
 character(*), parameter :: hello = 'HeLl0 Th3rE !>? '
 
-if (.not.strip_trailing_null(hello // char(0)) == hello) error stop 'problem stripping trailing null'
+if (.not.strip_trailing_null(hello // c_null_char) == hello) error stop 'problem stripping trailing null'
 
 end subroutine test_strip_null
 

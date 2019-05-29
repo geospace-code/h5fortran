@@ -1,5 +1,6 @@
 module string_utils
 
+use, intrinsic:: iso_c_binding, only: c_null_char
 implicit none
 
 contains
@@ -32,7 +33,7 @@ character(:), allocatable :: stripped
 integer :: i
 
 i = len_trim(str)
-if (str(i:i) == char(0)) then
+if (str(i:i) == c_null_char) then
   stripped = str(:i-1)
 else
   stripped = str
