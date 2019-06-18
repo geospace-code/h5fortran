@@ -1,6 +1,8 @@
+!! This submodule is for reading double precision float (64 bit)
 submodule (hdf5_interface:read) read_real64
 
-
+use H5LT, only: HSIZE_T, SIZE_T, H5_REAL_KIND, H5KIND_TO_TYPE
+implicit none
 contains
 
 

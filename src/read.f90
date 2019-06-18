@@ -1,6 +1,9 @@
+!! This submodule is for reading HDF5, via child submodules
 submodule (hdf5_interface) read
-implicit none
 
+use H5LT, only: h5ltget_dataset_info_f, h5ltread_dataset_f, h5ltget_dataset_info_f, h5ltget_dataset_ndims_f, &
+    h5dopen_f, h5dread_f, h5dclose_f, h5ltread_dataset_string_f
+implicit none
 contains
 
 
@@ -24,7 +27,7 @@ module procedure hdf_get_string
 !! till buffer is full
 
 integer :: ierr
-integer(HSIZE_T), allocatable :: dims(:)
+!integer(HSIZE_T), allocatable :: dims(:)
 
 !> This is a random integer, how to retrieve length of string?
 !call hdf_get_shape(self, dname, dims)

@@ -1,5 +1,4 @@
-program test_hdf5_ifc
-
+!! unit tests and registration tests of HDF5 OO interface
 use, intrinsic:: ieee_arithmetic, only: ieee_value, ieee_quiet_nan, ieee_is_nan
 use, intrinsic:: iso_fortran_env, only: int64, int32, real32, real64, stderr=>error_unit
 use, intrinsic:: iso_c_binding, only: c_null_char
@@ -46,7 +45,6 @@ contains
 subroutine test_lowercase()
 
 character(*), parameter :: hello = 'HeLl0 Th3rE !>? '
-character(:), allocatable :: hello_lower
   !! Fortran 2003 allocatable string
 
 if (.not.(toLower(hello)=='hell0 th3re !>? ')) error stop 'error: lowercase conversion'
@@ -274,4 +272,4 @@ call h5f%finalize()
 
 end subroutine testrwHDF5
 
-end program test_hdf5_ifc
+end program

@@ -1,6 +1,8 @@
+!! This submodule is for reading integer HDF5 data
 submodule (hdf5_interface:read) read_int
-implicit none
 
+use H5LT, only: H5_INTEGER_KIND, HSIZE_T, SIZE_T, H5KIND_TO_TYPE
+implicit none
 contains
 
 

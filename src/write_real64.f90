@@ -1,6 +1,8 @@
+!! This submodule is for writing double precision float (64 bit)
 submodule (hdf5_interface:write) write_real64
 
-
+use H5LT, only: H5_REAL_KIND, H5S_SCALAR_F, H5KIND_TO_TYPE
+implicit none
 contains
 
 
@@ -11,7 +13,7 @@ integer         :: ierr
 
 call self%add(dname)
 
-! HDF5 >= 1.10 
+! HDF5 >= 1.10
 !call h5ltmake_dataset_f(self%lid, dname, &
 !   rank(value), int(shape(value),HSIZE_T), h5kind_to_type(kind(value),H5_REAL_KIND), value, ierr)
 !if (ierr /= 0) error stop 'error on dataset '//dname//' write '//self%filename
@@ -81,7 +83,7 @@ dims = shape(value)
 dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
 
 call hdf_setup_write(self,dname,dtype,dims, chunk_size)
-  
+
 call h5dwrite_f(self%did, dtype, value, dims, ierr)
 if (ierr /= 0) error stop 'error on dataset '//dname//' write '//self%filename
 
@@ -101,7 +103,7 @@ dims = shape(value)
 dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
 
 call hdf_setup_write(self,dname,dtype,dims, chunk_size)
-  
+
 call h5dwrite_f(self%did, dtype, value, dims, ierr)
 if (ierr /= 0) error stop 'error on dataset '//dname//' write '//self%filename
 
@@ -121,7 +123,7 @@ dims = shape(value)
 dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
 
 call hdf_setup_write(self,dname,dtype,dims, chunk_size)
-  
+
 call h5dwrite_f(self%did, dtype, value, dims, ierr)
 if (ierr /= 0) error stop 'error on dataset '//dname//' write '//self%filename
 
@@ -141,7 +143,7 @@ dims = shape(value)
 dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
 
 call hdf_setup_write(self,dname,dtype,dims, chunk_size)
-  
+
 call h5dwrite_f(self%did, dtype, value, dims, ierr)
 if (ierr /= 0) error stop 'error on dataset '//dname//' write '//self%filename
 
@@ -161,7 +163,7 @@ dims = shape(value)
 dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
 
 call hdf_setup_write(self,dname,dtype,dims, chunk_size)
-  
+
 call h5dwrite_f(self%did, dtype, value, dims, ierr)
 if (ierr /= 0) error stop 'error on dataset '//dname//' write '//self%filename
 

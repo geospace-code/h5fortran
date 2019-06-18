@@ -28,6 +28,6 @@ matrix:
 install:
 - cd build
 - cmake ..
-- cmake --build . -j
+- cmake --build . --parallel
 
-script: ctest --output-on-failure
+script: ctest --parallel --output-on-failure

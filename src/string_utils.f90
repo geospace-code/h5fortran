@@ -1,8 +1,8 @@
+!! This module is for string manipulation
 module string_utils
 
 use, intrinsic:: iso_c_binding, only: c_null_char
 implicit none
-
 contains
 
 elemental function toLower(str)

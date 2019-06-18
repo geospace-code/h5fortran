@@ -1,6 +1,8 @@
+!! This submodule is for writing integer HDF5 data
 submodule (hdf5_interface:write) write_int
 
-
+use H5LT, only: H5S_SCALAR_F, H5_INTEGER_KIND, H5KIND_TO_TYPE
+implicit none
 contains
 
 

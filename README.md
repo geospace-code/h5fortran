@@ -1,4 +1,5 @@
 [![DOI](https://zenodo.org/badge/128736984.svg)](https://zenodo.org/badge/latestdoi/128736984)
+
 [![Build Status](https://travis-ci.org/scivision/oo_hdf5_fortran.svg?branch=master)](https://travis-ci.org/scivision/oo_hdf5_fortran)
 [![Build status](https://ci.appveyor.com/api/projects/status/9njjb04mol8l2sjx?svg=true)](https://ci.appveyor.com/project/scivision/oo-hdf5-fortran)
 
@@ -15,10 +16,10 @@ Polymorphic API with read/write for types integer, real32, real64 with rank:
 
 as well as character (string) variables and attributes.
 
-Tested on systems including
+Tested on systems with HDF5 1.8 and 1.10 including:
 
-* MacOS (via homebrew)
-* Ubuntu 16.04/18.04 (gfortran &ge; 5.4.1) with HDF5 1.8 and 1.10
+* MacOS (homebrew)
+* Ubuntu 16.04 / 18.04 (gfortran 6 or newer)
 * Windows Subsystem for Linux.
 
 Note: Currently, Cygwin does not have Fortran HDF5 libraries.
@@ -28,16 +29,13 @@ Note: Currently, Cygwin does not have Fortran HDF5 libraries.
 Requirements:
 
 * modern Fortran 2008 compiler (such as gfortran &ge; 5.4.1, etc.)
-* HDF5 library (1.8 or 1.10)
+* HDF5 Fortran library (1.8 or 1.10)
   * Mac: `brew install gcc hdf5`
   * Linux: `apt install gfortran libhdf5-dev`
-  * Windows: at this time,
-    [Scoop](https://www.scivision.co/brew-install-scoop-for-windows/) and Chocolatey
-    do not have HDF5, possibly due to difficulties with
-    [HDF5 and gfortran on Windows](https://stackoverflow.com/a/30056831).
-    Consider using
-    [Windows Subsystem for Linux](https://www.scivision.co/install-windows-subsystem-for-linux/).
+  * Windows Subsystem for Linux: `apt install gfortran libhdf5-dev`
 
+Note that some precompiled HDF5 libraries include C / C++ without Fortran.
+We have included a test in the build system to ensure that HDF5 links in Fortran before trying to buidl the OOHDF5 library.
 
 Build this HDF5 OO Fortran interface with other Meson or CMake.
 The library `libh5oo` is built, link it into your program as usual.
@@ -48,22 +46,31 @@ The library `libh5oo` is built, link it into your program as usual.
 meson build
 
 ninja -C build
+```
 
-ninja test -C build
+Optionally test via:
+```sh
+meson test -C build
 ```
 
 ### CMake
 
 ```sh
-cd build
-cmake ..
+cmake -B build
 
-cmake --build .
+cmake --build build --parallel
+```
+
+Optionally run self-tests:
+```sh
+cd build
 
 ctest -V
 ```
-If you need to specify a particular HDF5 library, use `cmake -DHDF5_ROOT=/path/to/hdf5lib ..`
-
+If you need to specify a particular HDF5 library, use
+```sh
+cmake -DHDF5_ROOT=/path/to/hdf5lib -B build
+```
 
 ## Usage
 
@@ -128,8 +135,10 @@ call h5f%finalize()
 ```
 
 Note the trailing `/` on `/scope/`, that tells the API you are creating a group instead of a variable.
+
 ## Notes
 
 * The first character of the filename should be a character, NOT whitespace to avoid file open/creation errors.
 * Using compilers like PGI or Flang may require first compiling the HDF5 library yourself.
+* Intel compiler HDF5 [compile notes](https://www.hdfgroup.org/downloads/hdf5/source-code/)
 * Polymorphic array rank is implemented by explicit code internally. We could have used pointers, but the code is simple enough to avoid the risk associated with explicit array pointers.

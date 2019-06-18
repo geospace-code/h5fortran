@@ -1,6 +1,8 @@
+!! This submodule is for reading single precision float (32 bit)
 submodule (hdf5_interface:read) read_real32
 
-
+use H5LT, only: HSIZE_T, SIZE_T, H5_REAL_KIND, H5KIND_TO_TYPE
+implicit none
 contains
 
 
