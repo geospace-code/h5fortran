@@ -67,10 +67,13 @@ cd build
 
 ctest -V
 ```
+
 If you need to specify a particular HDF5 library, use
 ```sh
 cmake -DHDF5_ROOT=/path/to/hdf5lib -B build
 ```
+
+or set environment variable `HDF5_ROOT=/path/to/hdf5lib`
 
 ## Usage
 
