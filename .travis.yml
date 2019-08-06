@@ -1,4 +1,4 @@
-language: minimal
+language: python
 group: travis_latest
 dist: xenial
 
@@ -17,17 +17,21 @@ matrix:
   include:
   - os: linux
     env: FC=gfortran-6
-  - os: osx
-    env: FC=gfortran
-    before_install:
-    - brew update > /dev/null
-    - brew upgrade cmake > /dev/null
-    - brew install gcc > /dev/null
-    - brew install hdf5 > /dev/null
+# OSX OK, but move to Azure for speed
+  # - os: osx
+    # env: FC=gfortran
+    # before_install:
+    # - brew update > /dev/null
+    # - brew upgrade cmake > /dev/null
+    # - brew install gcc > /dev/null
+    # - brew install hdf5 > /dev/null
 
-install:
-- cd build
-- cmake ..
-- cmake --build . --parallel
+before_install:
+- git -C $HOME clone https://github.com/mesonbuild/meson
+- python -m pip install -e $HOME/meson
+- curl -Ls https://github.com/ninja-build/ninja/releases/download/v1.9.0/ninja-linux.zip -o ninja-linux.zip
+- sudo unzip ninja-linux.zip -d /usr/local/bin/
 
-script: ctest --parallel --output-on-failure
+install: meson build
+
+script: meson test -C build

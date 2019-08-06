@@ -45,11 +45,6 @@ The library `libh5oo` is built, link it into your program as usual.
 ```sh
 meson build
 
-ninja -C build
-```
-
-Optionally test via:
-```sh
 meson test -C build
 ```
 
