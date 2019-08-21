@@ -6,7 +6,7 @@
 # Object-oriented Fortran 2018 HDF5 interface
 
 Straightforward single-file/module access to HDF5.
-Uses Fortran 2008 `submodule` for clean, templatable structure.
+Uses Fortran 2008 `submodule` for clean template structure.
 This thin object-oriented modern Fortran library abstracts away the messy parts of HDF5 so that you can read/write various types/ranks of data with a single command.
 
 Polymorphic API with read/write for types integer, real32, real64 with rank:
@@ -21,23 +21,24 @@ Tested on systems with HDF5 1.8 and 1.10 including:
 * MacOS (homebrew)
 * Ubuntu 16.04 / 18.04 (gfortran 6 or newer)
 * Windows Subsystem for Linux.
+* Windows MSYS2
 
-Note: Currently, Cygwin does not have Fortran HDF5 libraries.
+Currently, Cygwin does not have *Fortran* HDF5 libraries.
 
 ## Build
 
 Requirements:
 
-* modern Fortran 2008 compiler (such as gfortran &ge; 5.4.1, etc.)
+* modern Fortran 2008 compiler
 * HDF5 Fortran library (1.8 or 1.10)
   * Mac: `brew install gcc hdf5`
   * Linux: `apt install gfortran libhdf5-dev`
   * Windows Subsystem for Linux: `apt install gfortran libhdf5-dev`
+  * Windows MSYS2: `pacman -S mingw-w64-x86_64-hdf5`
 
 Note that some precompiled HDF5 libraries include C / C++ without Fortran.
-We have included a test in the build system to ensure that HDF5 links in Fortran before trying to buidl the OOHDF5 library.
 
-Build this HDF5 OO Fortran interface with other Meson or CMake.
+Build this HDF5 OO Fortran interface with Meson or CMake.
 The library `libh5oo` is built, link it into your program as usual.
 
 ### Meson
@@ -46,6 +47,17 @@ The library `libh5oo` is built, link it into your program as usual.
 meson build
 
 meson test -C build
+```
+
+If HDF5 isn't found, you may need to specify on the command line:
+
+* `-Dh5libdir`: HDF5 library directory
+* `-Dh5incdir`: HDF5 include directory
+
+For MSYS2 this might be like:
+
+```posh
+meson build -Dh5libdir=c:/msys64/mingw64/lib -Dh5incdir=c:/msys64/mingw64/include/static
 ```
 
 ### CMake
@@ -63,7 +75,8 @@ cd build
 ctest -V
 ```
 
-If you need to specify a particular HDF5 library, use
+To specify a particular HDF5 library, use
+
 ```sh
 cmake -DHDF5_ROOT=/path/to/hdf5lib -B build
 ```

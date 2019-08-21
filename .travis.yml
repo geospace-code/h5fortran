@@ -34,4 +34,4 @@ before_install:
 
 install: meson build
 
-script: meson test -C build
+script: meson test -C build -v
