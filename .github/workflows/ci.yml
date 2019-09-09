@@ -1,0 +1,47 @@
+name: ci
+
+on: [push, pull_request]
+
+jobs:
+
+  linuxMeson:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
+    - name: Install Meson
+      run: python -m pip install meson
+    - name: Install packages
+      run: sudo apt install -yq --no-install-recommends ninja-build gfortran libhdf5-dev
+    - name: Meson configure
+      run: meson setup build
+      env:
+        FC: gfortran
+    - name: Meson test
+      run: meson test -C build -v
+    - uses: actions/upload-artifact@v1
+      if: failure()
+      with:
+        name: Linux_Meson_Testlog
+        path: build/meson-logs/testlog.txt
+
+  linuxCmake:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install packages
+      run: sudo apt install -yq --no-install-recommends gfortran libhdf5-dev
+    - name: Cmake configure
+      run: |
+        mkdir build
+        cd build
+        cmake ..
+      env:
+        FC: gfortran
+    - name: Cmake build
+      run: cmake --build build --parallel
+    - name: Cmake test
+      run: ctest -V
+      working-directory: build

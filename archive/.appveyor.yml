@@ -15,4 +15,3 @@ install:
 test_script:
 - cd build
 - ctest --parallel --output-on-failure
-
