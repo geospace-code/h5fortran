@@ -1,7 +1,7 @@
 [![DOI](https://zenodo.org/badge/128736984.svg)](https://zenodo.org/badge/latestdoi/128736984)
 
 [![Actions Status](https://github.com/scivision/oo_hdf5_fortran/workflows/ci/badge.svg)](https://github.com/scivision/oo_hdf5_fortran/actions)
-
+[![Actions Status](https://github.com/scivision/oo_hdf5_fortran/workflows/ci_mac/badge.svg)](https://github.com/scivision/oo_hdf5_fortran/actions)
 
 # Object-oriented Fortran 2018 HDF5 interface
 
@@ -31,7 +31,7 @@ Requirements:
 
 * modern Fortran 2008 compiler
 * HDF5 Fortran library (1.8 or 1.10)
-  * Mac: `brew install gcc hdf5`
+  * Mac / Homebrew: `brew install gcc hdf5`
   * Linux: `apt install gfortran libhdf5-dev`
   * Windows Subsystem for Linux: `apt install gfortran libhdf5-dev`
   * Windows MSYS2: `pacman -S mingw-w64-x86_64-hdf5`

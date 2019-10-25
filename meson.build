@@ -6,11 +6,12 @@ project('Object-oriented HDF5 Fortran', 'fortran',
 subdir('cmake')
 
 subdir('src')
+
 ooh5 = library('oohdf5',
   sources: hdf5_src,
   dependencies: hdf5,
-  include_directories: h5incdir
-)
+  include_directories: h5incdir,
+  install: true)
 
 # --- testing
 subdir('tests')
@@ -19,4 +20,7 @@ shapes = executable('shapes_hdf5', 'tests/GetShape.f90',
   dependencies: hdf5,
   link_with: ooh5,
   fortran_args: quiet)
-test('Shapes', shapes, args: ['p5.h5','group69/flux_node'], is_parallel: false)
+test('Shapes', shapes,
+  args: ['p5.h5','group69/flux_node'],
+  is_parallel: false,
+  timeout: 30)

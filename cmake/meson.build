@@ -1,6 +1,8 @@
 quiet = ['-w']
 
 fc = meson.get_compiler('fortran')
+os = target_machine.system()
+
 f18flag = fc.first_supported_argument(['-std=f2018', '-stand f18', '/stand:f18'])
 if fc.get_id() == 'gcc'
   add_project_arguments('-fimplicit-none', f18flag, language : 'fortran')
@@ -14,30 +16,40 @@ elif fcid == 'pgi'
 endif
 
 
-hdf5 = dependency('hdf5', language : 'fortran', required: false)
-h5incdir = []
-if not hdf5.found()
-  h5libdir = get_option('h5libdir')
-  if h5libdir == ''
+hdf5 = dependency('hdf5', language : 'fortran', required: false, disabler: true)
+if fc.links('use h5lt; end', dependencies: hdf5, name: 'HDF5')
+  subdir_done()
+endif
+
+# HDF5 was not found
+h5incdir = include_directories(get_option('h5incdir'))
+h5libdir = get_option('h5libdir')
+if h5libdir == ''
+  if os == 'darwin'
+    # assume homebrew
+    h5libdir = '/usr/local/opt/hdf5/lib'
+    h5incdir = include_directories('/usr/local/opt/hdf5/include')
+  else
     h5libdir = []
   endif
-  h5incdir = include_directories(get_option('h5incdir'))
-  hdf5_libs = []
-  foreach name : ['hdf5', 'hdf5_fortran', 'hdf5_hl', 'hdf5_hl_fortran', # msys2 names
-                  'hdf5_serial', 'hdf5_serial_fortran',
-                  'hdf5_serial_hl', 'hdf5_serialhl_fortran']
-    lib = fc.find_library(name, required: false, dirs: h5libdir)
-    if lib.found()
-      hdf5_libs += lib
-    endif
-  endforeach
-  if hdf5_libs.length() == 0
-    error('could not find HDF5 library')
-  endif
-  # hdf5 = declare_dependency(dependencies: hdf5_libs, include_directories: h5incdir)  # meson bug?
-  hdf5 = hdf5_libs
 endif
-h5run = fc.run('use h5lt; end', dependencies: hdf5, include_directories: h5incdir, name: 'HDF5 runs')
-if h5run.returncode() != 0
+
+hdf5_libs = []
+foreach name : ['hdf5', 'hdf5_fortran', 'hdf5_hl', 'hdf5_hl_fortran', # msys2 names
+                'hdf5_serial', 'hdf5_serial_fortran',
+                'hdf5_serial_hl', 'hdf5_serialhl_fortran']
+  lib = fc.find_library(name, required: false, dirs: h5libdir)
+  if lib.found()
+    hdf5_libs += lib
+  endif
+endforeach
+
+if hdf5_libs.length() == 0
+  error('could not find HDF5 library')
+endif
+
+hdf5 = hdf5_libs
+
+if not fc.links('use h5lt; end', dependencies: hdf5, include_directories: h5incdir, name: 'HDF5')
   warning('HDF5 possible linking problems: ' +  h5run.stdout() + h5run.stderr())
 endif
