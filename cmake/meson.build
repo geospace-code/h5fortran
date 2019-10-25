@@ -30,6 +30,14 @@ if h5libdir == ''
     # assume homebrew
     h5libdir = '/usr/local/opt/hdf5/lib'
     h5incdir = include_directories('/usr/local/opt/hdf5/include')
+  elif os == 'windows'
+    # assume MSYS2
+    h5libdir = 'c:/msys64/mingw64/lib'
+    if get_option('default_library') == 'static'
+      h5incdir = include_directories('c:/msys64/mingw64/include/static')
+    else
+      h5incdir = include_directories('c:/msys64/mingw64/include/shared')
+    endif
   else
     h5libdir = []
   endif
@@ -45,12 +53,9 @@ foreach name : ['hdf5', 'hdf5_fortran', 'hdf5_hl', 'hdf5_hl_fortran', # msys2 na
   endif
 endforeach
 
-if hdf5_libs.length() == 0
-  error('could not find HDF5 library')
-endif
 
-hdf5 = hdf5_libs
-
-if not fc.links('use h5lt; end', dependencies: hdf5, include_directories: h5incdir, name: 'HDF5')
-  warning('HDF5 possible linking problems: ' +  h5run.stdout() + h5run.stderr())
+if not fc.links('use h5lt; end', dependencies: hdf5_libs, include_directories: h5incdir, name: 'HDF5')
+  hdf5 = disabler()
+else
+  hdf5 = declare_dependency(dependencies: hdf5_libs, include_directories: h5incdir)
 endif

@@ -1,6 +1,6 @@
 [![DOI](https://zenodo.org/badge/128736984.svg)](https://zenodo.org/badge/latestdoi/128736984)
 
-[![Actions Status](https://github.com/scivision/oo_hdf5_fortran/workflows/ci/badge.svg)](https://github.com/scivision/oo_hdf5_fortran/actions)
+[![Actions Status](https://github.com/scivision/oo_hdf5_fortran/workflows/ci_linux/badge.svg)](https://github.com/scivision/oo_hdf5_fortran/actions)
 [![Actions Status](https://github.com/scivision/oo_hdf5_fortran/workflows/ci_mac/badge.svg)](https://github.com/scivision/oo_hdf5_fortran/actions)
 
 # Object-oriented Fortran 2018 HDF5 interface
@@ -54,11 +54,6 @@ If HDF5 isn't found, you may need to specify on the command line:
 * `-Dh5libdir`: HDF5 library directory
 * `-Dh5incdir`: HDF5 include directory
 
-For MSYS2 this might be like:
-
-```posh
-meson build -Dh5libdir=c:/msys64/mingw64/lib -Dh5incdir=c:/msys64/mingw64/include/static
-```
 
 ### CMake
 

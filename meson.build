@@ -10,7 +10,6 @@ subdir('src')
 ooh5 = library('oohdf5',
   sources: hdf5_src,
   dependencies: hdf5,
-  include_directories: h5incdir,
   install: true)
 
 # --- testing
