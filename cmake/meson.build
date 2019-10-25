@@ -18,6 +18,7 @@ endif
 
 hdf5 = dependency('hdf5', language : 'fortran', required: false, disabler: true)
 if fc.links('use h5lt; end', dependencies: hdf5, name: 'HDF5')
+  h5incdir = []
   subdir_done()
 endif
 
