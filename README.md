@@ -6,8 +6,8 @@
 # Object-oriented Fortran 2018 HDF5 interface
 
 Straightforward single-file/module access to HDF5.
-Uses Fortran 2008 `submodule` for clean template structure.
-This thin object-oriented modern Fortran library abstracts away the messy parts of HDF5 so that you can read/write various types/ranks of data with a single command.
+Uses Fortran 2008 `submodule` and `error stop` for clean template structure.
+This easy-to-use, thin object-oriented modern Fortran library abstracts away the messy parts of HDF5 so that you can read/write various types/ranks of data with a single command.
 
 Polymorphic API with read/write for types integer, real32, real64 with rank:
 
@@ -29,7 +29,7 @@ Currently, Cygwin does not have *Fortran* HDF5 libraries.
 
 Requirements:
 
-* modern Fortran 2008 compiler
+* Fortran standard 2018 compiler (this project uses `submodule` and `error stop`)
 * HDF5 Fortran library (1.8 or 1.10)
   * Mac / Homebrew: `brew install gcc hdf5`
   * Linux: `apt install gfortran libhdf5-dev`
@@ -104,10 +104,13 @@ call h5f%add('/value1', 123.)
 call h5f%finalize()
 ```
 
-### Add variable "value1" to existing HDF5 file "test.h5"
+### Add/append variable "value1" to existing HDF5 file "test.h5"
+
+* if file `test.h5` exists, add a variable to it
+* if file `test.h5` does not exist, create it and add a variable to it.
 
 ```fortran
-call h5f%initialize('test.h5',status='old',action='rw')
+call h5f%initialize('test.h5', status='unknown',action='rw')
 
 call h5f%add('/value1', 123.)
 
@@ -139,6 +142,13 @@ call h5f%add('/scope/')
 
 call h5f%finalize()
 ```
+
+## Permissive syntax
+
+We make the hdf5%open(..., status=...) like Fortran open()
+
+* overwrite (truncate) existing file: open with `status='new'` or `status='replace'`
+* append to existing file or create file: `status='old'` or `status='unknown'`
 
 Note the trailing `/` on `/scope/`, that tells the API you are creating a group instead of a variable.
 

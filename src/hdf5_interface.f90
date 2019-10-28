@@ -458,11 +458,11 @@ if(present(action)) laction = toLower(action)
 
 
 select case(lstatus)
-  case ('old')
+  case ('old', 'unknown')
     select case(laction)
       case('read','r')  !< Open an existing file.
         call h5fopen_f(filename,H5F_ACC_RDONLY_F,self%lid,ierr)
-      case('write','readwrite','w','rw')
+      case('write','readwrite','w','rw', 'r+', 'append', 'a')
         call h5fopen_f(filename,H5F_ACC_RDWR_F,self%lid,ierr)
       case default
         error stop 'Error: Unsupported action ->'// laction
