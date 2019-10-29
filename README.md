@@ -1,7 +1,7 @@
 [![DOI](https://zenodo.org/badge/128736984.svg)](https://zenodo.org/badge/latestdoi/128736984)
 
-[![Actions Status](https://github.com/scivision/oo_hdf5_fortran/workflows/ci_linux/badge.svg)](https://github.com/scivision/oo_hdf5_fortran/actions)
-[![Actions Status](https://github.com/scivision/oo_hdf5_fortran/workflows/ci_mac/badge.svg)](https://github.com/scivision/oo_hdf5_fortran/actions)
+[![Actions Status](https://github.com/scivision/h5fortran/workflows/ci_linux/badge.svg)](https://github.com/scivision/h5fortran/actions)
+[![Actions Status](https://github.com/scivision/h5fortran/workflows/ci_mac/badge.svg)](https://github.com/scivision/h5fortran/actions)
 
 # Object-oriented Fortran 2018 HDF5 interface
 
@@ -157,4 +157,4 @@ Note the trailing `/` on `/scope/`, that tells the API you are creating a group 
 * The first character of the filename should be a character, NOT whitespace to avoid file open/creation errors.
 * Using compilers like PGI or Flang may require first compiling the HDF5 library yourself.
 * Intel compiler HDF5 [compile notes](https://www.hdfgroup.org/downloads/hdf5/source-code/)
-* Polymorphic array rank is implemented by explicit code internally. We could have used pointers, but the code is simple enough to avoid the risk associated with explicit array pointers.
+* Polymorphic array rank is implemented by explicit code internally. We could have used pointers, but the code is simple enough to avoid the risk associated with explicit array pointers. Also, `select rank` support requires Gfortran-10 or Intel Fortran 2020, so we didn't want to make too-new compiler restriction.
