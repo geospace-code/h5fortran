@@ -114,6 +114,8 @@ set(h5fortran_BINARY_DIR BINARY_DIR)  # just to avoid accidentally reusing the v
 add_executable(myio myio.f90)
 add_dependencies(myio h5fortran)
 target_link_directories(myio PRIVATE ${h5fortran_BINARY_DIR})
+target_link_libraries(myio PRIVATE h5fortran)
+target_include_directories(myio PRIVATE ${h5fortran_BINARY_DIR})
 ```
 
 ## Usage
