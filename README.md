@@ -6,6 +6,7 @@
 # Object-oriented Fortran 2018 HDF5 interface
 
 Straightforward single-file/module access to HDF5.
+Designed for easy use as a Meson "subproject" or CMake "ExternalProject".
 Uses Fortran 2008 `submodule` and `error stop` for clean template structure.
 This easy-to-use, thin object-oriented modern Fortran library abstracts away the messy parts of HDF5 so that you can read/write various types/ranks of data with a single command.
 
@@ -54,6 +55,23 @@ If HDF5 isn't found, you may need to specify on the command line:
 * `-Dh5libdir`: HDF5 library directory
 * `-Dh5incdir`: HDF5 include directory
 
+To include h5fortran as a Meson subproject, in the master project meson.build (that uses h5fortran) have like:
+
+```meson
+hdf5_proj = subproject('h5fortran')
+hdf5_interface = hdf5_proj.get_variable('hdf5_interface')
+
+my_exe = exectuable('myexe', 'main.f90', dependencies: hdf5_interface)
+```
+
+and have a file in the master project `subprojects/h5fortran.wrap` containing:
+
+```ini
+[wrap-git]
+directory = h5fortran
+url = https://github.com/scivision/h5fortran.git
+revision = head
+```
 
 ### CMake
 
@@ -77,6 +95,26 @@ cmake -DHDF5_ROOT=/path/to/hdf5lib -B build
 ```
 
 or set environment variable `HDF5_ROOT=/path/to/hdf5lib`
+
+To use h5fortran as a CMake ExternalProject do like:
+
+```cmake
+include(ExternalProject)
+
+ExternalProject_Add(h5fortran
+  GIT_REPOSITORY https://github.com/scivision/h5fortran.git
+  GIT_TAG master  # it's better to use a specific Git revision or Git tag for reproducibility
+  INSTALL_COMMAND ""  # disables the install step for the external project
+)
+
+ExternalProject_Get_Property(h5fortran BINARY_DIR)
+set(h5fortran_BINARY_DIR BINARY_DIR)  # just to avoid accidentally reusing the variable name.
+
+# your code "myio"
+add_executable(myio myio.f90)
+add_dependencies(myio h5fortran)
+target_link_directories(myio PRIVATE ${h5fortran_BINARY_DIR})
+```
 
 ## Usage
 

@@ -5,7 +5,7 @@ endif()
 project(hdf5iface
   LANGUAGES Fortran
   VERSION 1.2.0
-  HOMEPAGE_URL https://github.com/scivision/oo_hdf5_fortran/)
+  HOMEPAGE_URL https://github.com/scivision/h5fortran)
 enable_testing()
 
 include(cmake/compilers.cmake)
