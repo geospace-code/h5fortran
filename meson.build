@@ -1,6 +1,6 @@
 project('Object-oriented HDF5 Fortran', 'fortran',
   meson_version : '>=0.51.2',
-  version : '1.2.0',
+  version : '1.3.0',
   default_options : ['default_library=static', 'buildtype=release', 'warning_level=3'])
 
 subdir('cmake')

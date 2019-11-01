@@ -10,7 +10,7 @@ on:
 
 jobs:
 
-  linuxMeson:
+  linuxMesonStatic:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
@@ -19,7 +19,7 @@ jobs:
         python-version: '3.x'
     - run: python -m pip install meson
     - run: sudo apt install -yq --no-install-recommends ninja-build gfortran libhdf5-dev
-    - run: meson setup build
+    - run: meson setup build --default-library=static
       env:
         FC: gfortran
     - run: meson test -C build -v
@@ -28,6 +28,26 @@ jobs:
       with:
         name: Linux_Meson_Testlog
         path: build/meson-logs/testlog.txt
+
+  linuxMesonShared:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-python@v1
+      with:
+        python-version: '3.x'
+    - run: python -m pip install meson
+    - run: sudo apt install -yq --no-install-recommends ninja-build gfortran libhdf5-dev
+    - run: meson setup build --default-library=shared
+      env:
+        FC: gfortran
+    - run: meson test -C build -v
+    - uses: actions/upload-artifact@v1
+      if: failure()
+      with:
+        name: Linux_Meson_Testlog
+        path: build/meson-logs/testlog.txt
+
 
   linuxCmakeStatic:
     runs-on: ubuntu-latest

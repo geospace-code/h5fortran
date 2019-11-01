@@ -6,7 +6,7 @@
 # Object-oriented Fortran 2018 HDF5 interface
 
 Straightforward single-file/module access to HDF5.
-Designed for easy use as a Meson "subproject" or CMake "ExternalProject".
+Designed for easy use as a Meson "subproject" or CMake "ExternalProject" using **static** or **shared** linking.
 Uses Fortran 2008 `submodule` and `error stop` for clean template structure.
 This easy-to-use, thin object-oriented modern Fortran library abstracts away the messy parts of HDF5 so that you can read/write various types/ranks of data with a single command.
 

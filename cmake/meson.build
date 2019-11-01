@@ -15,8 +15,12 @@ elif fcid == 'pgi'
   add_project_arguments('-C', '-Mdclchk', language : 'fortran')
 endif
 
+#== find HDF5
 
-hdf5 = dependency('hdf5', language : 'fortran', required: false, disabler: true)
+use_static = get_option('default_library') == 'static'
+
+
+hdf5 = dependency('hdf5', language : 'fortran', required: false, disabler: true, static: use_static)
 if fc.links('use h5lt; end', dependencies: hdf5, name: 'HDF5')
   h5incdir = []
   subdir_done()
@@ -33,7 +37,7 @@ if h5libdir == ''
   elif os == 'windows'
     # assume MSYS2
     h5libdir = 'c:/msys64/mingw64/lib'
-    if get_option('default_library') == 'static'
+    if use_static
       h5incdir = include_directories('c:/msys64/mingw64/include/static')
     else
       h5incdir = include_directories('c:/msys64/mingw64/include/shared')
@@ -47,7 +51,7 @@ hdf5_libs = []
 foreach name : ['hdf5', 'hdf5_fortran', 'hdf5_hl', 'hdf5_hl_fortran', # msys2 names
                 'hdf5_serial', 'hdf5_serial_fortran',
                 'hdf5_serial_hl', 'hdf5_serialhl_fortran']
-  lib = fc.find_library(name, required: false, dirs: h5libdir)
+  lib = fc.find_library(name, required: false, dirs: h5libdir, static: use_static)
   if lib.found()
     hdf5_libs += lib
   endif
