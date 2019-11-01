@@ -18,8 +18,8 @@ jobs:
       with:
         python-version: '3.x'
     - run: python -m pip install meson
-    - run: brew install ninja gcc hdf5
-    - run: meson setup build
+    - run: brew install ninja pkg-config gcc hdf5
+    - run: meson setup build --default-library=shared
       env:
         FC: gfortran-9
         CC: gcc-9
@@ -35,7 +35,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Install packages
-      run: brew install gcc hdf5
+      run: brew install pkg-config gcc hdf5
     - run: cmake -B build
       env:
         FC: gfortran-9

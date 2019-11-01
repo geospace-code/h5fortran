@@ -17,12 +17,15 @@ endif
 
 #== find HDF5
 
-use_static = get_option('default_library') == 'static'
+# needed for HDF5 on some systems including Ubuntu
+threads = dependency('threads')
 
+use_static = get_option('default_library') == 'static'
 
 hdf5 = dependency('hdf5', language : 'fortran', required: false, disabler: true, static: use_static)
 if fc.links('use h5lt; end', dependencies: hdf5, name: 'HDF5')
   h5incdir = []
+  hdf5 = [hdf5, threads]
   subdir_done()
 endif
 
@@ -61,5 +64,5 @@ endforeach
 if not fc.links('use h5lt; end', dependencies: hdf5_libs, include_directories: h5incdir, name: 'HDF5')
   hdf5 = disabler()
 else
-  hdf5 = declare_dependency(dependencies: hdf5_libs, include_directories: h5incdir)
+  hdf5 = declare_dependency(dependencies: [hdf5_libs, threads], include_directories: h5incdir)
 endif
