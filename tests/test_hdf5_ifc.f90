@@ -36,8 +36,12 @@ call test_write_attributes()
 print *,'PASSED: HDF5 attributes'
 
 call testrwHDF5(ng=69, nn=100, pn=5)
-call test_string_rw()
+print *,'PASSED: HDF5 array write/read'
 
+call test_string_rw()
+print *,'PASSED: HDF5 string write/read'
+
+print *,'OK: HDF5 h5fortran library'
 
 contains
 

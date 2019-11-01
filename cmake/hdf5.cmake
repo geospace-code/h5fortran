@@ -1,16 +1,23 @@
-set(HDF5_USE_STATIC_LIBRARIES ON)
+if(BUILD_SHARED_LIBS)
+  set(HDF5_USE_STATIC_LIBRARIES false)
+else()
+  set(HDF5_USE_STATIC_LIBRARIES true)
+endif()
 
 find_package(HDF5 REQUIRED COMPONENTS Fortran Fortran_HL)
 
 if(WIN32)
   # Needed for MSYS2, this directory wasn't in CMake 3.15.2 FindHDF5
-  if(EXISTS ${HDF5_INCLUDE_DIRS}/static)
+  if(BUILD_SHARED_LIBS)
+    list(APPEND HDF5_INCLUDE_DIRS ${HDF5_INCLUDE_DIRS}/shared)
+  else()
     list(APPEND HDF5_INCLUDE_DIRS ${HDF5_INCLUDE_DIRS}/static)
   endif()
 endif()
 
 message(STATUS "HDF5 includes: ${HDF5_INCLUDE_DIRS} ${HDF5_Fortran_INCLUDE_DIRS}")
-message(STATUS "HDF5 library: ${HDF5_Fortran_LIBRARIES}   H5LT library: ${HDF5_Fortran_HL_LIBRARIES}")
+message(STATUS "HDF5 library: ${HDF5_Fortran_LIBRARIES}")
+message(STATUS "HDF5 H5LT library: ${HDF5_Fortran_HL_LIBRARIES}")
 if(HDF5_Fortran_COMPILER_EXECUTABLE)
   message(STATUS "HDF5 Fortran compiler: ${HDF5_Fortran_COMPILER_EXECUTABLE}")
 endif()

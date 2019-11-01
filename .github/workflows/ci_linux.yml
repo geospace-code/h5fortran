@@ -29,15 +29,32 @@ jobs:
         name: Linux_Meson_Testlog
         path: build/meson-logs/testlog.txt
 
-  linuxCmake:
+  linuxCmakeStatic:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
     - run: sudo apt install -yq --no-install-recommends gfortran libhdf5-dev
-    - run: |
+    - name: CMake configure
+      run: |
         mkdir build
         cd build
-        cmake ..
+        cmake .. -DBUILD_SHARED_LIBS=false
+      env:
+        FC: gfortran
+    - run: cmake --build build --parallel
+    - run: ctest -V
+      working-directory: build
+
+  linuxCmakeShared:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - run: sudo apt install -yq --no-install-recommends gfortran libhdf5-dev
+    - name: CMake configure
+      run: |
+        mkdir build
+        cd build
+        cmake .. -DBUILD_SHARED_LIBS=true
       env:
         FC: gfortran
     - run: cmake --build build --parallel
