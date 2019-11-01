@@ -1,3 +1,5 @@
+set(HDF5_USE_STATIC_LIBRARIES ON)
+
 find_package(HDF5 REQUIRED COMPONENTS Fortran Fortran_HL)
 
 if(WIN32)
@@ -17,7 +19,7 @@ if(HDF5_Fortran_DEFINITIONS)
 endif()
 
 set(CMAKE_REQUIRED_INCLUDES ${HDF5_INCLUDE_DIRS} ${HDF5_Fortran_INCLUDE_DIRS})
-set(CMAKE_REQUIRED_LIBRARIES ${HDF5_Fortran_LIBRARIES} ${HDF5_Fortran_HL_LIBRARIES})
+set(CMAKE_REQUIRED_LIBRARIES ${HDF5_Fortran_HL_LIBRARIES} ${HDF5_Fortran_LIBRARIES})
 
 include(CheckFortranSourceCompiles)
 check_fortran_source_compiles("use h5lt; end" hasHDF5 SRC_EXT f90)
