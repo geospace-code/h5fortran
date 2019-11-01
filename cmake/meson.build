@@ -18,14 +18,16 @@ endif
 #== find HDF5
 
 # needed for HDF5 on some systems including Ubuntu
-threads = dependency('threads')
+threads = dependency('threads', required: false)
+dl = fc.find_library('dl', required: false)
 
 use_static = get_option('default_library') == 'static'
+# NOTE: static: parameter is too strict for now. Works more reliably without this parameter
 
-hdf5 = dependency('hdf5', language : 'fortran', required: false, disabler: true, static: use_static)
+hdf5 = dependency('hdf5', language : 'fortran', required: false, disabler: true)  # , static: use_static
 if fc.links('use h5lt; end', dependencies: hdf5, name: 'HDF5')
   h5incdir = []
-  hdf5 = [hdf5, threads]
+  hdf5 = [hdf5, threads, dl]
   subdir_done()
 endif
 
@@ -54,7 +56,7 @@ hdf5_libs = []
 foreach name : ['hdf5', 'hdf5_fortran', 'hdf5_hl', 'hdf5_hl_fortran', # msys2 names
                 'hdf5_serial', 'hdf5_serial_fortran',
                 'hdf5_serial_hl', 'hdf5_serialhl_fortran']
-  lib = fc.find_library(name, required: false, dirs: h5libdir, static: use_static)
+  lib = fc.find_library(name, required: false, dirs: h5libdir)  # , static: use_static
   if lib.found()
     hdf5_libs += lib
   endif
@@ -64,5 +66,5 @@ endforeach
 if not fc.links('use h5lt; end', dependencies: hdf5_libs, include_directories: h5incdir, name: 'HDF5')
   hdf5 = disabler()
 else
-  hdf5 = declare_dependency(dependencies: [hdf5_libs, threads], include_directories: h5incdir)
+  hdf5 = declare_dependency(dependencies: [hdf5_libs, threads, dl], include_directories: h5incdir)
 endif
