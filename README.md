@@ -40,7 +40,7 @@ Requirements:
 Note that some precompiled HDF5 libraries include C / C++ without Fortran.
 
 Build this HDF5 OO Fortran interface with Meson or CMake.
-The library `libh5oo` is built, link it into your program as usual.
+The library `libh5fortran` is built, link it into your program as usual.
 
 ### Meson
 
@@ -52,8 +52,8 @@ meson test -C build
 
 If HDF5 isn't found, you may need to specify on the command line:
 
-* `-Dh5libdir`: HDF5 library directory
-* `-Dh5incdir`: HDF5 include directory
+* `-Dhdf5_libdir`: HDF5 library directory
+* `-Dhdf5_incdir`: HDF5 include directory
 
 To include h5fortran as a Meson subproject, in the master project meson.build (that uses h5fortran) have like:
 

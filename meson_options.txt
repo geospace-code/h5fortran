@@ -1,2 +1,2 @@
-option('h5libdir', type : 'string', description : 'HDF5 library directory', yield: true)
-option('h5incdir', type : 'string', description : 'HDF5 include directory', yield: true)
+option('hdf5_libdir', type: 'string', description : 'HDF5 library directory', yield: true)
+option('hdf5_incdir', type: 'string', description : 'HDF5 include directory', yield: true)

@@ -1,13 +1,13 @@
-project('Object-oriented HDF5 Fortran', 'fortran',
+project('h5fortran', 'fortran',
   meson_version : '>=0.51.2',
-  version : '1.3.0',
+  version : '1.3.1',
   default_options : ['default_library=static', 'buildtype=release', 'warning_level=3'])
 
-subdir('cmake')
+subdir('meson')
 
 subdir('src')
 
-ooh5 = library('oohdf5',
+ooh5 = library('h5fortran',
   sources: hdf5_src,
   dependencies: hdf5,
   install: true)
