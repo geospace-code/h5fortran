@@ -20,7 +20,7 @@ dname = trim(argv)
 
 inquire(file=fn, exist=exists)
 if (.not. exists) then
-  write(stderr, '(A,A)'), fn, ' is not a file.'
+  write(stderr, *) fn // ' is not a file.'
   error stop 77
 endif
 

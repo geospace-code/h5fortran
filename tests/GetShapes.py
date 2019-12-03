@@ -3,8 +3,11 @@ import shutil
 import subprocess
 import argparse
 import sys
-import h5py
 from pathlib import Path
+try:
+    import h5py
+except ImportError:
+    h5py = None
 
 
 p = argparse.ArgumentParser()
@@ -21,9 +24,10 @@ if shutil.which("h5ls"):
     print("h5ls tool:")
     subprocess.run(["h5ls", f"{fn}/{P.var}"])
 
-with h5py.File(fn, "r") as f:
-    print("h5py")
-    print(f[P.var].shape)
+if h5py is not None:
+    with h5py.File(fn, "r") as f:
+        print("h5py")
+        print(f[P.var].shape)
 
 
 if shutil.which("octave-cli"):
