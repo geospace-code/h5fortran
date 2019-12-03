@@ -1,6 +1,6 @@
 project('h5fortran', 'fortran',
-  meson_version : '>=0.51.2',
-  version : '1.3.1',
+  meson_version : '>=0.52.0',
+  version : '1.4.0',
   default_options : ['default_library=static', 'buildtype=release', 'warning_level=3'])
 
 subdir('meson')
@@ -22,6 +22,15 @@ shapes = executable('shapes_hdf5', 'tests/GetShape.f90',
   fortran_args: quiet)
 
 test('Shapes', shapes,
-  args: ['p5.h5','group69/flux_node'],
+  args: ['p5.h5','/group69/flux_node'],
   is_parallel: false,
+  priority: 100,
   timeout: 30)
+
+python = find_program('python')
+
+test('CheckShapes', python,
+  args: [files('tests/GetShapes.py'), meson.build_root()/'p5.h5', '/group69/flux_node'],
+  is_parallel: false,
+  priority: -100,
+  timeout: 60)
