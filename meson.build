@@ -25,7 +25,7 @@ test('Shapes', shapes,
   args: [meson.build_root()/'p5.h5','/group69/flux_node'],
   is_parallel: false,
   suite: 'h5fortran',
-  priority: 100,
+  priority: -100,
   timeout: 15)
 
 python = find_program('python')

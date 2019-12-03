@@ -4,4 +4,5 @@ testh5 = executable('test_hdf5', 'test_hdf5_ifc.f90',
 test('h5interface', testh5,
   is_parallel: false,
   suite: 'h5fortran',
+  priority: 100,
   timeout: 15)
