@@ -82,6 +82,12 @@ call h5f%initialize('test.h5',status='new',action='w')
 call h5f%add('/scalar_int', 42_int32)
 call h5f%add('/scalar_real', 42._real32)
 
+call h5f%add('/real1',r1)
+
+call h5f%add('/ai1', i1)
+call h5f%finalize()
+
+call h5f%initialize('test.h5',status='old',action='r')
 call h5f%get('/scalar_int', it)
 call h5f%get('/scalar_real', rt)
 if (.not.(rt==it .and. it==42)) then
@@ -89,19 +95,18 @@ if (.not.(rt==it .and. it==42)) then
   error stop 'scalar real / int: not equal 42'
 endif
 
-call h5f%add('/real1',r1)
+
 call h5f%get('/real1',rr1)
 if (.not.all(r1 == rr1)) error stop 'real: read does not match write'
 
-
-call h5f%add('/ai1', i1)
 call h5f%get('/ai1',i1t)
-
-call h5f%finalize()
-
 if (.not.all(i1==i1t)) error stop 'integer 1-D: read does not match write'
 
 if (.not. h5f%filename == 'test.h5') error stop h5f%filename//' mismatch filename'
+
+call h5f%finalize()
+
+
 
 end subroutine testNewHDF5
 
@@ -138,19 +143,18 @@ enddo
 r2 = i2
 
 call h5f%initialize('test.h5',status='old',action='rw',comp_lvl=1)
-
 call h5f%add('/test/group2/ai2', i2)
+call h5f%add('/test/real2', r2)
+call h5f%add('/nan', nan)
+call h5f%finalize()
+
+call h5f%initialize('test.h5',status='old',action='r')
 call h5f%get('/test/group2/ai2',i2t)
 if (.not.all(i2==i2t)) error stop 'read does not match write'
-
-call h5f%add('/test/real2',r2)
 call h5f%get('/test/real2',rr2)
 if (.not.all(r2 == rr2)) error stop 'real: read does not match write'
-
-call h5f%add('/nan',nan)
 call h5f%get('/nan',nant)
 if (.not.ieee_is_nan(nant)) error stop 'failed storing or reading NaN'
-
 call h5f%finalize()
 
 end subroutine testAddHDF5
@@ -165,9 +169,7 @@ real(real32) :: big2(N,N) = 0., big3(N,N,4) = 0.
 
 
 call h5f%initialize('test_deflate.h5',status='new',action='rw',comp_lvl=1)
-
 call h5f%add('/big2', big2, chunk_size=[100,100])
-
 call h5f%finalize()
 
 inquire(file='test_deflate.h5', size=fsize)
@@ -179,9 +181,7 @@ if (h5f%comp_lvl > 0 .and. crat < 10) write(stderr,*) 'warning: 2D low compressi
 
 !======================================
 call h5f%initialize('test_deflate.h5',status='new',action='rw',comp_lvl=1)
-
 call h5f%add('/big3', big3, chunk_size=[100,100,1])
-
 call h5f%finalize()
 
 inquire(file='test_deflate.h5', size=fsize)
@@ -192,9 +192,7 @@ print '(A,F6.2,A,I6)','filesize (Mbytes): ',fsize/1e6, '   3D compression ratio:
 if (h5f%comp_lvl > 0 .and. crat < 10) write(stderr,*) 'warning: 3D low compression'
 !======================================
 call h5f%initialize('test_deflate.h5',status='new',action='rw',comp_lvl=1)
-
 call h5f%add('/ibig3', ibig3, chunk_size=[1000,100,1])
-
 call h5f%finalize()
 
 inquire(file='test_deflate.h5', size=fsize)
@@ -236,14 +234,16 @@ subroutine test_string_rw()
 character(2) :: value
 
 call h5f%initialize('test_string.h5',status='new')
-
 call h5f%add('/little','42')
+call h5f%finalize()
 
+call h5f%initialize('test_string.h5',status='old', action='r')
 call h5f%get('/little',value)
+call h5f%finalize()
 
 if (.not.value=='42') error stop 'string dataset read/write verification failure. Value: '// value
 
-call h5f%finalize()
+
 
 end subroutine test_string_rw
 
