@@ -24,6 +24,7 @@ shapes = executable('shapes_hdf5', 'tests/GetShape.f90',
 test('Shapes', shapes,
   args: [meson.build_root()/'p5.h5','/group69/flux_node'],
   is_parallel: false,
+  suite: 'h5fortran',
   priority: 100,
   timeout: 15)
 
@@ -32,5 +33,6 @@ python = find_program('python')
 test('CheckShapes', python,
   args: [files('tests/GetShapes.py'), meson.build_root()/'p5.h5', '/group69/flux_node'],
   is_parallel: false,
+  suite: 'h5fortran',
   priority: -100,
   timeout: 60)

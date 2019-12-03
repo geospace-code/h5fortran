@@ -175,7 +175,7 @@ crat = (N*N*storage_size(big2)/8) / fsize
 
 print '(A,F6.2,A,I6)','filesize (Mbytes): ',fsize/1e6, '   2D compression ratio:',crat
 
-if (h5f%comp_lvl > 0 .and. crat < 10) print *,'warning: 2D low compression'
+if (h5f%comp_lvl > 0 .and. crat < 10) write(stderr,*) 'warning: 2D low compression'
 
 !======================================
 call h5f%initialize('test_deflate.h5',status='new',action='rw',comp_lvl=1)
@@ -189,7 +189,7 @@ crat = (N*N*storage_size(big3)/8) / fsize
 
 print '(A,F6.2,A,I6)','filesize (Mbytes): ',fsize/1e6, '   3D compression ratio:',crat
 
-if (h5f%comp_lvl > 0 .and. crat < 10) print *,'warning: 3D low compression'
+if (h5f%comp_lvl > 0 .and. crat < 10) write(stderr,*) 'warning: 3D low compression'
 !======================================
 call h5f%initialize('test_deflate.h5',status='new',action='rw',comp_lvl=1)
 
@@ -202,7 +202,7 @@ crat = (N*N*storage_size(ibig3)/8) / fsize
 
 print '(A,F6.2,A,I6)','filesize (Mbytes): ',fsize/1e6, '   3D compression ratio:',crat
 
-if (h5f%comp_lvl > 0 .and. crat < 10) print *,'warning: 3D low compression'
+if (h5f%comp_lvl > 0 .and. crat < 10) write(stderr,*) 'warning: 3D low compression'
 !======================================
 call h5f%initialize('test_deflate.h5',status='new',action='rw',comp_lvl=1)
 
@@ -215,7 +215,7 @@ crat = (N*N*storage_size(ibig2)/8) / fsize
 
 print '(A,F6.2,A,I6)','filesize (Mbytes): ',fsize/1e6, '   3D compression ratio:',crat
 
-if (h5f%comp_lvl > 0 .and. crat < 10) print *,'warning: 3D low compression'
+if (h5f%comp_lvl > 0 .and. crat < 10) write(stderr,*) 'warning: 3D low compression'
 
 end subroutine test_hdf5_deflate
 
