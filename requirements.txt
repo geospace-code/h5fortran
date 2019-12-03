@@ -1,2 +1,3 @@
-meson
+meson >= 0.52
 ninja
+h5py

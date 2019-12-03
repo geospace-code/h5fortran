@@ -4,9 +4,11 @@ on:
   push:
     paths:
       - "**.f90"
+      - ".github/workflows/ci_mac.yml"
   pull_request:
     paths:
       - "**.f90"
+      - ".github/workflows/ci_mac.yml"
 
 jobs:
 
@@ -16,13 +18,14 @@ jobs:
     - uses: actions/checkout@v1
     - uses: actions/setup-python@v1
       with:
-        python-version: '3.x'
-    - run: python -m pip install meson ninja
+        python-version: '3.7'
+    - run: pip install -r requirements.txt
     - run: brew install pkg-config gcc hdf5
     - run: meson setup build --default-library=shared
       env:
         FC: gfortran-9
         CC: gcc-9
+    - run: ninja -C build
     - run: meson test -C build -v
     - uses: actions/upload-artifact@v1
       if: failure()
@@ -34,8 +37,11 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v1
-    - name: Install packages
-      run: brew install pkg-config gcc hdf5
+    - uses: actions/setup-python@v1
+      with:
+        python-version: '3.7'
+    - run: pip install -r requirements.txt
+    - run: brew install pkg-config gcc hdf5
     - run: cmake -B build
       env:
         FC: gfortran-9
