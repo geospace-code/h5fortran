@@ -22,10 +22,10 @@ shapes = executable('shapes_hdf5', 'tests/GetShape.f90',
   fortran_args: quiet)
 
 test('Shapes', shapes,
-  args: ['p5.h5','/group69/flux_node'],
+  args: [meson.build_root()/'p5.h5','/group69/flux_node'],
   is_parallel: false,
   priority: 100,
-  timeout: 30)
+  timeout: 15)
 
 python = find_program('python')
 
