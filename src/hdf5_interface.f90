@@ -429,9 +429,9 @@ public :: hdf5_file, toLower, hsize_t, strip_trailing_null, truncate_string_null
 private
 
 contains
-!=============================================================================
+
 subroutine hdf_initialize(self,filename,status,action,comp_lvl)
-!< Opens hdf5 file
+!! Opens hdf5 file
 
 class(hdf5_file), intent(inout)    :: self
 character(*), intent(in)           :: filename
@@ -448,7 +448,7 @@ if (present(comp_lvl)) self%comp_lvl = comp_lvl
 
 !> Initialize FORTRAN interface.
 call h5open_f(ierr)
-if (ierr /= 0) error stop 'Error: HDF5 library initialize Failed for ' // self%filename
+if (ierr /= 0) error stop 'HDF5 library initialize failed'
 
 lstatus = 'old'
 if(present(status)) lstatus = toLower(status)
@@ -465,15 +465,15 @@ select case(lstatus)
       case('write','readwrite','w','rw', 'r+', 'append', 'a')
         call h5fopen_f(filename,H5F_ACC_RDWR_F,self%lid,ierr)
       case default
-        error stop 'Error: Unsupported action ->'// laction
+        error stop 'Unsupported action ->'// laction
       endselect
   case('new','replace')
-    call h5fcreate_f(filename,H5F_ACC_TRUNC_F,self%lid,ierr)
+    call h5fcreate_f(filename, H5F_ACC_TRUNC_F, self%lid, ierr)
   case default
-    error stop 'Error: Unsupported status ->'// lstatus
+    error stop 'Unsupported status ->'// lstatus
 endselect
 
-if (ierr /= 0) error stop 'Error: HDF5 open/create failed: '//filename
+if (ierr /= 0) error stop 'HDF5 open/create failed for ' // self%filename
 
 end subroutine hdf_initialize
 
@@ -485,11 +485,11 @@ integer :: ierr
 
 !> close hdf5 file
 call h5fclose_f(self%lid, ierr)
-if (ierr /= 0) error stop 'Error: HDF5 file close: '//self%filename
+if (ierr /= 0) error stop 'HDF5 file close: '//self%filename
 
 !>  Close Fortran interface.
 call h5close_f(ierr)
-if (ierr /= 0) error stop 'Error: HDF5 finalization: '//self%filename
+if (ierr /= 0) error stop 'HDF5 library finalization'
 
 end subroutine hdf_finalize
 

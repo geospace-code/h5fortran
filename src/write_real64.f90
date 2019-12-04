@@ -13,28 +13,29 @@ integer         :: ierr
 
 call self%add(dname)
 
-! HDF5 >= 1.10
+!> HDF5 >= 1.10
 !call h5ltmake_dataset_f(self%lid, dname, &
 !   rank(value), int(shape(value),HSIZE_T), h5kind_to_type(kind(value),H5_REAL_KIND), value, ierr)
-!if (ierr /= 0) error stop 'error on dataset '//dname//' write '//self%filename
+!if (ierr /= 0) error stop 'dataset ' // dname // ' write ' // self%filename
 
-! HDF5 1.8 compatbility below:
+!> HDF5 1.8 compatbility below:
 !> create dataspace
 call h5screate_f(H5S_SCALAR_F, sid, ierr)
-if (ierr /= 0) error stop 'error create dataspace '//dname//' write '//self%filename
+if (ierr /= 0) error stop 'create dataspace ' // dname // ' write ' // self%filename
 
 !> create dataset
 call h5dcreate_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), sid, did, ierr)
-if (ierr /= 0) error stop 'error create dataset '//dname//' write '//self%filename
+if (ierr /= 0) error stop 'create dataset ' // dname // ' write ' // self%filename
 
 !> write dataset
 call h5dwrite_f(did, h5kind_to_type(kind(value),H5_REAL_KIND), value, int(shape(value),HSIZE_T), ierr)
-if (ierr /= 0) error stop 'error write dataset '//dname//' write '//self%filename
+if (ierr /= 0) error stop 'write dataset ' // dname // ' write ' // self%filename
 
 !> close space and dataset
 call h5dclose_f(did, ierr)
+if (ierr /= 0) error stop 'close dataset ' // dname // ' write ' // self%filename
 call h5sclose_f(sid, ierr)
-if (ierr /= 0) error stop 'error close dataspace '//dname//' write '//self%filename
+if (ierr /= 0) error stop 'close dataspace ' // dname // ' write ' // self%filename
 
 end procedure hdf_add_real64
 
@@ -47,7 +48,7 @@ call self%add(dname)
 
 call h5ltmake_dataset_f(self%lid, dname, &
   rank(value), int(shape(value),HSIZE_T), h5kind_to_type(kind(value),H5_REAL_KIND), value, ierr)
-if (ierr /= 0) error stop 'error on dataset '//dname//' write '//self%filename
+if (ierr /= 0) error stop 'create dataset ' // dname // ' write ' // self%filename
 
 end procedure hdf_add_real64_1d
 
@@ -58,14 +59,13 @@ integer         :: ierr
 integer(HID_T)  :: dtype
 integer(HSIZE_T) :: dims(rank(value))
 
-
 dims = shape(value)
 dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
 
 call hdf_setup_write(self,dname,dtype,dims, chunk_size)
 
 call h5dwrite_f(self%did, dtype, value, dims, ierr)
-if (ierr /= 0) error stop 'error on dataset '//dname//' write '//self%filename
+if (ierr /= 0) error stop 'dataset ' // dname // ' write ' // self%filename
 
 call hdf_wrapup(self)
 
@@ -85,7 +85,7 @@ dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
 call hdf_setup_write(self,dname,dtype,dims, chunk_size)
 
 call h5dwrite_f(self%did, dtype, value, dims, ierr)
-if (ierr /= 0) error stop 'error on dataset '//dname//' write '//self%filename
+if (ierr /= 0) error stop 'dataset ' //dname// ' write ' //self%filename
 
 call hdf_wrapup(self)
 
@@ -105,7 +105,7 @@ dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
 call hdf_setup_write(self,dname,dtype,dims, chunk_size)
 
 call h5dwrite_f(self%did, dtype, value, dims, ierr)
-if (ierr /= 0) error stop 'error on dataset '//dname//' write '//self%filename
+if (ierr /= 0) error stop 'dataset ' // dname // ' write ' // self%filename
 
 call hdf_wrapup(self)
 
@@ -125,7 +125,7 @@ dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
 call hdf_setup_write(self,dname,dtype,dims, chunk_size)
 
 call h5dwrite_f(self%did, dtype, value, dims, ierr)
-if (ierr /= 0) error stop 'error on dataset '//dname//' write '//self%filename
+if (ierr /= 0) error stop 'dataset ' // dname // ' write ' // self%filename
 
 call hdf_wrapup(self)
 
@@ -145,7 +145,7 @@ dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
 call hdf_setup_write(self,dname,dtype,dims, chunk_size)
 
 call h5dwrite_f(self%did, dtype, value, dims, ierr)
-if (ierr /= 0) error stop 'error on dataset '//dname//' write '//self%filename
+if (ierr /= 0) error stop 'dataset ' //dname// ' write ' //self%filename
 
 call hdf_wrapup(self)
 
@@ -165,7 +165,7 @@ dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
 call hdf_setup_write(self,dname,dtype,dims, chunk_size)
 
 call h5dwrite_f(self%did, dtype, value, dims, ierr)
-if (ierr /= 0) error stop 'error on dataset '//dname//' write '//self%filename
+if (ierr /= 0) error stop 'dataset ' //dname// ' write ' //self%filename
 
 call hdf_wrapup(self)
 
