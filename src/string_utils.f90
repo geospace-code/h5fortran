@@ -3,6 +3,7 @@ module string_utils
 
 use, intrinsic:: iso_c_binding, only: c_null_char
 implicit none
+
 contains
 
 elemental function toLower(str)
@@ -34,11 +35,28 @@ integer :: i
 
 i = len_trim(str)
 if (str(i:i) == c_null_char) then
-  stripped = str(:i-1)
+  stripped = trim(str(:i-1))
 else
-  stripped = str
+  stripped = trim(str)
 endif
 
 end function strip_trailing_null
+
+
+pure function truncate_string_null(str) result(trunc)
+!! truncate string to C_null_char
+
+character(*), intent(in) :: str
+character(:), allocatable :: trunc
+integer :: i
+
+i = index(str, c_null_char)
+if (i > 0) then
+  trunc = trim(str(:i-1))
+else !< didn't find any c_null
+  trunc = trim(str)
+endif
+
+end function truncate_string_null
 
 end module string_utils

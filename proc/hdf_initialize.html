@@ -5,12 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
    
-   <meta name="description" content="object-oriented Fortran 2018 HDF5 interface">
+   <meta name="description" content="Object-oriented Fortran 2018 HDF5 interface">
     
     <meta name="author" content="Michael Hirsch, Ph.D." >
     <link rel="icon" href="../favicon.png">
 
-    <title>hdf_initialize &ndash; object-oriented Fortran 2018 HDF5 interface</title>
+    <title>hdf_initialize &ndash; Object-oriented Fortran 2018 HDF5 interface</title>
 
     <link href="../css/bootstrap.min.css" rel="stylesheet">
     <link href="../css/pygments.css" rel="stylesheet">
@@ -44,7 +44,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="../index.html">object-oriented Fortran 2018 HDF5 interface </a>
+          <a class="navbar-brand" href="../index.html">Object-oriented Fortran 2018 HDF5 interface </a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
@@ -203,7 +203,8 @@ private subroutine hdf_initialize(self, filename, status, action, comp_lvl)
 
 
     
-    <p>Initialize FORTRAN interface.</p>
+    <p>Opens hdf5 file</p>
+<p>Initialize FORTRAN interface.</p>
     
 
     <h3>Arguments</h3>
@@ -324,15 +325,15 @@ private subroutine hdf_initialize(self, filename, status, action, comp_lvl)
 <polygon fill="none" stroke="#000000" points="71,-87 0,-87 0,-63 71,-63 71,-87"/>
 <text text-anchor="middle" x="35.5" y="-72.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#000000">hdf_initialize</text>
 </g>
-<!-- h5open_f -->
+<!-- h5fcreate_f -->
 <g id="proc~~hdf_initialize~~CallsGraph_node2" class="node">
-<title>h5open_f</title>
-<polygon fill="#777777" stroke="#777777" points="169.5,-150 111.5,-150 111.5,-126 169.5,-126 169.5,-150"/>
-<text text-anchor="middle" x="140.5" y="-135.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">h5open_f</text>
+<title>h5fcreate_f</title>
+<polygon fill="#777777" stroke="#777777" points="174,-150 107,-150 107,-126 174,-126 174,-150"/>
+<text text-anchor="middle" x="140.5" y="-135.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">h5fcreate_f</text>
 </g>
-<!-- proc~hdf_initialize&#45;&gt;h5open_f -->
+<!-- proc~hdf_initialize&#45;&gt;h5fcreate_f -->
 <g id="proc~~hdf_initialize~~CallsGraph_edge1" class="edge">
-<title>proc~hdf_initialize&#45;&gt;h5open_f</title>
+<title>proc~hdf_initialize&#45;&gt;h5fcreate_f</title>
 <path fill="none" stroke="#000000" d="M55.7451,-87.147C71.5783,-96.647 93.8018,-109.9811 111.52,-120.612"/>
 <polygon fill="#000000" stroke="#000000" points="109.9414,-123.7465 120.3171,-125.8903 113.5429,-117.744 109.9414,-123.7465"/>
 </g>
@@ -351,27 +352,27 @@ private subroutine hdf_initialize(self, filename, status, action, comp_lvl)
 <path fill="none" stroke="#000000" d="M71.0482,-82.1096C81.4003,-84.1801 92.7374,-86.4475 103.1945,-88.5389"/>
 <polygon fill="#000000" stroke="#000000" points="102.7969,-92.0286 113.2892,-90.5578 104.1698,-85.1646 102.7969,-92.0286"/>
 </g>
-<!-- h5fcreate_f -->
-<g id="proc~~hdf_initialize~~CallsGraph_node4" class="node">
-<title>h5fcreate_f</title>
-<polygon fill="#777777" stroke="#777777" points="174,-66 107,-66 107,-42 174,-42 174,-66"/>
-<text text-anchor="middle" x="140.5" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">h5fcreate_f</text>
-</g>
-<!-- proc~hdf_initialize&#45;&gt;h5fcreate_f -->
-<g id="proc~~hdf_initialize~~CallsGraph_edge3" class="edge">
-<title>proc~hdf_initialize&#45;&gt;h5fcreate_f</title>
-<path fill="none" stroke="#000000" d="M71.0482,-67.8904C79.344,-66.2312 88.2724,-64.4455 96.8735,-62.7253"/>
-<polygon fill="#000000" stroke="#000000" points="97.6433,-66.1407 106.7627,-60.7475 96.2705,-59.2767 97.6433,-66.1407"/>
-</g>
 <!-- h5fopen_f -->
-<g id="proc~~hdf_initialize~~CallsGraph_node5" class="node">
+<g id="proc~~hdf_initialize~~CallsGraph_node4" class="node">
 <title>h5fopen_f</title>
-<polygon fill="#777777" stroke="#777777" points="171,-24 110,-24 110,0 171,0 171,-24"/>
-<text text-anchor="middle" x="140.5" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">h5fopen_f</text>
+<polygon fill="#777777" stroke="#777777" points="171,-66 110,-66 110,-42 171,-42 171,-66"/>
+<text text-anchor="middle" x="140.5" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">h5fopen_f</text>
 </g>
 <!-- proc~hdf_initialize&#45;&gt;h5fopen_f -->
-<g id="proc~~hdf_initialize~~CallsGraph_edge4" class="edge">
+<g id="proc~~hdf_initialize~~CallsGraph_edge3" class="edge">
 <title>proc~hdf_initialize&#45;&gt;h5fopen_f</title>
+<path fill="none" stroke="#000000" d="M71.0482,-67.8904C80.3108,-66.0378 90.362,-64.0276 99.8658,-62.1268"/>
+<polygon fill="#000000" stroke="#000000" points="100.781,-65.5132 109.9004,-60.1199 99.4081,-58.6491 100.781,-65.5132"/>
+</g>
+<!-- h5open_f -->
+<g id="proc~~hdf_initialize~~CallsGraph_node5" class="node">
+<title>h5open_f</title>
+<polygon fill="#777777" stroke="#777777" points="169.5,-24 111.5,-24 111.5,0 169.5,0 169.5,-24"/>
+<text text-anchor="middle" x="140.5" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">h5open_f</text>
+</g>
+<!-- proc~hdf_initialize&#45;&gt;h5open_f -->
+<g id="proc~~hdf_initialize~~CallsGraph_edge4" class="edge">
+<title>proc~hdf_initialize&#45;&gt;h5open_f</title>
 <path fill="none" stroke="#000000" d="M55.7451,-62.853C71.5783,-53.353 93.8018,-40.0189 111.52,-29.388"/>
 <polygon fill="#000000" stroke="#000000" points="113.5429,-32.256 120.3171,-24.1097 109.9414,-26.2535 113.5429,-32.256"/>
 </g>
@@ -510,7 +511,7 @@ private subroutine hdf_initialize(self, filename, status, action, comp_lvl)
             
           </p>
         </div>
-        <div class="col-xs-12 col-md-4 col-md-pull-4"><p class="text-center"> object-oriented Fortran 2018 HDF5 interface was developed by Michael Hirsch, Ph.D.</p></div>
+        <div class="col-xs-12 col-md-4 col-md-pull-4"><p class="text-center"> Object-oriented Fortran 2018 HDF5 interface was developed by Michael Hirsch, Ph.D.</p></div>
       </div>
       <br>
       </div> <!-- /container -->    

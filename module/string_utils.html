@@ -5,12 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
    
-   <meta name="description" content="object-oriented Fortran 2018 HDF5 interface">
+   <meta name="description" content="Object-oriented Fortran 2018 HDF5 interface">
     
     <meta name="author" content="Michael Hirsch, Ph.D." >
     <link rel="icon" href="../favicon.png">
 
-    <title>string_utils &ndash; object-oriented Fortran 2018 HDF5 interface</title>
+    <title>string_utils &ndash; Object-oriented Fortran 2018 HDF5 interface</title>
 
     <link href="../css/bootstrap.min.css" rel="stylesheet">
     <link href="../css/pygments.css" rel="stylesheet">
@@ -44,7 +44,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="../index.html">object-oriented Fortran 2018 HDF5 interface </a>
+          <a class="navbar-brand" href="../index.html">Object-oriented Fortran 2018 HDF5 interface </a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
@@ -126,7 +126,7 @@
      <li><i class="fa fa-list-ol"></i>
        <a data-toggle="tooltip"
     data-placement="bottom" data-html="true"
-    title=" 2.6% of total for modules and submodules.">27 statements</a>
+    title=" 3.6% of total for modules and submodules.">38 statements</a>
      </li> 
      
      
@@ -182,6 +182,8 @@
       <a class="list-group-item" href="../module/string_utils.html#proc-tolower">toLower</a>
       
       <a class="list-group-item" href="../module/string_utils.html#proc-strip_trailing_null">strip_trailing_null</a>
+      
+      <a class="list-group-item" href="../module/string_utils.html#proc-truncate_string_null">truncate_string_null</a>
       
     </div>
   </div>
@@ -393,95 +395,95 @@
 <path fill="none" stroke="#000000" d="M216.8066,-90.5175C208.8867,-92.1244 199.9678,-93.9341 191.0942,-95.7345"/>
 <polygon fill="#000000" stroke="#000000" points="190.255,-92.3334 181.1506,-97.752 191.6469,-99.1936 190.255,-92.3334"/>
 </g>
-<!-- module~read_real64 -->
-<g id="module~~string_utils~~UsedByGraph_node5" class="node">
-<title>module~read_real64</title>
-<g id="a_module~~string_utils~~UsedByGraph_node5"><a xlink:href=".././module/read_real64.html" xlink:title="read_real64">
-<polygon fill="#5bc0de" stroke="#5bc0de" points="377.5,-234 307.5,-234 307.5,-210 377.5,-210 377.5,-234"/>
-<text text-anchor="middle" x="342.5" y="-219.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">read_real64</text>
-</a>
-</g>
-</g>
-<!-- module~read_real64&#45;&gt;module~read -->
-<g id="module~~string_utils~~UsedByGraph_edge4" class="edge">
-<title>module~read_real64&#45;&gt;module~read</title>
-<path fill="none" stroke="#000000" d="M320.7383,-209.8972C316.1125,-207.1128 311.3226,-204.0651 307,-201 292.2216,-190.521 276.6334,-177.4262 264.6601,-166.8746"/>
-<polygon fill="#000000" stroke="#000000" points="266.7937,-164.0876 257.0028,-160.0395 262.1323,-169.3098 266.7937,-164.0876"/>
-</g>
 <!-- module~write_real32 -->
-<g id="module~~string_utils~~UsedByGraph_node6" class="node">
+<g id="module~~string_utils~~UsedByGraph_node5" class="node">
 <title>module~write_real32</title>
-<g id="a_module~~string_utils~~UsedByGraph_node6"><a xlink:href=".././module/write_real32.html" xlink:title="write_real32">
+<g id="a_module~~string_utils~~UsedByGraph_node5"><a xlink:href=".././module/write_real32.html" xlink:title="write_real32">
 <polygon fill="#5bc0de" stroke="#5bc0de" points="378,-108 307,-108 307,-84 378,-84 378,-108"/>
 <text text-anchor="middle" x="342.5" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">write_real32</text>
 </a>
 </g>
 </g>
 <!-- module~write_real32&#45;&gt;module~write -->
-<g id="module~~string_utils~~UsedByGraph_edge9" class="edge">
+<g id="module~~string_utils~~UsedByGraph_edge8" class="edge">
 <title>module~write_real32&#45;&gt;module~write</title>
 <path fill="none" stroke="#000000" d="M306.9392,-92.0287C298.5554,-91.0925 289.5967,-90.092 281.145,-89.1482"/>
 <polygon fill="#000000" stroke="#000000" points="281.4867,-85.6647 271.16,-88.0331 280.7097,-92.6214 281.4867,-85.6647"/>
 </g>
-<!-- module~read_int -->
-<g id="module~~string_utils~~UsedByGraph_node7" class="node">
-<title>module~read_int</title>
-<g id="a_module~~string_utils~~UsedByGraph_node7"><a xlink:href=".././module/read_int.html" xlink:title="read_int">
-<polygon fill="#5bc0de" stroke="#5bc0de" points="369.5,-192 315.5,-192 315.5,-168 369.5,-168 369.5,-192"/>
-<text text-anchor="middle" x="342.5" y="-177.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">read_int</text>
-</a>
-</g>
-</g>
-<!-- module~read_int&#45;&gt;module~read -->
-<g id="module~~string_utils~~UsedByGraph_edge5" class="edge">
-<title>module~read_int&#45;&gt;module~read</title>
-<path fill="none" stroke="#000000" d="M315.3237,-171.1712C304.6654,-167.7085 292.2679,-163.681 280.8274,-159.9642"/>
-<polygon fill="#000000" stroke="#000000" points="281.6798,-156.5611 271.0876,-156.8 279.5169,-163.2186 281.6798,-156.5611"/>
-</g>
 <!-- module~read_real32 -->
-<g id="module~~string_utils~~UsedByGraph_node8" class="node">
+<g id="module~~string_utils~~UsedByGraph_node6" class="node">
 <title>module~read_real32</title>
-<g id="a_module~~string_utils~~UsedByGraph_node8"><a xlink:href=".././module/read_real32.html" xlink:title="read_real32">
-<polygon fill="#5bc0de" stroke="#5bc0de" points="377.5,-150 307.5,-150 307.5,-126 377.5,-126 377.5,-150"/>
-<text text-anchor="middle" x="342.5" y="-135.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">read_real32</text>
+<g id="a_module~~string_utils~~UsedByGraph_node6"><a xlink:href=".././module/read_real32.html" xlink:title="read_real32">
+<polygon fill="#5bc0de" stroke="#5bc0de" points="377.5,-234 307.5,-234 307.5,-210 377.5,-210 377.5,-234"/>
+<text text-anchor="middle" x="342.5" y="-219.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">read_real32</text>
 </a>
 </g>
 </g>
 <!-- module~read_real32&#45;&gt;module~read -->
 <g id="module~~string_utils~~UsedByGraph_edge6" class="edge">
 <title>module~read_real32&#45;&gt;module~read</title>
-<path fill="none" stroke="#000000" d="M307.4952,-141.5538C299.0038,-142.4159 289.8942,-143.3407 281.3011,-144.2131"/>
-<polygon fill="#000000" stroke="#000000" points="280.7471,-140.7512 271.1518,-145.2435 281.4542,-147.7154 280.7471,-140.7512"/>
-</g>
-<!-- module~write_int -->
-<g id="module~~string_utils~~UsedByGraph_node9" class="node">
-<title>module~write_int</title>
-<g id="a_module~~string_utils~~UsedByGraph_node9"><a xlink:href=".././module/write_int.html" xlink:title="write_int">
-<polygon fill="#5bc0de" stroke="#5bc0de" points="369.5,-66 315.5,-66 315.5,-42 369.5,-42 369.5,-66"/>
-<text text-anchor="middle" x="342.5" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">write_int</text>
-</a>
-</g>
-</g>
-<!-- module~write_int&#45;&gt;module~write -->
-<g id="module~~string_utils~~UsedByGraph_edge7" class="edge">
-<title>module~write_int&#45;&gt;module~write</title>
-<path fill="none" stroke="#000000" d="M315.3237,-62.5529C304.6654,-65.9074 292.2679,-69.8091 280.8274,-73.4097"/>
-<polygon fill="#000000" stroke="#000000" points="279.5756,-70.1343 271.0876,-76.475 281.6771,-76.8114 279.5756,-70.1343"/>
+<path fill="none" stroke="#000000" d="M320.7383,-209.8972C316.1125,-207.1128 311.3226,-204.0651 307,-201 292.2216,-190.521 276.6334,-177.4262 264.6601,-166.8746"/>
+<polygon fill="#000000" stroke="#000000" points="266.7937,-164.0876 257.0028,-160.0395 262.1323,-169.3098 266.7937,-164.0876"/>
 </g>
 <!-- module~write_real64 -->
-<g id="module~~string_utils~~UsedByGraph_node10" class="node">
+<g id="module~~string_utils~~UsedByGraph_node7" class="node">
 <title>module~write_real64</title>
-<g id="a_module~~string_utils~~UsedByGraph_node10"><a xlink:href=".././module/write_real64.html" xlink:title="write_real64">
-<polygon fill="#5bc0de" stroke="#5bc0de" points="378,-24 307,-24 307,0 378,0 378,-24"/>
-<text text-anchor="middle" x="342.5" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">write_real64</text>
+<g id="a_module~~string_utils~~UsedByGraph_node7"><a xlink:href=".././module/write_real64.html" xlink:title="write_real64">
+<polygon fill="#5bc0de" stroke="#5bc0de" points="378,-66 307,-66 307,-42 378,-42 378,-66"/>
+<text text-anchor="middle" x="342.5" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">write_real64</text>
 </a>
 </g>
 </g>
 <!-- module~write_real64&#45;&gt;module~write -->
-<g id="module~~string_utils~~UsedByGraph_edge8" class="edge">
+<g id="module~~string_utils~~UsedByGraph_edge7" class="edge">
 <title>module~write_real64&#45;&gt;module~write</title>
+<path fill="none" stroke="#000000" d="M306.9392,-65.1917C298.4633,-67.8593 289.3997,-70.7118 280.8666,-73.3973"/>
+<polygon fill="#000000" stroke="#000000" points="279.648,-70.1115 271.16,-76.4522 281.7495,-76.7886 279.648,-70.1115"/>
+</g>
+<!-- module~write_int -->
+<g id="module~~string_utils~~UsedByGraph_node8" class="node">
+<title>module~write_int</title>
+<g id="a_module~~string_utils~~UsedByGraph_node8"><a xlink:href=".././module/write_int.html" xlink:title="write_int">
+<polygon fill="#5bc0de" stroke="#5bc0de" points="369.5,-24 315.5,-24 315.5,0 369.5,0 369.5,-24"/>
+<text text-anchor="middle" x="342.5" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">write_int</text>
+</a>
+</g>
+</g>
+<!-- module~write_int&#45;&gt;module~write -->
+<g id="module~~string_utils~~UsedByGraph_edge9" class="edge">
+<title>module~write_int&#45;&gt;module~write</title>
 <path fill="none" stroke="#000000" d="M320.76,-24.1336C316.1328,-26.916 311.3369,-29.9552 307,-33 292.4766,-43.1963 277.1,-55.8479 265.1738,-66.1188"/>
 <polygon fill="#000000" stroke="#000000" points="262.7594,-63.5803 257.5213,-72.7896 267.3592,-68.8569 262.7594,-63.5803"/>
+</g>
+<!-- module~read_int -->
+<g id="module~~string_utils~~UsedByGraph_node9" class="node">
+<title>module~read_int</title>
+<g id="a_module~~string_utils~~UsedByGraph_node9"><a xlink:href=".././module/read_int.html" xlink:title="read_int">
+<polygon fill="#5bc0de" stroke="#5bc0de" points="369.5,-192 315.5,-192 315.5,-168 369.5,-168 369.5,-192"/>
+<text text-anchor="middle" x="342.5" y="-177.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">read_int</text>
+</a>
+</g>
+</g>
+<!-- module~read_int&#45;&gt;module~read -->
+<g id="module~~string_utils~~UsedByGraph_edge4" class="edge">
+<title>module~read_int&#45;&gt;module~read</title>
+<path fill="none" stroke="#000000" d="M315.3237,-171.1712C304.6654,-167.7085 292.2679,-163.681 280.8274,-159.9642"/>
+<polygon fill="#000000" stroke="#000000" points="281.6798,-156.5611 271.0876,-156.8 279.5169,-163.2186 281.6798,-156.5611"/>
+</g>
+<!-- module~read_real64 -->
+<g id="module~~string_utils~~UsedByGraph_node10" class="node">
+<title>module~read_real64</title>
+<g id="a_module~~string_utils~~UsedByGraph_node10"><a xlink:href=".././module/read_real64.html" xlink:title="read_real64">
+<polygon fill="#5bc0de" stroke="#5bc0de" points="377.5,-150 307.5,-150 307.5,-126 377.5,-126 377.5,-150"/>
+<text text-anchor="middle" x="342.5" y="-135.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">read_real64</text>
+</a>
+</g>
+</g>
+<!-- module~read_real64&#45;&gt;module~read -->
+<g id="module~~string_utils~~UsedByGraph_edge5" class="edge">
+<title>module~read_real64&#45;&gt;module~read</title>
+<path fill="none" stroke="#000000" d="M307.4952,-141.5538C299.0038,-142.4159 289.8942,-143.3407 281.3011,-144.2131"/>
+<polygon fill="#000000" stroke="#000000" points="280.7471,-140.7512 271.1518,-145.2435 281.4542,-147.7154 280.7471,-140.7512"/>
 </g>
 </g>
 </svg>
@@ -576,6 +578,8 @@
       <a class="list-group-item" href="../module/string_utils.html#proc-tolower">toLower</a>
       
       <a class="list-group-item" href="../module/string_utils.html#proc-strip_trailing_null">strip_trailing_null</a>
+      
+      <a class="list-group-item" href="../module/string_utils.html#proc-truncate_string_null">truncate_string_null</a>
       
     </div>
   </div>
@@ -746,6 +750,74 @@ public pure function <a href='../proc/strip_trailing_null.html'>strip_trailing_n
   </div>
 
     
+    
+  <div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="proc-truncate_string_null"></span><h3>
+public pure function <a href='../proc/truncate_string_null.html'>truncate_string_null</a>(str) result(trunc)
+    
+    
+   
+</h3></div>
+  <div class="panel-body">
+       
+    
+
+
+
+
+
+
+
+<p>truncate string to C_null_char</p>
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>str</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+  
+  
+  
+  
+     <h4>Return Value <small>character(len=:),
+  allocatable</small></h4>
+  
+    
+
+  </div>
+  </div>
+
+    
     </section>
     <br>
     
@@ -771,7 +843,7 @@ public pure function <a href='../proc/strip_trailing_null.html'>strip_trailing_n
             
           </p>
         </div>
-        <div class="col-xs-12 col-md-4 col-md-pull-4"><p class="text-center"> object-oriented Fortran 2018 HDF5 interface was developed by Michael Hirsch, Ph.D.</p></div>
+        <div class="col-xs-12 col-md-4 col-md-pull-4"><p class="text-center"> Object-oriented Fortran 2018 HDF5 interface was developed by Michael Hirsch, Ph.D.</p></div>
       </div>
       <br>
       </div> <!-- /container -->    

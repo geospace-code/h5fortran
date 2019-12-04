@@ -31,7 +31,7 @@ end procedure writeattr
 
 
 module procedure hdf_add_string
-
+!! subroutine hdf_add_string(self, dname, value)
 integer :: ierr
 
 call h5ltmake_dataset_string_f(self%lid, dname, value, ierr)
@@ -52,7 +52,6 @@ call hdf_set_deflate(self, dims)
 
 call h5screate_simple_f(size(dims), dims, self%sid, ierr)
 if (ierr /= 0) error stop 'error on dataspace ' //dname// ' ' //self%filename
-
 call h5dcreate_f(self%lid, dname, dtype, self%sid, self%did, ierr, self%pid)
 if (ierr /= 0) error stop 'error on dataset ' //dname// ' ' //self%filename
 
@@ -68,7 +67,7 @@ integer(HSIZE_T), allocatable :: chunk_size(:)
 ndims = size(dims)
 allocate(chunk_size(ndims))
 
-do concurrent (i=1:ndims)
+do i=1,ndims
   chunk_size(i) = min(self%chunk_size(i), dims(i))
 enddo
 
@@ -76,16 +75,13 @@ if (self%verbose) print *,'dims: ',dims,'chunk size: ',chunk_size
 
 call h5pcreate_f(H5P_DATASET_CREATE_F, self%pid, ierr)
 if (ierr /= 0) error stop 'error creating property '//self%filename
-
 call h5pset_chunk_f(self%pid, ndims, chunk_size, ierr)
 if (ierr /= 0) error stop 'error setting chunk '//self%filename
 
 if (self%comp_lvl < 1 .or. self%comp_lvl > 9) return
 
-
 call h5pset_shuffle_f(self%pid, ierr)
 if (ierr /= 0) error stop 'error enabling Shuffle '//self%filename
-
 call h5pset_deflate_f(self%pid, self%comp_lvl, ierr)
 if (ierr /= 0) error stop 'error enabling Deflate compression '//self%filename
 
@@ -96,7 +92,9 @@ module procedure hdf_wrapup
 integer :: ierr
 
 call h5sclose_f(self%sid, ierr)
+if (ierr /= 0) error stop 'problem closing dataspace in ' // self%filename
 call h5pclose_f(self%pid, ierr)
+if (ierr /= 0) error stop 'problem closing data property in ' // self%filename
 call h5dclose_f(self%did, ierr)
 if (ierr /= 0) error stop 'problem closing dataset in ' // self%filename
 

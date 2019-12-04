@@ -5,12 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
    
-   <meta name="description" content="object-oriented Fortran 2018 HDF5 interface">
+   <meta name="description" content="Object-oriented Fortran 2018 HDF5 interface">
     
     <meta name="author" content="Michael Hirsch, Ph.D." >
     <link rel="icon" href="../favicon.png">
 
-    <title>read &ndash; object-oriented Fortran 2018 HDF5 interface</title>
+    <title>read &ndash; Object-oriented Fortran 2018 HDF5 interface</title>
 
     <link href="../css/bootstrap.min.css" rel="stylesheet">
     <link href="../css/pygments.css" rel="stylesheet">
@@ -44,7 +44,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="../index.html">object-oriented Fortran 2018 HDF5 interface </a>
+          <a class="navbar-brand" href="../index.html">Object-oriented Fortran 2018 HDF5 interface </a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
@@ -126,7 +126,7 @@
      <li><i class="fa fa-list-ol"></i>
        <a data-toggle="tooltip"
     data-placement="bottom" data-html="true"
-    title=" 1.8% of total for modules and submodules.">19 statements</a>
+    title=" 2.0% of total for modules and submodules.">21 statements</a>
      </li> 
      
      
@@ -247,26 +247,11 @@
 <!-- module~read -->
 <g id="module~~read~~UsesGraph_node1" class="node">
 <title>module~read</title>
-<polygon fill="none" stroke="#000000" points="408,-86 354,-86 354,-62 408,-62 408,-86"/>
-<text text-anchor="middle" x="381" y="-71.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#000000">read</text>
-</g>
-<!-- module~hdf5_interface -->
-<g id="module~~read~~UsesGraph_node2" class="node">
-<title>module~hdf5_interface</title>
-<g id="a_module~~read~~UsesGraph_node2"><a xlink:href=".././module/hdf5_interface.html" xlink:title="hdf5_interface">
-<polygon fill="#337ab7" stroke="#337ab7" points="318,-66 237,-66 237,-42 318,-42 318,-66"/>
-<text text-anchor="middle" x="277.5" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">hdf5_interface</text>
-</a>
-</g>
-</g>
-<!-- module~read&#45;&gt;module~hdf5_interface -->
-<g id="module~~read~~UsesGraph_edge2" class="edge">
-<title>module~read&#45;&gt;module~hdf5_interface</title>
-<path fill="none" stroke="#000000" d="M353.8066,-68.7452C345.8867,-67.2148 336.9678,-65.4914 328.0942,-63.7767"/>
-<polygon fill="#000000" stroke="#000000" points="328.6331,-60.3161 318.1506,-61.8552 327.3049,-67.189 328.6331,-60.3161"/>
+<polygon fill="none" stroke="#000000" points="408,-87 354,-87 354,-63 408,-63 408,-87"/>
+<text text-anchor="middle" x="381" y="-72.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#000000">read</text>
 </g>
 <!-- H5LT -->
-<g id="module~~read~~UsesGraph_node3" class="node">
+<g id="module~~read~~UsesGraph_node2" class="node">
 <title>H5LT</title>
 <polygon fill="#337ab7" stroke="#337ab7" points="184.5,-108 130.5,-108 130.5,-84 184.5,-84 184.5,-108"/>
 <text text-anchor="middle" x="157.5" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">H5LT</text>
@@ -274,59 +259,74 @@
 <!-- module~read&#45;&gt;H5LT -->
 <g id="module~~read~~UsesGraph_edge1" class="edge">
 <title>module~read&#45;&gt;H5LT</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M353.5945,-76.6976C313.7746,-80.6173 239.7953,-87.8993 194.9666,-92.312"/>
-<polygon fill="#000000" stroke="#000000" points="194.3887,-88.8519 184.7797,-93.3147 195.0745,-95.8182 194.3887,-88.8519"/>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M353.5945,-77.575C313.7746,-81.3165 239.7953,-88.2676 194.9666,-92.4796"/>
+<polygon fill="#000000" stroke="#000000" points="194.4084,-89.0166 184.7797,-93.4368 195.0633,-95.9859 194.4084,-89.0166"/>
 </g>
-<!-- module~hdf5_interface&#45;&gt;H5LT -->
-<g id="module~~read~~UsesGraph_edge5" class="edge">
-<title>module~hdf5_interface&#45;&gt;H5LT</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M243.1128,-66.0355C227.887,-71.3645 209.9522,-77.6417 194.442,-83.0703"/>
-<polygon fill="#000000" stroke="#000000" points="192.9349,-79.8895 184.6525,-86.4966 195.2474,-86.4965 192.9349,-79.8895"/>
-</g>
-<!-- module~string_utils -->
-<g id="module~~read~~UsesGraph_node4" class="node">
-<title>module~string_utils</title>
-<g id="a_module~~read~~UsesGraph_node4"><a xlink:href=".././module/string_utils.html" xlink:title="string_utils">
-<polygon fill="#337ab7" stroke="#337ab7" points="189.5,-66 125.5,-66 125.5,-42 189.5,-42 189.5,-66"/>
-<text text-anchor="middle" x="157.5" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">string_utils</text>
+<!-- module~hdf5_interface -->
+<g id="module~~read~~UsesGraph_node3" class="node">
+<title>module~hdf5_interface</title>
+<g id="a_module~~read~~UsesGraph_node3"><a xlink:href=".././module/hdf5_interface.html" xlink:title="hdf5_interface">
+<polygon fill="#337ab7" stroke="#337ab7" points="318,-67 237,-67 237,-43 318,-43 318,-67"/>
+<text text-anchor="middle" x="277.5" y="-52.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">hdf5_interface</text>
 </a>
 </g>
 </g>
-<!-- module~hdf5_interface&#45;&gt;module~string_utils -->
-<g id="module~~read~~UsesGraph_edge3" class="edge">
-<title>module~hdf5_interface&#45;&gt;module~string_utils</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M236.8735,-54C224.9883,-54 211.9671,-54 199.9707,-54"/>
-<polygon fill="#000000" stroke="#000000" points="199.7466,-50.5001 189.7466,-54 199.7465,-57.5001 199.7466,-50.5001"/>
+<!-- module~read&#45;&gt;module~hdf5_interface -->
+<g id="module~~read~~UsesGraph_edge2" class="edge">
+<title>module~read&#45;&gt;module~hdf5_interface</title>
+<path fill="none" stroke="#000000" d="M353.8066,-69.7452C345.8867,-68.2148 336.9678,-66.4914 328.0942,-64.7767"/>
+<polygon fill="#000000" stroke="#000000" points="328.6331,-61.3161 318.1506,-62.8552 327.3049,-68.189 328.6331,-61.3161"/>
+</g>
+<!-- module~hdf5_interface&#45;&gt;H5LT -->
+<g id="module~~read~~UsesGraph_edge4" class="edge">
+<title>module~hdf5_interface&#45;&gt;H5LT</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M242.1451,-67.0796C227.0596,-72.2338 209.4585,-78.2475 194.2258,-83.452"/>
+<polygon fill="#000000" stroke="#000000" points="192.9393,-80.1928 184.6081,-86.7381 195.2026,-86.8169 192.9393,-80.1928"/>
 </g>
 <!-- iso_fortran_env -->
-<g id="module~~read~~UsesGraph_node5" class="node">
+<g id="module~~read~~UsesGraph_node4" class="node">
 <title>iso_fortran_env</title>
-<g id="a_module~~read~~UsesGraph_node5"><a xlink:href="http://fortranwiki.org/fortran/show/ISO_FORTRAN_ENV" xlink:title="iso_fortran_env">
-<polygon fill="#337ab7" stroke="#337ab7" points="201,-24 114,-24 114,0 201,0 201,-24"/>
-<text text-anchor="middle" x="157.5" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">iso_fortran_env</text>
+<g id="a_module~~read~~UsesGraph_node4"><a xlink:href="http://fortranwiki.org/fortran/show/ISO_FORTRAN_ENV" xlink:title="iso_fortran_env">
+<polygon fill="#337ab7" stroke="#337ab7" points="201,-66 114,-66 114,-42 201,-42 201,-66"/>
+<text text-anchor="middle" x="157.5" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">iso_fortran_env</text>
 </a>
 </g>
 </g>
 <!-- module~hdf5_interface&#45;&gt;iso_fortran_env -->
-<g id="module~~read~~UsesGraph_edge4" class="edge">
+<g id="module~~read~~UsesGraph_edge3" class="edge">
 <title>module~hdf5_interface&#45;&gt;iso_fortran_env</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M243.1128,-41.9645C230.1833,-37.4392 215.3004,-32.2301 201.6075,-27.4376"/>
-<polygon fill="#000000" stroke="#000000" points="202.487,-24.0373 191.8922,-24.0373 200.1745,-30.6443 202.487,-24.0373"/>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M236.8735,-54.6614C228.7524,-54.5938 220.101,-54.5217 211.6085,-54.4509"/>
+<polygon fill="#000000" stroke="#000000" points="211.4035,-50.9492 201.3746,-54.3656 211.3451,-57.9489 211.4035,-50.9492"/>
+</g>
+<!-- module~string_utils -->
+<g id="module~~read~~UsesGraph_node5" class="node">
+<title>module~string_utils</title>
+<g id="a_module~~read~~UsesGraph_node5"><a xlink:href=".././module/string_utils.html" xlink:title="string_utils">
+<polygon fill="#337ab7" stroke="#337ab7" points="189.5,-24 125.5,-24 125.5,0 189.5,0 189.5,-24"/>
+<text text-anchor="middle" x="157.5" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">string_utils</text>
+</a>
+</g>
+</g>
+<!-- module~hdf5_interface&#45;&gt;module~string_utils -->
+<g id="module~~read~~UsesGraph_edge5" class="edge">
+<title>module~hdf5_interface&#45;&gt;module~string_utils</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M243.754,-42.9077C230.0108,-37.983 213.9786,-32.2382 199.4904,-27.0466"/>
+<polygon fill="#000000" stroke="#000000" points="200.3485,-23.6362 189.754,-23.5577 197.9872,-30.2259 200.3485,-23.6362"/>
 </g>
 <!-- iso_c_binding -->
 <g id="module~~read~~UsesGraph_node6" class="node">
 <title>iso_c_binding</title>
 <g id="a_module~~read~~UsesGraph_node6"><a xlink:href="http://fortranwiki.org/fortran/show/ISO_C_BINDING" xlink:title="iso_c_binding">
-<polygon fill="#337ab7" stroke="#337ab7" points="78,-66 0,-66 0,-42 78,-42 78,-66"/>
-<text text-anchor="middle" x="39" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">iso_c_binding</text>
+<polygon fill="#337ab7" stroke="#337ab7" points="78,-24 0,-24 0,0 78,0 78,-24"/>
+<text text-anchor="middle" x="39" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">iso_c_binding</text>
 </a>
 </g>
 </g>
 <!-- module~string_utils&#45;&gt;iso_c_binding -->
 <g id="module~~read~~UsesGraph_edge6" class="edge">
 <title>module~string_utils&#45;&gt;iso_c_binding</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M125.4322,-54C114.0797,-54 101.0274,-54 88.563,-54"/>
-<polygon fill="#000000" stroke="#000000" points="88.2814,-50.5001 78.2813,-54 88.2813,-57.5001 88.2814,-50.5001"/>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M125.4322,-12C114.0797,-12 101.0274,-12 88.563,-12"/>
+<polygon fill="#000000" stroke="#000000" points="88.2814,-8.5001 78.2813,-12 88.2813,-15.5001 88.2814,-8.5001"/>
 </g>
 </g>
 </svg>
@@ -434,35 +434,35 @@
 <polygon fill="none" stroke="#000000" points="54,-66 0,-66 0,-42 54,-42 54,-66"/>
 <text text-anchor="middle" x="27" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#000000">read</text>
 </g>
-<!-- module~read_real64 -->
-<g id="module~~read~~UsedByGraph_node2" class="node">
-<title>module~read_real64</title>
-<g id="a_module~~read~~UsedByGraph_node2"><a xlink:href=".././module/read_real64.html" xlink:title="read_real64">
-<polygon fill="#5bc0de" stroke="#5bc0de" points="160,-108 90,-108 90,-84 160,-84 160,-108"/>
-<text text-anchor="middle" x="125" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">read_real64</text>
-</a>
-</g>
-</g>
-<!-- module~read_real64&#45;&gt;module~read -->
-<g id="module~~read~~UsedByGraph_edge1" class="edge">
-<title>module~read_real64&#45;&gt;module~read</title>
-<path fill="none" stroke="#000000" d="M96.9171,-83.9645C86.5056,-79.5024 74.5431,-74.3756 63.4906,-69.6388"/>
-<polygon fill="#000000" stroke="#000000" points="64.6441,-66.3253 54.0739,-65.6031 61.8866,-72.7594 64.6441,-66.3253"/>
-</g>
 <!-- module~read_int -->
-<g id="module~~read~~UsedByGraph_node3" class="node">
+<g id="module~~read~~UsedByGraph_node2" class="node">
 <title>module~read_int</title>
-<g id="a_module~~read~~UsedByGraph_node3"><a xlink:href=".././module/read_int.html" xlink:title="read_int">
-<polygon fill="#5bc0de" stroke="#5bc0de" points="152,-66 98,-66 98,-42 152,-42 152,-66"/>
-<text text-anchor="middle" x="125" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">read_int</text>
+<g id="a_module~~read~~UsedByGraph_node2"><a xlink:href=".././module/read_int.html" xlink:title="read_int">
+<polygon fill="#5bc0de" stroke="#5bc0de" points="152,-108 98,-108 98,-84 152,-84 152,-108"/>
+<text text-anchor="middle" x="125" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">read_int</text>
 </a>
 </g>
 </g>
 <!-- module~read_int&#45;&gt;module~read -->
-<g id="module~~read~~UsedByGraph_edge2" class="edge">
+<g id="module~~read~~UsedByGraph_edge1" class="edge">
 <title>module~read_int&#45;&gt;module~read</title>
-<path fill="none" stroke="#000000" d="M97.9616,-54C87.6575,-54 75.7197,-54 64.609,-54"/>
-<polygon fill="#000000" stroke="#000000" points="64.2904,-50.5001 54.2903,-54 64.2903,-57.5001 64.2904,-50.5001"/>
+<path fill="none" stroke="#000000" d="M97.9616,-84.4121C87.3388,-79.8595 74.9797,-74.5627 63.5806,-69.6774"/>
+<polygon fill="#000000" stroke="#000000" points="64.8605,-66.4181 54.2903,-65.6959 62.103,-72.8521 64.8605,-66.4181"/>
+</g>
+<!-- module~read_real64 -->
+<g id="module~~read~~UsedByGraph_node3" class="node">
+<title>module~read_real64</title>
+<g id="a_module~~read~~UsedByGraph_node3"><a xlink:href=".././module/read_real64.html" xlink:title="read_real64">
+<polygon fill="#5bc0de" stroke="#5bc0de" points="160,-66 90,-66 90,-42 160,-42 160,-66"/>
+<text text-anchor="middle" x="125" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">read_real64</text>
+</a>
+</g>
+</g>
+<!-- module~read_real64&#45;&gt;module~read -->
+<g id="module~~read~~UsedByGraph_edge2" class="edge">
+<title>module~read_real64&#45;&gt;module~read</title>
+<path fill="none" stroke="#000000" d="M89.8966,-54C81.6325,-54 72.7936,-54 64.4314,-54"/>
+<polygon fill="#000000" stroke="#000000" points="64.1734,-50.5001 54.1734,-54 64.1734,-57.5001 64.1734,-50.5001"/>
 </g>
 <!-- module~read_real32 -->
 <g id="module~~read~~UsedByGraph_node4" class="node">
@@ -727,7 +727,8 @@ module procedure <a href='../proc/hdf_get_string.html'>hdf_get_string</a> <small
 
 
 
-<p>till buffer is full</p><a href="../proc/hdf_get_string.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+<p>Need to use "buf" variable, even intent(inout) doesn't help without
+ separate "buf" variable</p>
     
     <h4>Arguments</h4>
     
@@ -820,7 +821,7 @@ module procedure <a href='../proc/hdf_get_string.html'>hdf_get_string</a> <small
             
           </p>
         </div>
-        <div class="col-xs-12 col-md-4 col-md-pull-4"><p class="text-center"> object-oriented Fortran 2018 HDF5 interface was developed by Michael Hirsch, Ph.D.</p></div>
+        <div class="col-xs-12 col-md-4 col-md-pull-4"><p class="text-center"> Object-oriented Fortran 2018 HDF5 interface was developed by Michael Hirsch, Ph.D.</p></div>
       </div>
       <br>
       </div> <!-- /container -->    

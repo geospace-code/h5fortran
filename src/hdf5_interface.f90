@@ -4,7 +4,7 @@ use, intrinsic:: iso_fortran_env, only: real32, real64, int32, stderr=>error_uni
 use H5LT, only: HID_T, SIZE_T, HSIZE_T, H5F_ACC_RDONLY_F, H5F_ACC_RDWR_F, H5F_ACC_TRUNC_F, &
     h5open_f, h5close_f, h5gcreate_f, h5gclose_f, h5fopen_f, h5fcreate_f, h5fclose_f, h5lexists_f
 
-use string_utils, only : toLower, strip_trailing_null
+use string_utils, only : toLower, strip_trailing_null, truncate_string_null
 
 implicit none
 
@@ -83,7 +83,7 @@ class(hdf5_file), intent(inout) :: self
 integer(HSIZE_T), intent(in) :: dims(:)
 end subroutine hdf_set_deflate
 
-module subroutine hdf_add_string(self,dname, value)
+module subroutine hdf_add_string(self, dname, value)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname, value
 end subroutine hdf_add_string
@@ -424,14 +424,14 @@ end subroutine writeattr
 end interface
 
 
-public :: hdf5_file, toLower, hsize_t, strip_trailing_null
+public :: hdf5_file, toLower, hsize_t, strip_trailing_null, truncate_string_null
 
 private
 
 contains
-!=============================================================================
+
 subroutine hdf_initialize(self,filename,status,action,comp_lvl)
-!< Opens hdf5 file
+!! Opens hdf5 file
 
 class(hdf5_file), intent(inout)    :: self
 character(*), intent(in)           :: filename
@@ -448,7 +448,7 @@ if (present(comp_lvl)) self%comp_lvl = comp_lvl
 
 !> Initialize FORTRAN interface.
 call h5open_f(ierr)
-if (ierr /= 0) error stop 'Error: HDF5 library initialize Failed for ' // self%filename
+if (ierr /= 0) error stop 'HDF5 library initialize failed'
 
 lstatus = 'old'
 if(present(status)) lstatus = toLower(status)
@@ -458,22 +458,22 @@ if(present(action)) laction = toLower(action)
 
 
 select case(lstatus)
-  case ('old')
+  case ('old', 'unknown')
     select case(laction)
       case('read','r')  !< Open an existing file.
         call h5fopen_f(filename,H5F_ACC_RDONLY_F,self%lid,ierr)
-      case('write','readwrite','w','rw')
+      case('write','readwrite','w','rw', 'r+', 'append', 'a')
         call h5fopen_f(filename,H5F_ACC_RDWR_F,self%lid,ierr)
       case default
-        error stop 'Error: Unsupported action ->'// laction
+        error stop 'Unsupported action ->'// laction
       endselect
   case('new','replace')
-    call h5fcreate_f(filename,H5F_ACC_TRUNC_F,self%lid,ierr)
+    call h5fcreate_f(filename, H5F_ACC_TRUNC_F, self%lid, ierr)
   case default
-    error stop 'Error: Unsupported status ->'// lstatus
+    error stop 'Unsupported status ->'// lstatus
 endselect
 
-if (ierr /= 0) error stop 'Error: HDF5 open/create failed: '//filename
+if (ierr /= 0) error stop 'HDF5 open/create failed for ' // self%filename
 
 end subroutine hdf_initialize
 
@@ -485,11 +485,11 @@ integer :: ierr
 
 !> close hdf5 file
 call h5fclose_f(self%lid, ierr)
-if (ierr /= 0) error stop 'Error: HDF5 file close: '//self%filename
+if (ierr /= 0) error stop 'HDF5 file close: '//self%filename
 
 !>  Close Fortran interface.
 call h5close_f(ierr)
-if (ierr /= 0) error stop 'Error: HDF5 finalization: '//self%filename
+if (ierr /= 0) error stop 'HDF5 library finalization'
 
 end subroutine hdf_finalize
 
