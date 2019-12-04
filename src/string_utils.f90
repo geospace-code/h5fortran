@@ -35,29 +35,27 @@ integer :: i
 
 i = len_trim(str)
 if (str(i:i) == c_null_char) then
-  stripped = str(:i-1)
+  stripped = trim(str(:i-1))
 else
-  stripped = str
+  stripped = trim(str)
 endif
 
 end function strip_trailing_null
 
 
 pure function truncate_string_null(str) result(trunc)
-!! truncate string to C_null
+!! truncate string to C_null_char
 
 character(*), intent(in) :: str
 character(:), allocatable :: trunc
 integer :: i
 
-do i = 1,len_trim(str)
-  if (str(i:i) == c_null_char) then
-    trunc = str(:i-1)
-    return
-  endif
-enddo
-
-trunc = trim(str)  !< didn't find any c_null
+i = index(str, c_null_char)
+if (i > 0) then
+  trunc = trim(str(:i-1))
+else !< didn't find any c_null
+  trunc = trim(str)
+endif
 
 end function truncate_string_null
 
