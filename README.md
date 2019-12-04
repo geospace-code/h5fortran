@@ -21,16 +21,15 @@ Tested on systems with HDF5 1.8 and 1.10 including:
 
 * MacOS (homebrew)
 * Ubuntu 16.04 / 18.04 (gfortran 6 or newer)
-* Windows Subsystem for Linux.
+* Windows Subsystem for Linux
 * Windows MSYS2
 
-Currently, Cygwin does not have *Fortran* HDF5 libraries.
 
 ## Build
 
 Requirements:
 
-* Fortran standard 2018 compiler (this project uses `submodule` and `error stop`)
+* modern Fortran compiler (this project uses `submodule` and `error stop`). For example, Gfortran &ge; 6.
 * HDF5 Fortran library (1.8 or 1.10)
   * Mac / Homebrew: `brew install gcc hdf5`
   * Linux: `apt install gfortran libhdf5-dev`
@@ -38,6 +37,10 @@ Requirements:
   * Windows MSYS2: `pacman -S mingw-w64-x86_64-hdf5`
 
 Note that some precompiled HDF5 libraries include C / C++ without Fortran.
+Platforms that currently do **not** have Fortran HDF5 libraries, and thus will **not** work with h5fortran unless you compile HDF5 library for Fortran include:
+
+* Cygwin
+* Conda
 
 Build this HDF5 OO Fortran interface with Meson or CMake.
 The library `libh5fortran` is built, link it into your program as usual.
@@ -50,11 +53,7 @@ meson build
 meson test -C build
 ```
 
-If HDF5 isn't found, you may need to specify on the command line:
-
-* `-Dhdf5_libdir`: HDF5 library directory
-* `-Dhdf5_incdir`: HDF5 include directory
-
+Meson &ge; 0.53.0 has enhanced HDF5 dependency finding and is recommended.
 To include h5fortran as a Meson subproject, in the master project meson.build (that uses h5fortran) have like:
 
 ```meson
