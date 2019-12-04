@@ -28,7 +28,7 @@ end procedure hdf_get_int
 
 module procedure hdf_get_int_1d
 
-integer(HSIZE_T) :: dims(1)
+integer(HSIZE_T) :: dims(rank(value))
 integer(SIZE_T) :: dsize
 integer :: ierr, dtype
 
@@ -45,7 +45,7 @@ end procedure hdf_get_int_1d
 
 module procedure hdf_get_int_2d
 
-integer(HSIZE_T) :: dims(2)
+integer(HSIZE_T) :: dims(rank(value))
 integer(SIZE_T) :: dsize
 integer :: ierr, dtype
 
@@ -62,7 +62,7 @@ end procedure hdf_get_int_2d
 
 module procedure hdf_get_int_3d
 
-integer(HSIZE_T) :: dims(3)
+integer(HSIZE_T) :: dims(rank(value))
 integer(SIZE_T) :: dsize
 integer :: ierr, dtype
 
