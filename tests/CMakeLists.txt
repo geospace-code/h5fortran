@@ -7,6 +7,7 @@ endif()
 
 add_test(NAME h5oo COMMAND testh5)
 set_tests_properties(h5oo PROPERTIES
+  FIXTURES_SETUP h5files
   TIMEOUT 15)
 
 set(testfile ${CMAKE_CURRENT_BINARY_DIR}/p5.h5)
@@ -18,12 +19,12 @@ target_include_directories(shapes_check PRIVATE ${CMAKE_BINARY_DIR})
 
 add_test(NAME ShapeCheck COMMAND shapes_check ${testfile} /group69/flux_node)
 set_tests_properties(ShapeCheck PROPERTIES
-  FIXTURES_SETUP h5files
+  FIXTURES_REQUIRED h5files
   REQUIRED_FILES ${testfile}
   TIMEOUT 15
   RUN_SERIAL true)
 
-find_package(Python3)
+find_package(Python3 COMPONENTS Interpreter)
 if(Python3_FOUND)
   add_test(NAME PythonShapeCheck
     COMMAND Python3::Interpreter GetShapes.py ${testfile} /group69/flux_node
@@ -31,6 +32,6 @@ if(Python3_FOUND)
   set_tests_properties(PythonShapeCheck PROPERTIES
     FIXTURES_REQUIRED h5files
     REQUIRED_FILES ${testfile}
-    TIMEOUT 15
+    TIMEOUT 60
     RUN_SERIAL true)
 endif(Python3_FOUND)
