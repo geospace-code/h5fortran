@@ -23,18 +23,16 @@ end procedure hdf_get_shape
 
 
 module procedure hdf_get_string
-!! FIXME: need to use another function to read length, as simply reads gibberish after actual data
-!! till buffer is full
+!! Need to use "buf" variable, even intent(inout) doesn't help without
+!! separate "buf" variable
 
 integer :: ierr
-!integer(HSIZE_T), allocatable :: dims(:)
+character(len(value)) :: buf
 
-!> This is a random integer, how to retrieve length of string?
-!call hdf_get_shape(self, dname, dims)
-!print *, dname, dims(1)
-
-call h5ltread_dataset_string_f(self%lid, dname, value, ierr)
+call h5ltread_dataset_string_f(self%lid, dname, buf, ierr)
 if (ierr /= 0) error stop 'error on dataset ' //dname// 'read ' //self%filename
+
+value = buf
 
 end procedure hdf_get_string
 

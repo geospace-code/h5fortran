@@ -31,7 +31,7 @@ end procedure writeattr
 
 
 module procedure hdf_add_string
-
+!! subroutine hdf_add_string(self, dname, value)
 integer :: ierr
 
 call h5ltmake_dataset_string_f(self%lid, dname, value, ierr)

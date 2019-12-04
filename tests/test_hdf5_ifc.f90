@@ -2,7 +2,7 @@
 use, intrinsic:: ieee_arithmetic, only: ieee_value, ieee_quiet_nan, ieee_is_nan
 use, intrinsic:: iso_fortran_env, only: int64, int32, real32, real64, stderr=>error_unit
 use, intrinsic:: iso_c_binding, only: c_null_char
-use hdf5_interface, only: hdf5_file, toLower, strip_trailing_null
+use hdf5_interface, only: hdf5_file, toLower, strip_trailing_null, truncate_string_null
 
 implicit none
 
@@ -19,6 +19,9 @@ do concurrent (i = 1:size(i1))
 enddo
 
 r1 = i1
+
+call test_string_rw()
+print *,'PASSED: HDF5 string write/read'
 
 call test_lowercase()
 print *,'PASSED: HDF5 character'
@@ -38,8 +41,7 @@ print *,'PASSED: HDF5 attributes'
 call testrwHDF5(ng=69, nn=100, pn=5)
 print *,'PASSED: HDF5 array write/read'
 
-call test_string_rw()
-print *,'PASSED: HDF5 string write/read'
+
 
 print *,'OK: HDF5 h5fortran library'
 
@@ -232,18 +234,28 @@ end subroutine test_write_attributes
 subroutine test_string_rw()
 
 character(2) :: value
+character(1024) :: val1k
+character(:), allocatable :: final
+integer :: i
 
-call h5f%initialize('test_string.h5',status='new')
-call h5f%add('/little','42')
+call h5f%initialize('test_string.h5',status='new', action='rw')
+call h5f%add('/little', '42')
+
+call h5f%get('/little', value)
+
+if (value /= '42') error stop 'string dataset read/write verification failure. Value: '// value
+
+!! try reading too much data, then truncating to first C_NULL
+call h5f%get('/little', val1k)
+final = truncate_string_null(val1k)
+
+if (len(final) /= 2) then
+  write(stderr, *) 'trimming str to c_null did not work, got len() = ', len(final)
+  write(stderr, *) iachar(final(3:3))
+  stop 1
+endif
+
 call h5f%finalize()
-
-call h5f%initialize('test_string.h5',status='old', action='r')
-call h5f%get('/little',value)
-call h5f%finalize()
-
-if (.not.value=='42') error stop 'string dataset read/write verification failure. Value: '// value
-
-
 
 end subroutine test_string_rw
 
