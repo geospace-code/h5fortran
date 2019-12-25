@@ -42,7 +42,6 @@ call testrwHDF5(ng=69, nn=100, pn=5)
 print *,'PASSED: HDF5 array write/read'
 
 
-
 print *,'OK: HDF5 h5fortran library'
 
 contains

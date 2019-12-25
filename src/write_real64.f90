@@ -85,7 +85,7 @@ dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
 call hdf_setup_write(self,dname,dtype,dims, chunk_size)
 
 call h5dwrite_f(self%did, dtype, value, dims, ierr)
-if (ierr /= 0) error stop 'dataset ' //dname// ' write ' //self%filename
+if (ierr /= 0) error stop 'dataset ' // dname // ' write ' // self%filename
 
 call hdf_wrapup(self)
 
@@ -145,7 +145,7 @@ dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
 call hdf_setup_write(self,dname,dtype,dims, chunk_size)
 
 call h5dwrite_f(self%did, dtype, value, dims, ierr)
-if (ierr /= 0) error stop 'dataset ' //dname// ' write ' //self%filename
+if (ierr /= 0) error stop 'dataset ' // dname // ' write ' // self%filename
 
 call hdf_wrapup(self)
 
@@ -165,7 +165,7 @@ dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
 call hdf_setup_write(self,dname,dtype,dims, chunk_size)
 
 call h5dwrite_f(self%did, dtype, value, dims, ierr)
-if (ierr /= 0) error stop 'dataset ' //dname// ' write ' //self%filename
+if (ierr /= 0) error stop 'dataset ' // dname // ' write ' // self%filename
 
 call hdf_wrapup(self)
 

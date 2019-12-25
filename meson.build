@@ -35,4 +35,4 @@ test('CheckShapes', python,
   is_parallel: false,
   suite: 'h5fortran',
   priority: -100,
-  timeout: 60)
+  timeout: 30)

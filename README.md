@@ -24,6 +24,7 @@ Tested on systems with HDF5 1.8 and 1.10 including:
 * Windows Subsystem for Linux
 * Windows MSYS2
 
+Currently, Cygwin does not have *Fortran* HDF5 libraries.
 
 ## Build
 

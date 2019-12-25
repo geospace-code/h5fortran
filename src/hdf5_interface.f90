@@ -253,7 +253,7 @@ end subroutine hdf_add_real32_7d
 module subroutine hdf_get_shape(self, dname, dims)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-integer(HSIZE_T), intent(out),allocatable :: dims(:)
+integer(HSIZE_T), intent(out), allocatable :: dims(:)
 end subroutine hdf_get_shape
 
 module subroutine hdf_get_string(self,dname, value)
@@ -423,12 +423,13 @@ end subroutine writeattr
 
 end interface
 
-
+private
 public :: hdf5_file, toLower, hsize_t, strip_trailing_null, truncate_string_null
 
-private
+
 
 contains
+
 
 subroutine hdf_initialize(self,filename,status,action,comp_lvl)
 !! Opens hdf5 file
@@ -448,7 +449,7 @@ if (present(comp_lvl)) self%comp_lvl = comp_lvl
 
 !> Initialize FORTRAN interface.
 call h5open_f(ierr)
-if (ierr /= 0) error stop 'HDF5 library initialize failed'
+if (ierr /= 0) error stop 'HDF5 library initialize'
 
 lstatus = 'old'
 if(present(status)) lstatus = toLower(status)

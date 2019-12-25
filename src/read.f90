@@ -2,8 +2,10 @@
 submodule (hdf5_interface) read
 
 use H5LT, only: h5ltget_dataset_info_f, h5ltread_dataset_f, h5ltget_dataset_info_f, h5ltget_dataset_ndims_f, &
-    h5dopen_f, h5dread_f, h5dclose_f, h5ltread_dataset_string_f
+    h5dopen_f, h5dread_f, h5dclose_f, h5ltread_dataset_string_f, h5ltpath_valid_f
+
 implicit none
+
 contains
 
 
@@ -11,13 +13,17 @@ module procedure hdf_get_shape
 !! must get dims before info, as "dims" must be allocated or segfault occurs.
 integer(SIZE_T) :: dsize
 integer :: ierr, dtype, drank
+logical :: exists
+
+call h5ltpath_valid_f(self%lid, dname, .true., exists, ierr)
+if (.not.exists) error stop dname // ' does not exist in ' // self%filename
 
 call h5ltget_dataset_ndims_f(self%lid, dname, drank, ierr)
-if (ierr /= 0) error stop 'error opening dataset '//dname// ' rank ' //self%filename
+if (ierr /= 0) error stop 'error opening dataset '// dname // ' rank ' // self%filename
 
 allocate(dims(drank))
 call h5ltget_dataset_info_f(self%lid, dname, dims, dtype, dsize, ierr)
-if (ierr /= 0) error stop 'error opening dataset ' //dname// ' info ' //self%filename
+if (ierr /= 0) error stop 'error opening dataset ' // dname // ' info ' // self%filename
 
 end procedure hdf_get_shape
 
@@ -28,9 +34,13 @@ module procedure hdf_get_string
 
 integer :: ierr
 character(len(value)) :: buf
+logical :: exists
+
+call h5ltpath_valid_f(self%lid, dname, .true., exists, ierr)
+if (.not.exists) error stop dname // ' does not exist in ' // self%filename
 
 call h5ltread_dataset_string_f(self%lid, dname, buf, ierr)
-if (ierr /= 0) error stop 'error on dataset ' //dname// 'read ' //self%filename
+if (ierr /= 0) error stop 'error on dataset ' // dname // 'read ' // self%filename
 
 value = buf
 
