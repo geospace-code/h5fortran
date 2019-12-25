@@ -6,11 +6,11 @@ implicit none
 contains
 
 
-module procedure hdf_add_real32
+module procedure hdf_write_real32
 
 integer(HID_T) :: sid,did
 
-call self%add(dname, ierr)
+call self%write(dname, ierr)
 if (ierr /= 0) then
   write(stderr,*) 'ERROR: create ' // dname // ' ' // self%filename
   return
@@ -59,12 +59,12 @@ if (ierr /= 0) then
   return
 endif
 
-end procedure hdf_add_real32
+end procedure hdf_write_real32
 
 
-module procedure hdf_add_real32_1d
+module procedure hdf_write_real32_1d
 
-call self%add(dname, ierr)
+call self%write(dname, ierr)
 if (ierr /= 0) then
   write(stderr,*) 'ERROR: create ' // dname // ' ' // self%filename
   return
@@ -77,39 +77,10 @@ if (ierr /= 0) then
   return
 endif
 
-end procedure hdf_add_real32_1d
+end procedure hdf_write_real32_1d
 
 
-module procedure hdf_add_real32_2d
-
-integer(HID_T)  :: dtype
-integer(HSIZE_T) :: dims(rank(value))
-
-dims = shape(value)
-dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
-
-call hdf_setup_write(self,dname,dtype,dims, ierr, chunk_size)
-if (ierr /= 0) then
-  write(stderr,*) 'ERROR: create ' // dname // ' write ' // self%filename
-  return
-endif
-
-call h5dwrite_f(self%did, dtype, value, dims, ierr)
-if (ierr /= 0) then
-  write(stderr,*) 'ERROR: ' // dname // ' write ' // self%filename
-  return
-endif
-
-call hdf_wrapup(self, ierr)
-if (ierr /= 0) then
-  write(stderr,*) 'ERROR: ' // dname // ' close ' // self%filename
-  return
-endif
-
-end procedure hdf_add_real32_2d
-
-
-module procedure hdf_add_real32_3d
+module procedure hdf_write_real32_2d
 
 integer(HID_T)  :: dtype
 integer(HSIZE_T) :: dims(rank(value))
@@ -135,39 +106,10 @@ if (ierr /= 0) then
   return
 endif
 
-end procedure hdf_add_real32_3d
+end procedure hdf_write_real32_2d
 
 
-module procedure hdf_add_real32_4d
-
-integer(HID_T)  :: dtype
-integer(HSIZE_T) :: dims(rank(value))
-
-dims = shape(value)
-dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
-
-call hdf_setup_write(self,dname,dtype,dims, ierr, chunk_size)
-if (ierr /= 0) then
-  write(stderr,*) 'ERROR: create ' // dname // ' write ' // self%filename
-  return
-endif
-
-call h5dwrite_f(self%did, dtype, value, dims, ierr)
-if (ierr /= 0) then
-  write(stderr,*) 'ERROR: ' // dname // ' write ' // self%filename
-  return
-endif
-
-call hdf_wrapup(self, ierr)
-if (ierr /= 0) then
-  write(stderr,*) 'ERROR: ' // dname // ' close ' // self%filename
-  return
-endif
-
-end procedure hdf_add_real32_4d
-
-
-module procedure hdf_add_real32_5d
+module procedure hdf_write_real32_3d
 
 integer(HID_T)  :: dtype
 integer(HSIZE_T) :: dims(rank(value))
@@ -193,10 +135,10 @@ if (ierr /= 0) then
   return
 endif
 
-end procedure hdf_add_real32_5d
+end procedure hdf_write_real32_3d
 
 
-module procedure hdf_add_real32_6d
+module procedure hdf_write_real32_4d
 
 integer(HID_T)  :: dtype
 integer(HSIZE_T) :: dims(rank(value))
@@ -222,10 +164,68 @@ if (ierr /= 0) then
   return
 endif
 
-end procedure hdf_add_real32_6d
+end procedure hdf_write_real32_4d
 
 
-module procedure hdf_add_real32_7d
+module procedure hdf_write_real32_5d
+
+integer(HID_T)  :: dtype
+integer(HSIZE_T) :: dims(rank(value))
+
+dims = shape(value)
+dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
+
+call hdf_setup_write(self,dname,dtype,dims, ierr, chunk_size)
+if (ierr /= 0) then
+  write(stderr,*) 'ERROR: create ' // dname // ' write ' // self%filename
+  return
+endif
+
+call h5dwrite_f(self%did, dtype, value, dims, ierr)
+if (ierr /= 0) then
+  write(stderr,*) 'ERROR: ' // dname // ' write ' // self%filename
+  return
+endif
+
+call hdf_wrapup(self, ierr)
+if (ierr /= 0) then
+  write(stderr,*) 'ERROR: ' // dname // ' close ' // self%filename
+  return
+endif
+
+end procedure hdf_write_real32_5d
+
+
+module procedure hdf_write_real32_6d
+
+integer(HID_T)  :: dtype
+integer(HSIZE_T) :: dims(rank(value))
+
+dims = shape(value)
+dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
+
+call hdf_setup_write(self,dname,dtype,dims, ierr, chunk_size)
+if (ierr /= 0) then
+  write(stderr,*) 'ERROR: create ' // dname // ' write ' // self%filename
+  return
+endif
+
+call h5dwrite_f(self%did, dtype, value, dims, ierr)
+if (ierr /= 0) then
+  write(stderr,*) 'ERROR: ' // dname // ' write ' // self%filename
+  return
+endif
+
+call hdf_wrapup(self, ierr)
+if (ierr /= 0) then
+  write(stderr,*) 'ERROR: ' // dname // ' close ' // self%filename
+  return
+endif
+
+end procedure hdf_write_real32_6d
+
+
+module procedure hdf_write_real32_7d
 
 integer(HID_T)  :: dtype
 integer(HSIZE_T) :: dims(rank(value))
@@ -252,7 +252,7 @@ if (ierr /= 0) then
   return
 endif
 
-end procedure hdf_add_real32_7d
+end procedure hdf_write_real32_7d
 
 
 end submodule write_real32

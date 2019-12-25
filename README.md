@@ -1,9 +1,9 @@
+# Object-oriented Fortran 2018 HDF5 interface
+
 [![DOI](https://zenodo.org/badge/128736984.svg)](https://zenodo.org/badge/latestdoi/128736984)
 
 [![Actions Status](https://github.com/scivision/h5fortran/workflows/ci_linux/badge.svg)](https://github.com/scivision/h5fortran/actions)
 [![Actions Status](https://github.com/scivision/h5fortran/workflows/ci_mac/badge.svg)](https://github.com/scivision/h5fortran/actions)
-
-# Object-oriented Fortran 2018 HDF5 interface
 
 Straightforward single-file/module access to HDF5.
 Designed for easy use as a Meson "subproject" or CMake "ExternalProject" using **static** or **shared** linking.
@@ -82,6 +82,7 @@ cmake --build build --parallel
 ```
 
 Optionally run self-tests:
+
 ```sh
 cd build
 
@@ -127,21 +128,25 @@ use hdf5_interface, only: hdf5_file
 type(hdf5_file) :: h5f
 ```
 
-
 * gzip compression may be applied for rank &ge; 2 arrays by setting `comp_lvl` to a value betwen 1 and 9.
   Shuffle filter is automatically applied for better compression
 * string attributes may be applied to any variable at time of writing or later.
 * `chunk_size` option may be set for better compression
 
+`integer, intent(out) :: ierr` is a mandatory parameter. It will be non-zero if error detected.
+This value should be checked, particularly for write operations to avoid missing error conditions.
+The design choice to keep `error stop` out of h5fortran was in line with the HDF5 library itself.
+Major Fortran libraries like MPI also make this design choice, perhaps since Fortran doesn't currently
+have exception handling.
 
 ### Create new HDF5 file, with variable "value1"
 
 ```fortran
-call h5f%initialize('test.h5',status='new',action='w')
+call h5f%initialize('test.h5', ierr, status='new',action='w')
 
-call h5f%add('/value1', 123.)
+call h5f%write('/value1', 123., ierr)
 
-call h5f%finalize()
+call h5f%finalize(ierr)
 ```
 
 ### Add/append variable "value1" to existing HDF5 file "test.h5"
@@ -150,11 +155,11 @@ call h5f%finalize()
 * if file `test.h5` does not exist, create it and add a variable to it.
 
 ```fortran
-call h5f%initialize('test.h5', status='unknown',action='rw')
+call h5f%initialize('test.h5', ierr, status='unknown',action='rw')
 
-call h5f%add('/value1', 123.)
+call h5f%write('/value1', 123., ierr)
 
-call h5f%finalize()
+call h5f%finalize(ierr)
 ```
 
 ### Add gzip compressed 3-D array "value2" to existing HDF5 file "test.h5"
@@ -162,25 +167,25 @@ call h5f%finalize()
 ```fortran
 real :: val2(1000,1000,3) = 0.
 
-call h5f%initialize('test.h5', comp_lvl=1)
+call h5f%initialize('test.h5', ierr, comp_lvl=1)
 
-call h5f%add('/value2', val2)
+call h5f%write('/value2', val2, ierr)
 
-call h5f%finalize()
+call h5f%finalize(ierr)
 ```
 
-chunk_size may optionally be set in the `%add()` method.
+chunk_size may optionally be set in the `%write()` method.
 
 ### Create group "scope"
 
 ```fortran
 real :: val2(1000,1000,3) = 0.
 
-call h5f%initialize('test.h5')
+call h5f%initialize('test.h5', ierr)
 
-call h5f%add('/scope/')
+call h5f%write('/scope/', ierr)
 
-call h5f%finalize()
+call h5f%finalize(ierr)
 ```
 
 ## Permissive syntax

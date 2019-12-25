@@ -13,7 +13,7 @@ module procedure writeattr
 
 logical :: exists
 
-call self%add(dname, ierr)
+call self%write(dname, ierr)
 if (ierr /= 0) then
   write(stderr,*) 'ERROR: create ' // dname // ' ' // self%filename
   return
@@ -40,8 +40,8 @@ endif
 end procedure writeattr
 
 
-module procedure hdf_add_string
-!! subroutine hdf_add_string(self, dname, value)
+module procedure hdf_write_string
+!! subroutine hdf_write_string(self, dname, value)
 
 call h5ltmake_dataset_string_f(self%lid, dname, value, ierr)
 if (ierr /= 0) then
@@ -49,12 +49,12 @@ if (ierr /= 0) then
   return
 endif
 
-end procedure hdf_add_string
+end procedure hdf_write_string
 
 
 module procedure hdf_setup_write
 
-call self%add(dname, ierr)
+call self%write(dname, ierr)
 if (ierr /= 0) then
   write(stderr,*) 'ERROR: create ' // dname // ' ' // self%filename
   return

@@ -31,7 +31,7 @@ call testNewHDF5()
 print *,'PASSED: HDF5 scalar real / integer'
 call testGroup()
 print *,'PASSED: HDF5 group'
-call testAddHDF5()
+call testwriteHDF5()
 print *,'PASSED: HDF5 array'
 call test_hdf5_deflate()
 print *,'PASSED: HDF5 compression'
@@ -80,16 +80,16 @@ integer(int32), allocatable :: i1t(:)
 call h5f%initialize('test.h5', ierr, status='new',action='w')
 
 !! scalar tests
-call h5f%add('/scalar_int', 42_int32, ierr)
+call h5f%write('/scalar_int', 42_int32, ierr)
 if (ierr /= 0) error stop 'write scalar int'
 
-call h5f%add('/scalar_real', 42._real32, ierr)
+call h5f%write('/scalar_real', 42._real32, ierr)
 if (ierr /= 0) error stop 'write scalar real32'
 
-call h5f%add('/real1',r1, ierr)
+call h5f%write('/real1',r1, ierr)
 if (ierr /= 0) error stop 'write scalar real32 1d'
 
-call h5f%add('/ai1', i1, ierr)
+call h5f%write('/ai1', i1, ierr)
 if (ierr /= 0) error stop 'write scalar int 1d'
 
 call h5f%finalize(ierr)
@@ -125,14 +125,14 @@ subroutine testGroup
 
 
 call h5f%initialize('test_groups.h5', ierr, status='new',action='rw')
-call h5f%add('/test/', ierr)
+call h5f%write('/test/', ierr)
 if (ierr /= 0) error stop 'create group'
 
 call h5f%open('/test', ierr)
 if (ierr /= 0) error stop 'open group'
-call h5f%add('group3/scalar', 1_int32, ierr)
+call h5f%write('group3/scalar', 1_int32, ierr)
 if (ierr /= 0) error stop 'write 32-bit scalar int'
-call h5f%add('group3/scalar_real', 1._real32, ierr)
+call h5f%write('group3/scalar_real', 1._real32, ierr)
 if (ierr /= 0) error stop 'write 32-bit 1d scalar int'
 call h5f%close(ierr)
 if (ierr /= 0) error stop 'close group'
@@ -143,7 +143,7 @@ if (ierr /= 0) error stop 'write finalize'
 end subroutine testGroup
 
 
-subroutine testAddHDF5()
+subroutine testwriteHDF5()
 !! tests that compression doesn't fail for very small datasets, where it really shouldn't be used (makes file bigger)
 
 integer :: i2(4,4)
@@ -159,9 +159,9 @@ enddo
 r2 = i2
 
 call h5f%initialize('test.h5', ierr, status='old',action='rw',comp_lvl=1)
-call h5f%add('/test/group2/ai2', i2, ierr)
-call h5f%add('/test/real2', r2, ierr)
-call h5f%add('/nan', nan, ierr)
+call h5f%write('/test/group2/ai2', i2, ierr)
+call h5f%write('/test/real2', r2, ierr)
+call h5f%write('/nan', nan, ierr)
 call h5f%finalize(ierr)
 if (ierr /= 0) error stop 'write finalize'
 
@@ -175,7 +175,7 @@ if (.not.ieee_is_nan(nant)) error stop 'failed storing or reading NaN'
 call h5f%finalize(ierr)
 if (ierr /= 0) error stop 'write finalize'
 
-end subroutine testAddHDF5
+end subroutine testwriteHDF5
 
 
 subroutine test_hdf5_deflate()
@@ -187,7 +187,7 @@ real(real32) :: big2(N,N) = 0., big3(N,N,4) = 0.
 
 
 call h5f%initialize('test_deflate.h5', ierr, status='new',action='rw',comp_lvl=1)
-call h5f%add('/big2', big2, ierr, chunk_size=[100,100])
+call h5f%write('/big2', big2, ierr, chunk_size=[100,100])
 call h5f%finalize(ierr)
 if (ierr /= 0) error stop 'write finalize'
 
@@ -200,7 +200,7 @@ if (h5f%comp_lvl > 0 .and. crat < 10) write(stderr,*) 'warning: 2D low compressi
 
 !======================================
 call h5f%initialize('test_deflate.h5', ierr, status='new',action='rw',comp_lvl=1)
-call h5f%add('/big3', big3, ierr, chunk_size=[100,100,1])
+call h5f%write('/big3', big3, ierr, chunk_size=[100,100,1])
 call h5f%finalize(ierr)
 if (ierr /= 0) error stop 'write finalize'
 
@@ -212,7 +212,7 @@ print '(A,F6.2,A,I6)','filesize (Mbytes): ',fsize/1e6, '   3D compression ratio:
 if (h5f%comp_lvl > 0 .and. crat < 10) write(stderr,*) 'warning: 3D low compression'
 !======================================
 call h5f%initialize('test_deflate.h5', ierr, status='new',action='rw',comp_lvl=1)
-call h5f%add('/ibig3', ibig3, ierr, chunk_size=[1000,100,1])
+call h5f%write('/ibig3', ibig3, ierr, chunk_size=[1000,100,1])
 call h5f%finalize(ierr)
 if (ierr /= 0) error stop 'write finalize'
 
@@ -225,7 +225,7 @@ if (h5f%comp_lvl > 0 .and. crat < 10) write(stderr,*) 'warning: 3D low compressi
 !======================================
 call h5f%initialize('test_deflate.h5', ierr, status='new',action='rw',comp_lvl=1)
 
-call h5f%add('/ibig2', ibig2, ierr, chunk_size=[100,100])
+call h5f%write('/ibig2', ibig2, ierr, chunk_size=[100,100])
 
 call h5f%finalize(ierr)
 if (ierr /= 0) error stop 'write finalize'
@@ -261,7 +261,7 @@ character(:), allocatable :: final
 integer :: i
 
 call h5f%initialize('test_string.h5', ierr, status='new', action='rw')
-call h5f%add('/little', '42', ierr)
+call h5f%write('/little', '42', ierr)
 
 call h5f%get('/little', value, ierr)
 
@@ -300,7 +300,7 @@ call h5f%initialize('p'//trim(adjustl(pnc))//'.h5', ierr, status='new',action='w
 
 do i = 1,ng
 write(ic,'(I2)') i
-call h5f%add('/group'//trim(adjustl(ic))//'/flux_node',flux(:ng,i), ierr)
+call h5f%write('/group'//trim(adjustl(ic))//'/flux_node',flux(:ng,i), ierr)
 enddo
 
 call h5f%get('/group1/flux_node',fo, ierr)
