@@ -32,6 +32,6 @@ if(Python3_FOUND)
   set_tests_properties(PythonShapeCheck PROPERTIES
     FIXTURES_REQUIRED h5files
     REQUIRED_FILES ${testfile}
-    TIMEOUT 60
+    TIMEOUT 30
     RUN_SERIAL true)
 endif(Python3_FOUND)

@@ -24,12 +24,13 @@ if (.not. exists) then
   error stop 77
 endif
 
-call h5f%initialize(fn, status='old', action='r')
+call h5f%initialize(fn, ierr, status='old', action='r')
 
-call h5f%shape(dname, dims)
+call h5f%shape(dname, dims, ierr)
 
 print '(/,A,100I8)', 'Fortran dims: ',dims
 
-call h5F%finalize()
+call h5F%finalize(ierr)
+if(ierr/=0) error stop 'finalize'
 
 end program

@@ -9,152 +9,224 @@ contains
 module procedure hdf_add_int
 
 integer(HID_T) :: sid,did
-integer         :: ierr
 
-call self%add(dname)
+call self%add(dname, ierr)
+if (ierr /= 0) then
+  write(stderr,*) 'ERROR: create ' // dname // ' ' // self%filename
+  return
+endif
 
 !> HDF5 >= 1.10
 !call h5ltmake_dataset_f(self%lid, dname, &
 !  rank(value), int(shape(value),HSIZE_T), h5kind_to_type(kind(value),H5_INTEGER_KIND), value, ierr)
-!if (ierr /= 0) error stop 'dataset ' // dname // ' write ' // self%filename
+!if (ierr /= 0) then
+!   write(stderr,*) 'ERROR: ' // dname // ' write ' // self%filename
+!   return
+!endif
 
 !> HDF5 1.8 compatbility below:
 !> create dataspace
 call h5screate_f(H5S_SCALAR_F, sid, ierr)
-if (ierr /= 0) error stop 'create dataspace ' // dname // ' write ' // self%filename
+if (ierr /= 0) then
+  write(stderr,*) 'ERROR: create dataspace ' // dname // ' write ' // self%filename
+  return
+endif
 
 !> create dataset
 call h5dcreate_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), sid, did, ierr)
-if (ierr /= 0) error stop 'create dataset ' // dname // ' write ' // self%filename
+if (ierr /= 0) then
+  write(stderr,*) 'ERROR: create ' // dname // ' write ' // self%filename
+  return
+endif
 
 !> write dataset
 call h5dwrite_f(did, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, int(shape(value),HSIZE_T), ierr)
-if (ierr /= 0) error stop 'write dataset ' // dname // ' write ' // self%filename
+if (ierr /= 0) then
+  write(stderr,*) 'ERROR: ' // dname // ' write ' // self%filename
+  return
+endif
 
 !> close space and dataset
 call h5dclose_f(did, ierr)
-if (ierr /= 0) error stop 'close dataset ' // dname // ' write ' // self%filename
+if (ierr /= 0) then
+  write(stderr,*) 'ERROR: close ' // dname // ' write ' // self%filename
+  return
+endif
+
 call h5sclose_f(sid, ierr)
-if (ierr /= 0) error stop 'close dataspace ' // dname // ' write ' // self%filename
+if (ierr /= 0) then
+  write(stderr,*) 'ERROR: close ' // dname // ' write ' // self%filename
+  return
+endif
 
 end procedure hdf_add_int
 
 
 module procedure hdf_add_int_1d
 
-integer         :: ierr
-
-call self%add(dname)
+call self%add(dname, ierr)
+if (ierr /= 0) then
+  write(stderr,*) 'ERROR: create ' // dname // ' ' // self%filename
+  return
+endif
 
 call h5ltmake_dataset_f(self%lid, dname, &
   rank(value), int(shape(value),HSIZE_T), h5kind_to_type(kind(value),H5_INTEGER_KIND), value, ierr)
-if (ierr /= 0) error stop 'create dataset ' // dname // ' write ' // self%filename
+if (ierr /= 0) then
+  write(stderr,*) 'ERROR: create ' // dname // ' write ' // self%filename
+  return
+endif
 
 end procedure hdf_add_int_1d
 
 
 module procedure hdf_add_int_2d
 
-integer         :: ierr
 integer(HID_T)  :: dtype
 integer(HSIZE_T) :: dims(rank(value))
 
 dims = shape(value)
 dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
 
-call hdf_setup_write(self,dname,dtype,dims, chunk_size)
+call hdf_setup_write(self,dname,dtype,dims, ierr, chunk_size)
+if (ierr /= 0) then
+  write(stderr,*) 'ERROR: create ' // dname // ' write ' // self%filename
+  return
+endif
 
 call h5dwrite_f(self%did, dtype, value, dims, ierr)
-if (ierr /= 0) error stop 'dataset ' // dname // ' write ' // self%filename
+if (ierr /= 0) then
+  write(stderr,*) 'ERROR: ' // dname // ' write ' // self%filename
+  return
+endif
 
-call hdf_wrapup(self)
+call hdf_wrapup(self, ierr)
+if (ierr /= 0) then
+  write(stderr,*) 'ERROR: ' // dname // ' close ' // self%filename
+  return
+endif
 
 end procedure hdf_add_int_2d
 
 
 module procedure hdf_add_int_3d
 
-integer         :: ierr
 integer(HID_T)  :: dtype
 integer(HSIZE_T) :: dims(rank(value))
-
 
 dims = shape(value)
 dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
 
-call hdf_setup_write(self,dname,dtype,dims, chunk_size)
+call hdf_setup_write(self,dname,dtype,dims, ierr, chunk_size)
+if (ierr /= 0) then
+  write(stderr,*) 'ERROR: create ' // dname // ' write ' // self%filename
+  return
+endif
 
 call h5dwrite_f(self%did, dtype, value, dims, ierr)
-if (ierr /= 0) error stop 'dataset ' // dname // ' write ' // self%filename
+if (ierr /= 0) then
+  write(stderr,*) 'ERROR: ' // dname // ' write ' // self%filename
+  return
+endif
 
-call hdf_wrapup(self)
+call hdf_wrapup(self, ierr)
+if (ierr /= 0) then
+  write(stderr,*) 'ERROR: ' // dname // ' close ' // self%filename
+  return
+endif
 
 end procedure hdf_add_int_3d
 
 
 module procedure hdf_add_int_4d
 
-integer         :: ierr
 integer(HID_T)  :: dtype
 integer(HSIZE_T) :: dims(rank(value))
-
 
 dims = shape(value)
 dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
 
-call hdf_setup_write(self,dname,dtype,dims, chunk_size)
+call hdf_setup_write(self,dname,dtype,dims, ierr, chunk_size)
+if (ierr /= 0) then
+  write(stderr,*) 'ERROR: create ' // dname // ' write ' // self%filename
+  return
+endif
 
 call h5dwrite_f(self%did, dtype, value, dims, ierr)
-if (ierr /= 0) error stop 'dataset ' // dname // ' write ' // self%filename
+if (ierr /= 0) then
+  write(stderr,*) 'ERROR: ' // dname // ' write ' // self%filename
+  return
+endif
 
-call hdf_wrapup(self)
+call hdf_wrapup(self, ierr)
+if (ierr /= 0) then
+  write(stderr,*) 'ERROR: ' // dname // ' close ' // self%filename
+  return
+endif
 
 end procedure hdf_add_int_4d
 
 
 module procedure hdf_add_int_5d
 
-integer         :: ierr
 integer(HID_T)  :: dtype
 integer(HSIZE_T) :: dims(rank(value))
-
 
 dims = shape(value)
 dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
 
-call hdf_setup_write(self,dname,dtype,dims, chunk_size)
+call hdf_setup_write(self,dname,dtype,dims, ierr, chunk_size)
+if (ierr /= 0) then
+  write(stderr,*) 'ERROR: create ' // dname // ' write ' // self%filename
+  return
+endif
 
 call h5dwrite_f(self%did, dtype, value, dims, ierr)
-if (ierr /= 0) error stop 'dataset ' // dname // ' write ' // self%filename
+if (ierr /= 0) then
+  write(stderr,*) 'ERROR: ' // dname // ' write ' // self%filename
+  return
+endif
 
-call hdf_wrapup(self)
+call hdf_wrapup(self, ierr)
+if (ierr /= 0) then
+  write(stderr,*) 'ERROR: ' // dname // ' close ' // self%filename
+  return
+endif
 
 end procedure hdf_add_int_5d
 
 
 module procedure hdf_add_int_6d
 
-integer         :: ierr
 integer(HID_T)  :: dtype
 integer(HSIZE_T) :: dims(rank(value))
-
 
 dims = shape(value)
 dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
 
-call hdf_setup_write(self,dname,dtype,dims, chunk_size)
+call hdf_setup_write(self,dname,dtype,dims, ierr, chunk_size)
+if (ierr /= 0) then
+  write(stderr,*) 'ERROR: create ' // dname // ' write ' // self%filename
+  return
+endif
 
 call h5dwrite_f(self%did, dtype, value, dims, ierr)
-if (ierr /= 0) error stop 'dataset ' // dname // ' write ' // self%filename
+if (ierr /= 0) then
+  write(stderr,*) 'ERROR: ' // dname // ' write ' // self%filename
+  return
+endif
 
-call hdf_wrapup(self)
+call hdf_wrapup(self, ierr)
+if (ierr /= 0) then
+  write(stderr,*) 'ERROR: ' // dname // ' close ' // self%filename
+  return
+endif
 
 end procedure hdf_add_int_6d
 
 
 module procedure hdf_add_int_7d
 
-integer         :: ierr
 integer(HID_T)  :: dtype
 integer(HSIZE_T) :: dims(rank(value))
 
@@ -162,12 +234,23 @@ integer(HSIZE_T) :: dims(rank(value))
 dims = shape(value)
 dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
 
-call hdf_setup_write(self,dname,dtype,dims, chunk_size)
+call hdf_setup_write(self,dname,dtype,dims, ierr, chunk_size)
+if (ierr /= 0) then
+  write(stderr,*) 'ERROR: create ' // dname // ' write ' // self%filename
+  return
+endif
 
 call h5dwrite_f(self%did, dtype, value, dims, ierr)
-if (ierr /= 0) error stop 'dataset ' // dname // ' write ' // self%filename
+if (ierr /= 0) then
+  write(stderr,*) 'ERROR: ' // dname // ' write ' // self%filename
+  return
+endif
 
-call hdf_wrapup(self)
+call hdf_wrapup(self, ierr)
+if (ierr /= 0) then
+  write(stderr,*) 'ERROR: ' // dname // ' close ' // self%filename
+  return
+endif
 
 end procedure hdf_add_int_7d
 
