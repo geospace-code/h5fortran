@@ -176,6 +176,18 @@ call h5f%finalize(ierr)
 
 chunk_size may optionally be set in the `%write()` method.
 
+### Read scalar, 3-D array of unknown size
+
+```fortran
+call h5f%initialize('test.h5', ierr, status='old',action='r')
+
+real, allocatable :: A(:,:,:)
+
+call h5f%read('/foo', A)
+
+call h5f%finalize(ierr)
+```
+
 ### Create group "scope"
 
 ```fortran
