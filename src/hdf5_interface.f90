@@ -69,6 +69,13 @@ end type hdf5_file
 !> Submodules
 interface
 
+module subroutine hdf_setup_read(self, dname, dims, ierr)
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: dname
+integer(HSIZE_T), intent(out) :: dims(:)
+integer, intent(out) :: ierr
+end subroutine hdf_setup_read
+
 module subroutine hdf_setup_write(self, dname, dtype, dims, ierr, chunk_size)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
