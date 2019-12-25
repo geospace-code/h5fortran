@@ -41,6 +41,9 @@ print *,'PASSED: HDF5 attributes'
 call testrwHDF5(ng=69, nn=100, pn=5)
 print *,'PASSED: HDF5 array write/read'
 
+call test_writeExistingVariable()
+print *,'PASSED: write existing variable'
+
 
 print *,'OK: HDF5 h5fortran library'
 
@@ -297,6 +300,7 @@ flux = 1.0
 write(pnc,'(I2)') pn
 
 call h5f%initialize('p'//trim(adjustl(pnc))//'.h5', ierr, status='new',action='w')
+if (ierr /= 0) error stop 'write initialize'
 
 do i = 1,ng
 write(ic,'(I2)') i
@@ -310,5 +314,31 @@ call h5f%finalize(ierr)
 if (ierr /= 0) error stop 'write finalize'
 
 end subroutine testrwHDF5
+
+
+subroutine test_writeExistingVariable()
+
+integer :: ierr
+
+call h5f%initialize('overwrite.h5', ierr, status='new',action='w')
+if (ierr /= 0) error stop 'write initialize'
+
+call h5f%write('/scalar_int', 42_int32, ierr)
+if (ierr /= 0) error stop 'write scalar int'
+
+call h5f%finalize(ierr)
+if (ierr /= 0) error stop 'write finalize'
+
+call h5f%initialize('overwrite.h5', ierr, status='old',action='rw')
+if (ierr /= 0) error stop 'write initialize'
+
+call h5f%write('/scalar_int', 42_int32, ierr)
+if (ierr /= 0) error stop 'write scalar int'
+
+call h5f%finalize(ierr)
+if (ierr /= 0) error stop 'write finalize'
+
+
+end subroutine test_writeExistingVariable
 
 end program

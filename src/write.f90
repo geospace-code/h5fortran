@@ -1,7 +1,9 @@
 !! This submodule is for writing HDF5 data via child submodules
 submodule (hdf5_interface) write
 
-use H5LT, only: h5screate_f, h5sclose_f, h5dcreate_f, h5dwrite_f, h5dclose_f, h5ltmake_dataset_f, &
+use H5LT, only: h5screate_f, h5sclose_f, &
+  h5dcreate_f, h5dwrite_f, h5dclose_f, &
+  h5ltmake_dataset_f, &
   h5ltpath_valid_f, h5ltset_attribute_string_f, h5screate_simple_f, &
   h5pset_chunk_f, h5pset_deflate_f, h5pset_shuffle_f, h5pcreate_f, H5P_DATASET_CREATE_F, h5pclose_f, &
   h5ltmake_dataset_string_f, h5gopen_f, h5gclose_f

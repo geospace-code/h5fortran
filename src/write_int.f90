@@ -1,7 +1,7 @@
 !! This submodule is for writing integer HDF5 data
 submodule (hdf5_interface:write) write_int
 
-use H5LT, only: H5S_SCALAR_F, H5_INTEGER_KIND, H5KIND_TO_TYPE
+use H5LT, only: h5dopen_f, H5S_SCALAR_F, H5_INTEGER_KIND, H5KIND_TO_TYPE
 implicit none
 contains
 
@@ -9,34 +9,42 @@ contains
 module procedure hdf_write_int
 
 integer(HID_T) :: sid,did
+logical :: exists
 
-call self%write(dname, ierr)
+call h5ltpath_valid_f(self%lid, dname, .true., exists, ierr)
 if (ierr /= 0) then
-  write(stderr,*) 'ERROR: create ' // dname // ' ' // self%filename
+  write(stderr,*) 'ERROR: ' // dname // ' check exist ' // self%filename
   return
 endif
 
-!> HDF5 >= 1.10
-!call h5ltmake_dataset_f(self%lid, dname, &
-!  rank(value), int(shape(value),HSIZE_T), h5kind_to_type(kind(value),H5_INTEGER_KIND), value, ierr)
-!if (ierr /= 0) then
-!   write(stderr,*) 'ERROR: ' // dname // ' write ' // self%filename
-!   return
-!endif
 
-!> HDF5 1.8 compatbility below:
-!> create dataspace
-call h5screate_f(H5S_SCALAR_F, sid, ierr)
-if (ierr /= 0) then
-  write(stderr,*) 'ERROR: create dataspace ' // dname // ' write ' // self%filename
-  return
-endif
+if(exists) then
+  !> open dataset
+  call h5dopen_f(self%lid, dname, did, ierr)
+  if (ierr /= 0) then
+    write(stderr,*) 'ERROR: open ' // dname // ' ' // self%filename
+    return
+  endif
+else
+  call self%write(dname, ierr)
+  if (ierr /= 0) then
+    write(stderr,*) 'ERROR: create ' // dname // ' ' // self%filename
+    return
+  endif
 
-!> create dataset
-call h5dcreate_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), sid, did, ierr)
-if (ierr /= 0) then
-  write(stderr,*) 'ERROR: create ' // dname // ' write ' // self%filename
-  return
+  !> create dataspace
+  call h5screate_f(H5S_SCALAR_F, sid, ierr)
+  if (ierr /= 0) then
+    write(stderr,*) 'ERROR: create dataspace ' // dname // ' write ' // self%filename
+    return
+  endif
+
+  !> create dataset
+  call h5dcreate_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), sid, did, ierr)
+  if (ierr /= 0) then
+    write(stderr,*) 'ERROR: create ' // dname // ' write ' // self%filename
+    return
+  endif
 endif
 
 !> write dataset
@@ -53,10 +61,12 @@ if (ierr /= 0) then
   return
 endif
 
-call h5sclose_f(sid, ierr)
-if (ierr /= 0) then
-  write(stderr,*) 'ERROR: close ' // dname // ' write ' // self%filename
-  return
+if(exists) then
+  call h5sclose_f(sid, ierr)
+  if (ierr /= 0) then
+    write(stderr,*) 'ERROR: close ' // dname // ' write ' // self%filename
+    return
+  endif
 endif
 
 end procedure hdf_write_int
