@@ -96,14 +96,14 @@ integer, intent(out) :: ierr
 end subroutine hdf_write_string
 
 module subroutine hdf_write_int(self, dname, value, ierr)
-class(hdf5_file), intent(in) :: self
+class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 integer(int32), intent(in) :: value
 integer, intent(out) :: ierr
 end subroutine hdf_write_int
 
 module subroutine hdf_write_int_1d(self,dname,value, ierr)
-class(hdf5_file), intent(in) :: self
+class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 integer(int32), intent(in) :: value(:)
 integer, intent(out) :: ierr
@@ -506,6 +506,9 @@ integer, intent(in), optional      :: comp_lvl
 character(:), allocatable :: lstatus, laction
 logical :: exists
 
+self%pid = 0
+self%sid = 0
+!! arbitrary sentinel values, telling us it hasn't been used by HDF5
 self%filename = filename
 
 if (present(comp_lvl)) self%comp_lvl = comp_lvl

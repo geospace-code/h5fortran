@@ -326,17 +326,23 @@ if (ierr /= 0) error stop 'write initialize'
 call h5f%write('/scalar_int', 42_int32, ierr)
 if (ierr /= 0) error stop 'write scalar int'
 
+call h5f%write('/int1d', [42_int32, 1_int32], ierr)
+if (ierr /= 0) error stop 'write 1D int'
+
 call h5f%finalize(ierr)
 if (ierr /= 0) error stop 'write finalize'
 
 call h5f%initialize('overwrite.h5', ierr, status='old',action='rw')
-if (ierr /= 0) error stop 'write initialize'
+if (ierr /= 0) error stop 'overwrite initialize'
 
-call h5f%write('/scalar_int', 42_int32, ierr)
-if (ierr /= 0) error stop 'write scalar int'
+call h5f%write('/scalar_int', 100_int32, ierr)
+if (ierr /= 0) error stop 'overwrite scalar int'
+
+call h5f%write('/int1d', [100_int32, 10_int32], ierr)
+if (ierr /= 0) error stop 'overwrite 1D int'
 
 call h5f%finalize(ierr)
-if (ierr /= 0) error stop 'write finalize'
+if (ierr /= 0) error stop 'overwrite finalize'
 
 
 end subroutine test_writeExistingVariable
