@@ -38,7 +38,7 @@ endif
 end procedure hdf_get_shape
 
 
-module procedure hdf_get_string
+module procedure hdf_read_string
 !! Need to use "buf" variable, even intent(inout) doesn't help without
 !! separate "buf" variable
 
@@ -60,7 +60,7 @@ endif
 
 value = buf
 
-end procedure hdf_get_string
+end procedure hdf_read_string
 
 
 end submodule read

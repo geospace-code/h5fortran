@@ -96,18 +96,18 @@ call h5f%finalize(ierr)
 if (ierr /= 0) error stop 'write finalize'
 
 call h5f%initialize('test.h5', ierr, status='old',action='r')
-call h5f%get('/scalar_int', it, ierr)
-call h5f%get('/scalar_real', rt, ierr)
+call h5f%read('/scalar_int', it, ierr)
+call h5f%read('/scalar_real', rt, ierr)
 if (.not.(rt==it .and. it==42)) then
   write(stderr,*) it,'/=',rt
   error stop 'scalar real / int: not equal 42'
 endif
 
 
-call h5f%get('/real1',rr1, ierr)
+call h5f%read('/real1',rr1, ierr)
 if (.not.all(r1 == rr1)) error stop 'real: read does not match write'
 
-call h5f%get('/ai1',i1t, ierr)
+call h5f%read('/ai1',i1t, ierr)
 if (.not.all(i1==i1t)) error stop 'integer 1-D: read does not match write'
 
 if (.not. h5f%filename == 'test.h5') then
@@ -166,11 +166,11 @@ call h5f%finalize(ierr)
 if (ierr /= 0) error stop 'write finalize'
 
 call h5f%initialize('test.h5', ierr,status='old',action='r')
-call h5f%get('/test/group2/ai2',i2t, ierr)
+call h5f%read('/test/group2/ai2',i2t, ierr)
 if (.not.all(i2==i2t)) error stop 'read does not match write'
-call h5f%get('/test/real2',rr2, ierr)
+call h5f%read('/test/real2',rr2, ierr)
 if (.not.all(r2 == rr2)) error stop 'real: read does not match write'
-call h5f%get('/nan',nant, ierr)
+call h5f%read('/nan',nant, ierr)
 if (.not.ieee_is_nan(nant)) error stop 'failed storing or reading NaN'
 call h5f%finalize(ierr)
 if (ierr /= 0) error stop 'write finalize'
@@ -263,12 +263,12 @@ integer :: i
 call h5f%initialize('test_string.h5', ierr, status='new', action='rw')
 call h5f%write('/little', '42', ierr)
 
-call h5f%get('/little', value, ierr)
+call h5f%read('/little', value, ierr)
 
 if (value /= '42') error stop 'string dataset read/write verification failure. Value: '// value
 
 !! try reading too much data, then truncating to first C_NULL
-call h5f%get('/little', val1k, ierr)
+call h5f%read('/little', val1k, ierr)
 final = truncate_string_null(val1k)
 
 if (len(final) /= 2) then
@@ -303,7 +303,7 @@ write(ic,'(I2)') i
 call h5f%write('/group'//trim(adjustl(ic))//'/flux_node',flux(:ng,i), ierr)
 enddo
 
-call h5f%get('/group1/flux_node',fo, ierr)
+call h5f%read('/group1/flux_node',fo, ierr)
 if (.not.all(fo(:ng)==flux(:ng,1))) error stop 'test_read_write: read does not match write'
 
 call h5f%finalize(ierr)

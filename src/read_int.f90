@@ -6,7 +6,7 @@ implicit none
 contains
 
 
-module procedure hdf_get_int
+module procedure hdf_read_int
 
 integer(HID_T) :: dsid
 logical :: exists
@@ -39,10 +39,10 @@ if (ierr /= 0) then
   return
 endif
 
-end procedure hdf_get_int
+end procedure hdf_read_int
 
 
-module procedure hdf_get_int_1d
+module procedure hdf_read_int_1d
 
 integer(HSIZE_T) :: dims(rank(value))
 integer(SIZE_T) :: dsize
@@ -70,10 +70,10 @@ if (ierr /= 0) then
   return
 endif
 
-end procedure hdf_get_int_1d
+end procedure hdf_read_int_1d
 
 
-module procedure hdf_get_int_2d
+module procedure hdf_read_int_2d
 
 integer(HSIZE_T) :: dims(rank(value))
 integer(SIZE_T) :: dsize
@@ -101,10 +101,10 @@ if (ierr /= 0) then
   return
 endif
 
-end procedure hdf_get_int_2d
+end procedure hdf_read_int_2d
 
 
-module procedure hdf_get_int_3d
+module procedure hdf_read_int_3d
 
 integer(HSIZE_T) :: dims(rank(value))
 integer(SIZE_T) :: dsize
@@ -132,10 +132,10 @@ if (ierr /= 0) then
   return
 endif
 
-end procedure hdf_get_int_3d
+end procedure hdf_read_int_3d
 
 
-module procedure hdf_get_int_4d
+module procedure hdf_read_int_4d
 
 integer(HSIZE_T) :: dims(rank(value))
 integer(SIZE_T) :: dsize
@@ -163,10 +163,10 @@ if (ierr /= 0) then
   return
 endif
 
-end procedure hdf_get_int_4d
+end procedure hdf_read_int_4d
 
 
-module procedure hdf_get_int_5d
+module procedure hdf_read_int_5d
 
 integer(HSIZE_T) :: dims(rank(value))
 integer(SIZE_T) :: dsize
@@ -194,10 +194,10 @@ if (ierr /= 0) then
   return
 endif
 
-end procedure hdf_get_int_5d
+end procedure hdf_read_int_5d
 
 
-module procedure hdf_get_int_6d
+module procedure hdf_read_int_6d
 
 integer(HSIZE_T) :: dims(rank(value))
 integer(SIZE_T) :: dsize
@@ -225,10 +225,10 @@ if (ierr /= 0) then
   return
 endif
 
-end procedure hdf_get_int_6d
+end procedure hdf_read_int_6d
 
 
-module procedure hdf_get_int_7d
+module procedure hdf_read_int_7d
 
 integer(HSIZE_T) :: dims(rank(value))
 integer(SIZE_T) :: dsize
@@ -256,7 +256,7 @@ if (ierr /= 0) then
   return
 endif
 
-end procedure hdf_get_int_7d
+end procedure hdf_read_int_7d
 
 
 end submodule read_int

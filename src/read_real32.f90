@@ -6,7 +6,7 @@ implicit none
 contains
 
 
-module procedure hdf_get_real32
+module procedure hdf_read_real32
 
 integer(HID_T) :: dsid
 logical :: exists
@@ -39,10 +39,10 @@ if (ierr /= 0) then
   return
 endif
 
-end procedure hdf_get_real32
+end procedure hdf_read_real32
 
 
-module procedure hdf_get_real32_1d
+module procedure hdf_read_real32_1d
 
 integer(HSIZE_T) :: dims(rank(value))
 integer(SIZE_T) :: dsize
@@ -70,10 +70,10 @@ if (ierr /= 0) then
   return
 endif
 
-end procedure hdf_get_real32_1d
+end procedure hdf_read_real32_1d
 
 
-module procedure hdf_get_real32_2d
+module procedure hdf_read_real32_2d
 
 integer(HSIZE_T) :: dims(rank(value))
 integer(SIZE_T) :: dsize
@@ -101,10 +101,10 @@ if (ierr /= 0) then
   return
 endif
 
-end procedure hdf_get_real32_2d
+end procedure hdf_read_real32_2d
 
 
-module procedure hdf_get_real32_3d
+module procedure hdf_read_real32_3d
 
 integer(HSIZE_T) :: dims(rank(value))
 integer(SIZE_T) :: dsize
@@ -132,10 +132,10 @@ if (ierr /= 0) then
   return
 endif
 
-end procedure hdf_get_real32_3d
+end procedure hdf_read_real32_3d
 
 
-module procedure hdf_get_real32_4d
+module procedure hdf_read_real32_4d
 
 integer(HSIZE_T) :: dims(rank(value))
 integer(SIZE_T) :: dsize
@@ -163,10 +163,10 @@ if (ierr /= 0) then
   return
 endif
 
-end procedure hdf_get_real32_4d
+end procedure hdf_read_real32_4d
 
 
-module procedure hdf_get_real32_5d
+module procedure hdf_read_real32_5d
 
 integer(HSIZE_T) :: dims(rank(value))
 integer(SIZE_T) :: dsize
@@ -194,10 +194,10 @@ if (ierr /= 0) then
   return
 endif
 
-end procedure hdf_get_real32_5d
+end procedure hdf_read_real32_5d
 
 
-module procedure hdf_get_real32_6d
+module procedure hdf_read_real32_6d
 
 integer(HSIZE_T) :: dims(rank(value))
 integer(SIZE_T) :: dsize
@@ -225,10 +225,10 @@ if (ierr /= 0) then
   return
 endif
 
-end procedure hdf_get_real32_6d
+end procedure hdf_read_real32_6d
 
 
-module procedure hdf_get_real32_7d
+module procedure hdf_read_real32_7d
 
 integer(HSIZE_T) :: dims(rank(value))
 integer(SIZE_T) :: dsize
@@ -256,7 +256,7 @@ if (ierr /= 0) then
   return
 endif
 
-end procedure hdf_get_real32_7d
+end procedure hdf_read_real32_7d
 
 
 end submodule read_real32
