@@ -32,24 +32,24 @@ end procedure hdf_write_int
 
 module procedure hdf_write_int_1d
 
-  integer(HID_T)  :: dtype
-  integer(HSIZE_T) :: dims(rank(value))
+integer(HID_T)  :: dtype
+integer(HSIZE_T) :: dims(rank(value))
 
-  dims = shape(value)
-  dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
+dims = shape(value)
+dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
 
-  call hdf_setup_write(self,dname,dtype,dims, ierr)
-  if (ierr /= 0) return
+call hdf_setup_write(self,dname,dtype,dims, ierr)
+if (ierr /= 0) return
 
-  !> write dataset
-  call h5dwrite_f(self%did, dtype, value, dims, ierr)
-  if (ierr /= 0) then
-    write(stderr,*) 'ERROR: ' // dname // ' write ' // self%filename
-    return
-  endif
+!> write dataset
+call h5dwrite_f(self%did, dtype, value, dims, ierr)
+if (ierr /= 0) then
+write(stderr,*) 'ERROR: ' // dname // ' write ' // self%filename
+return
+endif
 
-  call hdf_wrapup(self, ierr)
-  if (ierr /= 0) return
+call hdf_wrapup(self, ierr)
+if (ierr /= 0) return
 
 end procedure hdf_write_int_1d
 

@@ -84,6 +84,9 @@ if(size(dims) >= 2) then
   if (present(chunk_size)) self%chunk_size(:size(dims)) = chunk_size
 
   call hdf_set_deflate(self, dims, ierr)
+else
+  self%pid = 0
+  !! sentinel value for unused property
 endif
 
 print *, dname, size(dims)

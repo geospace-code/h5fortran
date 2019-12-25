@@ -162,9 +162,13 @@ enddo
 r2 = i2
 
 call h5f%initialize('test.h5', ierr, status='old',action='rw',comp_lvl=1)
+if(ierr/=0) error stop 'initialize'
 call h5f%write('/test/group2/ai2', i2, ierr)
+if(ierr/=0) error stop 'int 2d write'
 call h5f%write('/test/real2', r2, ierr)
+if(ierr/=0) error stop 'real 2d write'
 call h5f%write('/nan', nan, ierr)
+if(ierr/=0) error stop 'real scalar write'
 call h5f%finalize(ierr)
 if (ierr /= 0) error stop 'write finalize'
 

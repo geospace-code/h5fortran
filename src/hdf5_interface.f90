@@ -158,14 +158,14 @@ integer, intent(out) :: ierr
 end subroutine hdf_write_int_7d
 
 module subroutine hdf_write_real64(self,dname,value, ierr)
-class(hdf5_file), intent(in) :: self
+class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 real(real64), intent(in) :: value
 integer, intent(out) :: ierr
 end subroutine hdf_write_real64
 
 module subroutine hdf_write_real64_1d(self,dname,value, ierr)
-class(hdf5_file), intent(in) :: self
+class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 real(real64), intent(in) :: value(:)
 integer, intent(out) :: ierr
@@ -220,14 +220,14 @@ integer, intent(out) :: ierr
 end subroutine hdf_write_real64_7d
 
 module subroutine hdf_write_real32(self,dname,value, ierr)
-class(hdf5_file), intent(in) :: self
+class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 real(real32), intent(in) :: value
 integer, intent(out) :: ierr
 end subroutine hdf_write_real32
 
 module subroutine hdf_write_real32_1d(self,dname,value, ierr)
-class(hdf5_file), intent(in) :: self
+class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 real(real32), intent(in) :: value(:)
 integer, intent(out) :: ierr
