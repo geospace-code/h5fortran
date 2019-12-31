@@ -138,9 +138,11 @@ if (ierr /= 0) error stop 'create group'
 call h5f%open('/test', ierr)
 if (ierr /= 0) error stop 'open group'
 call h5f%write('group3/scalar', 1_int32, ierr)
-if (ierr /= 0) error stop 'write 32-bit scalar int'
+if (ierr /= 0) error stop 'write 0-D: int32'
+call h5f%write('group3/scalar64', 1_int64, ierr)
+if (ierr /= 0) error stop 'write 0-D: int64'
 call h5f%write('group3/scalar_real', 1._real32, ierr)
-if (ierr /= 0) error stop 'write 32-bit 1d scalar int'
+if (ierr /= 0) error stop 'write 0-D: real32'
 call h5f%close(ierr)
 if (ierr /= 0) error stop 'close group'
 
@@ -153,8 +155,8 @@ end subroutine testGroup
 subroutine testwriteHDF5()
 !! tests that compression doesn't fail for very small datasets, where it really shouldn't be used (makes file bigger)
 
-integer :: i2(4,4)
-integer, allocatable :: i2t(:,:)
+integer(int32), dimension(4,4) :: i2, i2t
+integer(int64), dimension(4,4) :: i2t64
 integer(HSIZE_T), allocatable :: dims(:)
 real(real32), allocatable :: rr2(:,:)
 real(real32)  ::  nant
@@ -169,20 +171,23 @@ r2 = i2
 call h5f%initialize('test.h5', ierr, status='old',action='rw',comp_lvl=1)
 if(ierr/=0) error stop 'initialize'
 call h5f%write('/test/group2/ai2', i2, ierr)
-if(ierr/=0) error stop 'int 2d write'
+if(ierr/=0) error stop 'write 2-D: int32'
+call h5f%write('/test/group2/ai2_64', int(i2, int64), ierr)
+if(ierr/=0) error stop 'write 2-D: int64'
 call h5f%write('/test/real2', r2, ierr)
-if(ierr/=0) error stop 'real 2d write'
+if(ierr/=0) error stop 'write 2-D: real32'
 call h5f%write('/nan', nan, ierr)
-if(ierr/=0) error stop 'real scalar write'
+if(ierr/=0) error stop 'write 0-D: real32 NaN'
 call h5f%finalize(ierr)
 if (ierr /= 0) error stop 'write finalize'
 
 call h5f%initialize('test.h5', ierr,status='old',action='r')
 
-call h5f%shape('/test/group2/ai2',dims, ierr)
-allocate(i2t(dims(1), dims(2)))
 call h5f%read('/test/group2/ai2',i2t, ierr)
-if (.not.all(i2==i2t)) error stop 'int 2-D: read does not match write'
+if (.not.all(i2==i2t)) error stop 'read 2-D: int32 does not match write'
+
+call h5f%read('/test/group2/ai2_64',i2t64, ierr)
+if (.not.all(i2==i2t64)) error stop 'read 2-D: int64 does not match write'
 
 call h5f%shape('/test/real2',dims, ierr)
 allocate(rr2(dims(1), dims(2)))

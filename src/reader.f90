@@ -35,14 +35,13 @@ type is (real(real64))
   call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
 type is (real(real32))
   call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
-type is (integer)
+type is (integer(int32))
+  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
+type is (integer(int64))
   call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
 end select
 
-if (ierr /= 0) then
-  write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
-  return
-endif
+if (ierr /= 0) write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
 
 end procedure hdf_read_scalar
 
@@ -59,14 +58,13 @@ type is (real(real64))
   call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
 type is (real(real32))
   call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
-type is (integer)
+type is (integer(int32))
+  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
+type is (integer(int64))
   call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
 end select
 
-if (ierr /= 0) then
-  write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
-  return
-endif
+if (ierr /= 0) write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
 
 end procedure hdf_read_1d
 
@@ -83,14 +81,13 @@ type is (real(real64))
   call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
 type is (real(real32))
   call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
-type is (integer)
+type is (integer(int32))
+  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
+type is (integer(int64))
   call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
 end select
 
-if (ierr /= 0) then
-  write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
-  return
-endif
+if (ierr /= 0) write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
 
 end procedure hdf_read_2d
 
@@ -107,14 +104,13 @@ type is (real(real64))
   call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
 type is (real(real32))
   call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
-type is (integer)
+type is (integer(int32))
+  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
+type is (integer(int64))
   call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
 end select
 
-if (ierr /= 0) then
-  write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
-  return
-endif
+if (ierr /= 0) write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
 
 end procedure hdf_read_3d
 
@@ -131,14 +127,13 @@ type is (real(real64))
   call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
 type is (real(real32))
   call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
-type is (integer)
+type is (integer(int32))
+  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
+type is (integer(int64))
   call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
 end select
 
-if (ierr /= 0) then
-  write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
-  return
-endif
+if (ierr /= 0) write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
 
 end procedure hdf_read_4d
 
@@ -155,14 +150,13 @@ type is (real(real64))
   call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
 type is (real(real32))
   call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
-type is (integer)
+type is (integer(int32))
+  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
+type is (integer(int64))
   call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
 end select
 
-if (ierr /= 0) then
-  write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
-  return
-endif
+if (ierr /= 0) write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
 
 end procedure hdf_read_5d
 
@@ -179,14 +173,13 @@ type is (real(real64))
   call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
 type is (real(real32))
   call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
-type is (integer)
+type is (integer(int32))
+  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
+type is (integer(int64))
   call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
 end select
 
-if (ierr /= 0) then
-  write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
-  return
-endif
+if (ierr /= 0) write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
 
 end procedure hdf_read_6d
 
@@ -203,14 +196,13 @@ type is (real(real64))
   call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
 type is (real(real32))
   call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
-type is (integer)
+type is (integer(int32))
+  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
+type is (integer(int64))
   call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
 end select
 
-if (ierr /= 0) then
-  write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
-  return
-endif
+if (ierr /= 0) write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
 
 end procedure hdf_read_7d
 

@@ -32,13 +32,17 @@ type is (real(real32))
   if (ierr /= 0) return
 
   call h5dwrite_f(self%did, dtype, value, dims, ierr)
-type is (integer)
+type is (integer(int32))
   dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
   dims = shape(value)
-
   call hdf_setup_write(self,dname,dtype,dims, ierr)
   if (ierr /= 0) return
-
+  call h5dwrite_f(self%did, dtype, value, dims, ierr)
+type is (integer(int64))
+  dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
+  dims = shape(value)
+  call hdf_setup_write(self,dname,dtype,dims, ierr)
+  if (ierr /= 0) return
   call h5dwrite_f(self%did, dtype, value, dims, ierr)
 end select
 
@@ -48,7 +52,6 @@ if (ierr /= 0) then
 endif
 
 call hdf_wrapup(self, ierr)
-if (ierr /= 0) return
 
 end procedure hdf_write_scalar
 
@@ -75,13 +78,17 @@ type is (real(real32))
   if (ierr /= 0) return
 
   call h5dwrite_f(self%did, dtype, value, dims, ierr)
-type is (integer)
+type is (integer(int32))
   dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
   dims = shape(value)
-
   call hdf_setup_write(self,dname,dtype,dims, ierr)
   if (ierr /= 0) return
-
+  call h5dwrite_f(self%did, dtype, value, dims, ierr)
+type is (integer(int64))
+  dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
+  dims = shape(value)
+  call hdf_setup_write(self,dname,dtype,dims, ierr)
+  if (ierr /= 0) return
   call h5dwrite_f(self%did, dtype, value, dims, ierr)
 end select
 
@@ -91,7 +98,6 @@ if (ierr /= 0) then
 endif
 
 call hdf_wrapup(self, ierr)
-if (ierr /= 0) return
 
 end procedure hdf_write_1d
 
@@ -118,13 +124,17 @@ type is (real(real32))
   if (ierr /= 0) return
 
   call h5dwrite_f(self%did, dtype, value, dims, ierr)
-type is (integer)
+type is (integer(int32))
   dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
   dims = shape(value)
-
   call hdf_setup_write(self,dname,dtype,dims, ierr)
   if (ierr /= 0) return
-
+  call h5dwrite_f(self%did, dtype, value, dims, ierr)
+type is (integer(int64))
+  dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
+  dims = shape(value)
+  call hdf_setup_write(self,dname,dtype,dims, ierr)
+  if (ierr /= 0) return
   call h5dwrite_f(self%did, dtype, value, dims, ierr)
 end select
 
@@ -134,7 +144,6 @@ if (ierr /= 0) then
 endif
 
 call hdf_wrapup(self, ierr)
-if (ierr /= 0) return
 
 end procedure hdf_write_2d
 
@@ -161,13 +170,17 @@ type is (real(real32))
   if (ierr /= 0) return
 
   call h5dwrite_f(self%did, dtype, value, dims, ierr)
-type is (integer)
+type is (integer(int32))
   dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
   dims = shape(value)
-
   call hdf_setup_write(self,dname,dtype,dims, ierr)
   if (ierr /= 0) return
-
+  call h5dwrite_f(self%did, dtype, value, dims, ierr)
+type is (integer(int64))
+  dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
+  dims = shape(value)
+  call hdf_setup_write(self,dname,dtype,dims, ierr)
+  if (ierr /= 0) return
   call h5dwrite_f(self%did, dtype, value, dims, ierr)
 end select
 
@@ -177,7 +190,6 @@ if (ierr /= 0) then
 endif
 
 call hdf_wrapup(self, ierr)
-if (ierr /= 0) return
 
 end procedure hdf_write_3d
 
@@ -204,13 +216,17 @@ type is (real(real32))
   if (ierr /= 0) return
 
   call h5dwrite_f(self%did, dtype, value, dims, ierr)
-type is (integer)
+type is (integer(int32))
   dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
   dims = shape(value)
-
   call hdf_setup_write(self,dname,dtype,dims, ierr)
   if (ierr /= 0) return
-
+  call h5dwrite_f(self%did, dtype, value, dims, ierr)
+type is (integer(int64))
+  dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
+  dims = shape(value)
+  call hdf_setup_write(self,dname,dtype,dims, ierr)
+  if (ierr /= 0) return
   call h5dwrite_f(self%did, dtype, value, dims, ierr)
 end select
 
@@ -220,7 +236,6 @@ if (ierr /= 0) then
 endif
 
 call hdf_wrapup(self, ierr)
-if (ierr /= 0) return
 
 end procedure hdf_write_4d
 
@@ -247,13 +262,17 @@ type is (real(real32))
   if (ierr /= 0) return
 
   call h5dwrite_f(self%did, dtype, value, dims, ierr)
-type is (integer)
+type is (integer(int32))
   dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
   dims = shape(value)
-
   call hdf_setup_write(self,dname,dtype,dims, ierr)
   if (ierr /= 0) return
-
+  call h5dwrite_f(self%did, dtype, value, dims, ierr)
+type is (integer(int64))
+  dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
+  dims = shape(value)
+  call hdf_setup_write(self,dname,dtype,dims, ierr)
+  if (ierr /= 0) return
   call h5dwrite_f(self%did, dtype, value, dims, ierr)
 end select
 
@@ -263,7 +282,6 @@ if (ierr /= 0) then
 endif
 
 call hdf_wrapup(self, ierr)
-if (ierr /= 0) return
 
 end procedure hdf_write_5d
 
@@ -290,13 +308,17 @@ type is (real(real32))
   if (ierr /= 0) return
 
   call h5dwrite_f(self%did, dtype, value, dims, ierr)
-type is (integer)
+type is (integer(int32))
   dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
   dims = shape(value)
-
   call hdf_setup_write(self,dname,dtype,dims, ierr)
   if (ierr /= 0) return
-
+  call h5dwrite_f(self%did, dtype, value, dims, ierr)
+type is (integer(int64))
+  dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
+  dims = shape(value)
+  call hdf_setup_write(self,dname,dtype,dims, ierr)
+  if (ierr /= 0) return
   call h5dwrite_f(self%did, dtype, value, dims, ierr)
 end select
 
@@ -306,7 +328,6 @@ if (ierr /= 0) then
 endif
 
 call hdf_wrapup(self, ierr)
-if (ierr /= 0) return
 
 end procedure hdf_write_6d
 
@@ -333,13 +354,17 @@ type is (real(real32))
   if (ierr /= 0) return
 
   call h5dwrite_f(self%did, dtype, value, dims, ierr)
-type is (integer)
+type is (integer(int32))
   dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
   dims = shape(value)
-
   call hdf_setup_write(self,dname,dtype,dims, ierr)
   if (ierr /= 0) return
-
+  call h5dwrite_f(self%did, dtype, value, dims, ierr)
+type is (integer(int64))
+  dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
+  dims = shape(value)
+  call hdf_setup_write(self,dname,dtype,dims, ierr)
+  if (ierr /= 0) return
   call h5dwrite_f(self%did, dtype, value, dims, ierr)
 end select
 
@@ -349,7 +374,6 @@ if (ierr /= 0) then
 endif
 
 call hdf_wrapup(self, ierr)
-if (ierr /= 0) return
 
 end procedure hdf_write_7d
 
