@@ -2,7 +2,7 @@
 use, intrinsic:: ieee_arithmetic, only: ieee_value, ieee_quiet_nan, ieee_is_nan
 use, intrinsic:: iso_fortran_env, only: int64, int32, real32, real64, stderr=>error_unit
 use, intrinsic:: iso_c_binding, only: c_null_char
-use hdf5_interface, only: hdf5_file, toLower, strip_trailing_null, truncate_string_null
+use hdf5_interface, only: hdf5_file, toLower, strip_trailing_null, truncate_string_null, HSIZE_T
 
 implicit none
 
@@ -79,21 +79,22 @@ real(real32), allocatable :: rr1(:)
 real(real32) :: rt
 integer(int32) :: it
 integer(int32), allocatable :: i1t(:)
+integer(HSIZE_T), allocatable :: dims(:)
 
 call h5f%initialize('test.h5', ierr, status='new',action='w')
 
 !! scalar tests
 call h5f%write('/scalar_int', 42_int32, ierr)
-if (ierr /= 0) error stop 'write scalar int'
+if (ierr /= 0) error stop 'write 0-D: int'
 
 call h5f%write('/scalar_real', 42._real32, ierr)
-if (ierr /= 0) error stop 'write scalar real32'
+if (ierr /= 0) error stop 'write 0-D: real32'
 
 call h5f%write('/real1',r1, ierr)
-if (ierr /= 0) error stop 'write scalar real32 1d'
+if (ierr /= 0) error stop 'write 1-D: real32'
 
 call h5f%write('/ai1', i1, ierr)
-if (ierr /= 0) error stop 'write scalar int 1d'
+if (ierr /= 0) error stop 'write 1-D: scalar int'
 
 call h5f%finalize(ierr)
 if (ierr /= 0) error stop 'write finalize'
@@ -106,10 +107,13 @@ if (.not.(rt==it .and. it==42)) then
   error stop 'scalar real / int: not equal 42'
 endif
 
-
+call h5f%shape('/real1',dims, ierr)
+allocate(rr1(dims(1)))
 call h5f%read('/real1',rr1, ierr)
-if (.not.all(r1 == rr1)) error stop 'real: read does not match write'
+if (.not.all(r1 == rr1)) error stop 'real 1-D: read does not match write'
 
+call h5f%shape('/ai1',dims, ierr)
+allocate(i1t(dims(1)))
 call h5f%read('/ai1',i1t, ierr)
 if (.not.all(i1==i1t)) error stop 'integer 1-D: read does not match write'
 
@@ -151,6 +155,7 @@ subroutine testwriteHDF5()
 
 integer :: i2(4,4)
 integer, allocatable :: i2t(:,:)
+integer(HSIZE_T), allocatable :: dims(:)
 real(real32), allocatable :: rr2(:,:)
 real(real32)  ::  nant
 
@@ -173,10 +178,17 @@ call h5f%finalize(ierr)
 if (ierr /= 0) error stop 'write finalize'
 
 call h5f%initialize('test.h5', ierr,status='old',action='r')
+
+call h5f%shape('/test/group2/ai2',dims, ierr)
+allocate(i2t(dims(1), dims(2)))
 call h5f%read('/test/group2/ai2',i2t, ierr)
-if (.not.all(i2==i2t)) error stop 'read does not match write'
+if (.not.all(i2==i2t)) error stop 'int 2-D: read does not match write'
+
+call h5f%shape('/test/real2',dims, ierr)
+allocate(rr2(dims(1), dims(2)))
 call h5f%read('/test/real2',rr2, ierr)
-if (.not.all(r2 == rr2)) error stop 'real: read does not match write'
+if (.not.all(r2 == rr2)) error stop 'real 2-D: read does not match write'
+
 call h5f%read('/nan',nant, ierr)
 if (.not.ieee_is_nan(nant)) error stop 'failed storing or reading NaN'
 call h5f%finalize(ierr)

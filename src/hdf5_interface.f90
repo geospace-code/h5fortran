@@ -32,26 +32,15 @@ hdf_write_4d, hdf_write_5d, hdf_write_6d, hdf_write_7d, hdf_write_group
 
 !> read dataset integer/real
 generic, public   :: read => &
-hdf_read_int, hdf_read_int_1d, hdf_read_int_2d, hdf_read_int_3d, &
-  hdf_read_int_4d,hdf_read_int_5d, hdf_read_int_6d, hdf_read_int_7d,&
-hdf_read_real32, hdf_read_real32_1d, hdf_read_real32_2d, hdf_read_real32_3d, &
-  hdf_read_real32_4d, hdf_read_real32_5d, hdf_read_real32_6d, hdf_read_real32_7d, &
-hdf_read_real64, hdf_read_real64_1d, hdf_read_real64_2d, hdf_read_real64_3d, &
-  hdf_read_real64_4d, hdf_read_real64_5d, hdf_read_real64_6d, hdf_read_real64_7d,  &
-hdf_read_string
-
+hdf_read_scalar, hdf_read_1d, hdf_read_2d, hdf_read_3d, &
+  hdf_read_4d,hdf_read_5d, hdf_read_6d, hdf_read_7d
 
 !> private methods
 procedure,public :: hdf_write_group, &
 hdf_write_scalar, hdf_write_1d, hdf_write_2d, hdf_write_3d, &
   hdf_write_4d, hdf_write_5d, hdf_write_6d, hdf_write_7d, &
-hdf_read_int, hdf_read_int_1d, hdf_read_int_2d, hdf_read_int_3d, &
-  hdf_read_int_4d, hdf_read_int_5d, hdf_read_int_6d, hdf_read_int_7d, &
-hdf_read_real32, hdf_read_real32_1d, hdf_read_real32_2d, hdf_read_real32_3d, &
-  hdf_read_real32_4d, hdf_read_real32_5d, hdf_read_real32_6d, hdf_read_real32_7d, &
-hdf_read_real64, hdf_read_real64_1d, hdf_read_real64_2d, hdf_read_real64_3d, &
-  hdf_read_real64_4d, hdf_read_real64_5d, hdf_read_real64_6d, hdf_read_real64_7d, &
-hdf_read_string
+hdf_read_scalar, hdf_read_1d, hdf_read_2d, hdf_read_3d, &
+  hdf_read_4d, hdf_read_5d, hdf_read_6d, hdf_read_7d
 
 end type hdf5_file
 
@@ -148,6 +137,7 @@ integer, intent(in), optional :: chunk_size(:)
 integer, intent(out) :: ierr
 end subroutine hdf_write_7d
 
+
 module subroutine hdf_get_shape(self, dname, dims, ierr)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
@@ -155,181 +145,63 @@ integer(HSIZE_T), intent(out), allocatable :: dims(:)
 integer, intent(out) :: ierr
 end subroutine hdf_get_shape
 
-module subroutine hdf_read_string(self,dname, value, ierr)
+
+module subroutine hdf_read_scalar(self, dname, value, ierr)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-character(*), intent(out) :: value
+class(*), intent(inout)      :: value
 integer, intent(out) :: ierr
-end subroutine hdf_read_string
+end subroutine hdf_read_scalar
 
-module subroutine hdf_read_int(self, dname, value, ierr)
+module subroutine hdf_read_1d(self, dname, value, ierr)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-integer(int32), intent(out)             :: value
+class(*), intent(out) :: value(:)
 integer, intent(out) :: ierr
-end subroutine hdf_read_int
+end subroutine hdf_read_1d
 
-module subroutine hdf_read_int_1d(self, dname, value, ierr)
+module subroutine hdf_read_2d(self, dname, value, ierr)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-integer(int32), intent(out),allocatable :: value(:)
+class(*), intent(out) :: value(:,:)
 integer, intent(out) :: ierr
-end subroutine hdf_read_int_1d
+end subroutine hdf_read_2d
 
-module subroutine hdf_read_int_2d(self, dname, value, ierr)
+module subroutine hdf_read_3d(self, dname, value, ierr)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-integer(int32), intent(out),allocatable :: value(:,:)
+class(*), intent(out) :: value(:,:,:)
 integer, intent(out) :: ierr
-end subroutine hdf_read_int_2d
+end subroutine hdf_read_3d
 
-module subroutine hdf_read_int_3d(self, dname, value, ierr)
+module subroutine hdf_read_4d(self, dname, value, ierr)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-integer(int32), intent(out),allocatable :: value(:,:,:)
+class(*), intent(out) :: value(:,:,:,:)
 integer, intent(out) :: ierr
-end subroutine hdf_read_int_3d
+end subroutine hdf_read_4d
 
-module subroutine hdf_read_int_4d(self, dname, value, ierr)
+module subroutine hdf_read_5d(self, dname, value, ierr)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-integer(int32), intent(out),allocatable :: value(:,:,:,:)
+class(*), intent(out) :: value(:,:,:,:,:)
 integer, intent(out) :: ierr
-end subroutine hdf_read_int_4d
+end subroutine hdf_read_5d
 
-module subroutine hdf_read_int_5d(self, dname, value, ierr)
+module subroutine hdf_read_6d(self, dname, value, ierr)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-integer(int32), intent(out),allocatable :: value(:,:,:,:,:)
+class(*), intent(out) :: value(:,:,:,:,:,:)
 integer, intent(out) :: ierr
-end subroutine hdf_read_int_5d
+end subroutine hdf_read_6d
 
-module subroutine hdf_read_int_6d(self, dname, value, ierr)
+module subroutine hdf_read_7d(self, dname, value, ierr)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-integer(int32), intent(out),allocatable :: value(:,:,:,:,:,:)
+class(*), intent(out) :: value(:,:,:,:,:,:,:)
 integer, intent(out) :: ierr
-end subroutine hdf_read_int_6d
+end subroutine hdf_read_7d
 
-module subroutine hdf_read_int_7d(self, dname, value, ierr)
-class(hdf5_file), intent(in)     :: self
-character(*), intent(in)         :: dname
-integer(int32), intent(out),allocatable :: value(:,:,:,:,:,:,:)
-integer, intent(out) :: ierr
-end subroutine hdf_read_int_7d
-
-
-module subroutine hdf_read_real32(self, dname, value, ierr)
-class(hdf5_file), intent(in)  :: self
-character(*), intent(in)      :: dname
-real(real32), intent(out) :: value
-integer, intent(out) :: ierr
-end subroutine hdf_read_real32
-
-module subroutine hdf_read_real32_1d(self, dname, value, ierr)
-class(hdf5_file), intent(in)  :: self
-character(*), intent(in)      :: dname
-real(real32), intent(out),allocatable :: value(:)
-integer, intent(out) :: ierr
-end subroutine hdf_read_real32_1d
-
-module subroutine hdf_read_real32_2d(self, dname, value, ierr)
-class(hdf5_file), intent(in)  :: self
-character(*), intent(in)      :: dname
-real(real32), intent(out),allocatable :: value(:,:)
-integer, intent(out) :: ierr
-end subroutine hdf_read_real32_2d
-
-module subroutine hdf_read_real32_3d(self, dname, value, ierr)
-class(hdf5_file), intent(in)  :: self
-character(*), intent(in)      :: dname
-real(real32), intent(out),allocatable :: value(:,:,:)
-integer, intent(out) :: ierr
-end subroutine hdf_read_real32_3d
-
-module subroutine hdf_read_real32_4d(self, dname, value, ierr)
-class(hdf5_file), intent(in)  :: self
-character(*), intent(in)      :: dname
-real(real32), intent(out),allocatable :: value(:,:,:,:)
-integer, intent(out) :: ierr
-end subroutine hdf_read_real32_4d
-
-module subroutine hdf_read_real32_5d(self, dname, value, ierr)
-class(hdf5_file), intent(in)  :: self
-character(*), intent(in)      :: dname
-real(real32), intent(out),allocatable :: value(:,:,:,:,:)
-integer, intent(out) :: ierr
-end subroutine hdf_read_real32_5d
-
-module subroutine hdf_read_real32_6d(self, dname, value, ierr)
-class(hdf5_file), intent(in)  :: self
-character(*), intent(in)      :: dname
-real(real32), intent(out),allocatable :: value(:,:,:,:,:,:)
-integer, intent(out) :: ierr
-end subroutine hdf_read_real32_6d
-
-module subroutine hdf_read_real32_7d(self, dname, value, ierr)
-class(hdf5_file), intent(in)  :: self
-character(*), intent(in)      :: dname
-real(real32), intent(out),allocatable :: value(:,:,:,:,:,:,:)
-integer, intent(out) :: ierr
-end subroutine hdf_read_real32_7d
-
-module subroutine hdf_read_real64(self, dname, value, ierr)
-class(hdf5_file), intent(in)  :: self
-character(*), intent(in)      :: dname
-real(real64), intent(out) :: value
-integer, intent(out) :: ierr
-end subroutine hdf_read_real64
-
-module subroutine hdf_read_real64_1d(self, dname, value, ierr)
-class(hdf5_file), intent(in)  :: self
-character(*), intent(in)      :: dname
-real(real64), intent(out),allocatable :: value(:)
-integer, intent(out) :: ierr
-end subroutine hdf_read_real64_1d
-
-module subroutine hdf_read_real64_2d(self, dname, value, ierr)
-class(hdf5_file), intent(in)  :: self
-character(*), intent(in)      :: dname
-real(real64), intent(out),allocatable :: value(:,:)
-integer, intent(out) :: ierr
-end subroutine hdf_read_real64_2d
-
-module subroutine hdf_read_real64_3d(self, dname, value, ierr)
-class(hdf5_file), intent(in)  :: self
-character(*), intent(in)      :: dname
-real(real64), intent(out),allocatable :: value(:,:,:)
-integer, intent(out) :: ierr
-end subroutine hdf_read_real64_3d
-
-module subroutine hdf_read_real64_4d(self, dname, value, ierr)
-class(hdf5_file), intent(in)  :: self
-character(*), intent(in)      :: dname
-real(real64), intent(out),allocatable :: value(:,:,:,:)
-integer, intent(out) :: ierr
-end subroutine hdf_read_real64_4d
-
-module subroutine hdf_read_real64_5d(self, dname, value, ierr)
-class(hdf5_file), intent(in)  :: self
-character(*), intent(in)      :: dname
-real(real64), intent(out),allocatable :: value(:,:,:,:,:)
-integer, intent(out) :: ierr
-end subroutine hdf_read_real64_5d
-
-module subroutine hdf_read_real64_6d(self, dname, value, ierr)
-class(hdf5_file), intent(in)  :: self
-character(*), intent(in)      :: dname
-real(real64), intent(out),allocatable :: value(:,:,:,:,:,:)
-integer, intent(out) :: ierr
-end subroutine hdf_read_real64_6d
-
-module subroutine hdf_read_real64_7d(self, dname, value, ierr)
-class(hdf5_file), intent(in)  :: self
-character(*), intent(in)      :: dname
-real(real64), intent(out),allocatable :: value(:,:,:,:,:,:,:)
-integer, intent(out) :: ierr
-end subroutine hdf_read_real64_7d
 
 module subroutine hdf_open_group(self, gname, ierr)
 class(hdf5_file), intent(inout) :: self

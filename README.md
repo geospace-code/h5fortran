@@ -181,8 +181,11 @@ chunk_size may optionally be set in the `%write()` method.
 ```fortran
 call h5f%initialize('test.h5', ierr, status='old',action='r')
 
+integer(hsize_t), allocatable :: dims(:)
 real, allocatable :: A(:,:,:)
 
+call h5f%shape('/foo',dims, ierr)
+allocate(A(dims(1), dims(2), dims(3)))
 call h5f%read('/foo', A)
 
 call h5f%finalize(ierr)
