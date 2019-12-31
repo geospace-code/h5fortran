@@ -15,7 +15,7 @@ select type (value)
 type is (character(*))
   call h5ltpath_valid_f(self%lid, dname, .true., exists, ierr)
   if (.not.exists) then
-    write(stderr,*) dname // ' does not exist in ' // self%filename
+    write(stderr,*) 'ERROR: ' // dname // ' does not exist in ' // self%filename
     ierr = -1
     return
   endif
@@ -25,7 +25,7 @@ type is (character(*))
     character(len(value)) :: buf
     call h5ltread_dataset_string_f(self%lid, dname, buf, ierr)
     if (ierr /= 0)  then
-      write(stderr,*) 'error on dataset ' // dname // 'read ' // self%filename
+      write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
       return
     endif
     value = buf

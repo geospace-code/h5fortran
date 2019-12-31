@@ -28,10 +28,7 @@ if (.not.exists .or. ierr /= 0) then
 endif
 
 call h5ltget_dataset_info_f(self%lid, dname, dims, dtype, dsize, ierr)
-if (ierr /= 0) then
-  write(stderr,*) 'ERROR: open ' // dname // ' read ' // self%filename
-  return
-endif
+if (ierr /= 0) write(stderr,*) 'ERROR: open ' // dname // ' read ' // self%filename
 
 end procedure hdf_setup_read
 
@@ -44,23 +41,20 @@ logical :: exists
 
 call h5ltpath_valid_f(self%lid, dname, .true., exists, ierr)
 if (.not.exists .or. ierr /= 0) then
-  write(stderr,*) dname // ' does not exist in ' // self%filename
+  write(stderr,*) 'ERROR: ' // dname // ' does not exist in ' // self%filename
   ierr = -1
   return
 endif
 
 call h5ltget_dataset_ndims_f(self%lid, dname, drank, ierr)
 if (ierr /= 0) then
-  write(stderr,*) 'error opening dataset '// dname // ' rank ' // self%filename
+  write(stderr,*) 'ERROR: '// dname // ' rank ' // self%filename
   return
 endif
 
 allocate(dims(drank))
 call h5ltget_dataset_info_f(self%lid, dname, dims, dtype, dsize, ierr)
-if (ierr /= 0) then
-  write(stderr,*) 'error opening dataset ' // dname // ' info ' // self%filename
-  return
-endif
+if (ierr /= 0) write(stderr,*) 'ERROR: ' // dname // ' info ' // self%filename
 
 end procedure hdf_get_shape
 

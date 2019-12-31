@@ -296,7 +296,7 @@ select case(lstatus)
       return
     endif
   case default
-    write(stderr,*) 'Unsupported status ->'// lstatus
+    write(stderr,*) 'Unsupported status -> '// lstatus
     ierr = 128
     return
 endselect
@@ -317,10 +317,7 @@ endif
 
 !>  Close Fortran interface.
 call h5close_f(ierr)
-if (ierr /= 0) then
-  write(stderr,*) 'ERROR: HDF5 library close'
-  return
-endif
+if (ierr /= 0) write(stderr,*) 'ERROR: HDF5 library close'
 
 end subroutine hdf_finalize
 

@@ -34,10 +34,7 @@ if (.not.exists) then
 endif
 
 call h5ltset_attribute_string_f(self%lid, dname, attr, attrval, ierr)
-if (ierr /= 0) then
-  write(stderr,*) 'ERROR: writing attribute ' // attr // ' to ' // dname // ' file ' // self%filename
-  return
-endif
+if (ierr /= 0) write(stderr,*) 'ERROR: writing attribute ' // attr // ' to ' // dname // ' file ' // self%filename
 
 end procedure writeattr
 
@@ -95,10 +92,7 @@ if(size(dims) >= 2) then
 else
   call h5dcreate_f(self%lid, dname, dtype, self%sid, self%did, ierr)
 endif
-if (ierr /= 0) then
-  write(stderr,*) 'ERROR: dataset ' // dname // ' create ' // self%filename
-  return
-endif
+if (ierr /= 0) write(stderr,*) 'ERROR: dataset ' // dname // ' create ' // self%filename
 
 end procedure hdf_setup_write
 
@@ -120,13 +114,13 @@ if (self%verbose) print *,'dims: ',dims,'chunk size: ',chunk_size
 
 call h5pcreate_f(H5P_DATASET_CREATE_F, self%pid, ierr)
 if (ierr /= 0) then
-  write(stderr,*) 'error creating property ' // self%filename
+  write(stderr,*) 'ERROR: create property ' // self%filename
   return
 endif
 
 call h5pset_chunk_f(self%pid, ndims, chunk_size, ierr)
 if (ierr /= 0) then
-  write(stderr,*) 'error setting chunk ' // self%filename
+  write(stderr,*) 'ERROR: set chunk ' // self%filename
   return
 endif
 
@@ -134,15 +128,12 @@ if (self%comp_lvl < 1 .or. self%comp_lvl > 9) return
 
 call h5pset_shuffle_f(self%pid, ierr)
 if (ierr /= 0) then
-  write(stderr,*) 'error enabling Shuffle ' // self%filename
+  write(stderr,*) 'ERROR: enable Shuffle ' // self%filename
   return
 endif
 
 call h5pset_deflate_f(self%pid, self%comp_lvl, ierr)
-if (ierr /= 0) then
-  write(stderr,*) 'error enabling Deflate compression ' // self%filename
-  return
-endif
+if (ierr /= 0) write(stderr,*) 'ERROR: enable Deflate compression ' // self%filename
 
 end procedure hdf_set_deflate
 
@@ -166,10 +157,7 @@ if(self%pid /= 0) then
 endif
 
 call h5dclose_f(self%did, ierr)
-if (ierr /= 0) then
-  write(stderr,*) 'ERROR: close dataset: ',self%did, self%filename
-  return
-endif
+if (ierr /= 0) write(stderr,*) 'ERROR: close dataset: ',self%did, self%filename
 
 end procedure hdf_wrapup
 
