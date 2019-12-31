@@ -42,18 +42,6 @@ endif
 end procedure writeattr
 
 
-module procedure hdf_write_string
-!! subroutine hdf_write_string(self, dname, value)
-
-call h5ltmake_dataset_string_f(self%lid, dname, value, ierr)
-if (ierr /= 0) then
-  write(stderr,*) 'ERROR: dataset ' // dname // ' write ' // self%filename
-  return
-endif
-
-end procedure hdf_write_string
-
-
 module procedure hdf_setup_write
 !! hdf_setup_write(self, dname, dtype, dims, ierr, chunk_size)
 

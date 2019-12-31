@@ -1,6 +1,6 @@
 add_library(h5fortran hdf5_interface.f90
   read.f90 read_real64.f90 read_real32.f90 read_int.f90
-  write.f90 write_real64.f90 write_real32.f90 write_int.f90
+  write.f90 writer.f90
   string_utils.f90)
 # need BOTH includes, for some systems!
 target_include_directories(h5fortran PRIVATE ${HDF5_INCLUDE_DIRS} ${HDF5_Fortran_INCLUDE_DIRS})
