@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+   
+   <meta name="description" content="Object-oriented Fortran 2018 HDF5 interface">
+    
+    <meta name="author" content="Michael Hirsch, Ph.D." >
+    <link rel="icon" href="../favicon.png">
+
+    <title>hdf_write_scalar &ndash; Object-oriented Fortran 2018 HDF5 interface</title>
+
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/pygments.css" rel="stylesheet">
+    <link href="../css/font-awesome.min.css" rel="stylesheet">
+    <link href="../css/local.css" rel="stylesheet">
+    
+    <link  href="../tipuesearch/tipuesearch.css" rel="stylesheet">
+    
+    
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    
+    <script src="../js/jquery-2.1.3.min.js"></script>
+    <script src="../js/svg-pan-zoom.min.js"></script>
+
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../index.html">Object-oriented Fortran 2018 HDF5 interface </a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+        
+            <li class="dropdown hidden-xs visible-sm visible-md hidden-lg">
+              <a href="#" class="dropdown-toggle"
+              data-toggle="dropdown" role="button"
+              aria-haspopup="true"
+     aria-expanded="false">Contents <span class="caret"></span></a>
+        <ul class="dropdown-menu">
+          
+              
+            <li><a href="../lists/files.html">Source Files</a></li>
+        
+        
+        
+            <li><a href="../lists/modules.html">Modules</a></li>
+        
+            
+                                
+            <li><a href="../lists/procedures.html">Procedures</a></li>
+        
+               
+            <li><a href="../lists/types.html">Derived Types</a></li>
+        
+        
+            </ul>
+            </li>
+
+
+<li class="visible-xs hidden-sm visible-lg"><a href="../lists/files.html">Source Files</a></li>
+
+
+
+<li class="visible-xs hidden-sm visible-lg"><a href="../lists/modules.html">Modules</a></li>
+
+
+
+<li class="visible-xs hidden-sm visible-lg"><a href="../lists/procedures.html">Procedures</a></li>
+
+                             
+<li class="visible-xs hidden-sm visible-lg"><a href="../lists/types.html">Derived Types</a></li>
+
+
+          </ul>
+        
+        <form action="../search.html" class="navbar-form navbar-right" role="search">
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+        </div>
+<!--
+        <button type="submit" class="btn btn-default">Submit</button>
+-->
+        </form>
+        
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+    
+  
+  <div class="row">
+    <h1>hdf_write_scalar
+      <small>Module Procedure</small>
+    
+    </h1>
+    
+<div class="row">
+  <div class="col-lg-12">
+<div class="well well-sm">
+  <ul class="list-inline" style="margin-bottom:0px;display:inline">
+     
+     
+     
+     
+    
+    
+     <li><i class="fa fa-list-ol"></i>
+       <a data-toggle="tooltip"
+    data-placement="bottom" data-html="true"
+    title=" 1.1% of total for procedures.">39 statements</a>
+     </li> 
+     
+     
+     
+    <li><i class="fa fa-code"></i><a href="../src/writer.f90"> Source File</a></li>
+     
+     
+  </ul>
+  <ol class="breadcrumb in-well text-right">
+  
+    
+     <li><a href='../sourcefile/writer.f90.html'>writer.f90</a></li>
+    
+     <li><a href='../module/writer_nd.html'>writer_ND</a></li>
+    
+  
+     <li class="active">hdf_write_scalar</li>
+  </ol>
+</div>
+</div>
+</div>
+<script>
+  $(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+  })
+</script>
+
+  </div>
+  
+  <div class="row">
+    <div class="col-md-3 hidden-xs hidden-sm visible-md visible-lg">
+    
+<div id="sidebar">
+  
+<h3>Contents</h3>
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<em>None</em>
+
+
+</div>
+
+    </div>
+    
+    <div class="col-md-9" id='text'>
+    <h2>
+module procedure hdf_write_scalar <small>module subroutine hdf_write_scalar(self, dname, value, ierr)</small>
+    
+    
+   <a href='../interface/hdf_write_scalar.html'><button type="button" class="btn btn-info depwarn">Interface &rarr;</button></a>
+    
+   
+</h2>
+    
+  
+
+
+    
+
+    <h3>Arguments</h3>
+    
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" id="variable-self~8"></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
+  <td>intent(inout)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>self</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" id="variable-dname~3"></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>dname</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" id="variable-value"></span>class(*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>value</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" id="variable-ierr~8"></span>integer,</td>
+  <td>intent(out)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>ierr</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+    
+    
+    
+    <br>
+    
+    
+    <div class="panel panel-default">
+      <div class="panel-heading">
+  <h3 class="panel-title">Calls</h3>
+      </div>
+      <div class="panel-body">
+  <div class="depgraph"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.40.1 (20161225.0304)
+ -->
+<!-- Title: proc~~hdf_write_scalar~~CallsGraph Pages: 1 -->
+<svg id="prochdf_write_scalarCallsGraph" width="641pt" height="277pt"
+ viewBox="0.00 0.00 641.00 276.78" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="proc~~hdf_write_scalar~~CallsGraph" class="graph" transform="scale(.849 .849) rotate(0) translate(4 322)">
+<title>proc~~hdf_write_scalar~~CallsGraph</title>
+<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-322 751,-322 751,4 -4,4"/>
+<!-- proc~hdf_write_scalar -->
+<g id="proc~~hdf_write_scalar~~CallsGraph_node1" class="node">
+<title>proc~hdf_write_scalar</title>
+<polygon fill="none" stroke="#000000" points="87,-124 0,-124 0,-100 87,-100 87,-124"/>
+<text text-anchor="middle" x="43.5" y="-109.6" font-family="Helvetica" font-size="10.50" fill="#000000">hdf_write_scalar</text>
+</g>
+<!-- interface~hdf_wrapup -->
+<g id="proc~~hdf_write_scalar~~CallsGraph_node2" class="node">
+<title>interface~hdf_wrapup</title>
+<g id="a_proc~~hdf_write_scalar~~CallsGraph_node2"><a xlink:href=".././interface/hdf_wrapup.html" xlink:title="hdf_wrapup">
+<polygon fill="#a7506f" stroke="#a7506f" points="224.5,-223 156.5,-223 156.5,-199 224.5,-199 224.5,-223"/>
+<text text-anchor="middle" x="190.5" y="-208.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">hdf_wrapup</text>
+</a>
+</g>
+</g>
+<!-- proc~hdf_write_scalar&#45;&gt;interface~hdf_wrapup -->
+<g id="proc~~hdf_write_scalar~~CallsGraph_edge1" class="edge">
+<title>proc~hdf_write_scalar&#45;&gt;interface~hdf_wrapup</title>
+<path fill="none" stroke="#000000" d="M57.2814,-124.1855C72.695,-137.5068 98.6954,-159.075 123,-175 133.3964,-181.812 145.2124,-188.4546 156.0207,-194.1412"/>
+<polygon fill="#000000" stroke="#000000" points="154.7062,-197.4013 165.1984,-198.8727 157.9139,-191.1795 154.7062,-197.4013"/>
+</g>
+<!-- h5ltmake_dataset_string_f -->
+<g id="proc~~hdf_write_scalar~~CallsGraph_node3" class="node">
+<title>h5ltmake_dataset_string_f</title>
+<polygon fill="#777777" stroke="#777777" points="258,-166 123,-166 123,-142 258,-142 258,-166"/>
+<text text-anchor="middle" x="190.5" y="-151.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">h5ltmake_dataset_string_f</text>
+</g>
+<!-- proc~hdf_write_scalar&#45;&gt;h5ltmake_dataset_string_f -->
+<g id="proc~~hdf_write_scalar~~CallsGraph_edge2" class="edge">
+<title>proc~hdf_write_scalar&#45;&gt;h5ltmake_dataset_string_f</title>
+<path fill="none" stroke="#000000" d="M85.6243,-124.0355C102.078,-128.7366 121.1142,-134.1755 138.4157,-139.1188"/>
+<polygon fill="#000000" stroke="#000000" points="137.7928,-142.5808 148.3695,-141.9627 139.7159,-135.8501 137.7928,-142.5808"/>
+</g>
+<!-- interface~hdf_setup_write -->
+<g id="proc~~hdf_write_scalar~~CallsGraph_node4" class="node">
+<title>interface~hdf_setup_write</title>
+<g id="a_proc~~hdf_write_scalar~~CallsGraph_node4"><a xlink:href=".././interface/hdf_setup_write.html" xlink:title="hdf_setup_write">
+<polygon fill="#a7506f" stroke="#a7506f" points="234,-124 147,-124 147,-100 234,-100 234,-124"/>
+<text text-anchor="middle" x="190.5" y="-109.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">hdf_setup_write</text>
+</a>
+</g>
+</g>
+<!-- proc~hdf_write_scalar&#45;&gt;interface~hdf_setup_write -->
+<g id="proc~~hdf_write_scalar~~CallsGraph_edge3" class="edge">
+<title>proc~hdf_write_scalar&#45;&gt;interface~hdf_setup_write</title>
+<path fill="none" stroke="#000000" d="M87.2068,-112C102.6886,-112 120.2931,-112 136.5273,-112"/>
+<polygon fill="#000000" stroke="#000000" points="136.9616,-115.5001 146.9616,-112 136.9615,-108.5001 136.9616,-115.5001"/>
+</g>
+<!-- h5dwrite_f -->
+<g id="proc~~hdf_write_scalar~~CallsGraph_node5" class="node">
+<title>h5dwrite_f</title>
+<polygon fill="#777777" stroke="#777777" points="221,-82 160,-82 160,-58 221,-58 221,-82"/>
+<text text-anchor="middle" x="190.5" y="-67.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">h5dwrite_f</text>
+</g>
+<!-- proc~hdf_write_scalar&#45;&gt;h5dwrite_f -->
+<g id="proc~~hdf_write_scalar~~CallsGraph_edge4" class="edge">
+<title>proc~hdf_write_scalar&#45;&gt;h5dwrite_f</title>
+<path fill="none" stroke="#000000" d="M85.6243,-99.9645C105.801,-94.1997 129.8612,-87.3254 149.8439,-81.616"/>
+<polygon fill="#000000" stroke="#000000" points="150.9309,-84.9456 159.5846,-78.833 149.0078,-78.2149 150.9309,-84.9456"/>
+</g>
+<!-- h5kind_to_type -->
+<g id="proc~~hdf_write_scalar~~CallsGraph_node6" class="node">
+<title>h5kind_to_type</title>
+<polygon fill="#777777" stroke="#777777" points="233.5,-40 147.5,-40 147.5,-16 233.5,-16 233.5,-40"/>
+<text text-anchor="middle" x="190.5" y="-25.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">h5kind_to_type</text>
+</g>
+<!-- proc~hdf_write_scalar&#45;&gt;h5kind_to_type -->
+<g id="proc~~hdf_write_scalar~~CallsGraph_edge5" class="edge">
+<title>proc~hdf_write_scalar&#45;&gt;h5kind_to_type</title>
+<path fill="none" stroke="#000000" d="M55.6861,-99.9326C70.4659,-85.9021 96.6828,-62.898 123,-49 127.6292,-46.5553 132.5899,-44.3423 137.6429,-42.3516"/>
+<polygon fill="#000000" stroke="#000000" points="139.2122,-45.505 147.4113,-38.7949 136.8173,-38.9275 139.2122,-45.505"/>
+</g>
+<!-- proc~hdf_wrapup -->
+<g id="proc~~hdf_write_scalar~~CallsGraph_node7" class="node">
+<title>proc~hdf_wrapup</title>
+<g id="a_proc~~hdf_write_scalar~~CallsGraph_node7"><a xlink:href=".././proc/hdf_wrapup.html" xlink:title="hdf_wrapup">
+<polygon fill="#d9534f" stroke="#d9534f" points="371.5,-244 303.5,-244 303.5,-220 371.5,-220 371.5,-244"/>
+<text text-anchor="middle" x="337.5" y="-229.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">hdf_wrapup</text>
+</a>
+</g>
+</g>
+<!-- interface~hdf_wrapup&#45;&gt;proc~hdf_wrapup -->
+<g id="proc~~hdf_write_scalar~~CallsGraph_edge6" class="edge">
+<title>interface~hdf_wrapup&#45;&gt;proc~hdf_wrapup</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M224.5942,-215.8706C245.0224,-218.7889 271.2165,-222.5309 293.231,-225.6759"/>
+<polygon fill="#000000" stroke="#000000" points="292.9418,-229.17 303.3363,-227.1195 293.9319,-222.2404 292.9418,-229.17"/>
+</g>
+<!-- proc~hdf_setup_write -->
+<g id="proc~~hdf_write_scalar~~CallsGraph_node8" class="node">
+<title>proc~hdf_setup_write</title>
+<g id="a_proc~~hdf_write_scalar~~CallsGraph_node8"><a xlink:href=".././proc/hdf_setup_write.html" xlink:title="hdf_setup_write">
+<polygon fill="#d9534f" stroke="#d9534f" points="381,-116 294,-116 294,-92 381,-92 381,-116"/>
+<text text-anchor="middle" x="337.5" y="-101.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">hdf_setup_write</text>
+</a>
+</g>
+</g>
+<!-- interface~hdf_setup_write&#45;&gt;proc~hdf_setup_write -->
+<g id="proc~~hdf_write_scalar~~CallsGraph_edge7" class="edge">
+<title>interface~hdf_setup_write&#45;&gt;proc~hdf_setup_write</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M234.2068,-109.6214C249.6886,-108.7789 267.2931,-107.8208 283.5273,-106.9373"/>
+<polygon fill="#000000" stroke="#000000" points="284.1666,-110.4078 293.9616,-106.3694 283.7861,-103.4181 284.1666,-110.4078"/>
+</g>
+<!-- h5dclose_f -->
+<g id="proc~~hdf_write_scalar~~CallsGraph_node10" class="node">
+<title>h5dclose_f</title>
+<polygon fill="#777777" stroke="#777777" points="491,-318 429,-318 429,-294 491,-294 491,-318"/>
+<text text-anchor="middle" x="460" y="-303.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">h5dclose_f</text>
+</g>
+<!-- proc~hdf_wrapup&#45;&gt;h5dclose_f -->
+<g id="proc~~hdf_write_scalar~~CallsGraph_edge8" class="edge">
+<title>proc~hdf_wrapup&#45;&gt;h5dclose_f</title>
+<path fill="none" stroke="#000000" d="M354.1419,-244.0456C369.9458,-255.2536 394.558,-272.1162 417,-285 419.4993,-286.4348 422.1107,-287.8663 424.758,-289.2691"/>
+<polygon fill="#000000" stroke="#000000" points="423.2899,-292.4495 433.7862,-293.8909 426.4797,-286.2185 423.2899,-292.4495"/>
+</g>
+<!-- h5sclose_f -->
+<g id="proc~~hdf_write_scalar~~CallsGraph_node12" class="node">
+<title>h5sclose_f</title>
+<polygon fill="#777777" stroke="#777777" points="490.5,-276 429.5,-276 429.5,-252 490.5,-252 490.5,-276"/>
+<text text-anchor="middle" x="460" y="-261.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">h5sclose_f</text>
+</g>
+<!-- proc~hdf_wrapup&#45;&gt;h5sclose_f -->
+<g id="proc~~hdf_write_scalar~~CallsGraph_edge9" class="edge">
+<title>proc~hdf_wrapup&#45;&gt;h5sclose_f</title>
+<path fill="none" stroke="#000000" d="M371.6231,-240.9138C386.4899,-244.7974 404.0288,-249.3789 419.5468,-253.4326"/>
+<polygon fill="#000000" stroke="#000000" points="418.8441,-256.8665 429.4041,-256.0076 420.6134,-250.0937 418.8441,-256.8665"/>
+</g>
+<!-- h5pclose_f -->
+<g id="proc~~hdf_write_scalar~~CallsGraph_node15" class="node">
+<title>h5pclose_f</title>
+<polygon fill="#777777" stroke="#777777" points="491,-234 429,-234 429,-210 491,-210 491,-234"/>
+<text text-anchor="middle" x="460" y="-219.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">h5pclose_f</text>
+</g>
+<!-- proc~hdf_wrapup&#45;&gt;h5pclose_f -->
+<g id="proc~~hdf_write_scalar~~CallsGraph_edge10" class="edge">
+<title>proc~hdf_wrapup&#45;&gt;h5pclose_f</title>
+<path fill="none" stroke="#000000" d="M371.6231,-229.2144C386.2333,-228.0218 403.4241,-226.6184 418.7414,-225.3681"/>
+<polygon fill="#000000" stroke="#000000" points="419.3096,-228.8334 428.9916,-224.5313 418.74,-221.8566 419.3096,-228.8334"/>
+</g>
+<!-- h5ltpath_valid_f -->
+<g id="proc~~hdf_write_scalar~~CallsGraph_node9" class="node">
+<title>h5ltpath_valid_f</title>
+<polygon fill="#777777" stroke="#777777" points="503,-192 417,-192 417,-168 503,-168 503,-192"/>
+<text text-anchor="middle" x="460" y="-177.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">h5ltpath_valid_f</text>
+</g>
+<!-- proc~hdf_setup_write&#45;&gt;h5ltpath_valid_f -->
+<g id="proc~~hdf_write_scalar~~CallsGraph_edge11" class="edge">
+<title>proc~hdf_setup_write&#45;&gt;h5ltpath_valid_f</title>
+<path fill="none" stroke="#000000" d="M353.4713,-116.118C369.1974,-127.7901 394.1174,-145.6001 417,-159 419.4868,-160.4563 422.0892,-161.9034 424.7301,-163.3173"/>
+<polygon fill="#000000" stroke="#000000" points="423.2531,-166.4935 433.7459,-167.9603 426.4581,-160.2702 423.2531,-166.4935"/>
+</g>
+<!-- h5dopen_f -->
+<g id="proc~~hdf_write_scalar~~CallsGraph_node11" class="node">
+<title>h5dopen_f</title>
+<polygon fill="#777777" stroke="#777777" points="491.5,-150 428.5,-150 428.5,-126 491.5,-126 491.5,-150"/>
+<text text-anchor="middle" x="460" y="-135.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">h5dopen_f</text>
+</g>
+<!-- proc~hdf_setup_write&#45;&gt;h5dopen_f -->
+<g id="proc~~hdf_write_scalar~~CallsGraph_edge12" class="edge">
+<title>proc~hdf_setup_write&#45;&gt;h5dopen_f</title>
+<path fill="none" stroke="#000000" d="M381.0338,-116.0829C393.176,-119.4529 406.3344,-123.1051 418.3643,-126.444"/>
+<polygon fill="#000000" stroke="#000000" points="417.585,-129.8599 428.1568,-129.1619 419.4571,-123.1149 417.585,-129.8599"/>
+</g>
+<!-- interface~hdf_set_deflate -->
+<g id="proc~~hdf_write_scalar~~CallsGraph_node13" class="node">
+<title>interface~hdf_set_deflate</title>
+<g id="a_proc~~hdf_write_scalar~~CallsGraph_node13"><a xlink:href=".././interface/hdf_set_deflate.html" xlink:title="hdf_set_deflate">
+<polygon fill="#a7506f" stroke="#a7506f" points="501.5,-108 418.5,-108 418.5,-84 501.5,-84 501.5,-108"/>
+<text text-anchor="middle" x="460" y="-93.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">hdf_set_deflate</text>
+</a>
+</g>
+</g>
+<!-- proc~hdf_setup_write&#45;&gt;interface~hdf_set_deflate -->
+<g id="proc~~hdf_write_scalar~~CallsGraph_edge13" class="edge">
+<title>proc~hdf_setup_write&#45;&gt;interface~hdf_set_deflate</title>
+<path fill="none" stroke="#000000" d="M381.0338,-101.157C389.8277,-100.5827 399.1547,-99.9736 408.2,-99.3829"/>
+<polygon fill="#000000" stroke="#000000" points="408.4986,-102.8709 418.2492,-98.7266 408.0424,-95.8858 408.4986,-102.8709"/>
+</g>
+<!-- h5dcreate_f -->
+<g id="proc~~hdf_write_scalar~~CallsGraph_node14" class="node">
+<title>h5dcreate_f</title>
+<polygon fill="#777777" stroke="#777777" points="494,-66 426,-66 426,-42 494,-42 494,-66"/>
+<text text-anchor="middle" x="460" y="-51.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">h5dcreate_f</text>
+</g>
+<!-- proc~hdf_setup_write&#45;&gt;h5dcreate_f -->
+<g id="proc~~hdf_write_scalar~~CallsGraph_edge14" class="edge">
+<title>proc~hdf_setup_write&#45;&gt;h5dcreate_f</title>
+<path fill="none" stroke="#000000" d="M367.1538,-91.8964C383.285,-85.3122 403.4426,-77.0847 420.8499,-69.9796"/>
+<polygon fill="#000000" stroke="#000000" points="422.2588,-73.1849 430.1947,-66.1654 419.6135,-66.704 422.2588,-73.1849"/>
+</g>
+<!-- h5screate_f -->
+<g id="proc~~hdf_write_scalar~~CallsGraph_node16" class="node">
+<title>h5screate_f</title>
+<polygon fill="#777777" stroke="#777777" points="493.5,-24 426.5,-24 426.5,0 493.5,0 493.5,-24"/>
+<text text-anchor="middle" x="460" y="-9.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">h5screate_f</text>
+</g>
+<!-- proc~hdf_setup_write&#45;&gt;h5screate_f -->
+<g id="proc~~hdf_write_scalar~~CallsGraph_edge15" class="edge">
+<title>proc~hdf_setup_write&#45;&gt;h5screate_f</title>
+<path fill="none" stroke="#000000" d="M349.028,-91.8174C363.7752,-76.7 390.5813,-50.7516 417,-33 419.1119,-31.581 421.3338,-30.2009 423.6093,-28.8708"/>
+<polygon fill="#000000" stroke="#000000" points="425.4234,-31.8683 432.5314,-24.0116 422.0754,-25.7209 425.4234,-31.8683"/>
+</g>
+<!-- proc~hdf_set_deflate -->
+<g id="proc~~hdf_write_scalar~~CallsGraph_node17" class="node">
+<title>proc~hdf_set_deflate</title>
+<g id="a_proc~~hdf_write_scalar~~CallsGraph_node17"><a xlink:href=".././proc/hdf_set_deflate.html" xlink:title="hdf_set_deflate">
+<polygon fill="#d9534f" stroke="#d9534f" points="622,-108 539,-108 539,-84 622,-84 622,-108"/>
+<text text-anchor="middle" x="580.5" y="-93.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">hdf_set_deflate</text>
+</a>
+</g>
+</g>
+<!-- interface~hdf_set_deflate&#45;&gt;proc~hdf_set_deflate -->
+<g id="proc~~hdf_write_scalar~~CallsGraph_edge16" class="edge">
+<title>interface~hdf_set_deflate&#45;&gt;proc~hdf_set_deflate</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M501.8069,-96C510.4992,-96 519.7583,-96 528.7589,-96"/>
+<polygon fill="#000000" stroke="#000000" points="528.7671,-99.5001 538.767,-96 528.767,-92.5001 528.7671,-99.5001"/>
+</g>
+<!-- h5pset_shuffle_f -->
+<g id="proc~~hdf_write_scalar~~CallsGraph_node18" class="node">
+<title>h5pset_shuffle_f</title>
+<polygon fill="#777777" stroke="#777777" points="746.5,-171 658.5,-171 658.5,-147 746.5,-147 746.5,-171"/>
+<text text-anchor="middle" x="702.5" y="-156.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">h5pset_shuffle_f</text>
+</g>
+<!-- proc~hdf_set_deflate&#45;&gt;h5pset_shuffle_f -->
+<g id="proc~~hdf_write_scalar~~CallsGraph_edge17" class="edge">
+<title>proc~hdf_set_deflate&#45;&gt;h5pset_shuffle_f</title>
+<path fill="none" stroke="#000000" d="M602.0433,-108.0931C617.5,-116.6667 638.8862,-128.3202 658,-138 660.896,-139.4666 663.9128,-140.9606 666.9507,-142.4414"/>
+<polygon fill="#000000" stroke="#000000" points="665.4986,-145.6267 676.0279,-146.8041 668.531,-139.3176 665.4986,-145.6267"/>
+</g>
+<!-- h5pset_chunk_f -->
+<g id="proc~~hdf_write_scalar~~CallsGraph_node19" class="node">
+<title>h5pset_chunk_f</title>
+<polygon fill="#777777" stroke="#777777" points="746.5,-129 658.5,-129 658.5,-105 746.5,-105 746.5,-129"/>
+<text text-anchor="middle" x="702.5" y="-114.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">h5pset_chunk_f</text>
+</g>
+<!-- proc~hdf_set_deflate&#45;&gt;h5pset_chunk_f -->
+<g id="proc~~hdf_write_scalar~~CallsGraph_edge18" class="edge">
+<title>proc~hdf_set_deflate&#45;&gt;h5pset_chunk_f</title>
+<path fill="none" stroke="#000000" d="M622.1443,-103.1683C630.4794,-104.603 639.3525,-106.1303 648.0461,-107.6268"/>
+<polygon fill="#000000" stroke="#000000" points="647.6774,-111.1147 658.1263,-109.3619 648.865,-104.2162 647.6774,-111.1147"/>
+</g>
+<!-- h5pset_deflate_f -->
+<g id="proc~~hdf_write_scalar~~CallsGraph_node20" class="node">
+<title>h5pset_deflate_f</title>
+<polygon fill="#777777" stroke="#777777" points="747,-87 658,-87 658,-63 747,-63 747,-87"/>
+<text text-anchor="middle" x="702.5" y="-72.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">h5pset_deflate_f</text>
+</g>
+<!-- proc~hdf_set_deflate&#45;&gt;h5pset_deflate_f -->
+<g id="proc~~hdf_write_scalar~~CallsGraph_edge19" class="edge">
+<title>proc~hdf_set_deflate&#45;&gt;h5pset_deflate_f</title>
+<path fill="none" stroke="#000000" d="M622.1443,-88.8317C630.3802,-87.4141 639.1413,-85.906 647.7355,-84.4267"/>
+<polygon fill="#000000" stroke="#000000" points="648.445,-87.8561 657.7064,-82.7104 647.2575,-80.9576 648.445,-87.8561"/>
+</g>
+<!-- h5pcreate_f -->
+<g id="proc~~hdf_write_scalar~~CallsGraph_node21" class="node">
+<title>h5pcreate_f</title>
+<polygon fill="#777777" stroke="#777777" points="736.5,-45 668.5,-45 668.5,-21 736.5,-21 736.5,-45"/>
+<text text-anchor="middle" x="702.5" y="-30.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">h5pcreate_f</text>
+</g>
+<!-- proc~hdf_set_deflate&#45;&gt;h5pcreate_f -->
+<g id="proc~~hdf_write_scalar~~CallsGraph_edge20" class="edge">
+<title>proc~hdf_set_deflate&#45;&gt;h5pcreate_f</title>
+<path fill="none" stroke="#000000" d="M602.0433,-83.9069C617.5,-75.3333 638.8862,-63.6798 658,-54 660.896,-52.5334 663.9128,-51.0394 666.9507,-49.5586"/>
+<polygon fill="#000000" stroke="#000000" points="668.531,-52.6824 676.0279,-45.1959 665.4986,-46.3733 668.531,-52.6824"/>
+</g>
+</g>
+</svg>
+</div><script>var panprochdf_write_scalarCallsGraph = svgPanZoom('#prochdf_write_scalarCallsGraph', {zoomEnabled: true,controlIconsEnabled: true, fit: true, center: true,}); </script><div><a type="button" class="graph-help" data-toggle="modal" href="#graph-help-text">Help</a></div><div class="modal fade" id="graph-help-text" tabindex="-1" role="dialog"><div class="modal-dialog modal-lg" role="document"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button><h4 class="modal-title" id="-graph-help-label">Graph Key</h4></div><div class="modal-body">
+    <p>Nodes of different colours represent the following: </p>
+    <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.40.1 (20161225.0304)
+ -->
+<!-- Title: Graph Key Pages: 1 -->
+<svg width="551pt" height="32pt"
+ viewBox="0.00 0.00 551.00 32.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 28)">
+<title>Graph Key</title>
+<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-28 547,-28 547,4 -4,4"/>
+<!-- Subroutine -->
+<g id="node1" class="node">
+<title>Subroutine</title>
+<polygon fill="#d9534f" stroke="#d9534f" points="63,-24 0,-24 0,0 63,0 63,-24"/>
+<text text-anchor="middle" x="31.5" y="-9.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">Subroutine</text>
+</g>
+<!-- Function -->
+<g id="node2" class="node">
+<title>Function</title>
+<polygon fill="#d94e8f" stroke="#d94e8f" points="135.5,-24 81.5,-24 81.5,0 135.5,0 135.5,-24"/>
+<text text-anchor="middle" x="108.5" y="-9.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">Function</text>
+</g>
+<!-- Interface -->
+<g id="node3" class="node">
+<title>Interface</title>
+<polygon fill="#a7506f" stroke="#a7506f" points="207.5,-24 153.5,-24 153.5,0 207.5,0 207.5,-24"/>
+<text text-anchor="middle" x="180.5" y="-9.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">Interface</text>
+</g>
+<!-- Unknown Procedure Type -->
+<g id="node4" class="node">
+<title>Unknown Procedure Type</title>
+<polygon fill="#777777" stroke="#777777" points="359,-24 226,-24 226,0 359,0 359,-24"/>
+<text text-anchor="middle" x="292.5" y="-9.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">Unknown Procedure Type</text>
+</g>
+<!-- Program -->
+<g id="node5" class="node">
+<title>Program</title>
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="431.5,-24 377.5,-24 377.5,0 431.5,0 431.5,-24"/>
+<text text-anchor="middle" x="404.5" y="-9.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">Program</text>
+</g>
+<!-- This Page&#39;s Entity -->
+<g id="node6" class="node">
+<title>This Page&#39;s Entity</title>
+<polygon fill="none" stroke="#000000" points="543,-24 450,-24 450,0 543,0 543,-24"/>
+<text text-anchor="middle" x="496.5" y="-9.6" font-family="Helvetica" font-size="10.50" fill="#000000">This Page&#39;s Entity</text>
+</g>
+</g>
+</svg>
+
+    
+    <p>Solid arrows point from a procedure to one which it calls. Dashed 
+    arrows point from an interface to procedures which implement that interface.
+    This could include the module procedures in a generic interface or the
+    implementation in a submodule of an interface in a parent module.
+    </p>
+    </div></div></div></div>
+      </div>
+    </div>
+     
+     
+    <div class="panel panel-default">
+      <div class="panel-heading">
+  <h3 class="panel-title">Called by</h3>
+      </div>
+      <div class="panel-body">
+  <div class="depgraph"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.40.1 (20161225.0304)
+ -->
+<!-- Title: proc~~hdf_write_scalar~~CalledByGraph Pages: 1 -->
+<svg id="prochdf_write_scalarCalledByGraph" width="218pt" height="32pt"
+ viewBox="0.00 0.00 218.00 32.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="proc~~hdf_write_scalar~~CalledByGraph" class="graph" transform="scale(1 1) rotate(0) translate(4 28)">
+<title>proc~~hdf_write_scalar~~CalledByGraph</title>
+<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-28 214,-28 214,4 -4,4"/>
+<!-- proc~hdf_write_scalar -->
+<g id="proc~~hdf_write_scalar~~CalledByGraph_node1" class="node">
+<title>proc~hdf_write_scalar</title>
+<polygon fill="none" stroke="#000000" points="210,-24 123,-24 123,0 210,0 210,-24"/>
+<text text-anchor="middle" x="166.5" y="-9.6" font-family="Helvetica" font-size="10.50" fill="#000000">hdf_write_scalar</text>
+</g>
+<!-- interface~hdf_write_scalar -->
+<g id="proc~~hdf_write_scalar~~CalledByGraph_node2" class="node">
+<title>interface~hdf_write_scalar</title>
+<g id="a_proc~~hdf_write_scalar~~CalledByGraph_node2"><a xlink:href=".././interface/hdf_write_scalar.html" xlink:title="hdf_write_scalar">
+<polygon fill="#a7506f" stroke="#a7506f" points="87,-24 0,-24 0,0 87,0 87,-24"/>
+<text text-anchor="middle" x="43.5" y="-9.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">hdf_write_scalar</text>
+</a>
+</g>
+</g>
+<!-- interface~hdf_write_scalar&#45;&gt;proc~hdf_write_scalar -->
+<g id="proc~~hdf_write_scalar~~CalledByGraph_edge1" class="edge">
+<title>interface~hdf_write_scalar&#45;&gt;proc~hdf_write_scalar</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M87.2115,-12C95.4587,-12 104.1729,-12 112.6873,-12"/>
+<polygon fill="#000000" stroke="#000000" points="112.9293,-15.5001 122.9292,-12 112.9292,-8.5001 112.9293,-15.5001"/>
+</g>
+</g>
+</svg>
+</div><div><a type="button" class="graph-help" data-toggle="modal" href="#graph-help-text">Help</a></div><div class="modal fade" id="graph-help-text" tabindex="-1" role="dialog"><div class="modal-dialog modal-lg" role="document"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button><h4 class="modal-title" id="-graph-help-label">Graph Key</h4></div><div class="modal-body">
+    <p>Nodes of different colours represent the following: </p>
+    <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.40.1 (20161225.0304)
+ -->
+<!-- Title: Graph Key Pages: 1 -->
+<svg width="551pt" height="32pt"
+ viewBox="0.00 0.00 551.00 32.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 28)">
+<title>Graph Key</title>
+<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-28 547,-28 547,4 -4,4"/>
+<!-- Subroutine -->
+<g id="node1" class="node">
+<title>Subroutine</title>
+<polygon fill="#d9534f" stroke="#d9534f" points="63,-24 0,-24 0,0 63,0 63,-24"/>
+<text text-anchor="middle" x="31.5" y="-9.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">Subroutine</text>
+</g>
+<!-- Function -->
+<g id="node2" class="node">
+<title>Function</title>
+<polygon fill="#d94e8f" stroke="#d94e8f" points="135.5,-24 81.5,-24 81.5,0 135.5,0 135.5,-24"/>
+<text text-anchor="middle" x="108.5" y="-9.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">Function</text>
+</g>
+<!-- Interface -->
+<g id="node3" class="node">
+<title>Interface</title>
+<polygon fill="#a7506f" stroke="#a7506f" points="207.5,-24 153.5,-24 153.5,0 207.5,0 207.5,-24"/>
+<text text-anchor="middle" x="180.5" y="-9.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">Interface</text>
+</g>
+<!-- Unknown Procedure Type -->
+<g id="node4" class="node">
+<title>Unknown Procedure Type</title>
+<polygon fill="#777777" stroke="#777777" points="359,-24 226,-24 226,0 359,0 359,-24"/>
+<text text-anchor="middle" x="292.5" y="-9.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">Unknown Procedure Type</text>
+</g>
+<!-- Program -->
+<g id="node5" class="node">
+<title>Program</title>
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="431.5,-24 377.5,-24 377.5,0 431.5,0 431.5,-24"/>
+<text text-anchor="middle" x="404.5" y="-9.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">Program</text>
+</g>
+<!-- This Page&#39;s Entity -->
+<g id="node6" class="node">
+<title>This Page&#39;s Entity</title>
+<polygon fill="none" stroke="#000000" points="543,-24 450,-24 450,0 543,0 543,-24"/>
+<text text-anchor="middle" x="496.5" y="-9.6" font-family="Helvetica" font-size="10.50" fill="#000000">This Page&#39;s Entity</text>
+</g>
+</g>
+</svg>
+
+    
+    <p>Solid arrows point from a procedure to one which it calls. Dashed 
+    arrows point from an interface to procedures which implement that interface.
+    This could include the module procedures in a generic interface or the
+    implementation in a submodule of an interface in a parent module.
+    </p>
+    </div></div></div></div>
+      </div>
+    </div>
+     
+    <br>
+
+    <section class="visible-xs visible-sm hidden-md">
+      
+<h3>Contents</h3>
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<em>None</em>
+
+
+    </section>
+    <br class="visible-xs visible-sm hidden-md">
+
+    
+
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+
+
+    
+    
+    
+    
+    </div>
+  </div>
+
+
+    <hr>    
+    </div> <!-- /container -->
+    <footer>
+      <div class="container">
+      <div class="row">
+        <div class="col-xs-6 col-md-4"><p>&copy; 2020 <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /></a>
+                                          </p></div>
+        <div class="col-xs-6 col-md-4 col-md-push-4">
+          <p class="text-right">
+            Documentation generated by 
+            <a href="https://github.com/cmacmackin/ford">FORD</a>
+            
+          </p>
+        </div>
+        <div class="col-xs-12 col-md-4 col-md-pull-4"><p class="text-center"> Object-oriented Fortran 2018 HDF5 interface was developed by Michael Hirsch, Ph.D.</p></div>
+      </div>
+      <br>
+      </div> <!-- /container -->    
+    </footer>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+<!--
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+-->
+    <script src="../js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../js/ie10-viewport-bug-workaround.js"></script>
+
+    <!-- MathJax JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } },
+        jax: ['input/TeX','input/MathML','output/HTML-CSS'],
+        extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']
+      });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    
+    <script src="../tipuesearch/tipuesearch_content.js"></script>
+    <script src="../tipuesearch/tipuesearch_set.js"></script>
+    <script src="../tipuesearch/tipuesearch.js"></script>
+    
+    
+  </body>
+</html>

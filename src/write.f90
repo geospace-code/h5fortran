@@ -1,7 +1,9 @@
 !! This submodule is for writing HDF5 data via child submodules
 submodule (hdf5_interface) write
 
-use H5LT, only: h5screate_f, h5sclose_f, h5dcreate_f, h5dwrite_f, h5dclose_f, h5ltmake_dataset_f, &
+use H5LT, only: h5screate_f, h5sclose_f, H5S_SCALAR_F, &
+  h5dopen_f, h5dcreate_f, h5dwrite_f, h5dclose_f, &
+  h5ltmake_dataset_f, &
   h5ltpath_valid_f, h5ltset_attribute_string_f, h5screate_simple_f, &
   h5pset_chunk_f, h5pset_deflate_f, h5pset_shuffle_f, h5pcreate_f, H5P_DATASET_CREATE_F, h5pclose_f, &
   h5ltmake_dataset_string_f, h5gopen_f, h5gclose_f
@@ -11,56 +13,93 @@ contains
 
 module procedure writeattr
 
-integer :: ierr
 logical :: exists
 
-call self%add(dname)
+call self%write(dname, ierr)
+if (ierr /= 0) then
+  write(stderr,*) 'ERROR: create ' // dname // ' ' // self%filename
+  return
+endif
 
 call h5ltpath_valid_f(self%lid, dname, .true., exists, ierr)
-if (ierr /= 0) error stop 'problem checking existence: ' //dname// ' file ' //self%filename
+if (ierr /= 0) then
+  write(stderr,*) 'ERROR: checking existence: ' // dname // ' file ' // self%filename
+  ierr = -1
+  return
+endif
 
 if (.not.exists) then
-  write(stderr,*) 'WARNING: variable ' //dname// ' must be created before writing ' //attr
+  write(stderr,*) 'ERROR: variable ' // dname // ' must be created before writing ' // attr
   return
 endif
 
 call h5ltset_attribute_string_f(self%lid, dname, attr, attrval, ierr)
-if (ierr /= 0) error stop 'problem writing attribute ' //attr// ' to ' //dname// ' file ' //self%filename
+if (ierr /= 0) write(stderr,*) 'ERROR: writing attribute ' // attr // ' to ' // dname // ' file ' // self%filename
 
 end procedure writeattr
 
 
-module procedure hdf_add_string
-!! subroutine hdf_add_string(self, dname, value)
-integer :: ierr
-
-call h5ltmake_dataset_string_f(self%lid, dname, value, ierr)
-if (ierr /= 0) error stop 'error on dataset ' //dname// ' write ' //self%filename
-
-end procedure hdf_add_string
-
-
 module procedure hdf_setup_write
+!! hdf_setup_write(self, dname, dtype, dims, ierr, chunk_size)
 
-integer :: ierr
+logical :: exists
 
-call self%add(dname)
+call h5ltpath_valid_f(self%lid, dname, .true., exists, ierr)
+if (ierr /= 0) then
+  write(stderr,*) 'ERROR: ' // dname // ' check exist ' // self%filename
+  return
+endif
 
-if (present(chunk_size)) self%chunk_size(:size(dims)) = chunk_size
+if(exists) then
+  !> open dataset
+  call h5dopen_f(self%lid, dname, self%did, ierr)
+  if (ierr /= 0) then
+    write(stderr,*) 'ERROR: open ' // dname // ' ' // self%filename
+    return
+  endif
+else
+  call self%write(dname, ierr)
+  if (ierr /= 0) then
+    write(stderr,*) 'ERROR: create ' // dname // ' ' // self%filename
+    return
+  endif
+endif
 
-call hdf_set_deflate(self, dims)
+if(size(dims) >= 2) then
+  if (present(chunk_size)) self%chunk_size(:size(dims)) = chunk_size
 
-call h5screate_simple_f(size(dims), dims, self%sid, ierr)
-if (ierr /= 0) error stop 'error on dataspace ' //dname// ' ' //self%filename
-call h5dcreate_f(self%lid, dname, dtype, self%sid, self%did, ierr, self%pid)
-if (ierr /= 0) error stop 'error on dataset ' //dname// ' ' //self%filename
+  call hdf_set_deflate(self, dims, ierr)
+else
+  self%pid = 0
+  !! sentinel value for unused property
+endif
+
+print *, dname, size(dims)
+if(exists) return
+
+if(size(dims) == 0) then
+  call h5screate_f(H5S_SCALAR_F, self%sid, ierr)
+else
+  call h5screate_simple_f(size(dims), dims, self%sid, ierr)
+endif
+if (ierr /= 0) then
+  write(stderr,*) 'ERROR: dataspace ' // dname // ' create ' // self%filename
+  return
+endif
+
+if(size(dims) >= 2) then
+  call h5dcreate_f(self%lid, dname, dtype, self%sid, self%did, ierr, self%pid)
+else
+  call h5dcreate_f(self%lid, dname, dtype, self%sid, self%did, ierr)
+endif
+if (ierr /= 0) write(stderr,*) 'ERROR: dataset ' // dname // ' create ' // self%filename
 
 end procedure hdf_setup_write
 
 
 module procedure hdf_set_deflate
 
-integer :: ierr, ndims, i
+integer :: ndims, i
 integer(HSIZE_T), allocatable :: chunk_size(:)
 
 
@@ -74,39 +113,62 @@ enddo
 if (self%verbose) print *,'dims: ',dims,'chunk size: ',chunk_size
 
 call h5pcreate_f(H5P_DATASET_CREATE_F, self%pid, ierr)
-if (ierr /= 0) error stop 'error creating property '//self%filename
+if (ierr /= 0) then
+  write(stderr,*) 'ERROR: create property ' // self%filename
+  return
+endif
+
 call h5pset_chunk_f(self%pid, ndims, chunk_size, ierr)
-if (ierr /= 0) error stop 'error setting chunk '//self%filename
+if (ierr /= 0) then
+  write(stderr,*) 'ERROR: set chunk ' // self%filename
+  return
+endif
 
 if (self%comp_lvl < 1 .or. self%comp_lvl > 9) return
 
 call h5pset_shuffle_f(self%pid, ierr)
-if (ierr /= 0) error stop 'error enabling Shuffle '//self%filename
+if (ierr /= 0) then
+  write(stderr,*) 'ERROR: enable Shuffle ' // self%filename
+  return
+endif
+
 call h5pset_deflate_f(self%pid, self%comp_lvl, ierr)
-if (ierr /= 0) error stop 'error enabling Deflate compression '//self%filename
+if (ierr /= 0) write(stderr,*) 'ERROR: enable Deflate compression ' // self%filename
 
 end procedure hdf_set_deflate
 
 
 module procedure hdf_wrapup
-integer :: ierr
 
-call h5sclose_f(self%sid, ierr)
-if (ierr /= 0) error stop 'problem closing dataspace in ' // self%filename
-call h5pclose_f(self%pid, ierr)
-if (ierr /= 0) error stop 'problem closing data property in ' // self%filename
+if(self%sid /= 0) then
+  call h5sclose_f(self%sid, ierr)
+  if (ierr /= 0) then
+    write(stderr,*) 'ERROR: close dataspace: ',self%sid, self%filename
+    return
+  endif
+endif
+
+if(self%pid /= 0) then
+  call h5pclose_f(self%pid, ierr)
+  if (ierr /= 0) then
+    write(stderr,*) 'ERROR: close property: ', self%pid, self%filename
+    return
+  endif
+endif
+
 call h5dclose_f(self%did, ierr)
-if (ierr /= 0) error stop 'problem closing dataset in ' // self%filename
+if (ierr /= 0) write(stderr,*) 'ERROR: close dataset: ',self%did, self%filename
 
 end procedure hdf_wrapup
 
 
 module procedure hdf_open_group
 
-integer :: ierr
-
 call h5gopen_f(self%lid, gname, self%gid, ierr)
-if (ierr /= 0) error stop 'problem opening group ' // gname // ' in ' // self%filename
+if (ierr /= 0) then
+  write(stderr,*) 'ERROR: opening group ' // gname // ' in ' // self%filename
+  return
+endif
 
 self%glid = self%lid
 self%lid  = self%gid
@@ -116,10 +178,11 @@ end procedure hdf_open_group
 
 module procedure hdf_close_group
 
-integer :: ierr
-
 call h5gclose_f(self%gid, ierr)
-if (ierr /= 0) error stop 'problem closing group '//self%filename
+if (ierr /= 0) then
+  write(stderr,*) 'ERROR: closing group '//self%filename
+  return
+endif
 
 self%lid = self%glid
 
