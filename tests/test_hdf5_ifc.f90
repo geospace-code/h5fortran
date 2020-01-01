@@ -14,7 +14,7 @@ integer :: i
 
 nan = ieee_value(1.0, ieee_quiet_nan)
 
-do concurrent (i = 1:size(i1))
+do i = 1,size(i1)
   i1(i) = i
 enddo
 
@@ -28,7 +28,7 @@ print *,'PASSED: HDF5 character'
 call test_strip_null()
 print *,'PASSED: null strip'
 call testNewHDF5()
-print *,'PASSED: HDF5 scalar real / integer'
+print *,'PASSED: HDF5 scalar real and integer'
 call testGroup()
 print *,'PASSED: HDF5 group'
 call testwriteHDF5()
@@ -39,7 +39,7 @@ call test_write_attributes()
 print *,'PASSED: HDF5 attributes'
 
 call testrwHDF5(ng=69, nn=100, pn=5)
-print *,'PASSED: HDF5 array write/read'
+print *,'PASSED: HDF5 array write / read'
 
 call test_writeExistingVariable()
 print *,'PASSED: write existing variable'

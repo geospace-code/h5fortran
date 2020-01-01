@@ -1,3 +1,17 @@
+if(UNIX)
+  set(tmpdir $ENV{TMPDIR})
+else()
+  set(tmpdir $ENV{TEMP})
+endif()
+
+add_executable(test_errors test_error.f90)
+target_link_libraries(test_errors PRIVATE h5fortran)
+target_include_directories(test_errors PRIVATE ${CMAKE_BINARY_DIR})
+add_test(NAME ErrorCheck COMMAND $<TARGET_FILE:test_errors> ${tmpdir})
+set_tests_properties(ErrorCheck PROPERTIES
+  TIMEOUT 10
+  SKIP_RETURN_CODE 77)
+
 add_executable(testh5 test_hdf5_ifc.f90)
 target_link_libraries(testh5 PRIVATE h5fortran)
 target_include_directories(testh5 PRIVATE ${CMAKE_BINARY_DIR})
