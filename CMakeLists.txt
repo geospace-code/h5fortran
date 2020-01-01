@@ -4,7 +4,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 project(hdf5iface
   LANGUAGES Fortran
-  VERSION 2.1.0
+  VERSION 2.2.0
   HOMEPAGE_URL https://github.com/scivision/h5fortran)
 enable_testing()
 
@@ -13,5 +13,10 @@ include(cmake/compilers.cmake)
 include(cmake/hdf5.cmake)
 
 add_subdirectory(src)
+
+# skip tests if used as ExternalProject
+if(NOT CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
+  return()
+endif()
 
 add_subdirectory(tests)
