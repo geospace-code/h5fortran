@@ -10,12 +10,14 @@ Designed for easy use as a Meson "subproject" or CMake "ExternalProject" using *
 Uses Fortran 2008 `submodule` and `error stop` for clean template structure.
 This easy-to-use, thin object-oriented modern Fortran library abstracts away the messy parts of HDF5 so that you can read/write various types/ranks of data with a single command.
 
-Polymorphic API with read/write for types integer, real32, real64 with rank:
+Polymorphic API with read/write for types int32, int64, real32, real64 with rank:
 
 * scalar (0-D)
 * 1-D .. 7-D
 
 as well as character (string) variables and attributes.
+Mismatched datatypes are coerced as per standard Fortran rules.
+For example, reading a float HDF5 variable into an integer Fortran variable:  42.3 => 42
 
 Tested on systems with HDF5 1.8 and 1.10 including:
 
@@ -25,6 +27,14 @@ Tested on systems with HDF5 1.8 and 1.10 including:
 * Windows MSYS2
 
 Currently, Cygwin does not have *Fortran* HDF5 libraries.
+
+## Not yet handled
+
+It's possible to do these things, if there is user need.
+
+* arrays of rank > 7: this has been stubbed in reader_nd.f90, writer_nd.f90. Only the latest compilers support Fortran 2008 arrays up to rank 15.
+* complex64/complex128: this is not natively handled in HDF5. Popular approaches to complex numbers in HDF5 include h5py's using an HDF5 compound datatype.
+* non-default character kind
 
 ## Build
 
@@ -104,7 +114,7 @@ include(ExternalProject)
 
 ExternalProject_Add(h5fortran
   GIT_REPOSITORY https://github.com/scivision/h5fortran.git
-  GIT_TAG master  # it's better to use a specific Git revision or Git tag for reproducibility
+  GIT_TAG master  # it's better to use a specific Git tag for reproducibility
   INSTALL_COMMAND ""  # disables the install step for the external project
 )
 

@@ -108,6 +108,7 @@ if(ierr/=0) then
   write(stderr,*) 'read value /real32: ', u
   error stop 'test_wrong_type: read mismatched variable type'
 endif
+if (u /= 42) error stop 'test_wrong_type: did not coerce real to integer'
 call h5f%finalize(ierr)
 if (ierr/=0) error stop 'test_nonexist_variable: finalizing'
 end subroutine test_wrong_type
