@@ -1,5 +1,5 @@
-!! This submodule is for reading double precision float (64 bit)
-submodule (hdf5_interface:read) read_real64
+!! This submodule is for reading 0-D..7-D data
+submodule (hdf5_interface:read) reader
 
 use H5LT, only: HSIZE_T, SIZE_T, H5_REAL_KIND, H5_INTEGER_KIND, H5KIND_TO_TYPE, h5ltpath_valid_f
 implicit none
@@ -39,6 +39,9 @@ type is (integer(int32))
   call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
 type is (integer(int64))
   call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
+class default
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
+  ierr = -1
 end select
 
 if (ierr /= 0) write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
@@ -62,6 +65,9 @@ type is (integer(int32))
   call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
 type is (integer(int64))
   call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
+class default
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
+  ierr = -1
 end select
 
 if (ierr /= 0) write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
@@ -85,6 +91,9 @@ type is (integer(int32))
   call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
 type is (integer(int64))
   call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
+class default
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
+  ierr = -1
 end select
 
 if (ierr /= 0) write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
@@ -108,6 +117,9 @@ type is (integer(int32))
   call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
 type is (integer(int64))
   call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
+class default
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
+  ierr = -1
 end select
 
 if (ierr /= 0) write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
@@ -131,6 +143,9 @@ type is (integer(int32))
   call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
 type is (integer(int64))
   call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
+class default
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
+  ierr = -1
 end select
 
 if (ierr /= 0) write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
@@ -154,6 +169,9 @@ type is (integer(int32))
   call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
 type is (integer(int64))
   call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
+class default
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
+  ierr = -1
 end select
 
 if (ierr /= 0) write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
@@ -177,6 +195,9 @@ type is (integer(int32))
   call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
 type is (integer(int64))
   call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
+class default
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
+  ierr = -1
 end select
 
 if (ierr /= 0) write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
@@ -200,6 +221,9 @@ type is (integer(int32))
   call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
 type is (integer(int64))
   call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
+class default
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
+  ierr = -1
 end select
 
 if (ierr /= 0) write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
@@ -207,4 +231,4 @@ if (ierr /= 0) write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
 end procedure hdf_read_7d
 
 
-end submodule read_real64
+end submodule reader

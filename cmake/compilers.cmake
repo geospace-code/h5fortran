@@ -1,3 +1,6 @@
+include(CheckFortranSourceCompiles)
+check_fortran_source_compiles("real, dimension(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1) :: x; end" f08rank15 SRC_EXT f90)
+
 if(CMAKE_Fortran_COMPILER_ID STREQUAL Intel)
   if(NOT WIN32)
     set(FFLAGS -stand f18 -warn declarations -traceback -warn -heap-arrays)
