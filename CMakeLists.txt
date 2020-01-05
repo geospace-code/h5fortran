@@ -14,6 +14,20 @@ include(cmake/compilers.cmake)
 
 include(cmake/hdf5.cmake)
 
+# --- install config (before build)
+
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+  if(WIN32)
+    set(HOME $ENV{USERPROFILE})
+  else()
+    set(HOME $ENV{HOME})
+  endif()
+
+  set(CMAKE_INSTALL_PREFIX "${HOME}/.local/h5fortran" CACHE PATH "..." FORCE)
+endif()
+
+# -- build
+
 add_subdirectory(src)
 
 add_subdirectory(src/tests)

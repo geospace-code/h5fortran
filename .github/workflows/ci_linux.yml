@@ -16,16 +16,16 @@ on:
 
 jobs:
 
-  linuxMesonStatic:
+  linuxMeson:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
     - uses: actions/setup-python@v1
       with:
-        python-version: '3.7'
+        python-version: '3.x'
     - run: pip install -r requirements.txt
     - run: sudo apt install -yq --no-install-recommends gfortran libhdf5-dev
-    - run: meson setup build --default-library=static
+    - run: meson setup build
       env:
         FC: gfortran
     - run: ninja -C build
@@ -36,28 +36,7 @@ jobs:
         name: Linux_Meson_Testlog
         path: build/meson-logs/testlog.txt
 
-  linuxMesonShared:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v1
-    - uses: actions/setup-python@v1
-      with:
-        python-version: '3.7'
-    - run: pip install -r requirements.txt
-    - run: sudo apt install -yq --no-install-recommends gfortran libhdf5-dev
-    - run: meson setup build --default-library=shared
-      env:
-        FC: gfortran
-    - run: ninja -C build
-    - run: meson test -C build -v
-    - uses: actions/upload-artifact@v1
-      if: failure()
-      with:
-        name: Linux_Meson_Testlog
-        path: build/meson-logs/testlog.txt
-
-
-  linuxCmakeStatic:
+  linuxCmake:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
@@ -66,23 +45,7 @@ jobs:
       run: |
         mkdir build
         cd build
-        cmake .. -DBUILD_SHARED_LIBS=false
-      env:
-        FC: gfortran
-    - run: cmake --build build --parallel
-    - run: ctest -V
-      working-directory: build
-
-  linuxCmakeShared:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v1
-    - run: sudo apt install -yq --no-install-recommends gfortran libhdf5-dev
-    - name: CMake configure
-      run: |
-        mkdir build
-        cd build
-        cmake .. -DBUILD_SHARED_LIBS=true
+        cmake ..
       env:
         FC: gfortran
     - run: cmake --build build --parallel

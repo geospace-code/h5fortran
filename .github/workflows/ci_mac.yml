@@ -22,14 +22,27 @@ jobs:
     - uses: actions/checkout@v1
     - uses: actions/setup-python@v1
       with:
-        python-version: '3.7'
+        python-version: '3.x'
     - run: pip install -r requirements.txt
     - run: brew install pkg-config gcc hdf5
-    - run: meson setup build --default-library=shared
+
+    - run: meson setup build
       env:
         FC: gfortran-9
         CC: gcc-9
+    - uses: actions/upload-artifact@v1
+      if: failure()
+      with:
+        name: Mac_Meson_Configlog
+        path: build/meson-logs/meson-log.txt
+
     - run: ninja -C build
+    - uses: actions/upload-artifact@v1
+      if: failure()
+      with:
+        name: Mac_Meson_Buildlog
+        path: build/meson-logs/meson-log.txt
+
     - run: meson test -C build -v
     - uses: actions/upload-artifact@v1
       if: failure()
