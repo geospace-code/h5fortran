@@ -1,8 +1,4 @@
-if(UNIX)
-  set(tmpdir $ENV{TMPDIR})
-else()
-  set(tmpdir $ENV{TEMP})
-endif()
+set(tmpdir ${CMAKE_CURRENT_BINARY_DIR})
 
 add_executable(test_minimal test_minimal.f90)
 target_link_libraries(test_minimal PRIVATE h5fortran ${HDF5_Fortran_HL_LIBRARIES} ${HDF5_Fortran_LIBRARIES})
