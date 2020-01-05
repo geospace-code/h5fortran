@@ -16,9 +16,4 @@ include(cmake/hdf5.cmake)
 
 add_subdirectory(src)
 
-# skip tests if used as ExternalProject
-if(NOT CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
-  return()
-endif()
-
 add_subdirectory(src/tests)

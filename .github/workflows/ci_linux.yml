@@ -3,10 +3,14 @@ name: ci_linux
 on:
   push:
     paths:
+      - "**.build"
+      - "**.txt"
       - "**.f90"
       - ".github/workflows/ci_linux.yml"
   pull_request:
     paths:
+      - "**.build"
+      - "**.txt"
       - "**.f90"
       - ".github/workflows/ci_linux.yml"
 

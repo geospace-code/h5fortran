@@ -3,10 +3,14 @@ name: ci_mac
 on:
   push:
     paths:
+      - "**.build"
+      - "**.txt"
       - "**.f90"
       - ".github/workflows/ci_mac.yml"
   pull_request:
     paths:
+      - "**.build"
+      - "**.txt"
       - "**.f90"
       - ".github/workflows/ci_mac.yml"
 
