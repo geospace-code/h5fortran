@@ -33,7 +33,8 @@ set(CMAKE_REQUIRED_INCLUDES ${HDF5_INCLUDE_DIRS} ${HDF5_Fortran_INCLUDE_DIRS})
 set(CMAKE_REQUIRED_LIBRARIES ${HDF5_Fortran_HL_LIBRARIES} ${HDF5_Fortran_LIBRARIES})
 
 include(CheckFortranSourceCompiles)
-check_fortran_source_compiles("use h5lt; end" HDF5OK SRC_EXT f90)
+file(READ ${CMAKE_SOURCE_DIR}/src/tests/test_minimal.f90 _code)
+check_fortran_source_compiles(${_code} HDF5OK SRC_EXT f90)
 
 set(HDF5OK ${HDF5OK} CACHE BOOL "HDF5 library working?")
 

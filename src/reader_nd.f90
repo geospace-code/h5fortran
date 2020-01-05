@@ -1,4 +1,6 @@
-submodule (hdf5_interface:read) reader_ND
+submodule (h5fortran:read) reader_ND
+
+implicit none
 
 contains
 

@@ -4,9 +4,11 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 project(hdf5iface
   LANGUAGES Fortran
-  VERSION 2.2.1
+  VERSION 2.3.0
   HOMEPAGE_URL https://github.com/scivision/h5fortran)
 enable_testing()
+
+option(test_shaky "run shaky tests" OFF)
 
 include(cmake/compilers.cmake)
 
@@ -19,4 +21,4 @@ if(NOT CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
   return()
 endif()
 
-add_subdirectory(tests)
+add_subdirectory(src/tests)

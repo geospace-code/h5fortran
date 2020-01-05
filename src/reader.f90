@@ -1,7 +1,9 @@
 !! This submodule is for reading 0-D..7-D data
-submodule (hdf5_interface:read) reader
+submodule (h5fortran:read) reader
 
-use H5LT, only: HSIZE_T, SIZE_T, H5_REAL_KIND, H5_INTEGER_KIND, H5KIND_TO_TYPE, h5ltpath_valid_f
+use hdf5, only: HSIZE_T, SIZE_T, H5_REAL_KIND, H5_INTEGER_KIND, H5KIND_TO_TYPE
+use H5LT, only: h5ltpath_valid_f
+
 implicit none
 contains
 

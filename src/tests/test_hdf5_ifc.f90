@@ -2,7 +2,7 @@
 use, intrinsic:: ieee_arithmetic, only: ieee_value, ieee_quiet_nan, ieee_is_nan
 use, intrinsic:: iso_fortran_env, only: int64, int32, real32, real64, stderr=>error_unit
 use, intrinsic:: iso_c_binding, only: c_null_char
-use hdf5_interface, only: hdf5_file, toLower, strip_trailing_null, truncate_string_null, HSIZE_T
+use h5fortran, only: hdf5_file, toLower, strip_trailing_null, truncate_string_null, HSIZE_T
 
 implicit none
 
@@ -10,7 +10,17 @@ type(hdf5_file) :: h5f
 integer :: i1(4), ierr
 real(real32)    :: nan, r1(4), r2(4,4)
 
-integer :: i
+character(:), allocatable :: path
+character(256) :: argv
+integer :: i,l
+
+call get_command_argument(1, argv, length=l, status=i)
+if (i /= 0 .or. l == 0) then
+  write(stderr,*) 'please specify test directory e.g. /tmp'
+  error stop 77
+endif
+path = trim(argv)
+print *, 'test path: ', path
 
 nan = ieee_value(1.0, ieee_quiet_nan)
 
@@ -20,30 +30,29 @@ enddo
 
 r1 = i1
 
-call test_string_rw()
+call test_string_rw(path)
 print *,'PASSED: HDF5 string write/read'
 
 call test_lowercase()
 print *,'PASSED: HDF5 character'
 call test_strip_null()
 print *,'PASSED: null strip'
-call testNewHDF5()
+call testNewHDF5(path)
 print *,'PASSED: HDF5 scalar real and integer'
-call testGroup()
+call testGroup(path)
 print *,'PASSED: HDF5 group'
-call testwriteHDF5()
+call testwriteHDF5(path)
 print *,'PASSED: HDF5 array'
-call test_hdf5_deflate()
+call test_hdf5_deflate(path)
 print *,'PASSED: HDF5 compression'
-call test_write_attributes()
+call test_write_attributes(path)
 print *,'PASSED: HDF5 attributes'
 
-call testrwHDF5(ng=69, nn=100, pn=5)
+call testrwHDF5(path, ng=69, nn=100, pn=5)
 print *,'PASSED: HDF5 array write / read'
 
-call test_writeExistingVariable()
+call test_writeExistingVariable(path)
 print *,'PASSED: write existing variable'
-
 
 print *,'OK: HDF5 h5fortran library'
 
@@ -73,15 +82,15 @@ if (.not.strip_trailing_null(hello // c_null_char) == hello) error stop 'problem
 end subroutine test_strip_null
 
 
-subroutine testNewHDF5()
-
+subroutine testNewHDF5(path)
+character(*), intent(in) :: path
 real(real32), allocatable :: rr1(:)
 real(real32) :: rt
 integer(int32) :: it
 integer(int32), allocatable :: i1t(:)
 integer(HSIZE_T), allocatable :: dims(:)
 
-call h5f%initialize('test.h5', ierr, status='new',action='w')
+call h5f%initialize(path//'/test.h5', ierr, status='new',action='w')
 
 !! scalar tests
 call h5f%write('/scalar_int', 42_int32, ierr)
@@ -99,7 +108,7 @@ if (ierr /= 0) error stop 'write 1-D: scalar int'
 call h5f%finalize(ierr)
 if (ierr /= 0) error stop 'write finalize'
 
-call h5f%initialize('test.h5', ierr, status='old',action='r')
+call h5f%initialize(path//'/test.h5', ierr, status='old',action='r')
 call h5f%read('/scalar_int', it, ierr)
 call h5f%read('/scalar_real', rt, ierr)
 if (.not.(rt==it .and. it==42)) then
@@ -117,7 +126,7 @@ allocate(i1t(dims(1)))
 call h5f%read('/ai1',i1t, ierr)
 if (.not.all(i1==i1t)) error stop 'integer 1-D: read does not match write'
 
-if (.not. h5f%filename == 'test.h5') then
+if (.not. h5f%filename == path//'/test.h5') then
   write(stderr,*) h5f%filename // ' mismatch filename'
   error stop
 endif
@@ -128,10 +137,10 @@ if (ierr /= 0) error stop 'write finalize'
 end subroutine testNewHDF5
 
 
-subroutine testGroup
+subroutine testGroup(path)
+character(*), intent(in) :: path
 
-
-call h5f%initialize('test_groups.h5', ierr, status='new',action='rw')
+call h5f%initialize(path//'/test_groups.h5', ierr, status='new',action='rw')
 call h5f%write('/test/', ierr)
 if (ierr /= 0) error stop 'create group'
 
@@ -152,9 +161,9 @@ if (ierr /= 0) error stop 'write finalize'
 end subroutine testGroup
 
 
-subroutine testwriteHDF5()
+subroutine testwriteHDF5(path)
 !! tests that compression doesn't fail for very small datasets, where it really shouldn't be used (makes file bigger)
-
+character(*), intent(in) :: path
 integer(int32), dimension(4,4) :: i2, i2t
 integer(int64), dimension(4,4) :: i2t64
 integer(HSIZE_T), allocatable :: dims(:)
@@ -168,7 +177,7 @@ enddo
 
 r2 = i2
 
-call h5f%initialize('test.h5', ierr, status='old',action='rw',comp_lvl=1)
+call h5f%initialize(path//'/test.h5', ierr, status='old',action='rw',comp_lvl=1)
 if(ierr/=0) error stop 'initialize'
 call h5f%write('/test/group2/ai2', i2, ierr)
 if(ierr/=0) error stop 'write 2-D: int32'
@@ -181,7 +190,7 @@ if(ierr/=0) error stop 'write 0-D: real32 NaN'
 call h5f%finalize(ierr)
 if (ierr /= 0) error stop 'write finalize'
 
-call h5f%initialize('test.h5', ierr,status='old',action='r')
+call h5f%initialize(path//'/test.h5', ierr,status='old',action='r')
 
 call h5f%read('/test/group2/ai2',i2t, ierr)
 if (.not.all(i2==i2t)) error stop 'read 2-D: int32 does not match write'
@@ -202,20 +211,22 @@ if (ierr /= 0) error stop 'write finalize'
 end subroutine testwriteHDF5
 
 
-subroutine test_hdf5_deflate()
-
+subroutine test_hdf5_deflate(path)
+character(*), intent(in) :: path
 integer(int64), parameter :: N=1000
 integer(int64) :: crat
 integer ::  fsize, ibig2(N,N) = 0, ibig3(N,N,4) = 0
 real(real32) :: big2(N,N) = 0., big3(N,N,4) = 0.
+character(:), allocatable :: fn
 
+fn = path//'/test_deflate.h5'
 
-call h5f%initialize('test_deflate.h5', ierr, status='new',action='rw',comp_lvl=1)
+call h5f%initialize(fn, ierr, status='new',action='rw',comp_lvl=1)
 call h5f%write('/big2', big2, ierr, chunk_size=[100,100])
 call h5f%finalize(ierr)
 if (ierr /= 0) error stop 'write finalize'
 
-inquire(file='test_deflate.h5', size=fsize)
+inquire(file=fn, size=fsize)
 crat = (N*N*storage_size(big2)/8) / fsize
 
 print '(A,F6.2,A,I6)','filesize (Mbytes): ',fsize/1e6, '   2D compression ratio:',crat
@@ -223,38 +234,38 @@ print '(A,F6.2,A,I6)','filesize (Mbytes): ',fsize/1e6, '   2D compression ratio:
 if (h5f%comp_lvl > 0 .and. crat < 10) write(stderr,*) 'warning: 2D low compression'
 
 !======================================
-call h5f%initialize('test_deflate.h5', ierr, status='new',action='rw',comp_lvl=1)
+call h5f%initialize(fn, ierr, status='new',action='rw',comp_lvl=1)
 call h5f%write('/big3', big3, ierr, chunk_size=[100,100,1])
 call h5f%finalize(ierr)
 if (ierr /= 0) error stop 'write finalize'
 
-inquire(file='test_deflate.h5', size=fsize)
+inquire(file=fn, size=fsize)
 crat = (N*N*storage_size(big3)/8) / fsize
 
 print '(A,F6.2,A,I6)','filesize (Mbytes): ',fsize/1e6, '   3D compression ratio:',crat
 
 if (h5f%comp_lvl > 0 .and. crat < 10) write(stderr,*) 'warning: 3D low compression'
 !======================================
-call h5f%initialize('test_deflate.h5', ierr, status='new',action='rw',comp_lvl=1)
+call h5f%initialize(fn, ierr, status='new',action='rw',comp_lvl=1)
 call h5f%write('/ibig3', ibig3, ierr, chunk_size=[1000,100,1])
 call h5f%finalize(ierr)
 if (ierr /= 0) error stop 'write finalize'
 
-inquire(file='test_deflate.h5', size=fsize)
+inquire(file=fn, size=fsize)
 crat = (N*N*storage_size(ibig3)/8) / fsize
 
 print '(A,F6.2,A,I6)','filesize (Mbytes): ',fsize/1e6, '   3D compression ratio:',crat
 
 if (h5f%comp_lvl > 0 .and. crat < 10) write(stderr,*) 'warning: 3D low compression'
 !======================================
-call h5f%initialize('test_deflate.h5', ierr, status='new',action='rw',comp_lvl=1)
+call h5f%initialize(fn, ierr, status='new',action='rw',comp_lvl=1)
 
 call h5f%write('/ibig2', ibig2, ierr, chunk_size=[100,100])
 
 call h5f%finalize(ierr)
 if (ierr /= 0) error stop 'write finalize'
 
-inquire(file='test_deflate.h5', size=fsize)
+inquire(file=fn, size=fsize)
 crat = (N*N*storage_size(ibig2)/8) / fsize
 
 print '(A,F6.2,A,I6)','filesize (Mbytes): ',fsize/1e6, '   3D compression ratio:',crat
@@ -264,9 +275,10 @@ if (h5f%comp_lvl > 0 .and. crat < 10) write(stderr,*) 'warning: 3D low compressi
 end subroutine test_hdf5_deflate
 
 
-subroutine test_write_attributes()
+subroutine test_write_attributes(path)
+character(*), intent(in) :: path
 
-call h5f%initialize('test_deflate.h5', ierr)
+call h5f%initialize(path//'/test_deflate.h5', ierr)
 
 call h5f%writeattr('/little/','note','this is just a little number', ierr)
 if (ierr /= 0) error stop 'write attribute string'
@@ -277,14 +289,14 @@ if (ierr /= 0) error stop 'write finalize'
 end subroutine test_write_attributes
 
 
-subroutine test_string_rw()
-
+subroutine test_string_rw(path)
+character(*), intent(in) :: path
 character(2) :: value
 character(1024) :: val1k
 character(:), allocatable :: final
 integer :: i
 
-call h5f%initialize('test_string.h5', ierr, status='new', action='rw')
+call h5f%initialize(path//'/test_string.h5', ierr, status='new', action='rw')
 call h5f%write('/little', '42', ierr)
 
 call h5f%read('/little', value, ierr)
@@ -307,9 +319,9 @@ if (ierr /= 0) error stop 'write finalize'
 end subroutine test_string_rw
 
 
-subroutine testrwHDF5(ng, nn, pn)
+subroutine testrwHDF5(path,ng, nn, pn)
 !! more group
-
+character(*), intent(in) :: path
 integer, intent(in) :: ng, nn, pn
 
 real(real32), allocatable :: flux(:,:),fo(:)
@@ -320,7 +332,7 @@ allocate(flux(nn,ng),fo(nn))
 flux = 1.0
 write(pnc,'(I2)') pn
 
-call h5f%initialize('p'//trim(adjustl(pnc))//'.h5', ierr, status='new',action='w')
+call h5f%initialize(path//'/p'//trim(adjustl(pnc))//'.h5', ierr, status='new',action='w')
 if (ierr /= 0) error stop 'write initialize'
 
 do i = 1,ng
@@ -337,11 +349,14 @@ if (ierr /= 0) error stop 'write finalize'
 end subroutine testrwHDF5
 
 
-subroutine test_writeExistingVariable()
-
+subroutine test_writeExistingVariable(path)
+character(*), intent(in) :: path
 integer :: ierr
+character(:),allocatable :: fn
 
-call h5f%initialize('overwrite.h5', ierr, status='new',action='w')
+fn = path//'/overwrite.h5'
+
+call h5f%initialize(fn, ierr, status='new',action='w')
 if (ierr /= 0) error stop 'write initialize'
 
 call h5f%write('/scalar_int', 42_int32, ierr)
@@ -353,7 +368,7 @@ if (ierr /= 0) error stop 'write 1D int'
 call h5f%finalize(ierr)
 if (ierr /= 0) error stop 'write finalize'
 
-call h5f%initialize('overwrite.h5', ierr, status='old',action='rw')
+call h5f%initialize(fn, ierr, status='old',action='rw')
 if (ierr /= 0) error stop 'overwrite initialize'
 
 call h5f%write('/scalar_int', 100_int32, ierr)

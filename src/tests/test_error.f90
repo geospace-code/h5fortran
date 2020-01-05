@@ -1,5 +1,5 @@
 use, intrinsic:: iso_fortran_env, only: int64, int32, real32, real64, stderr=>error_unit
-use hdf5_interface, only: hdf5_file, HSIZE_T
+use h5fortran, only: hdf5_file
 
 implicit none
 
@@ -14,9 +14,7 @@ if (i /= 0 .or. l == 0) then
   write(stderr,*) 'please specify test directory e.g. /tmp'
   error stop 77
 endif
-
 path = trim(argv)
-
 print *, 'test path: ', path
 
 call test_nonexist_old_file(path)
@@ -90,8 +88,6 @@ subroutine test_wrong_type(path)
 character(*), intent(in) :: path
 integer :: u,ierr
 character(:), allocatable :: filename
-real :: x
-
 
 filename = path // '/junk.h5'
 call h5f%initialize(filename, ierr, status='replace', action='write')

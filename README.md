@@ -134,7 +134,7 @@ target_include_directories(myio PRIVATE ${h5fortran_BINARY_DIR})
 All examples assume:
 
 ```fortran
-use hdf5_interface, only: hdf5_file
+use h5fortran, only: hdf5_file
 type(hdf5_file) :: h5f
 ```
 

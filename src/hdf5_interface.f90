@@ -1,8 +1,8 @@
-module hdf5_interface
+module h5fortran
 !! HDF5 object-oriented polymorphic interface
 use, intrinsic :: iso_c_binding, only : c_ptr, c_loc
 use, intrinsic :: iso_fortran_env, only : real32, real64, int32, int64, stderr=>error_unit
-use H5LT, only : HID_T, SIZE_T, HSIZE_T, H5F_ACC_RDONLY_F, H5F_ACC_RDWR_F, H5F_ACC_TRUNC_F, &
+use hdf5, only : HID_T, SIZE_T, HSIZE_T, H5F_ACC_RDONLY_F, H5F_ACC_RDWR_F, H5F_ACC_TRUNC_F, &
     h5open_f, h5close_f, h5gcreate_f, h5gclose_f, h5fopen_f, h5fcreate_f, h5fclose_f, h5lexists_f
 
 use string_utils, only : toLower, strip_trailing_null, truncate_string_null
@@ -370,4 +370,4 @@ end do
 
 end subroutine hdf_write_group
 
-end module hdf5_interface
+end module h5fortran

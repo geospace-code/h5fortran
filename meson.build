@@ -1,6 +1,6 @@
 project('h5fortran', 'fortran',
   meson_version : '>=0.52.0',
-  version : '2.2.1',
+  version : '2.3.0',
   default_options : ['default_library=static', 'buildtype=release', 'warning_level=3'])
 
 subdir('meson')
@@ -16,5 +16,5 @@ hdf5_interface = declare_dependency(link_with: ooh5, dependencies: hdf5)
 
 # --- testing
 if not meson.is_subproject()
-  subdir('tests')
+  subdir('src/tests')
 endif

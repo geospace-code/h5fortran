@@ -1,7 +1,7 @@
 !! This submodule is for writing 0-D..7-D data
-submodule (hdf5_interface:write) writer
+submodule (h5fortran:write) writer
 
-use H5LT, only: H5_REAL_KIND, H5_INTEGER_KIND, H5S_SCALAR_F, H5KIND_TO_TYPE
+use hdf5, only: H5_REAL_KIND, H5_INTEGER_KIND, H5S_SCALAR_F, H5KIND_TO_TYPE
 implicit none
 contains
 

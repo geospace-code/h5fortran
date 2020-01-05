@@ -1,8 +1,9 @@
 !! This submodule is for reading HDF5, via child submodules
-submodule (hdf5_interface) read
+submodule (h5fortran) read
 
-use H5LT, only: h5ltget_dataset_info_f, h5ltread_dataset_f, h5ltget_dataset_ndims_f, &
-    h5dopen_f, h5dread_f, h5dclose_f, h5ltread_dataset_string_f, h5ltpath_valid_f
+use hdf5, only : h5dopen_f, h5dread_f, h5dclose_f
+use H5LT, only : h5ltget_dataset_info_f, h5ltread_dataset_f, h5ltget_dataset_ndims_f, &
+  h5ltread_dataset_string_f, h5ltpath_valid_f
 
 implicit none
 

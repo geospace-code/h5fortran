@@ -1,5 +1,7 @@
 !! conceptual--not tested
-submodule (hdf5_interface:write) writer_ND
+submodule (h5fortran:write) writer_ND
+
+implicit none
 
 contains
 
@@ -44,7 +46,7 @@ type is (integer(int64))
   f_ptr = c_loc(value(i(1),i(2),i(3),i(4),i(5),i(6),i(7),i(8)))
   call h5dwrite_f(self%did, dtype, f_ptr, ierr)
 class default
-  write(stderr) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
   ierr = -1
 end select
 
