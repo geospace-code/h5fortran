@@ -25,10 +25,20 @@ jobs:
         python-version: '3.x'
     - run: pip install -r requirements.txt
     - run: sudo apt install -yq --no-install-recommends gfortran libhdf5-dev
+
     - run: meson setup build
       env:
         FC: gfortran
+
     - run: ninja -C build
+
+    # this catches configuration and build log
+    - uses: actions/upload-artifact@v1
+      if: failure()
+      with:
+        name: Linux_Meson_Buildlog
+        path: build/meson-logs/meson-log.txt
+
     - run: meson test -C build -v
     - uses: actions/upload-artifact@v1
       if: failure()
@@ -49,5 +59,17 @@ jobs:
       env:
         FC: gfortran
     - run: cmake --build build --parallel
+
+    - uses: actions/upload-artifact@v1
+      if: failure()
+      with:
+        name: Linux_CMake_Buildlog
+        path: build/CMakeFiles/CMakeError.log
+
     - run: ctest -V
       working-directory: build
+    - uses: actions/upload-artifact@v1
+      if: failure()
+      with:
+        name: Linux_CMake_Testlog
+        path: build/Testing/Temporary/LastTest.log

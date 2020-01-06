@@ -36,13 +36,10 @@ jobs:
       env:
         FC: gfortran-9
         CC: gcc-9
-    - uses: actions/upload-artifact@v1
-      if: failure()
-      with:
-        name: Mac_Meson_Configlog
-        path: build/meson-logs/meson-log.txt
 
     - run: ninja -C build
+
+    # this catches configuration and build log
     - uses: actions/upload-artifact@v1
       if: failure()
       with:
@@ -66,5 +63,18 @@ jobs:
         FC: gfortran-9
         CC: gcc-9
     - run: cmake --build build --parallel
+
+    - uses: actions/upload-artifact@v1
+      if: failure()
+      with:
+        name: Mac_CMake_Buildlog
+        path: build/CMakeFiles/CMakeError.log
+
     - run: ctest -V
       working-directory: build
+
+    - uses: actions/upload-artifact@v1
+      if: failure()
+      with:
+        name: Mac_CMake_Testlog
+        path: build/Testing/Temporary/LastTest.log
