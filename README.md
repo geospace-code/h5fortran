@@ -6,8 +6,9 @@
 [![Actions Status](https://github.com/scivision/h5fortran/workflows/ci_mac/badge.svg)](https://github.com/scivision/h5fortran/actions)
 
 Straightforward single-module access to HDF5.
+For NetCDF4 see [nc4fortran](https://github.com/scivision/nc4fortran/).
 Designed for easy use as a Meson "subproject" or CMake "ExternalProject" using **static** or **shared** linking.
-Uses Fortran 2008 `submodule` and `error stop` for clean template structure.
+Uses Fortran 2008 `submodule` for clean template structure.
 This easy-to-use, thin object-oriented modern Fortran library abstracts away the messy parts of HDF5 so that you can read/write various types/ranks of data with a single command.
 
 Polymorphic API with read/write for types int32, int64, real32, real64 with rank:
