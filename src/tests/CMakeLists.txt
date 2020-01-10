@@ -3,7 +3,7 @@ set(tmpdir ${CMAKE_CURRENT_BINARY_DIR})
 add_executable(test_minimal test_minimal.f90)
 target_link_libraries(test_minimal PRIVATE h5fortran ${HDF5_LIBRARIES})
 target_include_directories(test_minimal PRIVATE ${CMAKE_BINARY_DIR} ${HDF5_INCLUDE_DIRS})
-add_test(NAME Minimal COMMAND $<TARGET_FILE:test_minimal>)
+add_test(NAME Minimal COMMAND $<TARGET_FILE:test_minimal> ${tmpdir})
 if(WIN32 AND HDF5_ROOT)
   set_tests_properties(Minimal PROPERTIES ENVIRONMENT "PATH=${HDF5_ROOT}/bin;$ENV{PATH}")
 endif()
@@ -13,6 +13,9 @@ target_link_libraries(test_errors PRIVATE h5fortran ${HDF5_LIBRARIES})
 target_include_directories(test_errors PRIVATE ${CMAKE_BINARY_DIR} ${HDF5_INCLUDE_DIRS})
 add_test(NAME ErrorCheck COMMAND $<TARGET_FILE:test_errors> ${tmpdir})
 set_tests_properties(ErrorCheck PROPERTIES SKIP_RETURN_CODE 77)
+if(WIN32 AND HDF5_ROOT)
+  set_tests_properties(ErrorCheck PROPERTIES ENVIRONMENT "PATH=${HDF5_ROOT}/bin;$ENV{PATH}")
+endif()
 
 add_executable(testh5 test_hdf5_ifc.f90)
 target_link_libraries(testh5 PRIVATE h5fortran ${HDF5_LIBRARIES})
@@ -21,10 +24,13 @@ if(${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU)
   target_compile_options(testh5 PRIVATE -Wno-compare-reals)
 endif()
 
-add_test(NAME h5oo COMMAND $<TARGET_FILE:testh5> ${tmpdir})
-set_tests_properties(h5oo PROPERTIES
+add_test(NAME h5fortran_module COMMAND $<TARGET_FILE:testh5> ${tmpdir})
+set_tests_properties(h5fortran_module PROPERTIES
   FIXTURES_SETUP h5files
   SKIP_RETURN_CODE 77)
+if(WIN32 AND HDF5_ROOT)
+  set_tests_properties(h5fortran_module PROPERTIES ENVIRONMENT "PATH=${HDF5_ROOT}/bin;$ENV{PATH}")
+endif()
 
 set(testfile ${tmpdir}/p5.h5)
 
@@ -39,6 +45,9 @@ set_tests_properties(ShapeCheck PROPERTIES
   REQUIRED_FILES ${testfile}
   RUN_SERIAL true
   SKIP_RETURN_CODE 77)
+if(WIN32 AND HDF5_ROOT)
+  set_tests_properties(ShapeCheck PROPERTIES ENVIRONMENT "PATH=${HDF5_ROOT}/bin;$ENV{PATH}")
+endif()
 
 # ---
 if(test_shaky)

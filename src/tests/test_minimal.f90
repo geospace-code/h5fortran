@@ -5,14 +5,21 @@ implicit none
 
 integer :: ierr, p
 integer(HID_T) :: lid
-character(*), parameter :: fn='junk.h5'
+character(:), allocatable :: path
+character(256) :: argv
+integer :: i,l
+
+call get_command_argument(1, argv, length=l, status=i)
+if (i /= 0 .or. l == 0) argv = './'
+path = trim(argv)
+print *, 'test path: ', path
 
 p = 42
 
 call h5open_f(ierr)
 if (ierr /= 0) error stop 'could not open hdf5 library'
 
-call h5fcreate_f(fn, H5F_ACC_TRUNC_F, lid, ierr)
+call h5fcreate_f(path // '/junk.h5', H5F_ACC_TRUNC_F, lid, ierr)
 
 call h5ltmake_dataset_f(lid, "foo", rank(p), shape(p, kind=HSIZE_T), h5kind_to_type(kind(p),H5_INTEGER_KIND), p, ierr)
 
