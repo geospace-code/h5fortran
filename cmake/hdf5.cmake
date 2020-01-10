@@ -1,26 +1,25 @@
 # don't enclose this all in "if(NOT DEFINED HDF5OK)" because CMake intermittantly doesn't cache needed HDF5 variables.
-if(BUILD_SHARED_LIBS)
-  set(HDF5_USE_STATIC_LIBRARIES false)
-else()
-  set(HDF5_USE_STATIC_LIBRARIES true)
+# if(BUILD_SHARED_LIBS)
+#   set(HDF5_USE_STATIC_LIBRARIES false)
+# else()
+#   set(HDF5_USE_STATIC_LIBRARIES true)
+# endif()
+
+if(WIN32)  # pkg-config is goofed up for Windows, including MSYS2
+  set(HDF5_NO_FIND_PACKAGE_CONFIG_FILE true)
 endif()
 
-find_package(HDF5 REQUIRED COMPONENTS Fortran Fortran_HL)
+# set(HDF5_FIND_DEBUG true)
 
-if(WIN32)
-  # Needed for MSYS2, this directory wasn't in CMake 3.15.2 FindHDF5
-  if(BUILD_SHARED_LIBS)
-    list(APPEND HDF5_INCLUDE_DIRS ${HDF5_INCLUDE_DIRS}/shared)
-  else()
-    list(APPEND HDF5_INCLUDE_DIRS ${HDF5_INCLUDE_DIRS}/static)
-  endif()
-endif()
+find_package(HDF5 COMPONENTS Fortran Fortran_HL)
+set(HDF5_LIBRARIES ${HDF5_Fortran_HL_LIBRARIES} ${HDF5_Fortran_LIBRARIES} ${HDF5_LIBRARIES})
+list(APPEND HDF5_INCLUDE_DIRS ${HDF5_Fortran_INCLUDE_DIRS})
 
 if(NOT DEFINED HDF5OK)
 
-message(STATUS "HDF5 include: ${HDF5_INCLUDE_DIRS} ${HDF5_Fortran_INCLUDE_DIRS}")
-message(STATUS "HDF5 library: ${HDF5_Fortran_LIBRARIES}")
-message(STATUS "HDF5 H5LT library: ${HDF5_Fortran_HL_LIBRARIES}")
+message(STATUS "HDF5 include: ${HDF5_INCLUDE_DIRS}")
+
+message(STATUS "HDF5 library: ${HDF5_LIBRARIES}")
 if(HDF5_Fortran_COMPILER_EXECUTABLE)
   message(STATUS "HDF5 Fortran compiler: ${HDF5_Fortran_COMPILER_EXECUTABLE}")
 endif()
@@ -29,8 +28,8 @@ if(HDF5_Fortran_DEFINITIONS)
 endif()
 endif()
 
-set(CMAKE_REQUIRED_INCLUDES ${HDF5_INCLUDE_DIRS} ${HDF5_Fortran_INCLUDE_DIRS})
-set(CMAKE_REQUIRED_LIBRARIES ${HDF5_Fortran_HL_LIBRARIES} ${HDF5_Fortran_LIBRARIES})
+set(CMAKE_REQUIRED_INCLUDES ${HDF5_INCLUDE_DIRS})
+set(CMAKE_REQUIRED_LIBRARIES ${HDF5_LIBRARIES})
 
 include(CheckFortranSourceCompiles)
 file(READ ${CMAKE_SOURCE_DIR}/src/tests/test_minimal.f90 _code)

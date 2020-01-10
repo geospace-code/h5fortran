@@ -301,7 +301,10 @@ call h5f%write('/little', '42', ierr)
 
 call h5f%read('/little', value, ierr)
 
-if (value /= '42') error stop 'string dataset read/write verification failure. Value: '// value
+if (value /= '42') then
+  write(stderr,*) 'string dataset read/write verification failure. Value: '// value
+  error stop
+endif
 
 !! try reading too much data, then truncating to first C_NULL
 call h5f%read('/little', val1k, ierr)

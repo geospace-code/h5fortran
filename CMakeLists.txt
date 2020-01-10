@@ -10,10 +10,13 @@ enable_testing()
 
 option(test_shaky "run shaky tests" OFF)
 
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
+
 include(cmake/compilers.cmake)
 
 include(cmake/hdf5.cmake)
 
+set(CTEST_TEST_TIMEOUT 15)
 # --- install config (before build)
 
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
