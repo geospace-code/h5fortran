@@ -38,45 +38,56 @@ module procedure hdf_setup_write
 !! hdf_setup_write(self, dname, dtype, dims, ierr, chunk_size)
 
 logical :: exists
+integer(HID_T) :: pid
+
+pid = 0
 
 call h5ltpath_valid_f(self%lid, dname, .true., exists, ierr)
-if (check(ierr,  'ERROR: ' // dname // ' check exist ' // self%filename)) return
+if (check(ierr,  'ERROR: setup_write: ' // dname // ' check exist ' // self%filename)) return
 
 if(exists) then
   !> open dataset
   call h5dopen_f(self%lid, dname, self%did, ierr)
-  if (check(ierr, 'ERROR: open ' // dname // ' ' // self%filename)) return
+  if (check(ierr, 'ERROR: setup_write: open ' // dname // ' ' // self%filename)) return
   return
 else
   call self%write(dname, ierr)
-  if (check(ierr, 'ERROR: create ' // dname // ' ' // self%filename)) return
+  if (check(ierr, 'ERROR: setup_write: create ' // dname // ' ' // self%filename)) return
 endif
 
-if(size(dims) >= 2) call hdf_set_deflate(self, dims, ierr, chunk_size)
+if(size(dims) >= 2) call hdf_set_deflate(self, dims, pid, ierr, chunk_size)
 
 if(size(dims) == 0) then
   call h5screate_f(H5S_SCALAR_F, self%sid, ierr)
 else
   call h5screate_simple_f(size(dims), dims, self%sid, ierr)
 endif
-if (check(ierr,  'ERROR: dataspace ' // dname // ' create ' // self%filename)) return
+if (check(ierr,  'ERROR: setup_write: dataspace ' // dname // ' create ' // self%filename)) return
 
-if(size(dims) >= 2) then
+if(pid == 0) then
   call h5dcreate_f(self%lid, dname, dtype, self%sid, self%did, ierr)
 else
-  call h5dcreate_f(self%lid, dname, dtype, self%sid, self%did, ierr)
+  call h5dcreate_f(self%lid, dname, dtype, self%sid, self%did, ierr, pid)
+  if (check(ierr, 'ERROR: setup_write: create ' // dname // ' property: ' // self%filename)) return
+  call h5pclose_f(pid, ierr)
+  if (check(ierr, 'ERROR: setup_write: close property: ' // self%filename)) return
 endif
-if (check(ierr,  'ERROR: dataset ' // dname // ' create ' // self%filename)) return
+if (check(ierr,  'ERROR: setup_write: dataset ' // dname // ' create ' // self%filename)) return
 
 end procedure hdf_setup_write
 
 
-module procedure hdf_set_deflate
+subroutine hdf_set_deflate(self, dims, pid, ierr, chunk_size)
+class(hdf5_file), intent(inout) :: self
+integer(HSIZE_T), intent(in) :: dims(:)
+integer(HID_T), intent(out) :: pid
+integer, intent(out) :: ierr
+integer, intent(in), optional :: chunk_size(:)
 
 integer :: i
 integer(HSIZE_T) :: cs(size(dims))
-integer(HID_T) :: pid
 
+pid = 0
 if (self%comp_lvl < 1 .or. self%comp_lvl > 9) return
 if (.not.present(chunk_size) .and. all(self%chunk_size == 1) .or. any(self%chunk_size < 1)) return
 if (present(chunk_size)) then
@@ -107,10 +118,7 @@ if (check(ierr, 'ERROR: enable Shuffle ' // self%filename)) return
 call h5pset_deflate_f(pid, self%comp_lvl, ierr)
 if (check(ierr, 'ERROR: enable Deflate compression ' // self%filename)) return
 
-call h5pclose_f(pid, ierr)
-if (check(ierr, 'ERROR: close property: ' // self%filename)) return
-
-end procedure hdf_set_deflate
+end subroutine hdf_set_deflate
 
 
 module procedure hdf_wrapup

@@ -73,13 +73,6 @@ class(hdf5_file), intent(in) :: self
 integer, intent(out) :: ierr
 end subroutine hdf_wrapup
 
-module subroutine hdf_set_deflate(self, dims, ierr, chunk_size)
-class(hdf5_file), intent(inout) :: self
-integer(HSIZE_T), intent(in) :: dims(:)
-integer, intent(out) :: ierr
-integer, intent(in), optional :: chunk_size(:)
-end subroutine hdf_set_deflate
-
 module subroutine hdf_write_scalar(self,dname,value, ierr)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
@@ -245,7 +238,7 @@ integer, intent(out)               :: ierr
 character(*), intent(in), optional :: status
 character(*), intent(in), optional :: action
 integer, intent(in), optional      :: comp_lvl
-integer, intent(in), optional      :: chunk_size(:)
+class(*), intent(in), optional     :: chunk_size(7)
 logical, intent(in), optional      :: verbose
 
 character(:), allocatable :: lstatus, laction
@@ -256,8 +249,18 @@ self%sid = 0
 self%filename = filename
 
 if (present(comp_lvl)) self%comp_lvl = comp_lvl
-if (present(chunk_size)) self%chunk_size(1:size(chunk_size)) = chunk_size
 if (present(verbose)) self%verbose = verbose
+
+if (present(chunk_size)) then
+  select type(chunk_size)
+  type is (integer(int32))
+    self%chunk_size = chunk_size
+  type is (integer(int64))
+    self%chunk_size = chunk_size
+  class default
+    write(stderr,*) 'ERROR: chunk_size is rank-1, size-7 vector of {int32,int64}'
+  end select
+endif
 
 !> Initialize FORTRAN interface.
 call h5open_f(ierr)

@@ -23,7 +23,6 @@ target_include_directories(testh5 PRIVATE ${CMAKE_BINARY_DIR} ${HDF5_INCLUDE_DIR
 if(${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU)
   target_compile_options(testh5 PRIVATE -Wno-compare-reals)
 endif()
-
 add_test(NAME h5fortran_module COMMAND $<TARGET_FILE:testh5> ${tmpdir})
 set_tests_properties(h5fortran_module PROPERTIES
   FIXTURES_SETUP h5files
@@ -31,6 +30,16 @@ set_tests_properties(h5fortran_module PROPERTIES
 if(WIN32 AND HDF5_ROOT)
   set_tests_properties(h5fortran_module PROPERTIES ENVIRONMENT "PATH=${HDF5_ROOT}/bin;$ENV{PATH}")
 endif()
+
+add_executable(test_deflate test_deflate.f90)
+target_link_libraries(test_deflate PRIVATE h5fortran ${HDF5_LIBRARIES})
+target_include_directories(test_deflate PRIVATE ${CMAKE_BINARY_DIR} ${HDF5_INCLUDE_DIRS})
+add_test(NAME deflate COMMAND $<TARGET_FILE:test_deflate> ${tmpdir})
+set_tests_properties(deflate PROPERTIES SKIP_RETURN_CODE 77)
+if(WIN32 AND HDF5_ROOT)
+  set_tests_properties(deflate PROPERTIES ENVIRONMENT "PATH=${HDF5_ROOT}/bin;$ENV{PATH}")
+endif()
+
 
 set(testfile ${tmpdir}/p5.h5)
 
