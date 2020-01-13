@@ -16,8 +16,7 @@ type :: hdf5_file
 character(:),allocatable  :: filename
 integer(HID_T) :: lid, &   !< location ID
                   gid, &    !< group ID
-                  glid, &   !< group location ID
-                  did      !< dataset ID
+                  glid   !< group location ID
 
 integer :: comp_lvl = 0 !< compression level (1-9)  0: disable compression
 integer(HSIZE_T) :: chunk_size(7) = [1,1,1,1,1,1,1]  !< chunk size per dimension
@@ -59,12 +58,12 @@ integer(HSIZE_T), intent(out) :: dims(:)
 integer, intent(out) :: ierr
 end subroutine hdf_setup_read
 
-module subroutine hdf_setup_write(self, dname, dtype, dims, sid, ierr, chunk_size)
+module subroutine hdf_setup_write(self, dname, dtype, dims, sid, did, ierr, chunk_size)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 integer(HID_T), intent(in) :: dtype
 integer(HSIZE_T), intent(in) :: dims(:)
-integer(HID_T), intent(out) :: sid
+integer(HID_T), intent(out) :: sid, did
 integer, intent(in), optional :: chunk_size(:)
 integer, intent(out) :: ierr
 end subroutine hdf_setup_write

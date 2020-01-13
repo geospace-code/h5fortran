@@ -35,7 +35,7 @@ end procedure writeattr
 
 
 module procedure hdf_setup_write
-!! hdf_setup_write(self, dname, dtype, dims, sid, ierr, chunk_size)
+!! hdf_setup_write(self, dname, dtype, dims, sid, did, ierr, chunk_size)
 
 logical :: exists
 integer(HID_T) :: pid
@@ -49,7 +49,7 @@ if (check(ierr,  'ERROR: setup_write: ' // dname // ' check exist ' // self%file
 
 if(exists) then
   !> open dataset
-  call h5dopen_f(self%lid, dname, self%did, ierr)
+  call h5dopen_f(self%lid, dname, did, ierr)
   if (check(ierr, 'ERROR: setup_write: open ' // dname // ' ' // self%filename)) return
   return
 else
@@ -67,9 +67,9 @@ endif
 if (check(ierr,  'ERROR: setup_write: dataspace ' // dname // ' create ' // self%filename)) return
 
 if(pid == 0) then
-  call h5dcreate_f(self%lid, dname, dtype, sid, self%did, ierr)
+  call h5dcreate_f(self%lid, dname, dtype, sid, did, ierr)
 else
-  call h5dcreate_f(self%lid, dname, dtype, sid, self%did, ierr, pid)
+  call h5dcreate_f(self%lid, dname, dtype, sid, did, ierr, pid)
   if (check(ierr, 'ERROR: setup_write: create ' // dname // ' property: ' // self%filename)) return
   call h5pclose_f(pid, ierr)
   if (check(ierr, 'ERROR: setup_write: close property: ' // self%filename)) return

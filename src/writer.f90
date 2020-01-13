@@ -8,7 +8,7 @@ contains
 
 module procedure hdf_write_scalar
 
-integer(HID_T)  :: dtype, sid
+integer(HID_T)  :: dtype, sid, did
 integer(HSIZE_T), allocatable :: dims(:)
 allocate(dims(0))
 
@@ -19,30 +19,30 @@ type is (character(*))
   return
 type is (real(real64))
   dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
-  call hdf_setup_write(self,dname,dtype,dims,sid, ierr)
+  call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr)
   if (ierr /= 0) return
-  call h5dwrite_f(self%did, dtype, value, dims, ierr)
+  call h5dwrite_f(did, dtype, value, dims, ierr)
 type is (real(real32))
   dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
-  call hdf_setup_write(self,dname,dtype,dims,sid, ierr)
+  call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr)
   if (ierr /= 0) return
-  call h5dwrite_f(self%did, dtype, value, dims, ierr)
+  call h5dwrite_f(did, dtype, value, dims, ierr)
 type is (integer(int32))
   dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
-  call hdf_setup_write(self,dname,dtype,dims,sid, ierr)
+  call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr)
   if (ierr /= 0) return
-  call h5dwrite_f(self%did, dtype, value, dims, ierr)
+  call h5dwrite_f(did, dtype, value, dims, ierr)
 type is (integer(int64))
   dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
-  call hdf_setup_write(self,dname,dtype,dims,sid, ierr)
+  call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr)
   if (ierr /= 0) return
-  call h5dwrite_f(self%did, dtype, value, dims, ierr)
+  call h5dwrite_f(did, dtype, value, dims, ierr)
 class default
   write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
   ierr = -1
 end select
 
-call hdf_wrapup(self%did, sid, ierr)
+call hdf_wrapup(did, sid, ierr)
 if (check(ierr, 'ERROR: ' // dname // ' write ' // self%filename))  return
 
 end procedure hdf_write_scalar
@@ -50,40 +50,40 @@ end procedure hdf_write_scalar
 
 module procedure hdf_write_1d
 
-integer(HID_T)  :: dtype, sid
+integer(HID_T)  :: dtype, sid, did
 integer(HSIZE_T) :: dims(rank(value))
 
 select type (value)
 type is (real(real64))
   dims = shape(value)
   dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
-  call hdf_setup_write(self,dname,dtype,dims,sid, ierr)
+  call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr)
   if (ierr /= 0) return
-  call h5dwrite_f(self%did, dtype, value, dims, ierr)
+  call h5dwrite_f(did, dtype, value, dims, ierr)
 type is (real(real32))
   dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
   dims = shape(value)
-  call hdf_setup_write(self,dname,dtype,dims,sid, ierr)
+  call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr)
   if (ierr /= 0) return
-  call h5dwrite_f(self%did, dtype, value, dims, ierr)
+  call h5dwrite_f(did, dtype, value, dims, ierr)
 type is (integer(int32))
   dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
   dims = shape(value)
-  call hdf_setup_write(self,dname,dtype,dims,sid, ierr)
+  call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr)
   if (ierr /= 0) return
-  call h5dwrite_f(self%did, dtype, value, dims, ierr)
+  call h5dwrite_f(did, dtype, value, dims, ierr)
 type is (integer(int64))
   dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
   dims = shape(value)
-  call hdf_setup_write(self,dname,dtype,dims,sid, ierr)
+  call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr)
   if (ierr /= 0) return
-  call h5dwrite_f(self%did, dtype, value, dims, ierr)
+  call h5dwrite_f(did, dtype, value, dims, ierr)
 class default
   write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
   ierr = -1
 end select
 
-call hdf_wrapup(self%did, sid, ierr)
+call hdf_wrapup(did, sid, ierr)
 if (check(ierr, 'ERROR: ' // dname // ' write ' // self%filename))  return
 
 end procedure hdf_write_1d
@@ -91,40 +91,40 @@ end procedure hdf_write_1d
 
 module procedure hdf_write_2d
 
-integer(HID_T)  :: dtype, sid
+integer(HID_T)  :: dtype, sid, did
 integer(HSIZE_T) :: dims(rank(value))
 
 select type (value)
 type is (real(real64))
   dims = shape(value)
   dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
-  call hdf_setup_write(self,dname,dtype,dims,sid, ierr, chunk_size)
+  call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr, chunk_size)
   if (ierr /= 0) return
-  call h5dwrite_f(self%did, dtype, value, dims, ierr)
+  call h5dwrite_f(did, dtype, value, dims, ierr)
 type is (real(real32))
   dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
   dims = shape(value)
-  call hdf_setup_write(self,dname,dtype,dims,sid, ierr, chunk_size)
+  call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr, chunk_size)
   if (ierr /= 0) return
-  call h5dwrite_f(self%did, dtype, value, dims, ierr)
+  call h5dwrite_f(did, dtype, value, dims, ierr)
 type is (integer(int32))
   dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
   dims = shape(value)
-  call hdf_setup_write(self,dname,dtype,dims,sid, ierr, chunk_size)
+  call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr, chunk_size)
   if (ierr /= 0) return
-  call h5dwrite_f(self%did, dtype, value, dims, ierr)
+  call h5dwrite_f(did, dtype, value, dims, ierr)
 type is (integer(int64))
   dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
   dims = shape(value)
-  call hdf_setup_write(self,dname,dtype,dims,sid, ierr, chunk_size)
+  call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr, chunk_size)
   if (ierr /= 0) return
-  call h5dwrite_f(self%did, dtype, value, dims, ierr)
+  call h5dwrite_f(did, dtype, value, dims, ierr)
 class default
   write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
   ierr = -1
 end select
 
-call hdf_wrapup(self%did, sid, ierr)
+call hdf_wrapup(did, sid, ierr)
 if (check(ierr, 'ERROR: ' // dname // ' write ' // self%filename))  return
 
 end procedure hdf_write_2d
@@ -132,40 +132,40 @@ end procedure hdf_write_2d
 
 module procedure hdf_write_3d
 
-integer(HID_T)  :: dtype, sid
+integer(HID_T)  :: dtype, sid, did
 integer(HSIZE_T) :: dims(rank(value))
 
 select type (value)
 type is (real(real64))
   dims = shape(value)
   dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
-  call hdf_setup_write(self,dname,dtype,dims,sid, ierr, chunk_size)
+  call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr, chunk_size)
   if (ierr /= 0) return
-  call h5dwrite_f(self%did, dtype, value, dims, ierr)
+  call h5dwrite_f(did, dtype, value, dims, ierr)
 type is (real(real32))
   dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
   dims = shape(value)
-  call hdf_setup_write(self,dname,dtype,dims,sid, ierr, chunk_size)
+  call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr, chunk_size)
   if (ierr /= 0) return
-  call h5dwrite_f(self%did, dtype, value, dims, ierr)
+  call h5dwrite_f(did, dtype, value, dims, ierr)
 type is (integer(int32))
   dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
   dims = shape(value)
-  call hdf_setup_write(self,dname,dtype,dims,sid, ierr, chunk_size)
+  call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr, chunk_size)
   if (ierr /= 0) return
-  call h5dwrite_f(self%did, dtype, value, dims, ierr)
+  call h5dwrite_f(did, dtype, value, dims, ierr)
 type is (integer(int64))
   dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
   dims = shape(value)
-  call hdf_setup_write(self,dname,dtype,dims,sid, ierr, chunk_size)
+  call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr, chunk_size)
   if (ierr /= 0) return
-  call h5dwrite_f(self%did, dtype, value, dims, ierr)
+  call h5dwrite_f(did, dtype, value, dims, ierr)
 class default
   write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
   ierr = -1
 end select
 
-call hdf_wrapup(self%did, sid, ierr)
+call hdf_wrapup(did, sid, ierr)
 if (check(ierr, 'ERROR: ' // dname // ' write ' // self%filename))  return
 
 end procedure hdf_write_3d
@@ -173,40 +173,40 @@ end procedure hdf_write_3d
 
 module procedure hdf_write_4d
 
-integer(HID_T)  :: dtype, sid
+integer(HID_T)  :: dtype, sid, did
 integer(HSIZE_T) :: dims(rank(value))
 
 select type (value)
 type is (real(real64))
   dims = shape(value)
   dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
-  call hdf_setup_write(self,dname,dtype,dims,sid, ierr, chunk_size)
+  call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr, chunk_size)
   if (ierr /= 0) return
-  call h5dwrite_f(self%did, dtype, value, dims, ierr)
+  call h5dwrite_f(did, dtype, value, dims, ierr)
 type is (real(real32))
   dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
   dims = shape(value)
-  call hdf_setup_write(self,dname,dtype,dims,sid, ierr, chunk_size)
+  call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr, chunk_size)
   if (ierr /= 0) return
-  call h5dwrite_f(self%did, dtype, value, dims, ierr)
+  call h5dwrite_f(did, dtype, value, dims, ierr)
 type is (integer(int32))
   dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
   dims = shape(value)
-  call hdf_setup_write(self,dname,dtype,dims,sid, ierr, chunk_size)
+  call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr, chunk_size)
   if (ierr /= 0) return
-  call h5dwrite_f(self%did, dtype, value, dims, ierr)
+  call h5dwrite_f(did, dtype, value, dims, ierr)
 type is (integer(int64))
   dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
   dims = shape(value)
-  call hdf_setup_write(self,dname,dtype,dims,sid, ierr, chunk_size)
+  call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr, chunk_size)
   if (ierr /= 0) return
-  call h5dwrite_f(self%did, dtype, value, dims, ierr)
+  call h5dwrite_f(did, dtype, value, dims, ierr)
 class default
   write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
   ierr = -1
 end select
 
-call hdf_wrapup(self%did, sid, ierr)
+call hdf_wrapup(did, sid, ierr)
 if (check(ierr, 'ERROR: ' // dname // ' write ' // self%filename))  return
 
 end procedure hdf_write_4d
@@ -214,40 +214,40 @@ end procedure hdf_write_4d
 
 module procedure hdf_write_5d
 
-integer(HID_T)  :: dtype, sid
+integer(HID_T)  :: dtype, sid, did
 integer(HSIZE_T) :: dims(rank(value))
 
 select type (value)
 type is (real(real64))
   dims = shape(value)
   dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
-  call hdf_setup_write(self,dname,dtype,dims,sid, ierr, chunk_size)
+  call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr, chunk_size)
   if (ierr /= 0) return
-  call h5dwrite_f(self%did, dtype, value, dims, ierr)
+  call h5dwrite_f(did, dtype, value, dims, ierr)
 type is (real(real32))
   dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
   dims = shape(value)
-  call hdf_setup_write(self,dname,dtype,dims,sid, ierr, chunk_size)
+  call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr, chunk_size)
   if (ierr /= 0) return
-  call h5dwrite_f(self%did, dtype, value, dims, ierr)
+  call h5dwrite_f(did, dtype, value, dims, ierr)
 type is (integer(int32))
   dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
   dims = shape(value)
-  call hdf_setup_write(self,dname,dtype,dims,sid, ierr, chunk_size)
+  call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr, chunk_size)
   if (ierr /= 0) return
-  call h5dwrite_f(self%did, dtype, value, dims, ierr)
+  call h5dwrite_f(did, dtype, value, dims, ierr)
 type is (integer(int64))
   dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
   dims = shape(value)
-  call hdf_setup_write(self,dname,dtype,dims,sid, ierr, chunk_size)
+  call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr, chunk_size)
   if (ierr /= 0) return
-  call h5dwrite_f(self%did, dtype, value, dims, ierr)
+  call h5dwrite_f(did, dtype, value, dims, ierr)
 class default
   write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
   ierr = -1
 end select
 
-call hdf_wrapup(self%did, sid, ierr)
+call hdf_wrapup(did, sid, ierr)
 if (check(ierr, 'ERROR: ' // dname // ' write ' // self%filename))  return
 
 end procedure hdf_write_5d
@@ -255,40 +255,40 @@ end procedure hdf_write_5d
 
 module procedure hdf_write_6d
 
-integer(HID_T)  :: dtype, sid
+integer(HID_T)  :: dtype, sid, did
 integer(HSIZE_T) :: dims(rank(value))
 
 select type (value)
 type is (real(real64))
   dims = shape(value)
   dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
-  call hdf_setup_write(self,dname,dtype,dims,sid, ierr, chunk_size)
+  call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr, chunk_size)
   if (ierr /= 0) return
-  call h5dwrite_f(self%did, dtype, value, dims, ierr)
+  call h5dwrite_f(did, dtype, value, dims, ierr)
 type is (real(real32))
   dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
   dims = shape(value)
-  call hdf_setup_write(self,dname,dtype,dims,sid, ierr, chunk_size)
+  call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr, chunk_size)
   if (ierr /= 0) return
-  call h5dwrite_f(self%did, dtype, value, dims, ierr)
+  call h5dwrite_f(did, dtype, value, dims, ierr)
 type is (integer(int32))
   dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
   dims = shape(value)
-  call hdf_setup_write(self,dname,dtype,dims,sid, ierr, chunk_size)
+  call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr, chunk_size)
   if (ierr /= 0) return
-  call h5dwrite_f(self%did, dtype, value, dims, ierr)
+  call h5dwrite_f(did, dtype, value, dims, ierr)
 type is (integer(int64))
   dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
   dims = shape(value)
-  call hdf_setup_write(self,dname,dtype,dims,sid, ierr, chunk_size)
+  call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr, chunk_size)
   if (ierr /= 0) return
-  call h5dwrite_f(self%did, dtype, value, dims, ierr)
+  call h5dwrite_f(did, dtype, value, dims, ierr)
 class default
   write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
   ierr = -1
 end select
 
-call hdf_wrapup(self%did, sid, ierr)
+call hdf_wrapup(did, sid, ierr)
 if (check(ierr, 'ERROR: ' // dname // ' write ' // self%filename))  return
 
 end procedure hdf_write_6d
@@ -296,40 +296,40 @@ end procedure hdf_write_6d
 
 module procedure hdf_write_7d
 
-integer(HID_T)  :: dtype, sid
+integer(HID_T)  :: dtype, sid, did
 integer(HSIZE_T) :: dims(rank(value))
 
 select type (value)
 type is (real(real64))
   dims = shape(value)
   dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
-  call hdf_setup_write(self,dname,dtype,dims,sid, ierr, chunk_size)
+  call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr, chunk_size)
   if (ierr /= 0) return
-  call h5dwrite_f(self%did, dtype, value, dims, ierr)
+  call h5dwrite_f(did, dtype, value, dims, ierr)
 type is (real(real32))
   dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
   dims = shape(value)
-  call hdf_setup_write(self,dname,dtype,dims,sid, ierr, chunk_size)
+  call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr, chunk_size)
   if (ierr /= 0) return
-  call h5dwrite_f(self%did, dtype, value, dims, ierr)
+  call h5dwrite_f(did, dtype, value, dims, ierr)
 type is (integer(int32))
   dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
   dims = shape(value)
-  call hdf_setup_write(self,dname,dtype,dims,sid, ierr, chunk_size)
+  call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr, chunk_size)
   if (ierr /= 0) return
-  call h5dwrite_f(self%did, dtype, value, dims, ierr)
+  call h5dwrite_f(did, dtype, value, dims, ierr)
 type is (integer(int64))
   dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
   dims = shape(value)
-  call hdf_setup_write(self,dname,dtype,dims,sid, ierr, chunk_size)
+  call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr, chunk_size)
   if (ierr /= 0) return
-  call h5dwrite_f(self%did, dtype, value, dims, ierr)
+  call h5dwrite_f(did, dtype, value, dims, ierr)
 class default
   write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
   ierr = -1
 end select
 
-call hdf_wrapup(self%did, sid, ierr)
+call hdf_wrapup(did, sid, ierr)
 if (check(ierr, 'ERROR: ' // dname // ' write ' // self%filename))  return
 
 end procedure hdf_write_7d
