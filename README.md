@@ -175,6 +175,14 @@ compression and chunking are disabled if:
 * any element of chunk_size is less than 1
 * chunk_size is not given in the initialize() call AND not specified in %write()
 
+### check if a variable exists
+
+the logical method %exists() checks if a dataset (variable) exists in the initialized HDF5 file.
+
+```fortran
+exists = h5f%exists("/foo", ierr)
+```
+
 ### Read scalar, 3-D array of unknown size
 
 ```fortran
