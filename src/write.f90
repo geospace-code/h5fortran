@@ -76,7 +76,6 @@ else
   !! sentinel value for unused property
 endif
 
-print *, dname, size(dims)
 if(exists) return
 
 if(size(dims) == 0) then

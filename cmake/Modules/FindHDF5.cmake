@@ -132,6 +132,8 @@ The following variable can be set to guide the search for HDF5 libraries and inc
 include(SelectLibraryConfigurations)
 include(FindPackageHandleStandardArgs)
 
+cmake_policy(SET CMP0074 NEW)
+
 # List of the valid HDF5 components
 set(HDF5_VALID_LANGUAGE_BINDINGS C CXX Fortran)
 
@@ -463,7 +465,9 @@ if(NOT HDF5_ROOT)
     set(HDF5_ROOT $ENV{HDF5_ROOT})
 endif()
 if(HDF5_ROOT)
-    set(_HDF5_SEARCH_OPTS NO_DEFAULT_PATH)
+    set(_HDF5_SEARCH_OPTS NO_CMAKE_PATH NO_CMAKE_SYSTEM_PATH
+          NO_CMAKE_PACKAGE_REGISTRY NO_CMAKE_SYSTEM_PACKAGE_REGISTRY
+          NO_CMAKE_ENVIRONMENT_PATH NO_SYSTEM_ENVIRONMENT_PATH)
 else()
     set(_HDF5_SEARCH_OPTS)
 endif()
@@ -471,7 +475,6 @@ endif()
 # Try to find HDF5 using an installed hdf5-config.cmake
 if(NOT HDF5_FOUND AND NOT HDF5_NO_FIND_PACKAGE_CONFIG_FILE)
     find_package(HDF5 QUIET NO_MODULE
-      HINTS ${HDF5_ROOT}
       ${_HDF5_SEARCH_OPTS}
       )
     if( HDF5_FOUND)
@@ -552,7 +555,7 @@ if(NOT HDF5_FOUND AND NOT HDF5_NO_FIND_PACKAGE_CONFIG_FILE)
     endif()
 endif()
 
-if(NOT HDF5_FOUND)
+if(NOT HDF5_FOUND AND HDF5_SEARCH_WRAPPER)
   set(_HDF5_NEED_TO_SEARCH False)
   set(HDF5_COMPILER_NO_INTERROGATE True)
   # Only search for languages we've enabled
@@ -596,7 +599,6 @@ if(NOT HDF5_FOUND)
       # search options with the wrapper
       find_program(HDF5_${__lang}_COMPILER_EXECUTABLE
         NAMES ${HDF5_${__lang}_COMPILER_NAMES} NAMES_PER_DIR
-        HINTS ${HDF5_ROOT}
         PATH_SUFFIXES bin Bin
         DOC "HDF5 ${__lang} Wrapper compiler.  Used only to detect HDF5 compile flags."
         ${_HDF5_SEARCH_OPTS}
@@ -637,7 +639,6 @@ if(NOT HDF5_FOUND)
             find_library(HDF5_${__lang}_LIBRARY_${L}
               NAMES ${_HDF5_SEARCH_NAMES_LOCAL} ${L} NAMES_PER_DIR
               HINTS ${HDF5_${__lang}_LIBRARY_DIRS}
-                    ${HDF5_ROOT}
               ${_HDF5_SEARCH_OPTS_LOCAL}
               )
             unset(_HDF5_SEARCH_OPTS_LOCAL)
@@ -669,7 +670,6 @@ if(NOT HDF5_FOUND)
               find_library(HDF5_${__lang}_LIBRARY_${L}
                 NAMES ${_HDF5_SEARCH_NAMES_LOCAL} ${L} NAMES_PER_DIR
                 HINTS ${HDF5_${__lang}_LIBRARY_DIRS}
-                      ${HDF5_ROOT}
                 ${_HDF5_SEARCH_OPTS_LOCAL}
                 )
               unset(_HDF5_SEARCH_OPTS_LOCAL)
@@ -752,7 +752,6 @@ endif()
 
 find_program( HDF5_DIFF_EXECUTABLE
     NAMES h5diff
-    HINTS ${HDF5_ROOT}
     PATH_SUFFIXES bin Bin
     ${_HDF5_SEARCH_OPTS}
     DOC "HDF5 file differencing tool." )
@@ -786,7 +785,6 @@ if( NOT HDF5_FOUND )
         endif()
 
         find_path(HDF5_${__lang}_INCLUDE_DIR ${HDF5_INCLUDE_FILENAME}
-            HINTS ${HDF5_ROOT}
             PATHS $ENV{HOME}/.local/include
             PATH_SUFFIXES include Include ${_path_suffixes}
             ${_HDF5_SEARCH_OPTS}
@@ -817,19 +815,19 @@ if( NOT HDF5_FOUND )
             endif()
             find_library(HDF5_${LIB}_LIBRARY_DEBUG
                 NAMES ${THIS_LIBRARY_SEARCH_DEBUG}
-                HINTS ${HDF5_ROOT} PATH_SUFFIXES lib Lib
+                PATH_SUFFIXES lib Lib
                 ${_HDF5_SEARCH_OPTS}
             )
             find_library( HDF5_${LIB}_LIBRARY_RELEASE
                 NAMES ${THIS_LIBRARY_SEARCH_RELEASE}
-                HINTS ${HDF5_ROOT} PATH_SUFFIXES lib Lib
+                PATH_SUFFIXES lib Lib
                 ${_HDF5_SEARCH_OPTS}
             )
             # patch for HDF5 1.10.6 name change
             if(NOT HDF5_${LIB}_LIBRARY_RELEASE AND (LIB STREQUAL hdf5_hl_fortran))
               find_library( HDF5_${LIB}_LIBRARY_RELEASE
                   NAMES hdf5hl_fortran hdf5hl_fortran-shared
-                  HINTS ${HDF5_ROOT} PATH_SUFFIXES lib Lib
+                  PATH_SUFFIXES lib Lib
                   ${_HDF5_SEARCH_OPTS}
               )
             endif()
@@ -863,12 +861,12 @@ if( NOT HDF5_FOUND )
                 endif()
                 find_library(HDF5_${LIB}_LIBRARY_DEBUG
                     NAMES ${THIS_LIBRARY_SEARCH_DEBUG}
-                    HINTS ${HDF5_ROOT} PATH_SUFFIXES lib Lib
+                    PATH_SUFFIXES lib Lib
                     ${_HDF5_SEARCH_OPTS}
                 )
                 find_library( HDF5_${LIB}_LIBRARY_RELEASE
                     NAMES ${THIS_LIBRARY_SEARCH_RELEASE}
-                    HINTS ${HDF5_ROOT} PATH_SUFFIXES lib Lib
+                    PATH_SUFFIXES lib Lib
                     ${_HDF5_SEARCH_OPTS}
                 )
                 select_library_configurations( HDF5_${LIB} )

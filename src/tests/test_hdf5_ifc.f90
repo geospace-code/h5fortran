@@ -294,7 +294,6 @@ character(*), intent(in) :: path
 character(2) :: value
 character(1024) :: val1k
 character(:), allocatable :: final
-integer :: i
 
 call h5f%initialize(path//'/test_string.h5', ierr, status='new', action='rw')
 call h5f%write('/little', '42', ierr)

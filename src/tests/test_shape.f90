@@ -5,7 +5,7 @@ implicit none
 
 type(hdf5_file) :: h5f
 character(1024) :: argv
-character(:), allocatable :: fn, dname, cmd
+character(:), allocatable :: fn, dname
 integer(HSIZE_T), allocatable :: dims(:)
 integer :: ierr
 logical :: exists

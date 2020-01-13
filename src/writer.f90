@@ -9,7 +9,8 @@ contains
 module procedure hdf_write_scalar
 
 integer(HID_T)  :: dtype
-integer(HSIZE_T) :: dims(rank(value))
+integer(HSIZE_T), allocatable :: dims(:)
+allocate(dims(0))
 
 select type (value)
 type is (character(*))
@@ -18,25 +19,21 @@ type is (character(*))
   return
 type is (real(real64))
   dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
-  dims = shape(value)
   call hdf_setup_write(self,dname,dtype,dims, ierr)
   if (ierr /= 0) return
   call h5dwrite_f(self%did, dtype, value, dims, ierr)
 type is (real(real32))
   dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
-  dims = shape(value)
   call hdf_setup_write(self,dname,dtype,dims, ierr)
   if (ierr /= 0) return
   call h5dwrite_f(self%did, dtype, value, dims, ierr)
 type is (integer(int32))
   dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
-  dims = shape(value)
   call hdf_setup_write(self,dname,dtype,dims, ierr)
   if (ierr /= 0) return
   call h5dwrite_f(self%did, dtype, value, dims, ierr)
 type is (integer(int64))
   dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
-  dims = shape(value)
   call hdf_setup_write(self,dname,dtype,dims, ierr)
   if (ierr /= 0) return
   call h5dwrite_f(self%did, dtype, value, dims, ierr)
