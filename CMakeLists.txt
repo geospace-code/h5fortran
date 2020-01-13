@@ -4,13 +4,13 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 project(hdf5iface
   LANGUAGES Fortran
-  VERSION 2.4.0
+  VERSION 2.4.1
   HOMEPAGE_URL https://github.com/scivision/h5fortran)
 enable_testing()
 
 option(test_shaky "run shaky tests" OFF)
 
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
+# list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
 
 include(cmake/compilers.cmake)
 

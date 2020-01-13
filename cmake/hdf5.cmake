@@ -38,7 +38,7 @@ set(CMAKE_REQUIRED_INCLUDES ${HDF5_INCLUDE_DIRS})
 set(CMAKE_REQUIRED_LIBRARIES ${HDF5_LIBRARIES})
 
 include(CheckFortranSourceCompiles)
-file(READ ${CMAKE_SOURCE_DIR}/src/tests/test_minimal.f90 _code)
+file(READ ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_minimal.f90 _code)
 check_fortran_source_compiles(${_code} HDF5OK SRC_EXT f90)
 
 if(NOT HDF5OK)

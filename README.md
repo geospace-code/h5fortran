@@ -7,7 +7,7 @@
 
 Straightforward single-module access to HDF5.
 For NetCDF4 see [nc4fortran](https://github.com/scivision/nc4fortran/).
-Designed for easy use as a Meson "subproject" or CMake "ExternalProject" using **static** or **shared** linking.
+Designed for easy use as a Meson "subproject" or CMake "ExternalProject / FetchContent" using **static** or **shared** linking.
 Uses Fortran 2008 `submodule` for clean template structure.
 This easy-to-use, thin object-oriented modern Fortran library abstracts away the messy parts of HDF5 so that you can read/write various types/ranks of data with a single command.
 
@@ -108,26 +108,17 @@ cmake -DHDF5_ROOT=/path/to/hdf5lib -B build
 
 or set environment variable `HDF5_ROOT=/path/to/hdf5lib`
 
-To use h5fortran as a CMake ExternalProject do like:
+To use CMake target `h5fortran` via CMake FetchContent:
 
 ```cmake
-include(ExternalProject)
+include(FetchContent)
 
-ExternalProject_Add(h5fortran
+FetchContent_Declare(h5fortran_proj
   GIT_REPOSITORY https://github.com/scivision/h5fortran.git
-  GIT_TAG master  # it's better to use a specific Git tag for reproducibility
-  INSTALL_COMMAND ""  # disables the install step for the external project
+  GIT_TAG v2.4.1  # whatever desired version is
 )
 
-ExternalProject_Get_Property(h5fortran BINARY_DIR)
-set(h5fortran_BINARY_DIR BINARY_DIR)  # just to avoid accidentally reusing the variable name.
-
-# your code "myio"
-add_executable(myio myio.f90)
-add_dependencies(myio h5fortran)
-target_link_directories(myio PRIVATE ${h5fortran_BINARY_DIR})
-target_link_libraries(myio PRIVATE h5fortran)
-target_include_directories(myio PRIVATE ${h5fortran_BINARY_DIR})
+FetchContent_MakeAvailable(h5fortran_proj)
 ```
 
 ## Usage
