@@ -35,12 +35,14 @@ end procedure writeattr
 
 
 module procedure hdf_setup_write
-!! hdf_setup_write(self, dname, dtype, dims, ierr, chunk_size)
+!! hdf_setup_write(self, dname, dtype, dims, sid, ierr, chunk_size)
 
 logical :: exists
 integer(HID_T) :: pid
 
+!! sentinel values
 pid = 0
+sid = 0
 
 call h5ltpath_valid_f(self%lid, dname, .true., exists, ierr)
 if (check(ierr,  'ERROR: setup_write: ' // dname // ' check exist ' // self%filename)) return
@@ -58,16 +60,16 @@ endif
 if(size(dims) >= 2) call hdf_set_deflate(self, dims, pid, ierr, chunk_size)
 
 if(size(dims) == 0) then
-  call h5screate_f(H5S_SCALAR_F, self%sid, ierr)
+  call h5screate_f(H5S_SCALAR_F, sid, ierr)
 else
-  call h5screate_simple_f(size(dims), dims, self%sid, ierr)
+  call h5screate_simple_f(size(dims), dims, sid, ierr)
 endif
 if (check(ierr,  'ERROR: setup_write: dataspace ' // dname // ' create ' // self%filename)) return
 
 if(pid == 0) then
-  call h5dcreate_f(self%lid, dname, dtype, self%sid, self%did, ierr)
+  call h5dcreate_f(self%lid, dname, dtype, sid, self%did, ierr)
 else
-  call h5dcreate_f(self%lid, dname, dtype, self%sid, self%did, ierr, pid)
+  call h5dcreate_f(self%lid, dname, dtype, sid, self%did, ierr, pid)
   if (check(ierr, 'ERROR: setup_write: create ' // dname // ' property: ' // self%filename)) return
   call h5pclose_f(pid, ierr)
   if (check(ierr, 'ERROR: setup_write: close property: ' // self%filename)) return
@@ -121,17 +123,19 @@ if (check(ierr, 'ERROR: enable Deflate compression ' // self%filename)) return
 end subroutine hdf_set_deflate
 
 
-module procedure hdf_wrapup
+subroutine hdf_wrapup(did, sid, ierr)
+integer(HID_T), intent(in) :: sid, did
+integer, intent(out) :: ierr
 
-if(self%sid /= 0) then
-  call h5sclose_f(self%sid, ierr)
-  if (check(ierr, 'ERROR: close dataspace: ' // self%filename)) return
+if(sid /= 0) then
+  call h5sclose_f(sid, ierr)
+  if (check(ierr, 'ERROR: close dataspace')) return
 endif
 
-call h5dclose_f(self%did, ierr)
-if (check(ierr, 'ERROR: close dataset: ' // self%filename)) return
+call h5dclose_f(did, ierr)
+if (check(ierr, 'ERROR: close dataset')) return
 
-end procedure hdf_wrapup
+end subroutine hdf_wrapup
 
 
 module procedure hdf_open_group

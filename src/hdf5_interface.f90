@@ -17,7 +17,6 @@ character(:),allocatable  :: filename
 integer(HID_T) :: lid, &   !< location ID
                   gid, &    !< group ID
                   glid, &   !< group location ID
-                  sid, &   !< dataspace ID
                   did      !< dataset ID
 
 integer :: comp_lvl = 0 !< compression level (1-9)  0: disable compression
@@ -60,19 +59,15 @@ integer(HSIZE_T), intent(out) :: dims(:)
 integer, intent(out) :: ierr
 end subroutine hdf_setup_read
 
-module subroutine hdf_setup_write(self, dname, dtype, dims, ierr, chunk_size)
+module subroutine hdf_setup_write(self, dname, dtype, dims, sid, ierr, chunk_size)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 integer(HID_T), intent(in) :: dtype
 integer(HSIZE_T), intent(in) :: dims(:)
+integer(HID_T), intent(out) :: sid
 integer, intent(in), optional :: chunk_size(:)
 integer, intent(out) :: ierr
 end subroutine hdf_setup_write
-
-module subroutine hdf_wrapup(self, ierr)
-class(hdf5_file), intent(in) :: self
-integer, intent(out) :: ierr
-end subroutine hdf_wrapup
 
 module subroutine hdf_write_scalar(self,dname,value, ierr)
 class(hdf5_file), intent(inout) :: self
@@ -270,8 +265,6 @@ logical, intent(in), optional      :: verbose
 character(:), allocatable :: lstatus, laction
 logical :: exists
 
-self%sid = 0
-!! arbitrary sentinel values, telling us it hasn't been used by HDF5
 self%filename = filename
 
 if (present(comp_lvl)) self%comp_lvl = comp_lvl
