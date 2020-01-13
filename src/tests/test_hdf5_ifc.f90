@@ -215,9 +215,9 @@ subroutine test_write_attributes(path)
 type(hdf5_file) :: h5f
 character(*), intent(in) :: path
 
-call h5f%initialize(path//'/test_deflate.h5', ierr)
+call h5f%initialize(path//'/test.h5', ierr)
 
-call h5f%writeattr('/little/','note','this is just a little number', ierr)
+call h5f%writeattr('/nan','note','this is just a little number', ierr)
 if (ierr /= 0) error stop 'write attribute string'
 
 call h5f%finalize(ierr)

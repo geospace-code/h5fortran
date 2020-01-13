@@ -322,7 +322,12 @@ select case(lstatus)
         endif
         call h5fopen_f(filename,H5F_ACC_RDONLY_F,self%lid,ierr)
       case('write','readwrite','w','rw', 'r+', 'append', 'a')
-        call h5fopen_f(filename,H5F_ACC_RDWR_F,self%lid,ierr)
+        inquire(file=filename, exist=exists)
+        if(lstatus == 'unknown' .and. .not.exists) then
+          call h5fopen_f(filename, H5F_ACC_TRUNC_F, self%lid,ierr)
+        else
+          call h5fopen_f(filename, H5F_ACC_RDWR_F, self%lid,ierr)
+        endif
         if (check(ierr, 'ERROR: ' // filename // ' could not be opened')) return
       case default
         write(stderr,*) 'Unsupported action -> ' // laction
