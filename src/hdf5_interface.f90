@@ -28,7 +28,8 @@ integer :: libversion(3)  !< major, minor, rel
 contains
 !> initialize HDF5 file
 procedure, public :: initialize => hdf_initialize, finalize => hdf_finalize, writeattr, &
-  open => hdf_open_group, close => hdf_close_group, shape => hdf_get_shape
+  open => hdf_open_group, close => hdf_close_group, shape => hdf_get_shape, layout => hdf_get_layout, &
+  exist => hdf_check_exist, is_contig => hdf_is_contig, is_chunked => hdf_is_chunked
 
 !> write group or dataset integer/real
 generic, public   :: write => hdf_write_scalar, hdf_write_1d, hdf_write_2d, hdf_write_3d, &
@@ -142,6 +143,31 @@ character(*), intent(in)         :: dname
 integer(HSIZE_T), intent(out), allocatable :: dims(:)
 integer, intent(out) :: ierr
 end subroutine hdf_get_shape
+
+module integer function hdf_get_layout(self, dname, ierr) result(layout)
+!! H5D_CONTIGUOUS_F, H5D_CHUNKED_F, H5D_VIRTUAL_F, H5D_COMPACT_F
+class(hdf5_file), intent(in)  :: self
+character(*), intent(in)      :: dname
+integer, intent(out) :: ierr
+end function hdf_get_layout
+
+module logical function hdf_check_exist(self, dname, ierr) result(exists)
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: dname
+integer, intent(out) :: ierr
+end function hdf_check_exist
+
+module logical function hdf_is_contig(self, dname, ierr)
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: dname
+integer, intent(out) :: ierr
+end function hdf_is_contig
+
+module logical function hdf_is_chunked(self, dname, ierr)
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: dname
+integer, intent(out) :: ierr
+end function hdf_is_chunked
 
 
 module subroutine hdf_read_scalar(self, dname, value, ierr)

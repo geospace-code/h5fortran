@@ -2,6 +2,7 @@
 use, intrinsic:: iso_fortran_env, only: int64, int32, real32, real64, stderr=>error_unit
 use, intrinsic:: iso_c_binding, only: c_null_char
 use h5fortran, only: hdf5_file, toLower, strip_trailing_null, truncate_string_null
+use hdf5, only: H5D_CHUNKED_F, H5D_CONTIGUOUS_F
 
 implicit none
 
@@ -29,7 +30,9 @@ type(hdf5_file) :: h5f
 character(*), intent(in) :: path
 integer(int64), parameter :: N=1000
 integer(int64) :: crat, chunk_size(7)
-integer ::  fsize, ibig2(N,N) = 0, ibig3(N,N,4) = 0
+integer ::  fsize, layout
+
+integer :: ibig2(N,N) = 0, ibig3(N,N,4) = 0
 real(real32) :: big2(N,N) = 0., big3(N,N,4) = 0.
 character(:), allocatable :: fn
 
@@ -38,18 +41,34 @@ chunk_size(:2) = N/4
 
 fn = path // '/deflate1.h5'
 call h5f%initialize(fn, ierr, status='new', action='rw', comp_lvl=1, chunk_size=chunk_size)
-if(ierr/=0) error stop '#1 init'
+if(ierr/=0) error stop '#1 write init'
 call h5f%write('/big2', big2, ierr, chunk_size=[100,100])
-if(ierr/=0) error stop '#1 write'
+if(ierr/=0) error stop '#1 write chunked'
+call h5f%write('/small_contig', big2(:5,:5), ierr, chunk_size=[-1,-1])
+if(ierr/=0) error stop '#1 write contig override'
 call h5f%finalize(ierr)
-if (ierr /= 0) error stop '#1 finalize'
+if (ierr /= 0) error stop '#1 write finalize'
 
 inquire(file=fn, size=fsize)
 crat = (N*N*storage_size(big2)/8) / fsize
-
 print '(A,F6.2,A,I6)','filesize (Mbytes): ',fsize/1e6, '   2D compression ratio:',crat
-
 if (h5f%comp_lvl > 0 .and. crat < 10) error stop '2D low compression'
+
+call h5f%initialize(fn, ierr, status='old', action='r')
+if(ierr/=0) error stop '#1 read init'
+
+layout = h5f%layout('/big2', ierr)
+if(ierr/=0) error stop '#1 get layout chunk'
+if(layout /= H5D_CHUNKED_F) error stop '#1 not chunked layout'
+if(.not.h5f%is_chunked('/big2', ierr)) error stop '#1 not chunked layout'
+
+layout = h5f%layout('/small_contig', ierr)
+if(ierr/=0) error stop '#1 get layout contig'
+if(layout /= H5D_CONTIGUOUS_F) error stop '#1 not contiguous layout'
+if(.not.h5f%is_contig('/small_contig', ierr)) error stop '#1 not contig layout'
+
+call h5f%finalize(ierr)
+if (ierr /= 0) error stop '#1 read finalize'
 
 !======================================
 fn = path // '/deflate2.h5'

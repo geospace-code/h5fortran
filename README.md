@@ -29,14 +29,6 @@ Tested on systems with HDF5 1.8 and 1.10 including:
 
 Currently, Cygwin does not have *Fortran* HDF5 libraries.
 
-## Not yet handled
-
-It's possible to do these things, if there is user need.
-
-* arrays of rank > 7: this has been stubbed in reader_nd.f90, writer_nd.f90. Only the latest compilers support Fortran 2008 arrays up to rank 15.
-* complex64/complex128: this is not natively handled in HDF5. Popular approaches to complex numbers in HDF5 include h5py's using an HDF5 compound datatype.
-* non-default character kind
-
 ## Build
 
 Requirements:
@@ -133,7 +125,7 @@ type(hdf5_file) :: h5f
 * gzip compression may be applied for rank &ge; 2 arrays by setting `comp_lvl` to a value betwen 1 and 9.
   Shuffle filter is automatically applied for better compression
 * string attributes may be applied to any variable at time of writing or later.
-* `chunk_size` option may be set for better compression
+* `chunk_size` and `comp_lvl` options must be set to **enable compression**
 
 `integer, intent(out) :: ierr` is a mandatory parameter. It will be non-zero if error detected.
 This value should be checked, particularly for write operations to avoid missing error conditions.
@@ -198,6 +190,16 @@ call h5f%read('/foo', A)
 call h5f%finalize(ierr)
 ```
 
+### is dataset contiguous or chunked?
+
+Assumed file handle h5f was already initialized, the logical status is inspected:
+
+```fortran
+is_contig = h5f%is_contig('/foo', ierr)
+
+is_chunked = h5f%is_chunked('/foo', ierr)
+```
+
 ### Create group "scope"
 
 ```fortran
@@ -225,3 +227,12 @@ Note the trailing `/` on `/scope/`, that tells the API you are creating a group 
 * Using compilers like PGI or Flang may require first compiling the HDF5 library yourself.
 * Intel compiler HDF5 [compile notes](https://www.hdfgroup.org/downloads/hdf5/source-code/)
 * Polymorphic array rank is implemented by explicit code internally. We could have used pointers, but the code is simple enough to avoid the risk associated with explicit array pointers. Also, `select rank` support requires Gfortran-10 or Intel Fortran 2020, so we didn't want to make too-new compiler restriction.
+
+### Missing datatypes
+
+* arrays of rank > 7: this has been stubbed in reader_nd.f90, writer_nd.f90. Only the latest compilers support Fortran 2008 arrays up to rank 15.
+
+The datatypes below are more complex to handle and may see little use due to their downsides.
+
+* complex64/complex128: this is not natively handled in HDF5. There are performance impacts for compound datatypes, thus many choose to just write two datasets, one each for real and imaginary like foo_r and foo_i
+* non-default character kind
