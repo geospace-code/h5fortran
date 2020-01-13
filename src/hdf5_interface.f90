@@ -13,13 +13,14 @@ implicit none
 type :: hdf5_file
 
 character(:),allocatable  :: filename
-integer(HID_T) :: lid, &   !< location identifier
-                  gid, &    !< group identifier
-                  glid, &   !< group location identifier
-                  sid, did, pid
+integer(HID_T) :: lid, &   !< location ID
+                  gid, &    !< group ID
+                  glid, &   !< group location ID
+                  sid, &   !< dataspace ID
+                  did      !< dataset ID
 
-integer  :: comp_lvl = 0 !< compression level (1-9)  0: disable compression
-integer(HSIZE_T) :: chunk_size(7) = [64,64,1,1,1,1,1]  !< chunk size per dimension (arbitrary)
+integer :: comp_lvl = 0 !< compression level (1-9)  0: disable compression
+integer(HSIZE_T) :: chunk_size(7) = [1,1,1,1,1,1,1]  !< chunk size per dimension
 logical :: verbose=.false.
 
 contains
@@ -70,10 +71,11 @@ class(hdf5_file), intent(in) :: self
 integer, intent(out) :: ierr
 end subroutine hdf_wrapup
 
-module subroutine hdf_set_deflate(self, dims, ierr)
+module subroutine hdf_set_deflate(self, dims, ierr, chunk_size)
 class(hdf5_file), intent(inout) :: self
 integer(HSIZE_T), intent(in) :: dims(:)
 integer, intent(out) :: ierr
+integer, intent(in), optional :: chunk_size(:)
 end subroutine hdf_set_deflate
 
 module subroutine hdf_write_scalar(self,dname,value, ierr)
@@ -94,7 +96,7 @@ module subroutine hdf_write_2d(self,dname,value, ierr, chunk_size)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:)
-integer, intent(in), optional :: chunk_size(:)
+integer, intent(in), optional :: chunk_size(rank(value))
 integer, intent(out) :: ierr
 end subroutine hdf_write_2d
 
@@ -102,7 +104,7 @@ module subroutine hdf_write_3d(self,dname,value, ierr, chunk_size)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:)
-integer, intent(in), optional :: chunk_size(:)
+integer, intent(in), optional :: chunk_size(rank(value))
 integer, intent(out) :: ierr
 end subroutine hdf_write_3d
 
@@ -110,7 +112,7 @@ module subroutine hdf_write_4d(self,dname,value, ierr, chunk_size)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:)
-integer, intent(in), optional :: chunk_size(:)
+integer, intent(in), optional :: chunk_size(rank(value))
 integer, intent(out) :: ierr
 end subroutine hdf_write_4d
 
@@ -118,7 +120,7 @@ module subroutine hdf_write_5d(self,dname,value, ierr, chunk_size)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:,:)
-integer, intent(in), optional :: chunk_size(:)
+integer, intent(in), optional :: chunk_size(rank(value))
 integer, intent(out) :: ierr
 end subroutine hdf_write_5d
 
@@ -126,7 +128,7 @@ module subroutine hdf_write_6d(self,dname,value, ierr, chunk_size)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:,:,:)
-integer, intent(in), optional :: chunk_size(:)
+integer, intent(in), optional :: chunk_size(rank(value))
 integer, intent(out) :: ierr
 end subroutine hdf_write_6d
 
@@ -134,7 +136,7 @@ module subroutine hdf_write_7d(self,dname,value, ierr, chunk_size)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:,:,:,:)
-integer, intent(in), optional :: chunk_size(:)
+integer, intent(in), optional :: chunk_size(rank(value))
 integer, intent(out) :: ierr
 end subroutine hdf_write_7d
 
@@ -232,7 +234,7 @@ public :: hdf5_file, toLower, hsize_t, strip_trailing_null, truncate_string_null
 contains
 
 
-subroutine hdf_initialize(self,filename,ierr, status,action,comp_lvl)
+subroutine hdf_initialize(self,filename,ierr, status,action,comp_lvl,chunk_size)
 !! Opens hdf5 file
 
 class(hdf5_file), intent(inout)    :: self
@@ -241,16 +243,17 @@ integer, intent(out)               :: ierr
 character(*), intent(in), optional :: status
 character(*), intent(in), optional :: action
 integer, intent(in), optional      :: comp_lvl
+integer, intent(in), optional      :: chunk_size(:)
 
 character(:), allocatable :: lstatus, laction
 logical :: exists
 
-self%pid = 0
 self%sid = 0
 !! arbitrary sentinel values, telling us it hasn't been used by HDF5
 self%filename = filename
 
 if (present(comp_lvl)) self%comp_lvl = comp_lvl
+if (present(chunk_size)) self%chunk_size(1:size(chunk_size)) = chunk_size
 
 !> Initialize FORTRAN interface.
 call h5open_f(ierr)

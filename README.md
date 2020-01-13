@@ -187,6 +187,11 @@ call h5f%finalize(ierr)
 
 chunk_size may optionally be set in the `%write()` method.
 
+compression and chunking are disabled if:
+
+* any element of chunk_size is less than 1
+* chunk_size is not given in the initialize() call AND not specified in %write()
+
 ### Read scalar, 3-D array of unknown size
 
 ```fortran

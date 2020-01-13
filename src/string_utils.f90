@@ -19,7 +19,7 @@ integer :: i,j
 
 toLower = str
 
-do concurrent (i = 1:len(str))
+do i = 1,len(str)
   j = index(upper,str(i:i))
   if (j > 0) toLower(i:i) = lower(j:j)
 end do

@@ -55,10 +55,8 @@ endif
 if(exists) then
   !> open dataset
   call h5dopen_f(self%lid, dname, self%did, ierr)
-  if (ierr /= 0) then
-    write(stderr,*) 'ERROR: open ' // dname // ' ' // self%filename
-    return
-  endif
+  if (ierr /= 0) write(stderr,*) 'ERROR: open ' // dname // ' ' // self%filename
+  return
 else
   call self%write(dname, ierr)
   if (ierr /= 0) then
@@ -67,16 +65,7 @@ else
   endif
 endif
 
-if(size(dims) >= 2) then
-  if (present(chunk_size)) self%chunk_size(:size(dims)) = chunk_size
-
-  call hdf_set_deflate(self, dims, ierr)
-else
-  self%pid = 0
-  !! sentinel value for unused property
-endif
-
-if(exists) return
+if(size(dims) >= 2) call hdf_set_deflate(self, dims, ierr, chunk_size)
 
 if(size(dims) == 0) then
   call h5screate_f(H5S_SCALAR_F, self%sid, ierr)
@@ -89,7 +78,7 @@ if (ierr /= 0) then
 endif
 
 if(size(dims) >= 2) then
-  call h5dcreate_f(self%lid, dname, dtype, self%sid, self%did, ierr, self%pid)
+  call h5dcreate_f(self%lid, dname, dtype, self%sid, self%did, ierr)
 else
   call h5dcreate_f(self%lid, dname, dtype, self%sid, self%did, ierr)
 endif
@@ -100,26 +89,33 @@ end procedure hdf_setup_write
 
 module procedure hdf_set_deflate
 
-integer :: ndims, i
-integer(HSIZE_T), allocatable :: chunk_size(:)
+integer :: i
+integer(HSIZE_T) :: cs(size(dims))
+integer(HID_T) :: pid
 
+if (self%comp_lvl < 1 .or. self%comp_lvl > 9) return
+if (.not.present(chunk_size) .and. all(self%chunk_size == 1) .or. any(self%chunk_size < 1)) return
+if (present(chunk_size)) then
+  if (any(chunk_size < 1)) return
+endif
 
-ndims = size(dims)
-allocate(chunk_size(ndims))
+if (present(chunk_size)) then
+  cs = chunk_size
+else
+  do i = 1,size(dims)
+    cs(i) = min(self%chunk_size(i), dims(i))
+  enddo
+endif
 
-do i=1,ndims
-  chunk_size(i) = min(self%chunk_size(i), dims(i))
-enddo
+if (self%verbose) print *,'dims: ',dims,'chunk size: ', cs
 
-if (self%verbose) print *,'dims: ',dims,'chunk size: ',chunk_size
-
-call h5pcreate_f(H5P_DATASET_CREATE_F, self%pid, ierr)
+call h5pcreate_f(H5P_DATASET_CREATE_F, pid, ierr)
 if (ierr /= 0) then
   write(stderr,*) 'ERROR: create property ' // self%filename
   return
 endif
 
-call h5pset_chunk_f(self%pid, ndims, chunk_size, ierr)
+call h5pset_chunk_f(pid, size(dims), cs, ierr)
 if (ierr /= 0) then
   write(stderr,*) 'ERROR: set chunk ' // self%filename
   return
@@ -127,14 +123,15 @@ endif
 
 if (self%comp_lvl < 1 .or. self%comp_lvl > 9) return
 
-call h5pset_shuffle_f(self%pid, ierr)
-if (ierr /= 0) then
-  write(stderr,*) 'ERROR: enable Shuffle ' // self%filename
-  return
-endif
+!! let these errors continue to close property
+call h5pset_shuffle_f(pid, ierr)
+if (ierr /= 0) write(stderr,*) 'ERROR: enable Shuffle ' // self%filename
 
-call h5pset_deflate_f(self%pid, self%comp_lvl, ierr)
+call h5pset_deflate_f(pid, self%comp_lvl, ierr)
 if (ierr /= 0) write(stderr,*) 'ERROR: enable Deflate compression ' // self%filename
+
+call h5pclose_f(pid, ierr)
+if (ierr /= 0) write(stderr,*) 'ERROR: close property: ', pid, self%filename
 
 end procedure hdf_set_deflate
 
@@ -145,14 +142,6 @@ if(self%sid /= 0) then
   call h5sclose_f(self%sid, ierr)
   if (ierr /= 0) then
     write(stderr,*) 'ERROR: close dataspace: ',self%sid, self%filename
-    return
-  endif
-endif
-
-if(self%pid /= 0) then
-  call h5pclose_f(self%pid, ierr)
-  if (ierr /= 0) then
-    write(stderr,*) 'ERROR: close property: ', self%pid, self%filename
     return
   endif
 endif
