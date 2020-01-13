@@ -42,7 +42,7 @@ It's possible to do these things, if there is user need.
 Requirements:
 
 * modern Fortran compiler (this project uses `submodule` and `error stop`). For example, Gfortran &ge; 6.
-* HDF5 Fortran library (1.8 or 1.10)
+* HDF5 Fortran library (>= 1.8.7, including 1.10.x and 1.12.x)
   * Mac / Homebrew: `brew install gcc hdf5`
   * Linux: `apt install gfortran libhdf5-dev`
   * Windows Subsystem for Linux: `apt install gfortran libhdf5-dev`

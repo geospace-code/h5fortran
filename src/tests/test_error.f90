@@ -39,7 +39,7 @@ subroutine test_nonexist_old_file(path)
 character(*), intent(in) :: path
 integer :: ierr
 
-call h5f%initialize(path//'/not-exist', ierr, status='old', action='read')
+call h5f%initialize(path//'/not-exist', ierr, status='old', action='read', verbose=.false.)
 if (ierr==0) error stop 'should have had ierr/=0 on non-existing old file'
 end subroutine test_nonexist_old_file
 
@@ -48,7 +48,7 @@ subroutine test_nonexist_unknown_file(path)
 character(*), intent(in) :: path
 integer :: ierr
 
-call h5f%initialize(path//'/not-exist', ierr, status='unknown', action='read')
+call h5f%initialize(path//'/not-exist', ierr, status='unknown', action='read', verbose=.false.)
 if (ierr==0) error stop 'should have had ierr/=0 on non-existing unknown read file'
 end subroutine test_nonexist_unknown_file
 
@@ -75,7 +75,7 @@ integer :: u,ierr
 character(:), allocatable :: filename
 
 filename = path // '/junk.h5'
-call h5f%initialize(filename, ierr, status='replace', action='readwrite')
+call h5f%initialize(filename, ierr, status='replace', action='readwrite', verbose=.false.)
 if(ierr/=0) error stop 'test_nonexist_variable: opening file'
 call h5f%read('/not-exist', u, ierr)
 if(ierr==0) error stop 'test_nonexist_variable: should have ierr/=0 on non-exist variable'
@@ -90,14 +90,14 @@ integer :: u,ierr
 character(:), allocatable :: filename
 
 filename = path // '/junk.h5'
-call h5f%initialize(filename, ierr, status='replace', action='write')
+call h5f%initialize(filename, ierr, status='replace', action='write', verbose=.false.)
 if(ierr/=0) error stop 'test_wrong_type: creating file'
 call h5f%write('/real32', 42., ierr)
 if(ierr/=0) error stop 'test_wrong_type: writing test variable'
 call h5f%finalize(ierr)
 if (ierr/=0) error stop 'test_nonexist_variable: finalizing'
 
-call h5f%initialize(filename, ierr, status='old', action='read')
+call h5f%initialize(filename, ierr, status='old', action='read', verbose=.false.)
 if(ierr/=0) error stop 'test_wrong_type: opening file'
 call h5f%read('/real32', u, ierr)
 if(ierr/=0) then
@@ -119,7 +119,7 @@ complex :: x
 x = (1, -1)
 
 filename = path // '/junk.h5'
-call h5f%initialize(filename, ierr, status='replace', action='write')
+call h5f%initialize(filename, ierr, status='replace', action='write', verbose=.false.)
 if(ierr/=0) error stop 'test_unknown_write: creating file'
 call h5f%write('/complex', x, ierr)
 if(ierr==0) error stop 'test_unknown_write: writing unknown type variable'
@@ -135,7 +135,7 @@ complex :: x
 x = (1, -1)
 
 filename = path // '/junk.h5'
-call h5f%initialize(filename, ierr, status='unknown', action='readwrite')
+call h5f%initialize(filename, ierr, status='unknown', action='readwrite', verbose=.false.)
 if(ierr/=0) error stop 'test_unknown_read: opening file'
 call h5f%read('/complex', x, ierr)
 if(ierr==0) error stop 'test_unknown_read: reading unknown type variable'

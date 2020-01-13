@@ -18,17 +18,10 @@ module procedure writeattr
 logical :: exists
 
 call self%write(dname, ierr)
-if (ierr /= 0) then
-  write(stderr,*) 'ERROR: create ' // dname // ' ' // self%filename
-  return
-endif
+if (check(ierr,  'ERROR: create ' // dname // ' ' // self%filename)) return
 
 call h5ltpath_valid_f(self%lid, dname, .true., exists, ierr)
-if (ierr /= 0) then
-  write(stderr,*) 'ERROR: checking existence: ' // dname // ' file ' // self%filename
-  ierr = -1
-  return
-endif
+if (check(ierr,  'ERROR: checking existence: ' // dname // ' file ' // self%filename)) return
 
 if (.not.exists) then
   write(stderr,*) 'ERROR: variable ' // dname // ' must be created before writing ' // attr
@@ -47,22 +40,16 @@ module procedure hdf_setup_write
 logical :: exists
 
 call h5ltpath_valid_f(self%lid, dname, .true., exists, ierr)
-if (ierr /= 0) then
-  write(stderr,*) 'ERROR: ' // dname // ' check exist ' // self%filename
-  return
-endif
+if (check(ierr,  'ERROR: ' // dname // ' check exist ' // self%filename)) return
 
 if(exists) then
   !> open dataset
   call h5dopen_f(self%lid, dname, self%did, ierr)
-  if (ierr /= 0) write(stderr,*) 'ERROR: open ' // dname // ' ' // self%filename
+  if (check(ierr, 'ERROR: open ' // dname // ' ' // self%filename)) return
   return
 else
   call self%write(dname, ierr)
-  if (ierr /= 0) then
-    write(stderr,*) 'ERROR: create ' // dname // ' ' // self%filename
-    return
-  endif
+  if (check(ierr, 'ERROR: create ' // dname // ' ' // self%filename)) return
 endif
 
 if(size(dims) >= 2) call hdf_set_deflate(self, dims, ierr, chunk_size)
@@ -72,17 +59,14 @@ if(size(dims) == 0) then
 else
   call h5screate_simple_f(size(dims), dims, self%sid, ierr)
 endif
-if (ierr /= 0) then
-  write(stderr,*) 'ERROR: dataspace ' // dname // ' create ' // self%filename
-  return
-endif
+if (check(ierr,  'ERROR: dataspace ' // dname // ' create ' // self%filename)) return
 
 if(size(dims) >= 2) then
   call h5dcreate_f(self%lid, dname, dtype, self%sid, self%did, ierr)
 else
   call h5dcreate_f(self%lid, dname, dtype, self%sid, self%did, ierr)
 endif
-if (ierr /= 0) write(stderr,*) 'ERROR: dataset ' // dname // ' create ' // self%filename
+if (check(ierr,  'ERROR: dataset ' // dname // ' create ' // self%filename)) return
 
 end procedure hdf_setup_write
 
@@ -107,31 +91,24 @@ else
   enddo
 endif
 
-if (self%verbose) print *,'dims: ',dims,'chunk size: ', cs
+! print *,'dims: ',dims,'chunk size: ', cs
 
 call h5pcreate_f(H5P_DATASET_CREATE_F, pid, ierr)
-if (ierr /= 0) then
-  write(stderr,*) 'ERROR: create property ' // self%filename
-  return
-endif
+if (check(ierr, 'ERROR: create property ' // self%filename)) return
 
 call h5pset_chunk_f(pid, size(dims), cs, ierr)
-if (ierr /= 0) then
-  write(stderr,*) 'ERROR: set chunk ' // self%filename
-  return
-endif
+if (check(ierr, 'ERROR: set chunk ' // self%filename)) return
 
 if (self%comp_lvl < 1 .or. self%comp_lvl > 9) return
 
-!! let these errors continue to close property
 call h5pset_shuffle_f(pid, ierr)
-if (ierr /= 0) write(stderr,*) 'ERROR: enable Shuffle ' // self%filename
+if (check(ierr, 'ERROR: enable Shuffle ' // self%filename)) return
 
 call h5pset_deflate_f(pid, self%comp_lvl, ierr)
-if (ierr /= 0) write(stderr,*) 'ERROR: enable Deflate compression ' // self%filename
+if (check(ierr, 'ERROR: enable Deflate compression ' // self%filename)) return
 
 call h5pclose_f(pid, ierr)
-if (ierr /= 0) write(stderr,*) 'ERROR: close property: ', pid, self%filename
+if (check(ierr, 'ERROR: close property: ' // self%filename)) return
 
 end procedure hdf_set_deflate
 
@@ -140,14 +117,11 @@ module procedure hdf_wrapup
 
 if(self%sid /= 0) then
   call h5sclose_f(self%sid, ierr)
-  if (ierr /= 0) then
-    write(stderr,*) 'ERROR: close dataspace: ',self%sid, self%filename
-    return
-  endif
+  if (check(ierr, 'ERROR: close dataspace: ' // self%filename)) return
 endif
 
 call h5dclose_f(self%did, ierr)
-if (ierr /= 0) write(stderr,*) 'ERROR: close dataset: ',self%did, self%filename
+if (check(ierr, 'ERROR: close dataset: ' // self%filename)) return
 
 end procedure hdf_wrapup
 
@@ -155,10 +129,7 @@ end procedure hdf_wrapup
 module procedure hdf_open_group
 
 call h5gopen_f(self%lid, gname, self%gid, ierr)
-if (ierr /= 0) then
-  write(stderr,*) 'ERROR: opening group ' // gname // ' in ' // self%filename
-  return
-endif
+if (check(ierr, 'ERROR: opening group ' // gname // ' in ' // self%filename)) return
 
 self%glid = self%lid
 self%lid  = self%gid
@@ -169,10 +140,7 @@ end procedure hdf_open_group
 module procedure hdf_close_group
 
 call h5gclose_f(self%gid, ierr)
-if (ierr /= 0) then
-  write(stderr,*) 'ERROR: closing group '//self%filename
-  return
-endif
+if (check(ierr,  'ERROR: closing group '//self%filename)) return
 
 self%lid = self%glid
 

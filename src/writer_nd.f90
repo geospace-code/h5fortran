@@ -50,10 +50,7 @@ class default
   ierr = -1
 end select
 
-if (ierr /= 0) then
-  write(stderr,*) 'ERROR: ' // dname // ' write ' // self%filename
-  return
-endif
+if (check(ierr, 'ERROR: ' // dname // ' write ' // self%filename))  return
 
 
 end procedure hdf_write_8d

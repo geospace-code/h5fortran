@@ -29,7 +29,7 @@ if (.not.exists .or. ierr /= 0) then
 endif
 
 call h5ltget_dataset_info_f(self%lid, dname, dims, dtype, dsize, ierr)
-if (ierr /= 0) write(stderr,*) 'ERROR: open ' // dname // ' read ' // self%filename
+if (check(ierr, 'ERROR: open ' // dname // ' read ' // self%filename)) return
 
 end procedure hdf_setup_read
 
@@ -48,14 +48,11 @@ if (.not.exists .or. ierr /= 0) then
 endif
 
 call h5ltget_dataset_ndims_f(self%lid, dname, drank, ierr)
-if (ierr /= 0) then
-  write(stderr,*) 'ERROR: '// dname // ' rank ' // self%filename
-  return
-endif
+if (check(ierr, 'ERROR: '// dname // ' rank ' // self%filename)) return
 
 allocate(dims(drank))
 call h5ltget_dataset_info_f(self%lid, dname, dims, dtype, dsize, ierr)
-if (ierr /= 0) write(stderr,*) 'ERROR: ' // dname // ' info ' // self%filename
+if (check(ierr, 'ERROR: ' // dname // ' info ' // self%filename)) return
 
 end procedure hdf_get_shape
 

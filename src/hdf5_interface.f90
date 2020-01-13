@@ -3,7 +3,8 @@ module h5fortran
 use, intrinsic :: iso_c_binding, only : c_ptr, c_loc
 use, intrinsic :: iso_fortran_env, only : real32, real64, int32, int64, stderr=>error_unit
 use hdf5, only : HID_T, SIZE_T, HSIZE_T, H5F_ACC_RDONLY_F, H5F_ACC_RDWR_F, H5F_ACC_TRUNC_F, &
-    h5open_f, h5close_f, h5gcreate_f, h5gclose_f, h5fopen_f, h5fcreate_f, h5fclose_f, h5lexists_f
+    h5open_f, h5close_f, h5gcreate_f, h5gclose_f, h5fopen_f, h5fcreate_f, h5fclose_f, h5lexists_f, &
+    h5get_libversion_f, h5eset_auto_f
 
 use string_utils, only : toLower, strip_trailing_null, truncate_string_null
 
@@ -21,7 +22,8 @@ integer(HID_T) :: lid, &   !< location ID
 
 integer :: comp_lvl = 0 !< compression level (1-9)  0: disable compression
 integer(HSIZE_T) :: chunk_size(7) = [1,1,1,1,1,1,1]  !< chunk size per dimension
-logical :: verbose=.false.
+logical :: verbose=.true.
+integer :: libversion(3)  !< major, minor, rel
 
 contains
 !> initialize HDF5 file
@@ -38,7 +40,7 @@ hdf_read_scalar, hdf_read_1d, hdf_read_2d, hdf_read_3d, &
   hdf_read_4d,hdf_read_5d, hdf_read_6d, hdf_read_7d
 
 !> private methods
-procedure,public :: hdf_write_group, &
+procedure,private :: hdf_write_group, &
 hdf_write_scalar, hdf_write_1d, hdf_write_2d, hdf_write_3d, &
   hdf_write_4d, hdf_write_5d, hdf_write_6d, hdf_write_7d, &
 hdf_read_scalar, hdf_read_1d, hdf_read_2d, hdf_read_3d, &
@@ -228,13 +230,13 @@ end interface
 integer, parameter :: ENOENT = 2, EIO = 5
 
 private
-public :: hdf5_file, toLower, hsize_t, strip_trailing_null, truncate_string_null
+public :: hdf5_file, toLower, hsize_t, strip_trailing_null, truncate_string_null, check
 
 
 contains
 
 
-subroutine hdf_initialize(self,filename,ierr, status,action,comp_lvl,chunk_size)
+subroutine hdf_initialize(self,filename,ierr, status,action,comp_lvl,chunk_size,verbose)
 !! Opens hdf5 file
 
 class(hdf5_file), intent(inout)    :: self
@@ -244,6 +246,7 @@ character(*), intent(in), optional :: status
 character(*), intent(in), optional :: action
 integer, intent(in), optional      :: comp_lvl
 integer, intent(in), optional      :: chunk_size(:)
+logical, intent(in), optional      :: verbose
 
 character(:), allocatable :: lstatus, laction
 logical :: exists
@@ -254,13 +257,23 @@ self%filename = filename
 
 if (present(comp_lvl)) self%comp_lvl = comp_lvl
 if (present(chunk_size)) self%chunk_size(1:size(chunk_size)) = chunk_size
+if (present(verbose)) self%verbose = verbose
 
 !> Initialize FORTRAN interface.
 call h5open_f(ierr)
-if (ierr /= 0) then
-  write(stderr,*) 'ERROR: HDF5 library initialize'
-  return
+if (check(ierr, 'ERROR: HDF5 library initialize')) return
+
+!> get library version
+call h5get_libversion_f(self%libversion(1), self%libversion(2), self%libversion(3), ierr)
+! if (self%verbose) print '(A,3I3)', 'HDF5 version: ',self%libversion
+if (check(ierr, 'ERROR: HDF5 library get version')) return
+
+if(self%verbose) then
+  call h5eset_auto_f(1, ierr)
+else
+  call h5eset_auto_f(0, ierr)
 endif
+if (check(ierr, 'ERROR: HDF5 library set traceback')) return
 
 lstatus = 'old'
 if(present(status)) lstatus = toLower(status)
@@ -277,33 +290,23 @@ select case(lstatus)
         if (.not.exists) then
           write(stderr,*) 'ERROR: ' // filename // ' does not exist.'
           ierr = ENOENT
-          return
         endif
         call h5fopen_f(filename,H5F_ACC_RDONLY_F,self%lid,ierr)
       case('write','readwrite','w','rw', 'r+', 'append', 'a')
         call h5fopen_f(filename,H5F_ACC_RDWR_F,self%lid,ierr)
-        if (ierr /= 0) then
-          write(stderr,*) 'ERROR: ' // filename // ' could not be opened'
-          ierr = EIO
-          return
-        endif
+        if (check(ierr, 'ERROR: ' // filename // ' could not be opened')) return
       case default
         write(stderr,*) 'Unsupported action -> ' // laction
         ierr = 128
-        return
       endselect
   case('new','replace')
     call h5fcreate_f(filename, H5F_ACC_TRUNC_F, self%lid, ierr)
-    if (ierr /= 0) then
-      write(stderr,*) 'ERROR: ' // filename // ' could not be created'
-      ierr = EIO
-      return
-    endif
+    if (check(ierr, 'ERROR: ' // filename // ' could not be created')) return
   case default
     write(stderr,*) 'Unsupported status -> '// lstatus
     ierr = 128
-    return
 endselect
+
 
 end subroutine hdf_initialize
 
@@ -314,14 +317,11 @@ integer, intent(out) :: ierr
 
 !> close hdf5 file
 call h5fclose_f(self%lid, ierr)
-if (ierr /= 0) then
-  write(stderr,*) 'ERROR: HDF5 file close: ' // self%filename
-  return
-endif
+if (check(ierr, 'ERROR: HDF5 file close: ' // self%filename)) return
 
 !>  Close Fortran interface.
 call h5close_f(ierr)
-if (ierr /= 0) write(stderr,*) 'ERROR: HDF5 library close'
+if (check(ierr, 'ERROR: HDF5 library close')) return
 
 end subroutine hdf_finalize
 
@@ -351,26 +351,30 @@ do
   ! check subgroup exists
   sp = sp + ep
   call h5lexists_f(self%lid, gname(1:sp-1), gexist, ierr)
-  if (ierr /= 0) then
-    write(stderr,*) 'ERROR: did not find group ' // gname // ' in ' // self%filename
-    return
-  endif
+  if (check(ierr, 'ERROR: did not find group ' // gname // ' in ' // self%filename)) return
 
   if(.not.gexist) then
     call h5gcreate_f(self%lid, gname(1:sp-1), gid, ierr)
-    if (ierr /= 0) then
-      write(stderr,*) 'ERROR: creating group ' // gname // ' in ' // self%filename
-      return
-    endif
+    if (check(ierr, 'ERROR: creating group ' // gname // ' in ' // self%filename)) return
 
     call h5gclose_f(gid, ierr)
-    if (ierr /= 0) then
-      write(stderr,*) 'ERROR: closing group ' // gname // ' in ' // self%filename
-      return
-    endif
+    if (check(ierr, 'ERROR: closing group ' // gname // ' in ' // self%filename)) return
   endif
 end do
 
 end subroutine hdf_write_group
+
+
+logical function check(ierr, msg)
+integer, intent(in) :: ierr
+character(*), intent(in) :: msg
+
+check = ierr /= 0
+if (.not.check) return
+
+write(stderr, *) msg
+
+end function check
+
 
 end module h5fortran
