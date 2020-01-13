@@ -1,11 +1,14 @@
-# include(CheckFortranSourceCompiles)
-# check_fortran_source_compiles("real, dimension(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1) :: x; end" f08rank15 SRC_EXT f90)
+if(NOT PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+  # this will NOT return for ExternalProject
+  # this will return for FetchContent
+  return()
+endif()
 
 if(CMAKE_Fortran_COMPILER_ID STREQUAL Intel)
   if(WIN32)
-    set(CMAKE_Fortran_FLAGS "/stand:f18 /warn:declarations /traceback /warn /heap-arrays ")
+    set(CMAKE_Fortran_FLAGS "/stand:f18 /traceback /warn /heap-arrays ")
   else()
-    set(CMAKE_Fortran_FLAGS "-stand f18 -warn declarations -traceback -warn -heap-arrays ")
+    set(CMAKE_Fortran_FLAGS "-stand f18 -traceback -warn -heap-arrays ")
   endif()
 elseif(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
   string(APPEND CMAKE_Fortran_FLAGS "-march=native -fimplicit-none ")
