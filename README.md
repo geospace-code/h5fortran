@@ -10,6 +10,7 @@ For NetCDF4 see [nc4fortran](https://github.com/scivision/nc4fortran/).
 Designed for easy use as a Meson "subproject" or CMake "ExternalProject / FetchContent" using **static** or **shared** linking.
 Uses Fortran 2008 `submodule` for clean template structure.
 This easy-to-use, thin object-oriented modern Fortran library abstracts away the messy parts of HDF5 so that you can read/write various types/ranks of data with a single command.
+In distinction from other high-level HDF5 interfaces, h5fortran works to deduplicate code, using polymorphism wherever feasible and extensive test suite.
 
 Polymorphic API with read/write for types int32, int64, real32, real64 with rank:
 
@@ -64,7 +65,7 @@ To include h5fortran as a Meson subproject, in the master project meson.build (t
 hdf5_proj = subproject('h5fortran')
 hdf5_interface = hdf5_proj.get_variable('hdf5_interface')
 
-my_exe = exectuable('myexe', 'main.f90', dependencies: hdf5_interface)
+my_exe = executable('myexe', 'main.f90', dependencies: hdf5_interface)
 ```
 
 and have a file in the master project `subprojects/h5fortran.wrap` containing:
@@ -122,7 +123,7 @@ use h5fortran, only: hdf5_file
 type(hdf5_file) :: h5f
 ```
 
-* gzip compression may be applied for rank &ge; 2 arrays by setting `comp_lvl` to a value betwen 1 and 9.
+* gzip compression may be applied for rank &ge; 2 arrays by setting `comp_lvl` to a value between 1 and 9.
   Shuffle filter is automatically applied for better compression
 * string attributes may be applied to any variable at time of writing or later.
 * `chunk_size` and `comp_lvl` options must be set to **enable compression**
