@@ -89,7 +89,7 @@ integer(int32), allocatable :: i1t(:)
 integer(HSIZE_T), allocatable :: dims(:)
 
 call h5f%initialize(path//'/test.h5', ierr, status='new',action='w')
-
+if (ierr /= 0) error stop 'test.h5 open'
 !! scalar tests
 call h5f%write('/scalar_int', 42_int32, ierr)
 if (ierr /= 0) error stop 'write 0-D: int'
