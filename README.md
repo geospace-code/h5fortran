@@ -5,9 +5,20 @@
 [![Actions Status](https://github.com/scivision/h5fortran/workflows/ci_linux/badge.svg)](https://github.com/scivision/h5fortran/actions)
 [![Actions Status](https://github.com/scivision/h5fortran/workflows/ci_mac/badge.svg)](https://github.com/scivision/h5fortran/actions)
 
-Straightforward single-module access to HDF5.
-For NetCDF4 see [nc4fortran](https://github.com/scivision/nc4fortran/).
-Designed for easy use as a Meson "subproject" or CMake "ExternalProject / FetchContent" using **static** or **shared** linking.
+Simple, robust, thin HDF5 polymorphic read/write interface.
+Reading or writing {real64,real32,int64,int32} from scalar to 7d is as simple as
+
+```fortran
+use h5fortran
+
+call h5save('foo.h5', '/x', x)
+
+call h5read('bar.h5', '/y', y)
+```
+
+* For NetCDF4 see [nc4fortran](https://github.com/scivision/nc4fortran/).
+* Designed for easy use as a Meson "subproject" or CMake "ExternalProject / FetchContent" using **static** or **shared** linking.
+
 Uses Fortran 2008 `submodule` for clean template structure.
 This easy-to-use, thin object-oriented modern Fortran library abstracts away the messy parts of HDF5 so that you can read/write various types/ranks of data with a single command.
 In distinction from other high-level HDF5 interfaces, h5fortran works to deduplicate code, using polymorphism wherever feasible and extensive test suite.

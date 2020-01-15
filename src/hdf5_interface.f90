@@ -9,6 +9,9 @@ use hdf5, only : HID_T, SIZE_T, HSIZE_T, H5F_ACC_RDONLY_F, H5F_ACC_RDWR_F, H5F_A
 use string_utils, only : toLower, strip_trailing_null, truncate_string_null
 
 implicit none
+private
+public :: hdf5_file, toLower, hsize_t, strip_trailing_null, truncate_string_null, check, h5write, h5read
+
 
 !> main type
 type :: hdf5_file
@@ -47,9 +50,114 @@ hdf_read_scalar, hdf_read_1d, hdf_read_2d, hdf_read_3d, &
 
 end type hdf5_file
 
+interface h5write
+  procedure lt0write, lt1write, lt2write, lt3write, lt4write, lt5write, lt6write, lt7write
+end interface h5write
+
+interface h5read
+  procedure lt0read, lt1read, lt2read, lt3read, lt4read, lt5read, lt6read, lt7read
+end interface h5read
+
 
 !> Submodules
 interface
+
+module subroutine lt0write(filename, dname, value, ierr)
+character(*), intent(in) :: filename, dname
+class(*), intent(in) :: value
+integer, intent(out), optional :: ierr
+end subroutine lt0write
+
+module subroutine lt1write(filename, dname, value, ierr)
+character(*), intent(in) :: filename, dname
+class(*), intent(in) :: value(:)
+integer, intent(out), optional :: ierr
+end subroutine lt1write
+
+module subroutine lt2write(filename, dname, value, ierr)
+character(*), intent(in) :: filename, dname
+class(*), intent(in) :: value(:,:)
+integer, intent(out), optional :: ierr
+end subroutine lt2write
+
+module subroutine lt3write(filename, dname, value, ierr)
+character(*), intent(in) :: filename, dname
+class(*), intent(in) :: value(:,:,:)
+integer, intent(out), optional :: ierr
+end subroutine lt3write
+
+module subroutine lt4write(filename, dname, value, ierr)
+character(*), intent(in) :: filename, dname
+class(*), intent(in) :: value(:,:,:,:)
+integer, intent(out), optional :: ierr
+end subroutine lt4write
+
+module subroutine lt5write(filename, dname, value, ierr)
+character(*), intent(in) :: filename, dname
+class(*), intent(in) :: value(:,:,:,:,:)
+integer, intent(out), optional :: ierr
+end subroutine lt5write
+
+module subroutine lt6write(filename, dname, value, ierr)
+character(*), intent(in) :: filename, dname
+class(*), intent(in) :: value(:,:,:,:,:,:)
+integer, intent(out), optional :: ierr
+end subroutine lt6write
+
+module subroutine lt7write(filename, dname, value, ierr)
+character(*), intent(in) :: filename, dname
+class(*), intent(in) :: value(:,:,:,:,:,:,:)
+integer, intent(out), optional :: ierr
+end subroutine lt7write
+
+module subroutine lt0read(filename, dname, value, ierr)
+character(*), intent(in) :: filename, dname
+class(*), intent(out) :: value
+integer, intent(out), optional :: ierr
+end subroutine lt0read
+
+module subroutine lt1read(filename, dname, value, ierr)
+character(*), intent(in) :: filename, dname
+class(*), intent(out) :: value(:)
+integer, intent(out), optional :: ierr
+end subroutine lt1read
+
+module subroutine lt2read(filename, dname, value, ierr)
+character(*), intent(in) :: filename, dname
+class(*), intent(out) :: value(:,:)
+integer, intent(out), optional :: ierr
+end subroutine lt2read
+
+module subroutine lt3read(filename, dname, value, ierr)
+character(*), intent(in) :: filename, dname
+class(*), intent(out) :: value(:,:,:)
+integer, intent(out), optional :: ierr
+end subroutine lt3read
+
+module subroutine lt4read(filename, dname, value, ierr)
+character(*), intent(in) :: filename, dname
+class(*), intent(out) :: value(:,:,:,:)
+integer, intent(out), optional :: ierr
+end subroutine lt4read
+
+module subroutine lt5read(filename, dname, value, ierr)
+character(*), intent(in) :: filename, dname
+class(*), intent(out) :: value(:,:,:,:,:)
+integer, intent(out), optional :: ierr
+end subroutine lt5read
+
+module subroutine lt6read(filename, dname, value, ierr)
+character(*), intent(in) :: filename, dname
+class(*), intent(out) :: value(:,:,:,:,:,:)
+integer, intent(out), optional :: ierr
+end subroutine lt6read
+
+module subroutine lt7read(filename, dname, value, ierr)
+character(*), intent(in) :: filename, dname
+class(*), intent(out) :: value(:,:,:,:,:,:,:)
+integer, intent(out), optional :: ierr
+end subroutine lt7read
+
 
 module subroutine hdf_setup_read(self, dname, dims, ierr)
 class(hdf5_file), intent(in) :: self
@@ -240,12 +348,6 @@ end subroutine writeattr
 
 end interface
 
-integer, parameter :: ENOENT = 2, EIO = 5
-
-private
-public :: hdf5_file, toLower, hsize_t, strip_trailing_null, truncate_string_null, check
-
-
 contains
 
 
@@ -310,17 +412,19 @@ select case(lstatus)
         inquire(file=filename, exist=exists)
         if (.not.exists) then
           write(stderr,*) 'ERROR: ' // filename // ' does not exist.'
-          ierr = ENOENT
+          ierr = -1
+          return
         endif
         call h5fopen_f(filename,H5F_ACC_RDONLY_F,self%lid,ierr)
       case('write','readwrite','w','rw', 'r+', 'append', 'a')
         inquire(file=filename, exist=exists)
         if(lstatus == 'unknown' .and. .not.exists) then
-          call h5fopen_f(filename, H5F_ACC_TRUNC_F, self%lid,ierr)
+          call h5fcreate_f(filename, H5F_ACC_TRUNC_F, self%lid, ierr)
+          if (check(ierr, 'ERROR: ' // filename // ' could not be created')) return
         else
-          call h5fopen_f(filename, H5F_ACC_RDWR_F, self%lid,ierr)
+          call h5fopen_f(filename, H5F_ACC_RDWR_F, self%lid, ierr)
+          if (check(ierr, 'ERROR: ' // filename // ' could not be opened in read/write')) return
         endif
-        if (check(ierr, 'ERROR: ' // filename // ' could not be opened')) return
       case default
         write(stderr,*) 'Unsupported action -> ' // laction
         ierr = 128

@@ -233,4 +233,245 @@ if (ierr /= 0) write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
 end procedure hdf_read_7d
 
 
+module procedure lt0read
+type(hdf5_file) :: h
+integer :: ier
+
+call h%initialize(filename, ier, status='old')
+if (check(ier, 'ERROR: open ' // dname // ' read_lt ' // filename))  return
+
+select type (value)
+type is (character(*))
+  call h%read(dname, value, ier)
+type is (real(real64))
+  call h%read(dname, value, ier)
+type is (real(real32))
+  call h%read(dname, value, ier)
+type is (integer(int64))
+  call h%read(dname, value, ier)
+type is (integer(int32))
+  call h%read(dname, value, ier)
+class default
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
+  ier = -1
+end select
+if (check(ier, 'ERROR: ' // dname // ' read_lt ' // filename))  return
+
+call h%finalize(ier)
+if (check(ier, 'ERROR: close ' // dname // ' read_lt ' // filename))  return
+
+if(present(ierr)) ierr = ier
+
+end procedure lt0read
+
+
+module procedure lt1read
+type(hdf5_file) :: h
+integer :: ier
+
+call h%initialize(filename, ier, status='old')
+if (check(ier, 'ERROR: open ' // dname // ' read_lt ' // filename))  return
+
+select type (value)
+type is (real(real64))
+  call h%read(dname, value, ier)
+type is (real(real32))
+  call h%read(dname, value, ier)
+type is (integer(int64))
+  call h%read(dname, value, ier)
+type is (integer(int32))
+  call h%read(dname, value, ier)
+class default
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
+  ier = -1
+end select
+if (check(ier, 'ERROR: ' // dname // ' read_lt ' // filename))  return
+
+call h%finalize(ier)
+if (check(ier, 'ERROR: close ' // dname // ' read_lt ' // filename))  return
+
+if(present(ierr)) ierr = ier
+
+end procedure lt1read
+
+
+module procedure lt2read
+type(hdf5_file) :: h
+integer :: ier
+
+call h%initialize(filename, ier, status='old')
+if (check(ier, 'ERROR: open ' // dname // ' read_lt ' // filename))  return
+
+select type (value)
+type is (real(real64))
+  call h%read(dname, value, ier)
+type is (real(real32))
+  call h%read(dname, value, ier)
+type is (integer(int64))
+  call h%read(dname, value, ier)
+type is (integer(int32))
+  call h%read(dname, value, ier)
+class default
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
+  ier = -1
+end select
+if (check(ier, 'ERROR: ' // dname // ' read_lt ' // filename))  return
+
+call h%finalize(ier)
+if (check(ier, 'ERROR: close ' // dname // ' read_lt ' // filename))  return
+
+if(present(ierr)) ierr = ier
+
+end procedure lt2read
+
+
+module procedure lt3read
+type(hdf5_file) :: h
+integer :: ier
+
+call h%initialize(filename, ier, status='old')
+if (check(ier, 'ERROR: open ' // dname // ' read_lt ' // filename))  return
+
+select type (value)
+type is (real(real64))
+  call h%read(dname, value, ier)
+type is (real(real32))
+  call h%read(dname, value, ier)
+type is (integer(int64))
+  call h%read(dname, value, ier)
+type is (integer(int32))
+  call h%read(dname, value, ier)
+class default
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
+  ier = -1
+end select
+if (check(ier, 'ERROR: ' // dname // ' read_lt ' // filename))  return
+
+call h%finalize(ier)
+if (check(ier, 'ERROR: close ' // dname // ' read_lt ' // filename))  return
+
+if(present(ierr)) ierr = ier
+
+end procedure lt3read
+
+
+module procedure lt4read
+type(hdf5_file) :: h
+integer :: ier
+
+call h%initialize(filename, ier, status='old')
+if (check(ier, 'ERROR: open ' // dname // ' read_lt ' // filename))  return
+
+select type (value)
+type is (real(real64))
+  call h%read(dname, value, ier)
+type is (real(real32))
+  call h%read(dname, value, ier)
+type is (integer(int64))
+  call h%read(dname, value, ier)
+type is (integer(int32))
+  call h%read(dname, value, ier)
+class default
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
+  ier = -1
+end select
+if (check(ier, 'ERROR: ' // dname // ' read_lt ' // filename))  return
+
+call h%finalize(ier)
+if (check(ier, 'ERROR: close ' // dname // ' read_lt ' // filename))  return
+
+if(present(ierr)) ierr = ier
+
+end procedure lt4read
+
+
+module procedure lt5read
+type(hdf5_file) :: h
+integer :: ier
+
+call h%initialize(filename, ier, status='old')
+if (check(ier, 'ERROR: open ' // dname // ' read_lt ' // filename))  return
+
+select type (value)
+type is (real(real64))
+  call h%read(dname, value, ier)
+type is (real(real32))
+  call h%read(dname, value, ier)
+type is (integer(int64))
+  call h%read(dname, value, ier)
+type is (integer(int32))
+  call h%read(dname, value, ier)
+class default
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
+  ier = -1
+end select
+if (check(ier, 'ERROR: ' // dname // ' read_lt ' // filename))  return
+
+call h%finalize(ier)
+if (check(ier, 'ERROR: close ' // dname // ' read_lt ' // filename))  return
+
+if(present(ierr)) ierr = ier
+
+end procedure lt5read
+
+
+module procedure lt6read
+type(hdf5_file) :: h
+integer :: ier
+
+call h%initialize(filename, ier, status='old')
+if (check(ier, 'ERROR: open ' // dname // ' read_lt ' // filename))  return
+
+select type (value)
+type is (real(real64))
+  call h%read(dname, value, ier)
+type is (real(real32))
+  call h%read(dname, value, ier)
+type is (integer(int64))
+  call h%read(dname, value, ier)
+type is (integer(int32))
+  call h%read(dname, value, ier)
+class default
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
+  ier = -1
+end select
+if (check(ier, 'ERROR: ' // dname // ' read_lt ' // filename))  return
+
+call h%finalize(ier)
+if (check(ier, 'ERROR: close ' // dname // ' read_lt ' // filename))  return
+
+if(present(ierr)) ierr = ier
+
+end procedure lt6read
+
+
+module procedure lt7read
+type(hdf5_file) :: h
+integer :: ier
+
+call h%initialize(filename, ier, status='old')
+if (check(ier, 'ERROR: open ' // dname // ' read_lt ' // filename))  return
+
+select type (value)
+type is (real(real64))
+  call h%read(dname, value, ier)
+type is (real(real32))
+  call h%read(dname, value, ier)
+type is (integer(int64))
+  call h%read(dname, value, ier)
+type is (integer(int32))
+  call h%read(dname, value, ier)
+class default
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
+  ier = -1
+end select
+if (check(ier, 'ERROR: ' // dname // ' read_lt ' // filename))  return
+
+call h%finalize(ier)
+if (check(ier, 'ERROR: close ' // dname // ' read_lt ' // filename))  return
+
+if(present(ierr)) ierr = ier
+
+end procedure lt7read
+
 end submodule reader

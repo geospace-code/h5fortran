@@ -12,7 +12,6 @@ use H5LT, only: h5ltmake_dataset_f, h5ltpath_valid_f, h5ltset_attribute_string_f
 implicit none
 contains
 
-
 module procedure writeattr
 
 logical :: exists

@@ -335,4 +335,245 @@ if (check(ierr, 'ERROR: ' // dname // ' write ' // self%filename))  return
 end procedure hdf_write_7d
 
 
+module procedure lt0write
+type(hdf5_file) :: h
+integer :: ier
+
+call h%initialize(filename, ier, status='unknown')
+if (check(ier, 'ERROR: open ' // dname // ' write_lt ' // filename))  return
+
+select type (value)
+type is (character(*))
+  call h%write(dname, value, ier)
+type is (real(real64))
+  call h%write(dname, value, ier)
+type is (real(real32))
+  call h%write(dname, value, ier)
+type is (integer(int64))
+  call h%write(dname, value, ier)
+type is (integer(int32))
+  call h%write(dname, value, ier)
+class default
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
+  ier = -1
+end select
+if (check(ier, 'ERROR: ' // dname // ' write_lt ' // filename))  return
+
+call h%finalize(ier)
+if (check(ier, 'ERROR: close ' // dname // ' write_lt ' // filename))  return
+
+if(present(ierr)) ierr = ier
+
+end procedure lt0write
+
+
+module procedure lt1write
+type(hdf5_file) :: h
+integer :: ier
+
+call h%initialize(filename, ier, status='unknown')
+if (check(ier, 'ERROR: open ' // dname // ' write_lt ' // filename))  return
+
+select type (value)
+type is (real(real64))
+  call h%write(dname, value, ier)
+type is (real(real32))
+  call h%write(dname, value, ier)
+type is (integer(int64))
+  call h%write(dname, value, ier)
+type is (integer(int32))
+  call h%write(dname, value, ier)
+class default
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
+  ier = -1
+end select
+if (check(ier, 'ERROR: ' // dname // ' write_lt ' // filename))  return
+
+call h%finalize(ier)
+if (check(ier, 'ERROR: close ' // dname // ' write_lt ' // filename))  return
+
+if(present(ierr)) ierr = ier
+
+end procedure lt1write
+
+
+module procedure lt2write
+type(hdf5_file) :: h
+integer :: ier
+
+call h%initialize(filename, ier, status='unknown')
+if (check(ier, 'ERROR: open ' // dname // ' write_lt ' // filename))  return
+
+select type (value)
+type is (real(real64))
+  call h%write(dname, value, ier)
+type is (real(real32))
+  call h%write(dname, value, ier)
+type is (integer(int64))
+  call h%write(dname, value, ier)
+type is (integer(int32))
+  call h%write(dname, value, ier)
+class default
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
+  ier = -1
+end select
+if (check(ier, 'ERROR: ' // dname // ' write_lt ' // filename))  return
+
+call h%finalize(ier)
+if (check(ier, 'ERROR: close ' // dname // ' write_lt ' // filename))  return
+
+if(present(ierr)) ierr = ier
+
+end procedure lt2write
+
+
+module procedure lt3write
+type(hdf5_file) :: h
+integer :: ier
+
+call h%initialize(filename, ier, status='unknown')
+if (check(ier, 'ERROR: open ' // dname // ' write_lt ' // filename))  return
+
+select type (value)
+type is (real(real64))
+  call h%write(dname, value, ier)
+type is (real(real32))
+  call h%write(dname, value, ier)
+type is (integer(int64))
+  call h%write(dname, value, ier)
+type is (integer(int32))
+  call h%write(dname, value, ier)
+class default
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
+  ier = -1
+end select
+if (check(ier, 'ERROR: ' // dname // ' write_lt ' // filename))  return
+
+call h%finalize(ier)
+if (check(ier, 'ERROR: close ' // dname // ' write_lt ' // filename))  return
+
+if(present(ierr)) ierr = ier
+
+end procedure lt3write
+
+
+module procedure lt4write
+type(hdf5_file) :: h
+integer :: ier
+
+call h%initialize(filename, ier, status='unknown')
+if (check(ier, 'ERROR: open ' // dname // ' write_lt ' // filename))  return
+
+select type (value)
+type is (real(real64))
+  call h%write(dname, value, ier)
+type is (real(real32))
+  call h%write(dname, value, ier)
+type is (integer(int64))
+  call h%write(dname, value, ier)
+type is (integer(int32))
+  call h%write(dname, value, ier)
+class default
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
+  ier = -1
+end select
+if (check(ier, 'ERROR: ' // dname // ' write_lt ' // filename))  return
+
+call h%finalize(ier)
+if (check(ier, 'ERROR: close ' // dname // ' write_lt ' // filename))  return
+
+if(present(ierr)) ierr = ier
+
+end procedure lt4write
+
+
+module procedure lt5write
+type(hdf5_file) :: h
+integer :: ier
+
+call h%initialize(filename, ier, status='unknown')
+if (check(ier, 'ERROR: open ' // dname // ' write_lt ' // filename))  return
+
+select type (value)
+type is (real(real64))
+  call h%write(dname, value, ier)
+type is (real(real32))
+  call h%write(dname, value, ier)
+type is (integer(int64))
+  call h%write(dname, value, ier)
+type is (integer(int32))
+  call h%write(dname, value, ier)
+class default
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
+  ier = -1
+end select
+if (check(ier, 'ERROR: ' // dname // ' write_lt ' // filename))  return
+
+call h%finalize(ier)
+if (check(ier, 'ERROR: close ' // dname // ' write_lt ' // filename))  return
+
+if(present(ierr)) ierr = ier
+
+end procedure lt5write
+
+
+module procedure lt6write
+type(hdf5_file) :: h
+integer :: ier
+
+call h%initialize(filename, ier, status='unknown')
+if (check(ier, 'ERROR: open ' // dname // ' write_lt ' // filename))  return
+
+select type (value)
+type is (real(real64))
+  call h%write(dname, value, ier)
+type is (real(real32))
+  call h%write(dname, value, ier)
+type is (integer(int64))
+  call h%write(dname, value, ier)
+type is (integer(int32))
+  call h%write(dname, value, ier)
+class default
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
+  ier = -1
+end select
+if (check(ier, 'ERROR: ' // dname // ' write_lt ' // filename))  return
+
+call h%finalize(ier)
+if (check(ier, 'ERROR: close ' // dname // ' write_lt ' // filename))  return
+
+if(present(ierr)) ierr = ier
+
+end procedure lt6write
+
+
+module procedure lt7write
+type(hdf5_file) :: h
+integer :: ier
+
+call h%initialize(filename, ier, status='unknown')
+if (check(ier, 'ERROR: open ' // dname // ' write_lt ' // filename))  return
+
+select type (value)
+type is (real(real64))
+  call h%write(dname, value, ier)
+type is (real(real32))
+  call h%write(dname, value, ier)
+type is (integer(int64))
+  call h%write(dname, value, ier)
+type is (integer(int32))
+  call h%write(dname, value, ier)
+class default
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
+  ier = -1
+end select
+if (check(ier, 'ERROR: ' // dname // ' write_lt ' // filename))  return
+
+call h%finalize(ier)
+if (check(ier, 'ERROR: close ' // dname // ' write_lt ' // filename))  return
+
+if(present(ierr)) ierr = ier
+
+end procedure lt7write
+
 end submodule writer
