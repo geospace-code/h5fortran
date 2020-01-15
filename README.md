@@ -11,7 +11,7 @@ Reading or writing {real64,real32,int64,int32} from scalar to 7d is as simple as
 ```fortran
 use h5fortran
 
-call h5save('foo.h5', '/x', x)
+call h5write('foo.h5', '/x', x)
 
 call h5read('bar.h5', '/y', y)
 ```
