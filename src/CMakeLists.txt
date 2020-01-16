@@ -2,16 +2,18 @@ add_library(h5fortran hdf5_interface.f90
   read.f90 reader.f90
   write.f90 writer.f90
   string_utils.f90)
-# need BOTH includes, for some systems!
-target_include_directories(h5fortran PRIVATE ${HDF5_INCLUDE_DIRS})
+target_include_directories(h5fortran PRIVATE ${HDF5_INCLUDE_DIRS}
+  INTERFACE
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
 target_link_libraries(h5fortran PRIVATE ${HDF5_LIBRARIES})
 target_compile_options(h5fortran PRIVATE ${HDF5_Fortran_DEFINITIONS})
 set_target_properties(h5fortran PROPERTIES
-  Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}
-  ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
-  LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+  Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include
+  ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+  LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+add_library(h5fortran::h5fortran ALIAS h5fortran)
 
-install(TARGETS h5fortran
-  ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}
-  LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX})
-install(FILES ${CMAKE_BINARY_DIR}/h5fortran.mod DESTINATION ${CMAKE_INSTALL_PREFIX})
+if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+  include(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/install.cmake)
+endif()

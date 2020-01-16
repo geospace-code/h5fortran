@@ -63,6 +63,8 @@ The library `libh5fortran` is built, link it into your program as usual.
 
 ### Meson
 
+To build h5fortran as a standalone project
+
 ```sh
 meson build
 
@@ -119,10 +121,15 @@ include(FetchContent)
 
 FetchContent_Declare(h5fortran_proj
   GIT_REPOSITORY https://github.com/scivision/h5fortran.git
-  GIT_TAG v2.4.1  # whatever desired version is
+  GIT_TAG master  # whatever desired version is
 )
 
 FetchContent_MakeAvailable(h5fortran_proj)
+
+# ------------------------------------------------------
+# whatever your program is
+add_executable(myProj main.f90)
+target_link_libraries(myProj h5fortran::h5fortran)
 ```
 
 ## Usage

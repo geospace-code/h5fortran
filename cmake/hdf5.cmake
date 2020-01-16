@@ -15,7 +15,6 @@ endif()
 find_package(HDF5 REQUIRED COMPONENTS Fortran HL)
 if(MINGW)
   set(HDF5_INCLUDE_DIRS ${HDF5_INCLUDE_DIRS}/static)
-  message(${HDF5_INCLUDE_DIRS})
 endif()
 
 set(HDF5_LIBRARIES ${HDF5_Fortran_HL_LIBRARIES} ${HDF5_Fortran_LIBRARIES} ${HDF5_LIBRARIES})
