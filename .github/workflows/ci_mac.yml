@@ -5,12 +5,14 @@ on:
     paths:
       - "**.build"
       - "**.txt"
+      - "**.cmake"
       - "**.f90"
       - ".github/workflows/ci_mac.yml"
   pull_request:
     paths:
       - "**.build"
       - "**.txt"
+      - "**.cmake"
       - "**.f90"
       - ".github/workflows/ci_mac.yml"
 
@@ -23,14 +25,9 @@ jobs:
     - uses: actions/setup-python@v1
       with:
         python-version: '3.x'
-# FIXME: need Meson 0.53 to have better MacOS HDF5 finding
-    - run: |
-        git clone https://github.com/mesonbuild/meson
-        pip install -e meson
-      working-directory: /tmp
 
     - run: pip install -r requirements.txt
-    - run: brew install pkg-config gcc hdf5
+    - run: brew install pkg-config gcc hdf5 ninja
 
     - run: meson setup build
       env:
@@ -38,8 +35,6 @@ jobs:
         CC: gcc-9
 
     - run: ninja -C build
-
-    # this catches configuration and build log
     - uses: actions/upload-artifact@v1
       if: failure()
       with:
