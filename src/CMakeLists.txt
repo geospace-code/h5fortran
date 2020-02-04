@@ -13,7 +13,3 @@ set_target_properties(h5fortran PROPERTIES
   ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 add_library(h5fortran::h5fortran ALIAS h5fortran)
-
-if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
-  include(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/install.cmake)
-endif()
