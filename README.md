@@ -32,7 +32,7 @@ as well as character (string) variables and attributes.
 Mismatched datatypes are coerced as per standard Fortran rules.
 For example, reading a float HDF5 variable into an integer Fortran variable:  42.3 => 42
 
-Tested on systems with HDF5 1.8 and 1.10 including:
+Tested on systems with HDF5 1.8, 1.10 and 1.12 including:
 
 * MacOS (homebrew)
 * Ubuntu 16.04 / 18.04 (gfortran 6 or newer)
