@@ -5,6 +5,8 @@
 FindHDF5
 --------
 
+backported from CMake 3.18
+
 Find Hierarchical Data Format (HDF5), a library for reading and writing
 self describing array data.
 
@@ -132,6 +134,7 @@ The following variable can be set to guide the search for HDF5 libraries and inc
 include(SelectLibraryConfigurations)
 include(FindPackageHandleStandardArgs)
 
+cmake_policy(PUSH)
 cmake_policy(SET CMP0074 NEW)
 
 # List of the valid HDF5 components
@@ -345,35 +348,46 @@ macro( _HDF5_invoke_compiler language output return_value version is_parallel)
     elseif("${language}" STREQUAL "Fortran")
         set(test_file ${scratch_dir}/cmake_hdf5_test.f90)
     endif()
+    # must test that compiler wrapper actually can compile--sometimes the compiler wrapper exists,
+    # but not the compiler.  E.g. Miniconda / Anaconda Python
     execute_process(
-      COMMAND ${HDF5_${language}_COMPILER_EXECUTABLE} -show ${lib_type_args} ${test_file}
-      OUTPUT_VARIABLE ${output}
-      ERROR_VARIABLE ${output}
+      COMMAND ${HDF5_${language}_COMPILER_EXECUTABLE} ${test_file}
       RESULT_VARIABLE ${return_value}
       )
     if(NOT ${${return_value}} EQUAL 0)
-        message(STATUS
-          "Unable to determine HDF5 ${language} flags from HDF5 wrapper.")
-    endif()
-    execute_process(
-      COMMAND ${HDF5_${language}_COMPILER_EXECUTABLE} -showconfig
-      OUTPUT_VARIABLE config_output
-      ERROR_VARIABLE config_output
-      RESULT_VARIABLE config_return
-      )
-    if(NOT ${return_value} EQUAL 0)
-        message( STATUS
-          "Unable to determine HDF5 ${language} version from HDF5 wrapper.")
-    endif()
-    string(REGEX MATCH "HDF5 Version: ([a-zA-Z0-9\\.\\-]*)" version_match "${config_output}")
-    if(version_match)
-        string(REPLACE "HDF5 Version: " "" ${version} "${version_match}")
-        string(REPLACE "-patch" "." ${version} "${${version}}")
-    endif()
-    if(config_output MATCHES "Parallel HDF5: yes")
-      set(${is_parallel} TRUE)
+      message(STATUS
+        "HDF5 ${language} compiler wrapper is unable to compile a minimal HDF5 program.")
     else()
-      set(${is_parallel} FALSE)
+      execute_process(
+        COMMAND ${HDF5_${language}_COMPILER_EXECUTABLE} -show ${lib_type_args} ${test_file}
+        OUTPUT_VARIABLE ${output}
+        ERROR_VARIABLE ${output}
+        RESULT_VARIABLE ${return_value}
+        )
+      if(NOT ${${return_value}} EQUAL 0)
+          message(STATUS
+            "Unable to determine HDF5 ${language} flags from HDF5 wrapper.")
+      endif()
+      execute_process(
+        COMMAND ${HDF5_${language}_COMPILER_EXECUTABLE} -showconfig
+        OUTPUT_VARIABLE config_output
+        ERROR_VARIABLE config_output
+        RESULT_VARIABLE config_return
+        )
+      if(NOT ${return_value} EQUAL 0)
+          message( STATUS
+            "Unable to determine HDF5 ${language} version from HDF5 wrapper.")
+      endif()
+      string(REGEX MATCH "HDF5 Version: ([a-zA-Z0-9\\.\\-]*)" version_match "${config_output}")
+      if(version_match)
+          string(REPLACE "HDF5 Version: " "" ${version} "${version_match}")
+          string(REPLACE "-patch" "." ${version} "${${version}}")
+      endif()
+      if(config_output MATCHES "Parallel HDF5: yes")
+        set(${is_parallel} TRUE)
+      else()
+        set(${is_parallel} FALSE)
+      endif()
     endif()
 endmacro()
 
@@ -461,13 +475,8 @@ function(_HDF5_select_imported_config target imported_conf)
 endfunction()
 
 
-if(NOT HDF5_ROOT)
-    set(HDF5_ROOT $ENV{HDF5_ROOT})
-endif()
-if(HDF5_ROOT)
-    set(_HDF5_SEARCH_OPTS NO_CMAKE_PATH NO_CMAKE_SYSTEM_PATH
-          NO_CMAKE_PACKAGE_REGISTRY NO_CMAKE_SYSTEM_PACKAGE_REGISTRY
-          NO_CMAKE_ENVIRONMENT_PATH NO_SYSTEM_ENVIRONMENT_PATH)
+if(HDF5_ROOT OR ENV{HDF5_ROOT})
+    set(_HDF5_SEARCH_OPTS NO_DEFAULT_PATH)
 else()
     set(_HDF5_SEARCH_OPTS)
 endif()
@@ -555,7 +564,7 @@ if(NOT HDF5_FOUND AND NOT HDF5_NO_FIND_PACKAGE_CONFIG_FILE)
     endif()
 endif()
 
-if(NOT HDF5_FOUND AND HDF5_SEARCH_WRAPPER)
+if(NOT HDF5_FOUND)
   set(_HDF5_NEED_TO_SEARCH False)
   set(HDF5_COMPILER_NO_INTERROGATE True)
   # Only search for languages we've enabled
@@ -578,6 +587,7 @@ if(NOT HDF5_FOUND AND HDF5_SEARCH_WRAPPER)
     else()
       continue()
     endif()
+
     if(HDF5_${__lang}_COMPILER_NO_INTERROGATE)
       message(STATUS "HDF5: Using hdf5 compiler wrapper for all ${__lang} compiling")
       set(HDF5_${__lang}_FOUND True)
@@ -766,12 +776,17 @@ if( NOT HDF5_FOUND )
     set(HDF5_CXX_HL_LIBRARY_NAMES     hdf5_hl_cpp ${HDF5_C_HL_LIBRARY_NAMES} ${HDF5_CXX_LIBRARY_NAMES})
 
     set(HDF5_Fortran_LIBRARY_NAMES    hdf5_fortran   ${HDF5_C_LIBRARY_NAMES})
-    set(HDF5_Fortran_HL_LIBRARY_NAMES hdf5_hl_fortran ${HDF5_C_HL_LIBRARY_NAMES} ${HDF5_Fortran_LIBRARY_NAMES})
+    set(HDF5_Fortran_HL_LIBRARY_NAMES hdf5hl_fortran ${HDF5_C_HL_LIBRARY_NAMES} ${HDF5_Fortran_LIBRARY_NAMES})
 
+    # suffixes as seen on Linux, MSYS2, ...
+    set(_lib_suffixes hdf5)
+    if(NOT HDF5_PREFER_PARALLEL)
+      list(APPEND _lib_suffixes hdf5/serial)
+    endif()
     if(HDF5_USE_STATIC_LIBRARIES)
-      set(_path_suffixes include/static)
+      set(_inc_suffixes include/static)
     else()
-      set(_path_suffixes include/shared)
+      set(_inc_suffixes include/shared)
     endif()
 
     foreach(__lang IN LISTS HDF5_LANGUAGE_BINDINGS)
@@ -786,7 +801,7 @@ if( NOT HDF5_FOUND )
 
         find_path(HDF5_${__lang}_INCLUDE_DIR ${HDF5_INCLUDE_FILENAME}
             PATHS $ENV{HOME}/.local/include
-            PATH_SUFFIXES include Include ${_path_suffixes}
+            PATH_SUFFIXES include Include ${_inc_suffixes} ${_lib_suffixes}
             ${_HDF5_SEARCH_OPTS}
         )
         mark_as_advanced(HDF5_${__lang}_INCLUDE_DIR)
@@ -815,22 +830,14 @@ if( NOT HDF5_FOUND )
             endif()
             find_library(HDF5_${LIB}_LIBRARY_DEBUG
                 NAMES ${THIS_LIBRARY_SEARCH_DEBUG}
-                PATH_SUFFIXES lib Lib
+                PATH_SUFFIXES lib Lib ${_lib_suffixes}
                 ${_HDF5_SEARCH_OPTS}
             )
-            find_library( HDF5_${LIB}_LIBRARY_RELEASE
+            find_library(HDF5_${LIB}_LIBRARY_RELEASE
                 NAMES ${THIS_LIBRARY_SEARCH_RELEASE}
-                PATH_SUFFIXES lib Lib
+                PATH_SUFFIXES lib Lib ${_lib_suffixes}
                 ${_HDF5_SEARCH_OPTS}
             )
-            # patch for HDF5 1.10.6 name change
-            if(NOT HDF5_${LIB}_LIBRARY_RELEASE AND (LIB STREQUAL hdf5_hl_fortran))
-              find_library( HDF5_${LIB}_LIBRARY_RELEASE
-                  NAMES hdf5hl_fortran hdf5hl_fortran-shared
-                  PATH_SUFFIXES lib Lib
-                  ${_HDF5_SEARCH_OPTS}
-              )
-            endif()
 
             select_library_configurations( HDF5_${LIB} )
             list(APPEND HDF5_${__lang}_LIBRARIES ${HDF5_${LIB}_LIBRARY})
@@ -861,14 +868,15 @@ if( NOT HDF5_FOUND )
                 endif()
                 find_library(HDF5_${LIB}_LIBRARY_DEBUG
                     NAMES ${THIS_LIBRARY_SEARCH_DEBUG}
-                    PATH_SUFFIXES lib Lib
+                    PATH_SUFFIXES lib Lib ${_lib_suffixes}
                     ${_HDF5_SEARCH_OPTS}
                 )
-                find_library( HDF5_${LIB}_LIBRARY_RELEASE
+                find_library(HDF5_${LIB}_LIBRARY_RELEASE
                     NAMES ${THIS_LIBRARY_SEARCH_RELEASE}
-                    PATH_SUFFIXES lib Lib
+                    PATH_SUFFIXES lib Lib ${_lib_suffixes}
                     ${_HDF5_SEARCH_OPTS}
                 )
+
                 select_library_configurations( HDF5_${LIB} )
                 list(APPEND HDF5_${__lang}_HL_LIBRARIES ${HDF5_${LIB}_LIBRARY})
             endforeach()
@@ -969,3 +977,5 @@ if (HDF5_FIND_DEBUG)
     message(STATUS "HDF5_${__lang}_HL_LIBRARIES: ${HDF5_${__lang}_HL_LIBRARIES}")
   endforeach()
 endif()
+
+cmake_policy(POP)

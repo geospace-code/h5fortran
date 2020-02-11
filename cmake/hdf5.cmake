@@ -1,6 +1,5 @@
 # don't enclose this all in "if(NOT DEFINED HDF5OK)" because CMake intermittantly doesn't cache needed HDF5 variables.
 
-set(HDF5_SEARCH_WRAPPER true)
 set(HDF5_USE_STATIC_LIBRARIES true)
 
 # Intel HDF5 for Windows has some real issues from the factory, this makes it work:
@@ -9,8 +8,6 @@ if(WIN32 AND CMAKE_Fortran_COMPILER_ID STREQUAL Intel)
   set(HDF5_SEARCH_WRAPPER false)
   set(HDF5_USE_STATIC_LIBRARIES false)
 endif()
-
-# set(HDF5_FIND_DEBUG true)
 
 find_package(HDF5 REQUIRED COMPONENTS Fortran HL)
 if(MINGW)
