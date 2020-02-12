@@ -3,8 +3,8 @@ if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release CACHE STRING "Debug or Release")
 endif()
 project(h5fortran
-  LANGUAGES Fortran
-  VERSION 2.5.3
+  LANGUAGES C Fortran
+  VERSION 2.5.4
   DESCRIPTION "thin, light, easy HDF5 Fortran interface"
   HOMEPAGE_URL https://github.com/scivision/h5fortran)
 enable_testing()

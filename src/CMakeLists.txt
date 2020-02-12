@@ -7,7 +7,6 @@ target_include_directories(h5fortran PRIVATE ${HDF5_INCLUDE_DIRS}
   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 target_link_libraries(h5fortran PRIVATE ${HDF5_LIBRARIES})
-target_compile_options(h5fortran PRIVATE ${HDF5_Fortran_DEFINITIONS})
 set_target_properties(h5fortran PROPERTIES
   Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include
   ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
