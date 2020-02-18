@@ -21,20 +21,18 @@ The module will optionally accept the ``COMPONENTS`` argument.  If no
 ``COMPONENTS`` are specified, then the find module will default to finding
 only the ``HDF5`` C library.  If one or more ``COMPONENTS`` are specified, the
 module will attempt to find the language bindings for the specified
-components.  The only valid components are ``C``, ``CXX``, ``Fortran``, ``HL``,
-and ``Fortran_HL``.  If the ``COMPONENTS`` argument is not given, the module will
+components.  The valid components are ``C``, ``CXX``, ``Fortran``, ``HL``.
+``HL`` refers to the "high-level" HDF5 functions for C and Fortran.
+If the ``COMPONENTS`` argument is not given, the module will
 attempt to find only the C bindings.
+For example, to use Fortran HDF5 and HDF5-HL functions, do:
+``find_package(HDF5 COMPONENTS Fortran HL)``.
 
 This module will read the variable
 ``HDF5_USE_STATIC_LIBRARIES`` to determine whether or not to prefer a
 static link to a dynamic link for ``HDF5`` and all of it's dependencies.
 To use this feature, make sure that the ``HDF5_USE_STATIC_LIBRARIES``
 variable is set before the call to find_package.
-
-To provide the module with a hint about where to find your ``HDF5``
-installation, you can set the environment variable ``HDF5_ROOT``.  The
-Find module will then look in this path when searching for ``HDF5``
-executables, paths, and libraries.
 
 Both the serial and parallel ``HDF5`` wrappers are considered and the first
 directory to contain either one will be used.  In the event that both appear
@@ -117,10 +115,10 @@ also be defined.  With all components enabled, the following variables will be d
 Hints
 ^^^^^
 
-The following variable can be set to guide the search for HDF5 libraries and includes:
+The following variables can be set to guide the search for HDF5 libraries and includes:
 
-``HDF5_ROOT``
-  Specify the path to the HDF5 installation to use.
+``HDF5_PREFER_PARALLEL``
+  set ``true`` to prefer parallel HDF5 (by default, serial is preferred)
 
 ``HDF5_FIND_DEBUG``
   Set ``true`` to get extra debugging output.
@@ -133,9 +131,6 @@ The following variable can be set to guide the search for HDF5 libraries and inc
 
 include(SelectLibraryConfigurations)
 include(FindPackageHandleStandardArgs)
-
-cmake_policy(PUSH)
-cmake_policy(SET CMP0074 NEW)
 
 # List of the valid HDF5 components
 set(HDF5_VALID_LANGUAGE_BINDINGS C CXX Fortran)
@@ -348,8 +343,8 @@ macro( _HDF5_invoke_compiler language output return_value version is_parallel)
     elseif("${language}" STREQUAL "Fortran")
         set(test_file ${scratch_dir}/cmake_hdf5_test.f90)
     endif()
-    # must test that compiler wrapper actually can compile--sometimes the compiler wrapper exists,
-    # but not the compiler.  E.g. Miniconda / Anaconda Python
+    # Verify that the compiler wrapper can actually compile: sometimes the compiler
+    # wrapper exists, but not the compiler.  E.g. Miniconda / Anaconda Python
     execute_process(
       COMMAND ${HDF5_${language}_COMPILER_EXECUTABLE} ${test_file}
       RESULT_VARIABLE ${return_value}
@@ -457,15 +452,12 @@ function(_HDF5_select_imported_config target imported_conf)
             message(STATUS "Start search through imported configurations in the following order: ${_preferred_confs}")
         endif()
         # Now find the first of these that is present in imported_conf
-        cmake_policy(PUSH)
-        cmake_policy(SET CMP0057 NEW) # support IN_LISTS
         foreach (_conf IN LISTS _preferred_confs)
             if (${_conf} IN_LIST _imported_conf)
                set(_imported_conf ${_conf})
                break()
             endif()
         endforeach()
-        cmake_policy(POP)
     endif()
     if(HDF5_FIND_DEBUG)
         message(STATUS "Selected imported configuration: ${_imported_conf}")
@@ -977,5 +969,3 @@ if (HDF5_FIND_DEBUG)
     message(STATUS "HDF5_${__lang}_HL_LIBRARIES: ${HDF5_${__lang}_HL_LIBRARIES}")
   endforeach()
 endif()
-
-cmake_policy(POP)
