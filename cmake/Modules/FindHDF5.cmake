@@ -466,13 +466,6 @@ function(_HDF5_select_imported_config target imported_conf)
     set(${imported_conf} ${_imported_conf} PARENT_SCOPE)
 endfunction()
 
-
-if(HDF5_ROOT OR ENV{HDF5_ROOT})
-    set(_HDF5_SEARCH_OPTS NO_DEFAULT_PATH)
-else()
-    set(_HDF5_SEARCH_OPTS)
-endif()
-
 # Try to find HDF5 using an installed hdf5-config.cmake
 if(NOT HDF5_FOUND AND NOT HDF5_NO_FIND_PACKAGE_CONFIG_FILE)
     find_package(HDF5 QUIET NO_MODULE
@@ -863,11 +856,24 @@ if( NOT HDF5_FOUND )
                     PATH_SUFFIXES lib Lib ${_lib_suffixes}
                     ${_HDF5_SEARCH_OPTS}
                 )
+
+                # Fix for libhdf_hl_fortran in 1.10.6, needed for Windows specifically
+                if("hdf5hl_fortran" IN_LIST THIS_LIBRARY_SEARCH_RELEASE)
+                  list(APPEND THIS_LIBRARY_SEARCH_RELEASE hdf5_hl_fortran)
+                endif()
+                # message(CHECK_START "looking for: ${THIS_LIBRARY_SEARCH_RELEASE}")
+
                 find_library(HDF5_${LIB}_LIBRARY_RELEASE
                     NAMES ${THIS_LIBRARY_SEARCH_RELEASE}
                     PATH_SUFFIXES lib Lib ${_lib_suffixes}
                     ${_HDF5_SEARCH_OPTS}
                 )
+
+                # if(HDF5_${LIB}_LIBRARY_RELEASE)
+                #   message(CHECK_PASS "found")
+                # else()
+                #   message(CHECK_FAIL "not found")
+                # endif()
 
                 select_library_configurations( HDF5_${LIB} )
                 list(APPEND HDF5_${__lang}_HL_LIBRARIES ${HDF5_${LIB}_LIBRARY})
