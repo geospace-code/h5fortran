@@ -1,10 +1,10 @@
-cmake_minimum_required (VERSION 3.12)  # 3.12 for Fortran submodule
+cmake_minimum_required (VERSION 3.13)  # 3.13 for target_sources() absolute
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release CACHE STRING "Debug or Release")
 endif()
 project(h5fortran
   LANGUAGES C Fortran
-  VERSION 2.5.4
+  VERSION 2.5.5
   DESCRIPTION "thin, light, easy HDF5 Fortran interface"
   HOMEPAGE_URL https://github.com/scivision/h5fortran)
 enable_testing()
@@ -21,10 +21,23 @@ set(CTEST_TEST_TIMEOUT 15)
 
 # --- build
 
+add_library(h5fortran)
+target_include_directories(h5fortran
+  PRIVATE ${HDF5_INCLUDE_DIRS}
+  INTERFACE
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+target_link_libraries(h5fortran PRIVATE ${HDF5_LIBRARIES})
+set_target_properties(h5fortran PROPERTIES Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include)
+add_library(h5fortran::h5fortran ALIAS h5fortran)
+
 add_subdirectory(src)
 
-add_subdirectory(src/tests)
+if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+  add_subdirectory(src/tests)
+endif()
 
+# --- install
 if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
   include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/install.cmake)
 endif()

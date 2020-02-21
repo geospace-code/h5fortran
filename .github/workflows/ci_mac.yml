@@ -21,7 +21,7 @@ jobs:
   macMeson:
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - uses: actions/setup-python@v1
       with:
         python-version: '3.x'
@@ -51,14 +51,14 @@ jobs:
   macCmake:
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - run: brew install pkg-config gcc hdf5
     - run: cmake -B build
       env:
         FC: gfortran-9
         CC: gcc-9
-    - run: cmake --build build --parallel
 
+    - run: cmake --build build --parallel
     - uses: actions/upload-artifact@v1
       if: failure()
       with:
@@ -67,7 +67,6 @@ jobs:
 
     - run: ctest -V
       working-directory: build
-
     - uses: actions/upload-artifact@v1
       if: failure()
       with:
