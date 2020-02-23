@@ -1,7 +1,7 @@
 module test_array
 
 use, intrinsic:: ieee_arithmetic, only: ieee_value, ieee_quiet_nan, ieee_is_nan
-use, intrinsic :: iso_fortran_env, only: real32, real64, int32, int64
+use, intrinsic :: iso_fortran_env, only: real32, real64, int32
 use h5fortran, only : hdf5_file, hsize_t
 
 implicit none
@@ -15,7 +15,6 @@ subroutine test_write_array(path)
 type(hdf5_file) :: h5f
 character(*), intent(in) :: path
 integer(int32), dimension(4,4) :: i2, i2t
-integer(int64), dimension(4,4) :: i2t64
 integer(HSIZE_T), allocatable :: dims(:)
 real(real32), allocatable :: rr2(:,:)
 real(real32)  ::  nant,  r2(4,4)
@@ -42,8 +41,6 @@ call h5f%initialize(path//'/test.h5', ierr, status='old',action='rw',comp_lvl=1,
 if(ierr/=0) error stop 'initialize'
 call h5f%write('/test/group2/ai2', i2, ierr)
 if(ierr/=0) error stop 'write 2-D: int32'
-call h5f%write('/test/group2/ai2_64', int(i2, int64), ierr)
-if(ierr/=0) error stop 'write 2-D: int64'
 call h5f%write('/test/real2', r2, ierr)
 if(ierr/=0) error stop 'write 2-D: real32'
 call h5f%write('/nan', nan, ierr)
@@ -54,6 +51,7 @@ if (ierr /= 0) error stop 'write finalize'
 call h5f%initialize(path//'/test.h5', ierr,status='old',action='r')
 
 ! --- int32
+
 call h5f%read('/test/group2/ai2',i2t, ierr)
 if (.not.all(i2==i2t)) error stop 'read 2-D: int32 does not match write'
 
@@ -61,11 +59,6 @@ if (.not.all(i2==i2t)) error stop 'read 2-D: int32 does not match write'
 i2_8 = 0
 call h5f%read('/test/group2/ai2', i2_8(2:5,3:6), ierr)
 if (.not.all(i2_8(2:5,3:6) == i2)) error stop 'read into larger array fail'
-
-! --- int64
-
-call h5f%read('/test/group2/ai2_64',i2t64, ierr)
-if (.not.all(i2==i2t64)) error stop 'read 2-D: int64 does not match write'
 
 ! --- real
 

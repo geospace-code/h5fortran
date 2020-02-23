@@ -1,5 +1,9 @@
-!! This submodule is for reading 0-D..7-D data
 submodule (h5fortran:read) reader
+!! This submodule is for reading 0-D..7-D data
+!! NOTE:
+!! Because of C interface to HDF5, anytime an array is read, we need
+!! to use "buf" variable.
+!! Even intent(inout) doesn't help without separate "buf" variable
 
 use hdf5, only: HSIZE_T, SIZE_T, H5_REAL_KIND, H5_INTEGER_KIND, H5KIND_TO_TYPE
 use H5LT, only: h5ltpath_valid_f
@@ -11,25 +15,14 @@ contains
 module procedure hdf_read_scalar
 
 integer(HSIZE_T) :: dims(rank(value))
-logical :: exists
+
+if (.not.self%exist(dname, ierr)) return
 
 select type (value)
 type is (character(*))
-  call h5ltpath_valid_f(self%lid, dname, .true., exists, ierr)
-  if (.not.exists) then
-    write(stderr,*) 'ERROR: ' // dname // ' does not exist in ' // self%filename
-    ierr = -1
-    return
-  endif
   block
-    !! Need to use "buf" variable, even intent(inout) doesn't help without
-    !! separate "buf" variable
     character(len(value)) :: buf
     call h5ltread_dataset_string_f(self%lid, dname, buf, ierr)
-    if (ierr /= 0)  then
-      write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
-      return
-    endif
     value = buf
   end block
   return
@@ -39,10 +32,8 @@ type is (real(real32))
   call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
 type is (integer(int32))
   call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
-type is (integer(int64))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
   ierr = -1
 end select
 
@@ -60,15 +51,25 @@ if (ierr /= 0) return
 
 select type (value)
 type is (real(real64))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
+block
+  real(real64) :: buf(dims(1))
+  call h5ltread_dataset_double_f(self%lid, dname, buf, dims, ierr)
+  value = buf
+  end block
 type is (real(real32))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
+  block
+  real(real32) :: buf(dims(1))
+  call h5ltread_dataset_float_f(self%lid, dname, buf, dims, ierr)
+  value = buf
+  end block
 type is (integer(int32))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
-type is (integer(int64))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
+  block
+  integer(int32) :: buf(dims(1))
+  call h5ltread_dataset_int_f(self%lid, dname, buf, dims, ierr)
+  value = buf
+  end block
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
   ierr = -1
 end select
 
@@ -86,15 +87,25 @@ if (ierr /= 0) return
 
 select type (value)
 type is (real(real64))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
+  block
+  real(real64) :: buf(dims(1), dims(2))
+  call h5ltread_dataset_double_f(self%lid, dname, buf, dims, ierr)
+  value = buf
+  end block
 type is (real(real32))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
+  block
+  real(real32) :: buf(dims(1), dims(2))
+  call h5ltread_dataset_float_f(self%lid, dname, buf, dims, ierr)
+  value = buf
+  end block
 type is (integer(int32))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
-type is (integer(int64))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
+  block
+  integer(int32) :: buf(dims(1), dims(2))
+  call h5ltread_dataset_int_f(self%lid, dname, buf, dims, ierr)
+  value = buf
+  end block
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
   ierr = -1
 end select
 
@@ -112,15 +123,25 @@ if (ierr /= 0) return
 
 select type (value)
 type is (real(real64))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
+  block
+  real(real64) :: buf(dims(1), dims(2), dims(3))
+  call h5ltread_dataset_double_f(self%lid, dname, buf, dims, ierr)
+  value = buf
+  end block
 type is (real(real32))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
+  block
+  real(real32) :: buf(dims(1), dims(2), dims(3))
+  call h5ltread_dataset_float_f(self%lid, dname, buf, dims, ierr)
+  value = buf
+  end block
 type is (integer(int32))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
-type is (integer(int64))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
+  block
+  integer(int32) :: buf(dims(1), dims(2), dims(3))
+  call h5ltread_dataset_int_f(self%lid, dname, buf, dims, ierr)
+  value = buf
+  end block
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
   ierr = -1
 end select
 
@@ -138,15 +159,25 @@ if (ierr /= 0) return
 
 select type (value)
 type is (real(real64))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
+  block
+  real(real64) :: buf(dims(1), dims(2), dims(3), dims(4))
+  call h5ltread_dataset_double_f(self%lid, dname, buf, dims, ierr)
+  value = buf
+  end block
 type is (real(real32))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
+  block
+  real(real32) :: buf(dims(1), dims(2), dims(3), dims(4))
+  call h5ltread_dataset_float_f(self%lid, dname, buf, dims, ierr)
+  value = buf
+  end block
 type is (integer(int32))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
-type is (integer(int64))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
+  block
+  integer(int32) :: buf(dims(1), dims(2), dims(3), dims(4))
+  call h5ltread_dataset_int_f(self%lid, dname, buf, dims, ierr)
+  value = buf
+  end block
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
   ierr = -1
 end select
 
@@ -164,15 +195,25 @@ if (ierr /= 0) return
 
 select type (value)
 type is (real(real64))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
+  block
+  real(real64) :: buf(dims(1), dims(2), dims(3), dims(4), dims(5))
+  call h5ltread_dataset_double_f(self%lid, dname, buf, dims, ierr)
+  value = buf
+  end block
 type is (real(real32))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
+  block
+  real(real32) :: buf(dims(1), dims(2), dims(3), dims(4), dims(5))
+  call h5ltread_dataset_float_f(self%lid, dname, buf, dims, ierr)
+  value = buf
+  end block
 type is (integer(int32))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
-type is (integer(int64))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
+  block
+  integer(int32) :: buf(dims(1), dims(2), dims(3), dims(4), dims(5))
+  call h5ltread_dataset_int_f(self%lid, dname, buf, dims, ierr)
+  value = buf
+  end block
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
   ierr = -1
 end select
 
@@ -190,15 +231,25 @@ if (ierr /= 0) return
 
 select type (value)
 type is (real(real64))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
+  block
+  real(real64) :: buf(dims(1), dims(2), dims(3), dims(4), dims(5), dims(6))
+  call h5ltread_dataset_double_f(self%lid, dname, buf, dims, ierr)
+  value = buf
+  end block
 type is (real(real32))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
+  block
+  real(real32) :: buf(dims(1), dims(2), dims(3), dims(4), dims(5), dims(6))
+  call h5ltread_dataset_float_f(self%lid, dname, buf, dims, ierr)
+  value = buf
+  end block
 type is (integer(int32))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
-type is (integer(int64))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
+  block
+  integer(int32) :: buf(dims(1), dims(2), dims(3), dims(4), dims(5), dims(6))
+  call h5ltread_dataset_int_f(self%lid, dname, buf, dims, ierr)
+  value = buf
+  end block
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
   ierr = -1
 end select
 
@@ -216,15 +267,25 @@ if (ierr /= 0) return
 
 select type (value)
 type is (real(real64))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
+  block
+  real(real64) :: buf(dims(1), dims(2), dims(3), dims(4), dims(5), dims(6), dims(7))
+  call h5ltread_dataset_double_f(self%lid, dname, buf, dims, ierr)
+  value = buf
+  end block
 type is (real(real32))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
+  block
+  real(real32) :: buf(dims(1), dims(2), dims(3), dims(4), dims(5), dims(6), dims(7))
+  call h5ltread_dataset_float_f(self%lid, dname, buf, dims, ierr)
+  value = buf
+  end block
 type is (integer(int32))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
-type is (integer(int64))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
+  block
+  integer(int32) :: buf(dims(1), dims(2), dims(3), dims(4), dims(5), dims(6), dims(7))
+  call h5ltread_dataset_int_f(self%lid, dname, buf, dims, ierr)
+  value = buf
+  end block
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
   ierr = -1
 end select
 
@@ -247,12 +308,10 @@ type is (real(real64))
   call h%read(dname, value, ier)
 type is (real(real32))
   call h%read(dname, value, ier)
-type is (integer(int64))
-  call h%read(dname, value, ier)
 type is (integer(int32))
   call h%read(dname, value, ier)
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
   ier = -1
 end select
 if (check(ier, 'ERROR: ' // dname // ' read_lt ' // filename))  return
@@ -277,12 +336,10 @@ type is (real(real64))
   call h%read(dname, value, ier)
 type is (real(real32))
   call h%read(dname, value, ier)
-type is (integer(int64))
-  call h%read(dname, value, ier)
 type is (integer(int32))
   call h%read(dname, value, ier)
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
   ier = -1
 end select
 if (check(ier, 'ERROR: ' // dname // ' read_lt ' // filename))  return
@@ -307,12 +364,10 @@ type is (real(real64))
   call h%read(dname, value, ier)
 type is (real(real32))
   call h%read(dname, value, ier)
-type is (integer(int64))
-  call h%read(dname, value, ier)
 type is (integer(int32))
   call h%read(dname, value, ier)
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
   ier = -1
 end select
 if (check(ier, 'ERROR: ' // dname // ' read_lt ' // filename))  return
@@ -337,12 +392,10 @@ type is (real(real64))
   call h%read(dname, value, ier)
 type is (real(real32))
   call h%read(dname, value, ier)
-type is (integer(int64))
-  call h%read(dname, value, ier)
 type is (integer(int32))
   call h%read(dname, value, ier)
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
   ier = -1
 end select
 if (check(ier, 'ERROR: ' // dname // ' read_lt ' // filename))  return
@@ -367,12 +420,10 @@ type is (real(real64))
   call h%read(dname, value, ier)
 type is (real(real32))
   call h%read(dname, value, ier)
-type is (integer(int64))
-  call h%read(dname, value, ier)
 type is (integer(int32))
   call h%read(dname, value, ier)
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
   ier = -1
 end select
 if (check(ier, 'ERROR: ' // dname // ' read_lt ' // filename))  return
@@ -397,12 +448,10 @@ type is (real(real64))
   call h%read(dname, value, ier)
 type is (real(real32))
   call h%read(dname, value, ier)
-type is (integer(int64))
-  call h%read(dname, value, ier)
 type is (integer(int32))
   call h%read(dname, value, ier)
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
   ier = -1
 end select
 if (check(ier, 'ERROR: ' // dname // ' read_lt ' // filename))  return
@@ -427,12 +476,10 @@ type is (real(real64))
   call h%read(dname, value, ier)
 type is (real(real32))
   call h%read(dname, value, ier)
-type is (integer(int64))
-  call h%read(dname, value, ier)
 type is (integer(int32))
   call h%read(dname, value, ier)
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
   ier = -1
 end select
 if (check(ier, 'ERROR: ' // dname // ' read_lt ' // filename))  return
@@ -457,12 +504,10 @@ type is (real(real64))
   call h%read(dname, value, ier)
 type is (real(real32))
   call h%read(dname, value, ier)
-type is (integer(int64))
-  call h%read(dname, value, ier)
 type is (integer(int32))
   call h%read(dname, value, ier)
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
   ier = -1
 end select
 if (check(ier, 'ERROR: ' // dname // ' read_lt ' // filename))  return

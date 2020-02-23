@@ -1,6 +1,6 @@
 !! unit tests and registration tests of HDF5 OO interface
 use, intrinsic:: ieee_arithmetic, only: ieee_value, ieee_quiet_nan, ieee_is_nan
-use, intrinsic:: iso_fortran_env, only: int64, int32, real32, real64, stderr=>error_unit
+use, intrinsic:: iso_fortran_env, only: int32, real32, real64, stderr=>error_unit
 use, intrinsic:: iso_c_binding, only: c_null_char
 use h5fortran, only: hdf5_file, toLower, strip_trailing_null, truncate_string_null, HSIZE_T, h5write, h5read
 use test_lt, only : test_readwrite_lt
@@ -153,8 +153,6 @@ call h5f%open('/test', ierr)
 if (ierr /= 0) error stop 'open group'
 call h5f%write('group3/scalar', 1_int32, ierr)
 if (ierr /= 0) error stop 'write 0-D: int32'
-call h5f%write('group3/scalar64', 1_int64, ierr)
-if (ierr /= 0) error stop 'write 0-D: int64'
 call h5f%write('group3/scalar_real', 1._real32, ierr)
 if (ierr /= 0) error stop 'write 0-D: real32'
 call h5f%close(ierr)

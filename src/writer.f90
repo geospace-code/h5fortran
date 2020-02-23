@@ -32,11 +32,6 @@ type is (integer(int32))
   call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr)
   if (ierr /= 0) return
   call h5dwrite_f(did, dtype, value, dims, ierr)
-type is (integer(int64))
-  dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
-  call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr)
-  if (ierr /= 0) return
-  call h5dwrite_f(did, dtype, value, dims, ierr)
 class default
   write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
   ierr = -1
@@ -67,12 +62,6 @@ type is (real(real32))
   if (ierr /= 0) return
   call h5dwrite_f(did, dtype, value, dims, ierr)
 type is (integer(int32))
-  dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
-  dims = shape(value)
-  call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr)
-  if (ierr /= 0) return
-  call h5dwrite_f(did, dtype, value, dims, ierr)
-type is (integer(int64))
   dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
   dims = shape(value)
   call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr)
@@ -113,12 +102,6 @@ type is (integer(int32))
   call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr, chunk_size)
   if (ierr /= 0) return
   call h5dwrite_f(did, dtype, value, dims, ierr)
-type is (integer(int64))
-  dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
-  dims = shape(value)
-  call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr, chunk_size)
-  if (ierr /= 0) return
-  call h5dwrite_f(did, dtype, value, dims, ierr)
 class default
   write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
   ierr = -1
@@ -149,12 +132,6 @@ type is (real(real32))
   if (ierr /= 0) return
   call h5dwrite_f(did, dtype, value, dims, ierr)
 type is (integer(int32))
-  dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
-  dims = shape(value)
-  call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr, chunk_size)
-  if (ierr /= 0) return
-  call h5dwrite_f(did, dtype, value, dims, ierr)
-type is (integer(int64))
   dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
   dims = shape(value)
   call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr, chunk_size)
@@ -195,12 +172,6 @@ type is (integer(int32))
   call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr, chunk_size)
   if (ierr /= 0) return
   call h5dwrite_f(did, dtype, value, dims, ierr)
-type is (integer(int64))
-  dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
-  dims = shape(value)
-  call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr, chunk_size)
-  if (ierr /= 0) return
-  call h5dwrite_f(did, dtype, value, dims, ierr)
 class default
   write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
   ierr = -1
@@ -231,12 +202,6 @@ type is (real(real32))
   if (ierr /= 0) return
   call h5dwrite_f(did, dtype, value, dims, ierr)
 type is (integer(int32))
-  dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
-  dims = shape(value)
-  call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr, chunk_size)
-  if (ierr /= 0) return
-  call h5dwrite_f(did, dtype, value, dims, ierr)
-type is (integer(int64))
   dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
   dims = shape(value)
   call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr, chunk_size)
@@ -277,12 +242,6 @@ type is (integer(int32))
   call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr, chunk_size)
   if (ierr /= 0) return
   call h5dwrite_f(did, dtype, value, dims, ierr)
-type is (integer(int64))
-  dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
-  dims = shape(value)
-  call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr, chunk_size)
-  if (ierr /= 0) return
-  call h5dwrite_f(did, dtype, value, dims, ierr)
 class default
   write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
   ierr = -1
@@ -318,12 +277,6 @@ type is (integer(int32))
   call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr, chunk_size)
   if (ierr /= 0) return
   call h5dwrite_f(did, dtype, value, dims, ierr)
-type is (integer(int64))
-  dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
-  dims = shape(value)
-  call hdf_setup_write(self,dname,dtype,dims,sid,did, ierr, chunk_size)
-  if (ierr /= 0) return
-  call h5dwrite_f(did, dtype, value, dims, ierr)
 class default
   write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
   ierr = -1
@@ -349,8 +302,7 @@ type is (real(real64))
   call h%write(dname, value, ier)
 type is (real(real32))
   call h%write(dname, value, ier)
-type is (integer(int64))
-  call h%write(dname, value, ier)
+
 type is (integer(int32))
   call h%write(dname, value, ier)
 class default
@@ -379,8 +331,7 @@ type is (real(real64))
   call h%write(dname, value, ier)
 type is (real(real32))
   call h%write(dname, value, ier)
-type is (integer(int64))
-  call h%write(dname, value, ier)
+
 type is (integer(int32))
   call h%write(dname, value, ier)
 class default
@@ -409,8 +360,7 @@ type is (real(real64))
   call h%write(dname, value, ier)
 type is (real(real32))
   call h%write(dname, value, ier)
-type is (integer(int64))
-  call h%write(dname, value, ier)
+
 type is (integer(int32))
   call h%write(dname, value, ier)
 class default
@@ -439,8 +389,7 @@ type is (real(real64))
   call h%write(dname, value, ier)
 type is (real(real32))
   call h%write(dname, value, ier)
-type is (integer(int64))
-  call h%write(dname, value, ier)
+
 type is (integer(int32))
   call h%write(dname, value, ier)
 class default
@@ -468,8 +417,6 @@ select type (value)
 type is (real(real64))
   call h%write(dname, value, ier)
 type is (real(real32))
-  call h%write(dname, value, ier)
-type is (integer(int64))
   call h%write(dname, value, ier)
 type is (integer(int32))
   call h%write(dname, value, ier)
@@ -499,8 +446,6 @@ type is (real(real64))
   call h%write(dname, value, ier)
 type is (real(real32))
   call h%write(dname, value, ier)
-type is (integer(int64))
-  call h%write(dname, value, ier)
 type is (integer(int32))
   call h%write(dname, value, ier)
 class default
@@ -529,8 +474,7 @@ type is (real(real64))
   call h%write(dname, value, ier)
 type is (real(real32))
   call h%write(dname, value, ier)
-type is (integer(int64))
-  call h%write(dname, value, ier)
+
 type is (integer(int32))
   call h%write(dname, value, ier)
 class default
@@ -558,8 +502,6 @@ select type (value)
 type is (real(real64))
   call h%write(dname, value, ier)
 type is (real(real32))
-  call h%write(dname, value, ier)
-type is (integer(int64))
   call h%write(dname, value, ier)
 type is (integer(int32))
   call h%write(dname, value, ier)

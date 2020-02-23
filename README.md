@@ -2,11 +2,11 @@
 
 [![DOI](https://zenodo.org/badge/128736984.svg)](https://zenodo.org/badge/latestdoi/128736984)
 
-[![Actions Status](https://github.com/scivision/h5fortran/workflows/ci_linux/badge.svg)](https://github.com/scivision/h5fortran/actions)
-[![Actions Status](https://github.com/scivision/h5fortran/workflows/ci_mac/badge.svg)](https://github.com/scivision/h5fortran/actions)
+![ci_linux](https://github.com/scivision/h5fortran/workflows/ci_linux/badge.svg)
+![ci_mac](https://github.com/scivision/h5fortran/workflows/ci_mac/badge.svg)
 
 Simple, robust, thin HDF5 polymorphic read/write interface.
-Reading or writing {real64,real32,int64,int32} from scalar to 7d is as simple as
+Reading or writing {real64,real32,int32} from scalar to 7d is as simple as
 
 ```fortran
 use h5fortran
@@ -23,7 +23,7 @@ Uses Fortran 2008 `submodule` for clean template structure.
 This easy-to-use, thin object-oriented modern Fortran library abstracts away the messy parts of HDF5 so that you can read/write various types/ranks of data with a single command.
 In distinction from other high-level HDF5 interfaces, h5fortran works to deduplicate code, using polymorphism wherever feasible and extensive test suite.
 
-Polymorphic API with read/write for types int32, int64, real32, real64 with rank:
+Polymorphic API with read/write for types int32, real32, real64 with rank:
 
 * scalar (0-D)
 * 1-D .. 7-D

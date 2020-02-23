@@ -1,8 +1,8 @@
 !! unit tests and registration tests of HDF5 deflate compression write
-use, intrinsic:: iso_fortran_env, only: int64, int32, real32, real64, stderr=>error_unit
+use, intrinsic:: iso_fortran_env, only: int32, real32, real64, stderr=>error_unit
 use, intrinsic:: iso_c_binding, only: c_null_char
 use h5fortran, only: hdf5_file, toLower, strip_trailing_null, truncate_string_null
-use hdf5, only: H5D_CHUNKED_F, H5D_CONTIGUOUS_F
+use hdf5, only: H5D_CHUNKED_F, H5D_CONTIGUOUS_F, hsize_t
 
 implicit none
 
@@ -28,8 +28,8 @@ contains
 subroutine test_hdf5_deflate(path)
 type(hdf5_file) :: h5f
 character(*), intent(in) :: path
-integer(int64), parameter :: N=1000
-integer(int64) :: crat, chunk_size(7)
+integer(hsize_t), parameter :: N=1000
+integer(hsize_t) :: crat, chunk_size(7)
 integer ::  fsize, layout
 
 integer :: ibig2(N,N) = 0, ibig3(N,N,4) = 0
