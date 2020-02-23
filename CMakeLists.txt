@@ -4,7 +4,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 project(h5fortran
   LANGUAGES C Fortran
-  VERSION 2.5.5
+  VERSION 2.5.6
   DESCRIPTION "thin, light, easy HDF5 Fortran interface"
   HOMEPAGE_URL https://github.com/scivision/h5fortran)
 enable_testing()
@@ -16,6 +16,14 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/compilers.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/hdf5.cmake)
+
+if(NOT HDF5OK)
+  message(STATUS "HDF5 library not working with ${CMAKE_Fortran_COMPILER_ID} ${CMAKE_Fortran_COMPILER_VERSION}")
+  message(STATUS "h5fortran disabled")
+  unset(h5fortran)
+  unset(h5fortran::fortran)
+  return()
+endif(NOT HDF5OK)
 
 set(CTEST_TEST_TIMEOUT 15)
 

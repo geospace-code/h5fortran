@@ -3,15 +3,16 @@ use, intrinsic:: ieee_arithmetic, only: ieee_value, ieee_quiet_nan, ieee_is_nan
 use, intrinsic:: iso_fortran_env, only: int64, int32, real32, real64, stderr=>error_unit
 use, intrinsic:: iso_c_binding, only: c_null_char
 use h5fortran, only: hdf5_file, toLower, strip_trailing_null, truncate_string_null, HSIZE_T, h5write, h5read
+use test_lt, only : test_readwrite_lt
+use test_array, only : test_write_array, test_readwrite_array
 
 implicit none
 
-integer :: i1(4), ierr
-real(real32)    :: nan, r1(4), r2(4,4)
+real(real32) :: nan
 
 character(:), allocatable :: path
 character(256) :: argv
-integer :: i,l
+integer :: i,l,ierr
 
 call get_command_argument(1, argv, length=l, status=i)
 if (i /= 0 .or. l == 0) then
@@ -22,12 +23,6 @@ path = trim(argv)
 print *, 'test path: ', path
 
 nan = ieee_value(1.0, ieee_quiet_nan)
-
-do i = 1,size(i1)
-  i1(i) = i
-enddo
-
-r1 = i1
 
 call test_string_rw(path)
 print *,'PASSED: HDF5 string write/read'
@@ -40,73 +35,24 @@ call testNewHDF5(path)
 print *,'PASSED: HDF5 scalar real and integer'
 call testGroup(path)
 print *,'PASSED: HDF5 group'
-call testwriteHDF5(path)
-print *,'PASSED: HDF5 array'
+
+call test_write_array(path)
+print *,'PASSED: HDF5 array write'
+call test_readwrite_array(path, ng=69, nn=100, pn=5)
+print *,'PASSED: HDF5 array write / read'
+call test_readwrite_lt(path)
+print *,'PASSED: easy read / write'
+
 call test_write_attributes(path)
 print *,'PASSED: HDF5 attributes'
-
-call testrwHDF5(path, ng=69, nn=100, pn=5)
-print *,'PASSED: HDF5 array write / read'
 
 call test_writeExistingVariable(path)
 print *,'PASSED: write existing variable'
 
-call test_readwrite_lt(path)
-print *,'PASSED: easy read/write'
 
 print *,'OK: HDF5 h5fortran library'
 
 contains
-
-
-subroutine test_readwrite_lt(path)
-
-character(*), intent(in) :: path
-integer :: ierr, L, L2(2,1), L3(1,1,1), L4(1,1,1,1), L5(1,1,1,1,1), L6(1,1,1,1,1,1), L7(1,1,1,1,1,1,1)
-
-L = 123
-L2 = L; L3=L; L4=L; L5=L; L6=L; L7=L
-
-call h5write(path//'/scalar_int.h5', '/int', 42)
-
-
-call h5write(path//'/golt.h5', '/int32_0d', 121242, ierr)
-if (ierr/=0) error stop 'lt file write'
-
-call h5read(path//'/golt.h5', '/int32_0d', L)
-if (L /= 121242) error stop 'incorrect read value'
-
-call h5write(path//'/golt.h5','/int32_2d', L2, ierr)
-if (ierr/=0) error stop 'write 2d error'
-call h5read(path//'/golt.h5', '/int32_2d', L2, ierr)
-if (ierr/=0) error stop 'read 2d error'
-
-call h5write(path//'/golt.h5','/int32_3d', L3, ierr)
-if (ierr/=0) error stop 'write 3d error'
-call h5read(path//'/golt.h5', '/int32_3d', L3, ierr)
-if (ierr/=0) error stop 'read 3d error'
-
-call h5write(path//'/golt.h5','/int32_4d', L4, ierr)
-if (ierr/=0) error stop 'write 4d error'
-call h5read(path//'/golt.h5', '/int32_4d', L4, ierr)
-if (ierr/=0) error stop 'read 4d error'
-
-call h5write(path//'/golt.h5','/int32_5d', L5, ierr)
-if (ierr/=0) error stop 'write 5d error'
-call h5read(path//'/golt.h5', '/int32_5d', L5, ierr)
-if (ierr/=0) error stop 'read 5d error'
-
-call h5write(path//'/golt.h5','/int32_6d', L6, ierr)
-if (ierr/=0) error stop 'write 6d error'
-call h5read(path//'/golt.h5', '/int32_6d', L6, ierr)
-if (ierr/=0) error stop 'read 6d error'
-
-call h5write(path//'/golt.h5','/int32_7d', L7, ierr)
-if (ierr/=0) error stop 'write 7d error'
-call h5read(path//'/golt.h5', '/int32_7d', L7, ierr)
-if (ierr/=0) error stop 'read 7d error'
-
-end subroutine test_readwrite_lt
 
 
 subroutine test_lowercase()
@@ -133,13 +79,20 @@ end subroutine test_strip_null
 
 
 subroutine testNewHDF5(path)
+!! create a new HDF5 file
 type(hdf5_file) :: h5f
 character(*), intent(in) :: path
 real(real32), allocatable :: rr1(:)
-real(real32) :: rt
-integer(int32) :: it
+real(real32) :: rt, r1(4)
+integer(int32) :: it, i1(4)
 integer(int32), allocatable :: i1t(:)
 integer(HSIZE_T), allocatable :: dims(:)
+
+do i = 1,size(i1)
+  i1(i) = i
+enddo
+
+r1 = i1
 
 call h5f%initialize(path//'/test.h5', ierr, status='new',action='w')
 if (ierr /= 0) error stop 'test.h5 open'
@@ -213,57 +166,6 @@ if (ierr /= 0) error stop 'write finalize'
 end subroutine testGroup
 
 
-subroutine testwriteHDF5(path)
-!! tests that compression doesn't fail for very small datasets, where it really shouldn't be used (makes file bigger)
-type(hdf5_file) :: h5f
-character(*), intent(in) :: path
-integer(int32), dimension(4,4) :: i2, i2t
-integer(int64), dimension(4,4) :: i2t64
-integer(HSIZE_T), allocatable :: dims(:)
-real(real32), allocatable :: rr2(:,:)
-real(real32)  ::  nant
-
-i2(1,:) = i1
-do i = 1,size(i2,2)
-  i2(i,:) = i2(1,:) * i
-enddo
-
-r2 = i2
-
-call h5f%initialize(path//'/test.h5', ierr, status='old',action='rw',comp_lvl=1, chunk_size=[2,2,1,1,1,1,1])
-if(ierr/=0) error stop 'initialize'
-call h5f%write('/test/group2/ai2', i2, ierr)
-if(ierr/=0) error stop 'write 2-D: int32'
-call h5f%write('/test/group2/ai2_64', int(i2, int64), ierr)
-if(ierr/=0) error stop 'write 2-D: int64'
-call h5f%write('/test/real2', r2, ierr)
-if(ierr/=0) error stop 'write 2-D: real32'
-call h5f%write('/nan', nan, ierr)
-if(ierr/=0) error stop 'write 0-D: real32 NaN'
-call h5f%finalize(ierr)
-if (ierr /= 0) error stop 'write finalize'
-
-call h5f%initialize(path//'/test.h5', ierr,status='old',action='r')
-
-call h5f%read('/test/group2/ai2',i2t, ierr)
-if (.not.all(i2==i2t)) error stop 'read 2-D: int32 does not match write'
-
-call h5f%read('/test/group2/ai2_64',i2t64, ierr)
-if (.not.all(i2==i2t64)) error stop 'read 2-D: int64 does not match write'
-
-call h5f%shape('/test/real2',dims, ierr)
-allocate(rr2(dims(1), dims(2)))
-call h5f%read('/test/real2',rr2, ierr)
-if (.not.all(r2 == rr2)) error stop 'real 2-D: read does not match write'
-
-call h5f%read('/nan',nant, ierr)
-if (.not.ieee_is_nan(nant)) error stop 'failed storing or reading NaN'
-call h5f%finalize(ierr)
-if (ierr /= 0) error stop 'write finalize'
-
-end subroutine testwriteHDF5
-
-
 subroutine test_write_attributes(path)
 type(hdf5_file) :: h5f
 character(*), intent(in) :: path
@@ -310,37 +212,6 @@ call h5f%finalize(ierr)
 if (ierr /= 0) error stop 'write finalize'
 
 end subroutine test_string_rw
-
-
-subroutine testrwHDF5(path,ng, nn, pn)
-!! more group
-type(hdf5_file) :: h5f
-character(*), intent(in) :: path
-integer, intent(in) :: ng, nn, pn
-
-real(real32), allocatable :: flux(:,:),fo(:)
-character(2) :: pnc,ic
-integer :: i
-
-allocate(flux(nn,ng),fo(nn))
-flux = 1.0
-write(pnc,'(I2)') pn
-
-call h5f%initialize(path//'/p'//trim(adjustl(pnc))//'.h5', ierr, status='new',action='w')
-if (ierr /= 0) error stop 'write initialize'
-
-do i = 1,ng
-write(ic,'(I2)') i
-call h5f%write('/group'//trim(adjustl(ic))//'/flux_node',flux(:ng,i), ierr)
-enddo
-
-call h5f%read('/group1/flux_node',fo, ierr)
-if (.not.all(fo(:ng)==flux(:ng,1))) error stop 'test_read_write: read does not match write'
-
-call h5f%finalize(ierr)
-if (ierr /= 0) error stop 'write finalize'
-
-end subroutine testrwHDF5
 
 
 subroutine test_writeExistingVariable(path)
