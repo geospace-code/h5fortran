@@ -47,7 +47,7 @@ module procedure hdf_read_1d
 integer(HSIZE_T) :: dims(rank(value))
 dims = shape(value)
 
-call hdf_setup_read(self, dname, dims, ierr)
+call hdf_shape_check(self, dname, dims, ierr)
 if (ierr /= 0) return
 
 select type (value)
@@ -84,7 +84,7 @@ module procedure hdf_read_2d
 integer(HSIZE_T) :: dims(rank(value))
 dims = shape(value)
 
-call hdf_setup_read(self, dname, dims, ierr)
+call hdf_shape_check(self, dname, dims, ierr)
 if (ierr /= 0) return
 
 select type (value)
@@ -121,7 +121,7 @@ module procedure hdf_read_3d
 integer(HSIZE_T) :: dims(rank(value))
 dims = shape(value)
 
-call hdf_setup_read(self, dname, dims, ierr)
+call hdf_shape_check(self, dname, dims, ierr)
 if (ierr /= 0) return
 
 select type (value)
@@ -158,7 +158,7 @@ module procedure hdf_read_4d
 integer(HSIZE_T) :: dims(rank(value))
 dims = shape(value)
 
-call hdf_setup_read(self, dname, dims, ierr)
+call hdf_shape_check(self, dname, dims, ierr)
 if (ierr /= 0) return
 
 select type (value)
@@ -195,7 +195,7 @@ module procedure hdf_read_5d
 integer(HSIZE_T) :: dims(rank(value))
 dims = shape(value)
 
-call hdf_setup_read(self, dname, dims, ierr)
+call hdf_shape_check(self, dname, dims, ierr)
 if (ierr /= 0) return
 
 select type (value)
@@ -232,7 +232,7 @@ module procedure hdf_read_6d
 integer(HSIZE_T) :: dims(rank(value))
 dims = shape(value)
 
-call hdf_setup_read(self, dname, dims, ierr)
+call hdf_shape_check(self, dname, dims, ierr)
 if (ierr /= 0) return
 
 select type (value)
@@ -269,7 +269,7 @@ module procedure hdf_read_7d
 integer(HSIZE_T) :: dims(rank(value))
 dims = shape(value)
 
-call hdf_setup_read(self, dname, dims, ierr)
+call hdf_shape_check(self, dname, dims, ierr)
 if (ierr /= 0) return
 
 select type (value)

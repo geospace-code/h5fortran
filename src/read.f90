@@ -2,50 +2,12 @@ submodule (h5fortran) read
 !! This submodule is for reading HDF5 via submodules
 use hdf5, only : h5dopen_f, h5dread_f, h5dclose_f, h5dget_create_plist_f, &
   h5pget_layout_f, H5D_CONTIGUOUS_F, H5D_CHUNKED_F
-use H5LT, only : h5ltget_dataset_info_f, &
-  h5ltread_dataset_f, h5ltread_dataset_int_f, h5ltread_dataset_float_f, h5ltread_dataset_double_f,&
-  h5ltget_dataset_ndims_f, &
+use H5LT, only : h5ltread_dataset_f, h5ltread_dataset_int_f, h5ltread_dataset_float_f, h5ltread_dataset_double_f,&
   h5ltread_dataset_string_f, h5ltpath_valid_f
 
 implicit none
 
 contains
-
-
-module procedure hdf_setup_read
-! module subroutine hdf_setup_read(self, dname, dims, ierr)
-!   class(hdf5_file), intent(in) :: self
-!   character(*), intent(in) :: dname
-!   integer(hsize_t), intent(in) :: dims(:)
-!   integer, intent(out) :: ierr
-integer(SIZE_T) :: dsize
-integer(HSIZE_T) :: ddims(size(dims))
-integer :: dtype, drank
-
-if (.not.self%exist(dname, ierr)) return
-
-!> check for matching rank, else bad reads can occur--doesn't always crash without this check
-call h5ltget_dataset_ndims_f(self%lid, dname, drank, ierr)
-if (check(ierr, 'ERROR: get_dataset_ndim ' // dname // ' read ' // self%filename)) return
-
-if (drank /= size(dims)) then
-  write(stderr,'(A,I6,A,I6)') 'ERROR: rank mismatch ' // dname // ' = ',drank,'  variable rank =', size(dims)
-  ierr = -1
-  return
-endif
-
-!> check for matching size, else bad reads can occur.
-
-call h5ltget_dataset_info_f(self%lid, dname, ddims, dtype, dsize, ierr)
-if (check(ierr, 'ERROR: get_dataset_info ' // dname // ' read ' // self%filename)) return
-
-if(.not. all(dims == ddims)) then
-  write(stderr,*) 'ERROR: shape mismatch ' // dname // ' = ',ddims,'  variable shape =', dims
-  ierr = -1
-  return
-endif
-
-end procedure hdf_setup_read
 
 
 module procedure hdf_get_shape

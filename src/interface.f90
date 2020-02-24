@@ -5,12 +5,14 @@ use, intrinsic :: iso_fortran_env, only : real32, real64, int64, int32, stderr=>
 use hdf5, only : HID_T, SIZE_T, HSIZE_T, H5F_ACC_RDONLY_F, H5F_ACC_RDWR_F, H5F_ACC_TRUNC_F, &
     h5open_f, h5close_f, h5gcreate_f, h5gclose_f, h5fopen_f, h5fcreate_f, h5fclose_f, h5lexists_f, &
     h5get_libversion_f, h5eset_auto_f
+use h5lt, only : h5ltget_dataset_ndims_f, h5ltget_dataset_info_f
 
 use string_utils, only : toLower, strip_trailing_null, truncate_string_null
 
 implicit none
 private
-public :: hdf5_file, toLower, hsize_t, strip_trailing_null, truncate_string_null, check, h5write, h5read
+public :: hdf5_file, toLower, hdf_shape_check, hsize_t, strip_trailing_null, truncate_string_null, &
+  check, h5write, h5read
 
 
 !> main type
@@ -158,13 +160,6 @@ class(*), intent(out) :: value(:,:,:,:,:,:,:)
 integer, intent(out), optional :: ierr
 end subroutine lt7read
 
-
-module subroutine hdf_setup_read(self, dname, dims, ierr)
-class(hdf5_file), intent(in) :: self
-character(*), intent(in) :: dname
-integer(HSIZE_T), intent(in) :: dims(:)
-integer, intent(out) :: ierr
-end subroutine hdf_setup_read
 
 module subroutine hdf_setup_write(self, dname, dtype, dims, sid, did, ierr, chunk_size)
 class(hdf5_file), intent(inout) :: self
@@ -503,6 +498,42 @@ if (.not.check) return
 write(stderr, *) msg
 
 end function check
+
+
+subroutine hdf_shape_check(self, dname, dims, ierr)
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: dname
+integer(HSIZE_T), intent(in) :: dims(:)
+integer, intent(out) :: ierr
+
+integer(SIZE_T) :: dsize
+integer(HSIZE_T) :: ddims(size(dims))
+integer :: dtype, drank
+
+if (.not.self%exist(dname, ierr)) return
+
+!> check for matching rank, else bad reads can occur--doesn't always crash without this check
+call h5ltget_dataset_ndims_f(self%lid, dname, drank, ierr)
+if (check(ierr, 'ERROR: get_dataset_ndim ' // dname // ' read ' // self%filename)) return
+
+if (drank /= size(dims)) then
+  write(stderr,'(A,I6,A,I6)') 'ERROR: rank mismatch ' // dname // ' = ',drank,'  variable rank =', size(dims)
+  ierr = -1
+  return
+endif
+
+!> check for matching size, else bad reads can occur.
+
+call h5ltget_dataset_info_f(self%lid, dname, ddims, dtype, dsize, ierr)
+if (check(ierr, 'ERROR: get_dataset_info ' // dname // ' read ' // self%filename)) return
+
+if(.not. all(dims == ddims)) then
+  write(stderr,*) 'ERROR: shape mismatch ' // dname // ' = ',ddims,'  variable shape =', dims
+  ierr = -1
+  return
+  endif
+
+end subroutine hdf_shape_check
 
 
 end module h5fortran
