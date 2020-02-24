@@ -47,6 +47,10 @@ call h5f%write('/test/real2', r2, ierr)
 if(ierr/=0) error stop
 call h5f%write('/nan', nan, ierr)
 if(ierr/=0) error stop
+!> test writing wrong size
+call h5f%write('/int32-1d', [-1], ierr)
+if(ierr==0) error stop 'did not error for write array shape mismatch'
+
 call h5f%finalize(ierr)
 if(ierr/=0) error stop
 

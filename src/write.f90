@@ -46,6 +46,8 @@ call h5ltpath_valid_f(self%lid, dname, .true., exists, ierr)
 if (check(ierr,  'ERROR: setup_write: ' // dname // ' check exist ' // self%filename)) return
 
 if(exists) then
+  call hdf_shape_check(self, dname, dims, ierr)
+  if (ierr/=0) return
   !> open dataset
   call h5dopen_f(self%lid, dname, did, ierr)
   if (check(ierr, 'ERROR: setup_write: open ' // dname // ' ' // self%filename)) return
