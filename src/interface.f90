@@ -404,39 +404,37 @@ if(present(status)) lstatus = toLower(status)
 laction = 'rw'
 if(present(action)) laction = toLower(action)
 
-
 select case(lstatus)
-  case ('old', 'unknown')
-    select case(laction)
-      case('read','r')  !< Open an existing file.
-        inquire(file=filename, exist=exists)
-        if (.not.exists) then
-          write(stderr,*) 'ERROR: ' // filename // ' does not exist.'
-          ierr = -1
-          return
-        endif
-        call h5fopen_f(filename,H5F_ACC_RDONLY_F,self%lid,ierr)
-      case('write','readwrite','w','rw', 'r+', 'append', 'a')
-        inquire(file=filename, exist=exists)
-        if(lstatus == 'unknown' .and. .not.exists) then
-          call h5fcreate_f(filename, H5F_ACC_TRUNC_F, self%lid, ierr)
-          if (check(ierr, 'ERROR: ' // filename // ' could not be created')) return
-        else
-          call h5fopen_f(filename, H5F_ACC_RDWR_F, self%lid, ierr)
-          if (check(ierr, 'ERROR: ' // filename // ' could not be opened in read/write')) return
-        endif
-      case default
-        write(stderr,*) 'Unsupported action -> ' // laction
-        ierr = 128
-      endselect
-  case('new','replace')
-    call h5fcreate_f(filename, H5F_ACC_TRUNC_F, self%lid, ierr)
-    if (check(ierr, 'ERROR: ' // filename // ' could not be created')) return
-  case default
-    write(stderr,*) 'Unsupported status -> '// lstatus
-    ierr = 128
+case ('old', 'unknown')
+  select case(laction)
+    case('read','r')  !< Open an existing file.
+      inquire(file=filename, exist=exists)
+      if (.not.exists) then
+        write(stderr,*) 'ERROR: ' // filename // ' does not exist.'
+        ierr = -1
+        return
+      endif
+      call h5fopen_f(filename,H5F_ACC_RDONLY_F,self%lid,ierr)
+    case('write','readwrite','w','rw', 'r+', 'append', 'a')
+      inquire(file=filename, exist=exists)
+      if(lstatus == 'unknown' .and. .not.exists) then
+        call h5fcreate_f(filename, H5F_ACC_TRUNC_F, self%lid, ierr)
+        if (check(ierr, 'ERROR: ' // filename // ' could not be created')) return
+      else
+        call h5fopen_f(filename, H5F_ACC_RDWR_F, self%lid, ierr)
+        if (check(ierr, 'ERROR: ' // filename // ' could not be opened in read/write')) return
+      endif
+    case default
+      write(stderr,*) 'Unsupported action -> ' // laction
+      ierr = 128
+    endselect
+case('new','replace')
+  call h5fcreate_f(filename, H5F_ACC_TRUNC_F, self%lid, ierr)
+  if (check(ierr, 'ERROR: ' // filename // ' could not be created')) return
+case default
+  write(stderr,*) 'Unsupported status -> '// lstatus
+  ierr = 128
 endselect
-
 
 end subroutine hdf_initialize
 
