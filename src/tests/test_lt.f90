@@ -7,7 +7,7 @@ contains
 subroutine test_readwrite_lt(path)
 
 character(*), intent(in) :: path
-integer :: ierr, L, L1(8), L2(2,1), M2(3,3), L3(1,1,1), L4(1,1,1,1), L5(1,1,1,1,1), L6(1,1,1,1,1,1), L7(1,1,1,1,1,1,1)
+integer :: ierr, L, L1(8), L2(2,1), L3(1,1,1), L4(1,1,1,1), L5(1,1,1,1,1), L6(1,1,1,1,1,1), L7(1,1,1,1,1,1,1)
 
 L = 123
 L2 = L; L3=L; L4=L; L5=L; L6=L; L7=L
