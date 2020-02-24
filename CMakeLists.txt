@@ -4,7 +4,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 project(h5fortran
   LANGUAGES C Fortran
-  VERSION 2.6.0
+  VERSION 2.6.1
   DESCRIPTION "thin, light, easy HDF5 Fortran interface"
   HOMEPAGE_URL https://github.com/scivision/h5fortran)
 enable_testing()
@@ -22,7 +22,11 @@ if(NOT HDF5OK)
   message(STATUS "h5fortran disabled")
   unset(h5fortran)
   unset(h5fortran::fortran)
-  return()
+  if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+    message(FATAL_ERROR)
+  else()
+    return()
+  endif()
 endif(NOT HDF5OK)
 
 set(CTEST_TEST_TIMEOUT 15)
