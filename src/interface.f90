@@ -14,6 +14,9 @@ private
 public :: hdf5_file, toLower, hdf_shape_check, hsize_t, strip_trailing_null, truncate_string_null, &
   check, h5write, h5read
 
+!> Workaround for Intel 19.1 / 2020 bug with /stand:f18
+!> error #6410: This name has not been declared as an array or a function.   [RANK]
+intrinsic :: rank
 
 !> main type
 type :: hdf5_file
