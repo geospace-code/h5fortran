@@ -1,3 +1,7 @@
+set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Build type selections" FORCE)
+set(CMAKE_NMC_DEFAULT_BUILD_FILE_CONFIG "Release" CACHE STRING "Default Build type" FORCE)
+
+
 if(CMAKE_Fortran_COMPILER_ID STREQUAL Intel)
   if(WIN32)
     string(APPEND CMAKE_Fortran_FLAGS " /stand:f18 /traceback /warn /heap-arrays")
@@ -6,7 +10,7 @@ if(CMAKE_Fortran_COMPILER_ID STREQUAL Intel)
   endif()
 elseif(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
   string(APPEND CMAKE_Fortran_FLAGS " -Wall -Wextra -fimplicit-none")
-  string(APPEND CMAKE_Fortran_FLAGS_DEBUG " -fcheck=all")
+  string(APPEND CMAKE_Fortran_FLAGS_DEBUG " -fcheck=all -Werror=array-bounds")
   add_compile_options(-march=native)
 
   if(CMAKE_Fortran_COMPILER_VERSION VERSION_GREATER_EQUAL 8)

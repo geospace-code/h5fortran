@@ -14,16 +14,15 @@ subroutine test_write_array(path)
 !! tests that compression doesn't fail for very small datasets, where it really shouldn't be used (makes file bigger)
 type(hdf5_file) :: h5f
 character(*), intent(in) :: path
+
+integer(int32), dimension(4) :: i1, i1t
 integer(int32), dimension(4,4) :: i2, i2t
-integer(HSIZE_T), allocatable :: dims(:)
 real(real32), allocatable :: rr2(:,:)
-real(real32)  ::  nant,  r2(4,4)
+real(real32)  ::  nant, r1(4), r2(4,4)
 integer :: i, ierr
-integer(int32) :: i1(4), i2_8(8,8)
-real(real32) :: r1(4)
+integer(int32) :: i2_8(8,8)
 
 nan = ieee_value(1.0, ieee_quiet_nan)
-
 
 do i = 1,size(i1)
   i1(i) = i
@@ -37,40 +36,61 @@ enddo
 r1 = i1
 r2 = i2
 
+!! write test data
 call h5f%initialize(path//'/test.h5', ierr, status='old',action='rw',comp_lvl=1, chunk_size=[2,2,1,1,1,1,1])
-if(ierr/=0) error stop 'initialize'
-call h5f%write('/test/group2/ai2', i2, ierr)
-if(ierr/=0) error stop 'write 2-D: int32'
+if(ierr/=0) error stop
+call h5f%write('/int32-1d', i1, ierr)
+if(ierr/=0) error stop
+call h5f%write('/test/group2/int32-2d', i2, ierr)
+if(ierr/=0) error stop
 call h5f%write('/test/real2', r2, ierr)
-if(ierr/=0) error stop 'write 2-D: real32'
+if(ierr/=0) error stop
 call h5f%write('/nan', nan, ierr)
-if(ierr/=0) error stop 'write 0-D: real32 NaN'
+if(ierr/=0) error stop
 call h5f%finalize(ierr)
-if (ierr /= 0) error stop 'write finalize'
+if(ierr/=0) error stop
 
+!! Read tests
 call h5f%initialize(path//'/test.h5', ierr,status='old',action='r')
+if(ierr/=0) error stop
+!> int32
 
-! --- int32
+call h5f%read('/int32-1d', i1t, ierr)
+if(ierr/=0) error stop
+if (.not.all(i1==i1t)) error stop 'read 1-d int32: does not match write'
 
-call h5f%read('/test/group2/ai2',i2t, ierr)
+call h5f%read('/test/group2/int32-2d',i2t, ierr)
+if(ierr/=0) error stop
 if (.not.all(i2==i2t)) error stop 'read 2-D: int32 does not match write'
 
-! verify reading into larger array
+!> verify reading into larger array
 i2_8 = 0
-call h5f%read('/test/group2/ai2', i2_8(2:5,3:6), ierr)
+call h5f%read('/test/group2/int32-2d', i2_8(2:5,3:6), ierr)
 if (.not.all(i2_8(2:5,3:6) == i2)) error stop 'read into larger array fail'
+
+!> check error for reading array dimension mismatch
+
+!> check that 1D disk into 2D raises error
+call h5f%read('/int32-1d', i2, ierr)
+if (ierr==0) error stop 'failed to error on rank mismatch'
 
 ! --- real
 
-call h5f%shape('/test/real2',dims, ierr)
-allocate(rr2(dims(1), dims(2)))
-call h5f%read('/test/real2',rr2, ierr)
-if (.not.all(r2 == rr2)) error stop 'real 2-D: read does not match write'
+block
+  integer(HSIZE_T), allocatable :: dims(:)
+  call h5f%shape('/test/real2',dims, ierr)
+  if(ierr/=0) error stop
+  allocate(rr2(dims(1), dims(2)))
+  call h5f%read('/test/real2',rr2, ierr)
+  if(ierr/=0) error stop
+  if (.not.all(r2 == rr2)) error stop 'real 2-D: read does not match write'
+end block
 
 call h5f%read('/nan',nant, ierr)
+if(ierr/=0) error stop
 if (.not.ieee_is_nan(nant)) error stop 'failed storing or reading NaN'
 call h5f%finalize(ierr)
-if (ierr /= 0) error stop 'write finalize'
+if(ierr/=0) error stop
 
 end subroutine test_write_array
 
@@ -90,18 +110,20 @@ flux = 1.0
 write(pnc,'(I2)') pn
 
 call h5f%initialize(path//'/p'//trim(adjustl(pnc))//'.h5', ierr, status='new',action='w')
-if (ierr /= 0) error stop 'write initialize'
+if(ierr/=0) error stop
 
 do i = 1,ng
-write(ic,'(I2)') i
-call h5f%write('/group'//trim(adjustl(ic))//'/flux_node',flux(:ng,i), ierr)
+  write(ic,'(I2)') i
+  call h5f%write('/group'//trim(adjustl(ic))//'/flux_node',flux(:,i), ierr)
+  if (ierr /= 0) error stop
 enddo
 
 call h5f%read('/group1/flux_node',fo, ierr)
-if (.not.all(fo(:ng)==flux(:ng,1))) error stop 'test_read_write: read does not match write'
+if (ierr /= 0) error stop
+if (.not.all(fo == flux(:,1))) error stop 'test_read_write: read does not match write'
 
 call h5f%finalize(ierr)
-if (ierr /= 0) error stop 'write finalize'
+if(ierr/=0) error stop
 
 end subroutine test_readwrite_array
 

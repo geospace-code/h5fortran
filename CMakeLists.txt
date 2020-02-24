@@ -4,7 +4,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 project(h5fortran
   LANGUAGES C Fortran
-  VERSION 2.6.1
+  VERSION 2.6.2
   DESCRIPTION "thin, light, easy HDF5 Fortran interface"
   HOMEPAGE_URL https://github.com/scivision/h5fortran)
 enable_testing()

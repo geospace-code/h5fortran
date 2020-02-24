@@ -162,7 +162,7 @@ end subroutine lt7read
 module subroutine hdf_setup_read(self, dname, dims, ierr)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
-integer(HSIZE_T), intent(out) :: dims(:)
+integer(HSIZE_T), intent(in) :: dims(:)
 integer, intent(out) :: ierr
 end subroutine hdf_setup_read
 

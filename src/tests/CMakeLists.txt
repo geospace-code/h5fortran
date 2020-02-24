@@ -18,7 +18,7 @@ if(WIN32 AND HDF5_ROOT)
 endif()
 
 add_executable(testh5
-test_hdf5_ifc.f90 test_lt.f90 test_array.f90)
+test_hdf5_ifc.f90 test_lt.f90 test_array.f90 test_scalar.f90)
 target_link_libraries(testh5 PRIVATE h5fortran::h5fortran ${HDF5_LIBRARIES})
 target_include_directories(testh5 PRIVATE ${HDF5_INCLUDE_DIRS})
 if(${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU)

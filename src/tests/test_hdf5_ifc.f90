@@ -2,9 +2,10 @@
 use, intrinsic:: ieee_arithmetic, only: ieee_value, ieee_quiet_nan, ieee_is_nan
 use, intrinsic:: iso_fortran_env, only: int32, real32, real64, stderr=>error_unit
 use, intrinsic:: iso_c_binding, only: c_null_char
-use h5fortran, only: hdf5_file, toLower, strip_trailing_null, truncate_string_null, HSIZE_T, h5write, h5read
+use h5fortran, only: hdf5_file, toLower, strip_trailing_null, truncate_string_null, h5write, h5read
 use test_lt, only : test_readwrite_lt
 use test_array, only : test_write_array, test_readwrite_array
+use test_scalar, only : test_scalar_rw
 
 implicit none
 
@@ -31,7 +32,7 @@ call test_lowercase()
 print *,'PASSED: HDF5 character'
 call test_strip_null()
 print *,'PASSED: null strip'
-call testNewHDF5(path)
+call test_scalar_rw(path)
 print *,'PASSED: HDF5 scalar real and integer'
 call testGroup(path)
 print *,'PASSED: HDF5 group'
@@ -78,88 +79,23 @@ if (.not.strip_trailing_null(hello // c_null_char) == hello) error stop 'problem
 end subroutine test_strip_null
 
 
-subroutine testNewHDF5(path)
-!! create a new HDF5 file
-type(hdf5_file) :: h5f
-character(*), intent(in) :: path
-real(real32), allocatable :: rr1(:)
-real(real32) :: rt, r1(4)
-integer(int32) :: it, i1(4)
-integer(int32), allocatable :: i1t(:)
-integer(HSIZE_T), allocatable :: dims(:)
-
-do i = 1,size(i1)
-  i1(i) = i
-enddo
-
-r1 = i1
-
-call h5f%initialize(path//'/test.h5', ierr, status='new',action='w')
-if (ierr /= 0) error stop 'test.h5 open'
-!! scalar tests
-call h5f%write('/scalar_int', 42_int32, ierr)
-if (ierr /= 0) error stop 'write 0-D: int'
-
-call h5f%write('/scalar_real', 42._real32, ierr)
-if (ierr /= 0) error stop 'write 0-D: real32'
-
-call h5f%write('/real1',r1, ierr)
-if (ierr /= 0) error stop 'write 1-D: real32'
-
-call h5f%write('/ai1', i1, ierr)
-if (ierr /= 0) error stop 'write 1-D: scalar int'
-
-call h5f%finalize(ierr)
-if (ierr /= 0) error stop 'write finalize'
-
-call h5f%initialize(path//'/test.h5', ierr, status='old',action='r')
-call h5f%read('/scalar_int', it, ierr)
-call h5f%read('/scalar_real', rt, ierr)
-if (.not.(rt==it .and. it==42)) then
-  write(stderr,*) it,'/=',rt
-  error stop 'scalar real / int: not equal 42'
-endif
-
-call h5f%shape('/real1',dims, ierr)
-allocate(rr1(dims(1)))
-call h5f%read('/real1',rr1, ierr)
-if (.not.all(r1 == rr1)) error stop 'real 1-D: read does not match write'
-
-call h5f%shape('/ai1',dims, ierr)
-allocate(i1t(dims(1)))
-call h5f%read('/ai1',i1t, ierr)
-if (.not.all(i1==i1t)) error stop 'integer 1-D: read does not match write'
-
-if (.not. h5f%filename == path//'/test.h5') then
-  write(stderr,*) h5f%filename // ' mismatch filename'
-  error stop
-endif
-
-call h5f%finalize(ierr)
-if (ierr /= 0) error stop 'write finalize'
-
-end subroutine testNewHDF5
-
-
 subroutine testGroup(path)
 type(hdf5_file) :: h5f
 character(*), intent(in) :: path
 
 call h5f%initialize(path//'/test_groups.h5', ierr, status='new',action='rw')
 call h5f%write('/test/', ierr)
-if (ierr /= 0) error stop 'create group'
-
+if (ierr /= 0) error stop
 call h5f%open('/test', ierr)
-if (ierr /= 0) error stop 'open group'
+if (ierr /= 0) error stop
 call h5f%write('group3/scalar', 1_int32, ierr)
-if (ierr /= 0) error stop 'write 0-D: int32'
+if (ierr /= 0) error stop
 call h5f%write('group3/scalar_real', 1._real32, ierr)
-if (ierr /= 0) error stop 'write 0-D: real32'
+if (ierr /= 0) error stop
 call h5f%close(ierr)
-if (ierr /= 0) error stop 'close group'
-
+if (ierr /= 0) error stop
 call h5f%finalize(ierr)
-if (ierr /= 0) error stop 'write finalize'
+if (ierr /= 0) error stop
 
 end subroutine testGroup
 
@@ -169,12 +105,11 @@ type(hdf5_file) :: h5f
 character(*), intent(in) :: path
 
 call h5f%initialize(path//'/test.h5', ierr)
-
+if (ierr /= 0) error stop
 call h5f%writeattr('/nan','note','this is just a little number', ierr)
-if (ierr /= 0) error stop 'write attribute string'
-
+if (ierr /= 0) error stop
 call h5f%finalize(ierr)
-if (ierr /= 0) error stop 'write finalize'
+if (ierr /= 0) error stop
 
 end subroutine test_write_attributes
 
@@ -187,10 +122,11 @@ character(1024) :: val1k
 character(:), allocatable :: final
 
 call h5f%initialize(path//'/test_string.h5', ierr, status='new', action='rw')
+if (ierr /= 0) error stop
 call h5f%write('/little', '42', ierr)
-
+if (ierr /= 0) error stop
 call h5f%read('/little', value, ierr)
-
+if (ierr /= 0) error stop
 if (value /= '42') then
   write(stderr,*) 'string dataset read/write verification failure. Value: '// value
   error stop
@@ -198,6 +134,7 @@ endif
 
 !! try reading too much data, then truncating to first C_NULL
 call h5f%read('/little', val1k, ierr)
+if (ierr /= 0) error stop
 final = truncate_string_null(val1k)
 
 if (len(final) /= 2) then
@@ -207,7 +144,7 @@ if (len(final) /= 2) then
 endif
 
 call h5f%finalize(ierr)
-if (ierr /= 0) error stop 'write finalize'
+if (ierr /= 0) error stop
 
 end subroutine test_string_rw
 
@@ -221,28 +158,22 @@ character(:),allocatable :: fn
 fn = path//'/overwrite.h5'
 
 call h5f%initialize(fn, ierr, status='new',action='w')
-if (ierr /= 0) error stop 'write initialize'
-
+if (ierr /= 0) error stop
 call h5f%write('/scalar_int', 42_int32, ierr)
-if (ierr /= 0) error stop 'write scalar int'
-
+if (ierr /= 0) error stop
 call h5f%write('/int1d', [42_int32, 1_int32], ierr)
-if (ierr /= 0) error stop 'write 1D int'
-
+if (ierr /= 0) error stop
 call h5f%finalize(ierr)
-if (ierr /= 0) error stop 'write finalize'
+if (ierr /= 0) error stop
 
 call h5f%initialize(fn, ierr, status='old',action='rw')
-if (ierr /= 0) error stop 'overwrite initialize'
-
+if (ierr /= 0) error stop
 call h5f%write('/scalar_int', 100_int32, ierr)
-if (ierr /= 0) error stop 'overwrite scalar int'
-
+if (ierr /= 0) error stop
 call h5f%write('/int1d', [100_int32, 10_int32], ierr)
-if (ierr /= 0) error stop 'overwrite 1D int'
-
+if (ierr /= 0) error stop
 call h5f%finalize(ierr)
-if (ierr /= 0) error stop 'overwrite finalize'
+if (ierr /= 0) error stop
 
 end subroutine test_writeExistingVariable
 
