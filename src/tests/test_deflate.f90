@@ -57,15 +57,13 @@ if (h5f%comp_lvl > 0 .and. crat < 10) error stop '2D low compression'
 call h5f%initialize(fn, ierr, status='old', action='r')
 if(ierr/=0) error stop '#1 read init'
 
-layout = h5f%layout('/big2', ierr)
-if(ierr/=0) error stop '#1 get layout chunk'
+layout = h5f%layout('/big2')
 if(layout /= H5D_CHUNKED_F) error stop '#1 not chunked layout'
-if(.not.h5f%is_chunked('/big2', ierr)) error stop '#1 not chunked layout'
+if(.not.h5f%is_chunked('/big2')) error stop '#1 not chunked layout'
 
-layout = h5f%layout('/small_contig', ierr)
-if(ierr/=0) error stop '#1 get layout contig'
+layout = h5f%layout('/small_contig')
 if(layout /= H5D_CONTIGUOUS_F) error stop '#1 not contiguous layout'
-if(.not.h5f%is_contig('/small_contig', ierr)) error stop '#1 not contig layout'
+if(.not.h5f%is_contig('/small_contig')) error stop '#1 not contig layout'
 
 call h5f%finalize(ierr)
 if (ierr /= 0) error stop '#1 read finalize'

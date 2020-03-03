@@ -11,6 +11,13 @@ test('errors', test_error,
   suite: 'h5basic',
   timeout: 10)
 
+test_exist = executable('test_exist', 'test_exist.f90',
+  dependencies: hdf5_interface)
+test('exist', test_exist,
+  args: meson.current_build_dir(),
+  suite: 'h5basic',
+  timeout: 10)
+
 test_deflate = executable('test_deflate', 'test_deflate.f90',
   dependencies: hdf5_interface)
 test('deflate', test_deflate,

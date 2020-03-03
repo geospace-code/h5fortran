@@ -16,7 +16,11 @@ module procedure hdf_read_scalar
 
 integer(HSIZE_T) :: dims(rank(value))
 
-if (.not.self%exist(dname, ierr)) return
+if (.not.self%exist(dname)) then
+  write(stderr,*) 'ERROR: ' // dname // ' does not exist in ' // self%filename
+  ierr = -1
+  return
+endif
 
 select type (value)
 type is (character(*))

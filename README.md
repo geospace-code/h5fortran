@@ -199,7 +199,7 @@ compression and chunking are disabled if:
 the logical method %exists() checks if a dataset (variable) exists in the initialized HDF5 file.
 
 ```fortran
-exists = h5f%exists("/foo", ierr)
+exists = h5f%exists("/foo")
 ```
 
 ### Read scalar, 3-D array of unknown size

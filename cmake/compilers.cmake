@@ -1,6 +1,4 @@
-set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Build type selections" FORCE)
-set(CMAKE_NMC_DEFAULT_BUILD_FILE_CONFIG "Release" CACHE STRING "Default Build type" FORCE)
-
+set(CMAKE_CONFIGURATION_TYPES "Release;Debug" CACHE STRING "Build type selections" FORCE)
 
 if(CMAKE_Fortran_COMPILER_ID STREQUAL Intel)
   if(WIN32)

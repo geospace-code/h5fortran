@@ -15,7 +15,11 @@ module procedure hdf_get_shape
 integer(SIZE_T) :: dsize
 integer :: dtype, drank
 
-if (.not.self%exist(dname, ierr)) return
+if (.not.self%exist(dname)) then
+  write(stderr, *) 'ERROR: ' // dname // ' does not exist in ' // self%filename
+  ierr = -1
+  return
+endif
 
 call h5ltget_dataset_ndims_f(self%lid, dname, drank, ierr)
 if (check(ierr, 'ERROR: '// dname // ' rank ' // self%filename)) return
@@ -30,10 +34,15 @@ end procedure hdf_get_shape
 module procedure hdf_get_layout
 
 integer(HID_T) :: pid, did
+integer :: ierr
 
 layout = -1
 
-if (.not.self%exist(dname, ierr)) return
+if (.not.self%exist(dname)) then
+  write(stderr, *) 'ERROR: ' // dname // ' does not exist in ' // self%filename
+  ierr = -1
+  return
+endif
 
 call h5dopen_f(self%lid, dname, did, ierr)
 if (check(ierr, 'ERROR: open dataset ' // dname // ' read layout ' // self%filename)) return
@@ -48,20 +57,33 @@ end procedure hdf_get_layout
 
 
 module procedure hdf_is_contig
-hdf_is_contig = self%layout(dname, ierr) == H5D_CONTIGUOUS_F
+hdf_is_contig = self%layout(dname) == H5D_CONTIGUOUS_F
 end procedure hdf_is_contig
 
 module procedure hdf_is_chunked
-hdf_is_chunked = self%layout(dname, ierr) == H5D_CHUNKED_F
+hdf_is_chunked = self%layout(dname) == H5D_CHUNKED_F
 end procedure hdf_is_chunked
 
 
 module procedure hdf_check_exist
 
-call h5ltpath_valid_f(self%lid, dname, .true., exists, ierr)
-if (.not.exists .or. ierr /= 0) then
-  write(stderr,*) 'ERROR: ' // dname // ' does not exist in ' // self%filename
-  ierr = -1
+integer :: ierr
+
+if (self%lid == 0) then
+  write(stderr,*) 'ERROR: must initialize file before checking existance of variable'
+  exists = .false.
+  return
+endif
+
+call h5ltpath_valid_f(self%lid, &
+  path=dname, &
+  check_object_valid=.true., &
+  path_valid=exists, &
+  errcode=ierr)
+
+if (ierr/=0) then
+  write(stderr,*) 'ERROR: could not determine status of ' // dname // ' in ' // self%filename
+  return
 endif
 
 end procedure hdf_check_exist

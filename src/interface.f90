@@ -22,7 +22,7 @@ intrinsic :: rank
 type :: hdf5_file
 
 character(:),allocatable  :: filename
-integer(HID_T) :: lid, &   !< location ID
+integer(HID_T) :: lid=0, &   !< location ID
                   gid, &    !< group ID
                   glid   !< group location ID
 
@@ -35,7 +35,7 @@ contains
 !> initialize HDF5 file
 procedure, public :: initialize => hdf_initialize, finalize => hdf_finalize, writeattr, &
   open => hdf_open_group, close => hdf_close_group, shape => hdf_get_shape, layout => hdf_get_layout, &
-  exist => hdf_check_exist, is_contig => hdf_is_contig, is_chunked => hdf_is_chunked
+  exist => hdf_check_exist, exists => hdf_check_exist, is_contig => hdf_is_contig, is_chunked => hdf_is_chunked
 
 !> write group or dataset integer/real
 generic, public   :: write => hdf_write_scalar, hdf_write_1d, hdf_write_2d, hdf_write_3d, &
@@ -244,29 +244,25 @@ integer(HSIZE_T), intent(out), allocatable :: dims(:)
 integer, intent(out) :: ierr
 end subroutine hdf_get_shape
 
-module integer function hdf_get_layout(self, dname, ierr) result(layout)
+module integer function hdf_get_layout(self, dname) result(layout)
 !! H5D_CONTIGUOUS_F, H5D_CHUNKED_F, H5D_VIRTUAL_F, H5D_COMPACT_F
 class(hdf5_file), intent(in)  :: self
 character(*), intent(in)      :: dname
-integer, intent(out) :: ierr
 end function hdf_get_layout
 
-module logical function hdf_check_exist(self, dname, ierr) result(exists)
+module logical function hdf_check_exist(self, dname) result(exists)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
-integer, intent(out) :: ierr
 end function hdf_check_exist
 
-module logical function hdf_is_contig(self, dname, ierr)
+module logical function hdf_is_contig(self, dname)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
-integer, intent(out) :: ierr
 end function hdf_is_contig
 
-module logical function hdf_is_chunked(self, dname, ierr)
+module logical function hdf_is_chunked(self, dname)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
-integer, intent(out) :: ierr
 end function hdf_is_chunked
 
 
@@ -438,7 +434,7 @@ end subroutine hdf_initialize
 
 
 subroutine hdf_finalize(self, ierr)
-class(hdf5_file), intent(in) :: self
+class(hdf5_file), intent(inout) :: self
 integer, intent(out) :: ierr
 
 !> close hdf5 file
@@ -448,6 +444,9 @@ if (check(ierr, 'ERROR: HDF5 file close: ' // self%filename)) return
 !>  Close Fortran interface.
 call h5close_f(ierr)
 if (check(ierr, 'ERROR: HDF5 library close')) return
+
+!> sentinel lid
+self%lid = 0
 
 end subroutine hdf_finalize
 
@@ -513,7 +512,11 @@ integer(SIZE_T) :: dsize
 integer(HSIZE_T) :: ddims(size(dims))
 integer :: dtype, drank
 
-if (.not.self%exist(dname, ierr)) return
+if (.not.self%exist(dname)) then
+  write(stderr,*) 'ERROR: ' // dname // ' does not exist in ' // self%filename
+  ierr = -1
+  return
+endif
 
 !> check for matching rank, else bad reads can occur--doesn't always crash without this check
 call h5ltget_dataset_ndims_f(self%lid, dname, drank, ierr)
