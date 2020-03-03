@@ -13,27 +13,36 @@ contains
 
 module procedure writeattr
 
-logical :: exists
+integer :: ier
 
-call self%write(dname, ierr)
-if (check(ierr,  'ERROR: create ' // dname // ' ' // self%filename)) return
+!call self%write(dname, ier)
 
-call h5ltpath_valid_f(self%lid, dname, .true., exists, ierr)
-if (check(ierr,  'ERROR: checking existence: ' // dname // ' file ' // self%filename)) return
+! if (ier == 0) call h5ltpath_valid_f(self%lid, dname, .true., exists, ier)
 
-if (.not.exists) then
-  write(stderr,*) 'ERROR: variable ' // dname // ' must be created before writing ' // attr
-  return
+! if (.not.exists) then
+!   write(stderr,*) 'ERROR: variable ' // dname // ' must be created before writing ' // attr
+!   ier = -1
+! endif
+
+call h5ltset_attribute_string_f(self%lid, dname, attr, attrval, ier)
+
+if (present(ierr)) ierr = ier
+if (check(ier, 'ERROR: ' // dname // ' writeattr ' // self%filename)) then
+  if (present(ierr)) return
+  error stop
 endif
-
-call h5ltset_attribute_string_f(self%lid, dname, attr, attrval, ierr)
-if (ierr /= 0) write(stderr,*) 'ERROR: writing attribute ' // attr // ' to ' // dname // ' file ' // self%filename
 
 end procedure writeattr
 
 
-module procedure hdf_setup_write
-!! hdf_setup_write(self, dname, dtype, dims, sid, did, ierr, chunk_size)
+subroutine hdf_setup_write(self, dname, dtype, dims, sid, did, ierr, chunk_size)
+class(hdf5_file), intent(inout) :: self
+character(*), intent(in) :: dname
+integer(HID_T), intent(in) :: dtype
+integer(HSIZE_T), intent(in) :: dims(:)
+integer(HID_T), intent(out) :: sid, did
+integer, intent(in), optional :: chunk_size(:)
+integer, intent(out) :: ierr
 
 logical :: exists
 integer(HID_T) :: pid
@@ -53,7 +62,7 @@ if(exists) then
   if (check(ierr, 'ERROR: setup_write: open ' // dname // ' ' // self%filename)) return
   return
 else
-  call self%write(dname, ierr)
+  call self%hdf_write_group(dname, ierr)
   if (check(ierr, 'ERROR: setup_write: create ' // dname // ' ' // self%filename)) return
 endif
 
@@ -76,7 +85,7 @@ else
 endif
 if (check(ierr,  'ERROR: setup_write: dataset ' // dname // ' create ' // self%filename)) return
 
-end procedure hdf_setup_write
+end subroutine hdf_setup_write
 
 
 subroutine hdf_set_deflate(self, dims, pid, ierr, chunk_size)
@@ -140,8 +149,14 @@ end subroutine hdf_wrapup
 
 module procedure hdf_open_group
 
-call h5gopen_f(self%lid, gname, self%gid, ierr)
-if (check(ierr, 'ERROR: opening group ' // gname // ' in ' // self%filename)) return
+integer :: ier
+call h5gopen_f(self%lid, gname, self%gid, ier)
+
+if (present(ierr)) ierr = ier
+if (check(ier, 'ERROR: opening group ' // gname // ' in ' // self%filename)) then
+  if (present(ierr)) return
+  error stop
+endif
 
 self%glid = self%lid
 self%lid  = self%gid
@@ -151,8 +166,15 @@ end procedure hdf_open_group
 
 module procedure hdf_close_group
 
-call h5gclose_f(self%gid, ierr)
-if (check(ierr,  'ERROR: closing group '//self%filename)) return
+integer :: ier
+
+call h5gclose_f(self%gid, ier)
+
+if (present(ierr)) ierr = ier
+if (check(ier,  'ERROR: closing group '//self%filename)) then
+  if (present(ierr)) return
+  error stop
+endif
 
 self%lid = self%glid
 

@@ -146,18 +146,16 @@ type(hdf5_file) :: h5f
 * string attributes may be applied to any variable at time of writing or later.
 * `chunk_size` and `comp_lvl` options must be set to **enable compression**
 
-`integer, intent(out) :: ierr` is a mandatory parameter. It will be non-zero if error detected.
+`integer, intent(out) :: ierr` is an optional parameter. It will be non-zero if error detected.
 This value should be checked, particularly for write operations to avoid missing error conditions.
-The design choice to keep `error stop` out of h5fortran was in line with the HDF5 library itself.
-Major Fortran libraries like MPI also make this design choice, perhaps since Fortran doesn't currently
-have exception handling.
+If `ierr` is omitted, then h5fortran will raise `error stop` if an error occurs.
 
 ### Create new HDF5 file, with variable "value1"
 
 ```fortran
-call h5f%initialize('test.h5', ierr, status='new',action='w')
+call h5f%initialize('test.h5', status='new',action='w')
 
-call h5f%write('/value1', 123., ierr)
+call h5f%write('/value1', 123.)
 
 call h5f%finalize(ierr)
 ```
@@ -168,9 +166,9 @@ call h5f%finalize(ierr)
 * if file `test.h5` does not exist, create it and add a variable to it.
 
 ```fortran
-call h5f%initialize('test.h5', ierr, status='unknown',action='rw')
+call h5f%initialize('test.h5', status='unknown',action='rw')
 
-call h5f%write('/value1', 123., ierr)
+call h5f%write('/value1', 123.)
 
 call h5f%finalize(ierr)
 ```
@@ -180,9 +178,9 @@ call h5f%finalize(ierr)
 ```fortran
 real :: val2(1000,1000,3) = 0.
 
-call h5f%initialize('test.h5', ierr, comp_lvl=1)
+call h5f%initialize('test.h5', comp_lvl=1)
 
-call h5f%write('/value2', val2, ierr)
+call h5f%write('/value2', val2)
 
 call h5f%finalize(ierr)
 ```
@@ -205,16 +203,16 @@ exists = h5f%exists("/foo")
 ### Read scalar, 3-D array of unknown size
 
 ```fortran
-call h5f%initialize('test.h5', ierr, status='old',action='r')
+call h5f%initialize('test.h5', status='old',action='r')
 
 integer(hsize_t), allocatable :: dims(:)
 real, allocatable :: A(:,:,:)
 
-call h5f%shape('/foo',dims, ierr)
+call h5f%shape('/foo',dims)
 allocate(A(dims(1), dims(2), dims(3)))
 call h5f%read('/foo', A)
 
-call h5f%finalize(ierr)
+call h5f%finalize()
 ```
 
 ### is dataset contiguous or chunked?
@@ -222,9 +220,9 @@ call h5f%finalize(ierr)
 Assumed file handle h5f was already initialized, the logical status is inspected:
 
 ```fortran
-is_contig = h5f%is_contig('/foo', ierr)
+is_contig = h5f%is_contig('/foo')
 
-is_chunked = h5f%is_chunked('/foo', ierr)
+is_chunked = h5f%is_chunked('/foo')
 ```
 
 ### Create group "scope"
@@ -232,11 +230,11 @@ is_chunked = h5f%is_chunked('/foo', ierr)
 ```fortran
 real :: val2(1000,1000,3) = 0.
 
-call h5f%initialize('test.h5', ierr)
+call h5f%initialize('test.h5')
 
-call h5f%write('/scope/', ierr)
+call h5f%write('/scope/')
 
-call h5f%finalize(ierr)
+call h5f%finalize()
 ```
 
 ## Permissive syntax

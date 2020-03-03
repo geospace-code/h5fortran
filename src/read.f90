@@ -13,20 +13,27 @@ contains
 module procedure hdf_get_shape
 !! must get dims before info, as "dims" must be allocated or segfault occurs.
 integer(SIZE_T) :: dsize
-integer :: dtype, drank
+integer :: dtype, drank, ier
+
+ier = 0
 
 if (.not.self%exist(dname)) then
   write(stderr, *) 'ERROR: ' // dname // ' does not exist in ' // self%filename
-  ierr = -1
-  return
+  ier = -1
 endif
 
-call h5ltget_dataset_ndims_f(self%lid, dname, drank, ierr)
-if (check(ierr, 'ERROR: '// dname // ' rank ' // self%filename)) return
+if (ier == 0) call h5ltget_dataset_ndims_f(self%lid, dname, drank, ier)
 
-allocate(dims(drank))
-call h5ltget_dataset_info_f(self%lid, dname, dims, dtype, dsize, ierr)
-if (check(ierr, 'ERROR: ' // dname // ' info ' // self%filename)) return
+if (ier == 0) then
+  allocate(dims(drank))
+  call h5ltget_dataset_info_f(self%lid, dname, dims, dtype, dsize, ier)
+endif
+
+if (present(ierr)) ierr = ier
+if (ier /= 0) then
+  if (present(ierr)) return
+  error stop
+endif
 
 end procedure hdf_get_shape
 
@@ -40,7 +47,6 @@ layout = -1
 
 if (.not.self%exist(dname)) then
   write(stderr, *) 'ERROR: ' // dname // ' does not exist in ' // self%filename
-  ierr = -1
   return
 endif
 

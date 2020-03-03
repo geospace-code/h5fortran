@@ -164,28 +164,18 @@ integer, intent(out), optional :: ierr
 end subroutine lt7read
 
 
-module subroutine hdf_setup_write(self, dname, dtype, dims, sid, did, ierr, chunk_size)
-class(hdf5_file), intent(inout) :: self
-character(*), intent(in) :: dname
-integer(HID_T), intent(in) :: dtype
-integer(HSIZE_T), intent(in) :: dims(:)
-integer(HID_T), intent(out) :: sid, did
-integer, intent(in), optional :: chunk_size(:)
-integer, intent(out) :: ierr
-end subroutine hdf_setup_write
-
 module subroutine hdf_write_scalar(self,dname,value, ierr)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value
-integer, intent(out) :: ierr
+integer, intent(out), optional :: ierr
 end subroutine hdf_write_scalar
 
 module subroutine hdf_write_1d(self,dname,value, ierr)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:)
-integer, intent(out) :: ierr
+integer, intent(out), optional :: ierr
 end subroutine hdf_write_1d
 
 module subroutine hdf_write_2d(self,dname,value, ierr, chunk_size)
@@ -193,7 +183,7 @@ class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:)
 integer, intent(in), optional :: chunk_size(rank(value))
-integer, intent(out) :: ierr
+integer, intent(out), optional :: ierr
 end subroutine hdf_write_2d
 
 module subroutine hdf_write_3d(self,dname,value, ierr, chunk_size)
@@ -201,7 +191,7 @@ class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:)
 integer, intent(in), optional :: chunk_size(rank(value))
-integer, intent(out) :: ierr
+integer, intent(out), optional :: ierr
 end subroutine hdf_write_3d
 
 module subroutine hdf_write_4d(self,dname,value, ierr, chunk_size)
@@ -209,7 +199,7 @@ class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:)
 integer, intent(in), optional :: chunk_size(rank(value))
-integer, intent(out) :: ierr
+integer, intent(out), optional :: ierr
 end subroutine hdf_write_4d
 
 module subroutine hdf_write_5d(self,dname,value, ierr, chunk_size)
@@ -217,7 +207,7 @@ class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:,:)
 integer, intent(in), optional :: chunk_size(rank(value))
-integer, intent(out) :: ierr
+integer, intent(out), optional :: ierr
 end subroutine hdf_write_5d
 
 module subroutine hdf_write_6d(self,dname,value, ierr, chunk_size)
@@ -225,7 +215,7 @@ class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:,:,:)
 integer, intent(in), optional :: chunk_size(rank(value))
-integer, intent(out) :: ierr
+integer, intent(out), optional :: ierr
 end subroutine hdf_write_6d
 
 module subroutine hdf_write_7d(self,dname,value, ierr, chunk_size)
@@ -233,7 +223,7 @@ class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:,:,:,:)
 integer, intent(in), optional :: chunk_size(rank(value))
-integer, intent(out) :: ierr
+integer, intent(out), optional :: ierr
 end subroutine hdf_write_7d
 
 
@@ -241,7 +231,7 @@ module subroutine hdf_get_shape(self, dname, dims, ierr)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 integer(HSIZE_T), intent(out), allocatable :: dims(:)
-integer, intent(out) :: ierr
+integer, intent(out), optional :: ierr
 end subroutine hdf_get_shape
 
 module integer function hdf_get_layout(self, dname) result(layout)
@@ -270,74 +260,74 @@ module subroutine hdf_read_scalar(self, dname, value, ierr)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout)      :: value
-integer, intent(out) :: ierr
+integer, intent(out), optional :: ierr
 end subroutine hdf_read_scalar
 
 module subroutine hdf_read_1d(self, dname, value, ierr)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(out) :: value(:)
-integer, intent(out) :: ierr
+integer, intent(out), optional :: ierr
 end subroutine hdf_read_1d
 
 module subroutine hdf_read_2d(self, dname, value, ierr)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(out) :: value(:,:)
-integer, intent(out) :: ierr
+integer, intent(out), optional :: ierr
 end subroutine hdf_read_2d
 
 module subroutine hdf_read_3d(self, dname, value, ierr)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(out) :: value(:,:,:)
-integer, intent(out) :: ierr
+integer, intent(out), optional :: ierr
 end subroutine hdf_read_3d
 
 module subroutine hdf_read_4d(self, dname, value, ierr)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(out) :: value(:,:,:,:)
-integer, intent(out) :: ierr
+integer, intent(out), optional :: ierr
 end subroutine hdf_read_4d
 
 module subroutine hdf_read_5d(self, dname, value, ierr)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(out) :: value(:,:,:,:,:)
-integer, intent(out) :: ierr
+integer, intent(out), optional :: ierr
 end subroutine hdf_read_5d
 
 module subroutine hdf_read_6d(self, dname, value, ierr)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(out) :: value(:,:,:,:,:,:)
-integer, intent(out) :: ierr
+integer, intent(out), optional :: ierr
 end subroutine hdf_read_6d
 
 module subroutine hdf_read_7d(self, dname, value, ierr)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(out) :: value(:,:,:,:,:,:,:)
-integer, intent(out) :: ierr
+integer, intent(out), optional :: ierr
 end subroutine hdf_read_7d
 
 
 module subroutine hdf_open_group(self, gname, ierr)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in)        :: gname
-integer, intent(out) :: ierr
+integer, intent(out), optional :: ierr
 end subroutine hdf_open_group
 
 module subroutine hdf_close_group(self, ierr)
 class(hdf5_file), intent(inout) :: self
-integer, intent(out) :: ierr
+integer, intent(out), optional :: ierr
 end subroutine hdf_close_group
 
 module subroutine writeattr(self,dname,attr,attrval, ierr)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname, attr, attrval
-integer, intent(out) :: ierr
+integer, intent(out), optional :: ierr
 end subroutine writeattr
 
 end interface
@@ -350,7 +340,7 @@ subroutine hdf_initialize(self,filename,ierr, status,action,comp_lvl,chunk_size,
 
 class(hdf5_file), intent(inout)    :: self
 character(*), intent(in)           :: filename
-integer, intent(out)               :: ierr
+integer, intent(out), optional :: ierr
 character(*), intent(in), optional :: status
 character(*), intent(in), optional :: action
 integer, intent(in), optional      :: comp_lvl
@@ -359,6 +349,7 @@ logical, intent(in), optional      :: verbose
 
 character(:), allocatable :: lstatus, laction
 logical :: exists
+integer :: ier
 
 self%filename = filename
 
@@ -377,22 +368,43 @@ if (present(chunk_size)) then
 endif
 
 !> Initialize FORTRAN interface.
-call h5open_f(ierr)
-if (check(ierr, 'ERROR: HDF5 library initialize')) return
+call h5open_f(ier)
+if (check(ier, 'ERROR: HDF5 library initialize')) then
+  if (present(ierr)) then
+    ierr = ier
+    return
+  else
+    error stop
+  endif
+endif
 
 !> get library version
-call h5get_libversion_f(self%libversion(1), self%libversion(2), self%libversion(3), ierr)
+call h5get_libversion_f(self%libversion(1), self%libversion(2), self%libversion(3), ier)
 ! if (self%verbose) print '(A,3I3)', 'HDF5 version: ',self%libversion
-if (check(ierr, 'ERROR: HDF5 library get version')) return
+if (check(ier, 'ERROR: HDF5 library get version')) then
+  if (present(ierr)) then
+    ierr = ier
+    return
+  else
+    error stop
+  endif
+endif
 
 if(self%verbose) then
-  call h5eset_auto_f(1, ierr)
+  call h5eset_auto_f(1, ier)
 else
-  call h5eset_auto_f(0, ierr)
+  call h5eset_auto_f(0, ier)
 endif
-if (check(ierr, 'ERROR: HDF5 library set traceback')) return
+if (check(ier, 'ERROR: HDF5 library set traceback')) then
+  if (present(ierr)) then
+    ierr = ier
+    return
+  else
+    error stop
+  endif
+endif
 
-lstatus = 'old'
+lstatus = 'unknown'
 if(present(status)) lstatus = toLower(status)
 
 laction = 'rw'
@@ -402,48 +414,54 @@ select case(lstatus)
 case ('old', 'unknown')
   select case(laction)
     case('read','r')  !< Open an existing file.
-      inquire(file=filename, exist=exists)
-      if (.not.exists) then
-        write(stderr,*) 'ERROR: ' // filename // ' does not exist.'
-        ierr = -1
-        return
-      endif
-      call h5fopen_f(filename,H5F_ACC_RDONLY_F,self%lid,ierr)
+      call h5fopen_f(filename,H5F_ACC_RDONLY_F,self%lid,ier)
     case('write','readwrite','w','rw', 'r+', 'append', 'a')
       inquire(file=filename, exist=exists)
-      if(lstatus == 'unknown' .and. .not.exists) then
-        call h5fcreate_f(filename, H5F_ACC_TRUNC_F, self%lid, ierr)
-        if (check(ierr, 'ERROR: ' // filename // ' could not be created')) return
+      if(lstatus /= 'old' .and. .not.exists) then
+        call h5fcreate_f(filename, H5F_ACC_TRUNC_F, self%lid, ier)
       else
-        call h5fopen_f(filename, H5F_ACC_RDWR_F, self%lid, ierr)
-        if (check(ierr, 'ERROR: ' // filename // ' could not be opened in read/write')) return
+        call h5fopen_f(filename, H5F_ACC_RDWR_F, self%lid, ier)
       endif
     case default
       write(stderr,*) 'Unsupported action -> ' // laction
-      ierr = 128
+      ier = 128
     endselect
 case('new','replace')
-  call h5fcreate_f(filename, H5F_ACC_TRUNC_F, self%lid, ierr)
-  if (check(ierr, 'ERROR: ' // filename // ' could not be created')) return
+  call h5fcreate_f(filename, H5F_ACC_TRUNC_F, self%lid, ier)
 case default
   write(stderr,*) 'Unsupported status -> '// lstatus
-  ierr = 128
-endselect
+  ier = 128
+end select
+
+if (present(ierr)) ierr = ier
+if (check(ier, 'ERROR: ' // filename // ' could not be created')) then
+  if (present(ierr)) return
+  error stop
+endif
 
 end subroutine hdf_initialize
 
 
 subroutine hdf_finalize(self, ierr)
 class(hdf5_file), intent(inout) :: self
-integer, intent(out) :: ierr
+integer, intent(out), optional :: ierr
+integer :: ier
 
 !> close hdf5 file
-call h5fclose_f(self%lid, ierr)
-if (check(ierr, 'ERROR: HDF5 file close: ' // self%filename)) return
+call h5fclose_f(self%lid, ier)
+if (present(ierr)) ierr = ier
+if (check(ier, 'ERROR: HDF5 file close: ' // self%filename)) then
+  if (present(ierr)) return
+  error stop
+endif
 
 !>  Close Fortran interface.
-call h5close_f(ierr)
-if (check(ierr, 'ERROR: HDF5 library close')) return
+call h5close_f(ier)
+if (present(ierr)) ierr = ier
+if (check(ier, 'ERROR: HDF5 library close')) then
+  if (present(ierr)) return
+  error stop
+endif
 
 !> sentinel lid
 self%lid = 0
@@ -456,9 +474,10 @@ subroutine hdf_write_group(self, gname, ierr)
 
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: gname    !< relative path to group
-integer, intent(out) :: ierr
+integer, intent(out), optional :: ierr
 
 integer(HID_T)  :: gid
+integer :: ier
 
 integer :: sp, ep, sl
 logical :: gexist
@@ -475,15 +494,27 @@ do
 
   ! check subgroup exists
   sp = sp + ep
-  call h5lexists_f(self%lid, gname(1:sp-1), gexist, ierr)
-  if (check(ierr, 'ERROR: did not find group ' // gname // ' in ' // self%filename)) return
+  call h5lexists_f(self%lid, gname(1:sp-1), gexist, ier)
+  if (present(ierr)) ierr = ier
+  if (check(ier, 'ERROR: did not find group ' // gname // ' in ' // self%filename)) then
+      if (present(ierr)) return
+      error stop
+  endif
 
   if(.not.gexist) then
-    call h5gcreate_f(self%lid, gname(1:sp-1), gid, ierr)
-    if (check(ierr, 'ERROR: creating group ' // gname // ' in ' // self%filename)) return
+    call h5gcreate_f(self%lid, gname(1:sp-1), gid, ier)
+    if (present(ierr)) ierr = ier
+    if (check(ier, 'ERROR: creating group ' // gname // ' in ' // self%filename)) then
+      if (present(ierr)) return
+      error stop
+    endif
 
-    call h5gclose_f(gid, ierr)
-    if (check(ierr, 'ERROR: closing group ' // gname // ' in ' // self%filename)) return
+    call h5gclose_f(gid, ier)
+    if (present(ierr)) ierr = ier
+    if (check(ier, 'ERROR: closing group ' // gname // ' in ' // self%filename)) then
+      if (present(ierr)) return
+      error stop
+    endif
   endif
 end do
 
@@ -506,38 +537,58 @@ subroutine hdf_shape_check(self, dname, dims, ierr)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
 integer(HSIZE_T), intent(in) :: dims(:)
-integer, intent(out) :: ierr
+integer, intent(out), optional :: ierr
 
 integer(SIZE_T) :: dsize
 integer(HSIZE_T) :: ddims(size(dims))
-integer :: dtype, drank
+integer :: dtype, drank, ier
 
 if (.not.self%exist(dname)) then
   write(stderr,*) 'ERROR: ' // dname // ' does not exist in ' // self%filename
-  ierr = -1
-  return
+  if (present(ierr)) then
+    ierr = -1
+    return
+  else
+    error stop
+  endif
 endif
 
 !> check for matching rank, else bad reads can occur--doesn't always crash without this check
-call h5ltget_dataset_ndims_f(self%lid, dname, drank, ierr)
-if (check(ierr, 'ERROR: get_dataset_ndim ' // dname // ' read ' // self%filename)) return
+call h5ltget_dataset_ndims_f(self%lid, dname, drank, ier)
+if (present(ierr)) ierr = ier
+if (check(ier, 'ERROR: get_dataset_ndim ' // dname // ' read ' // self%filename)) then
+  if (present(ierr)) return
+  error stop
+endif
 
 if (drank /= size(dims)) then
   write(stderr,'(A,I6,A,I6)') 'ERROR: rank mismatch ' // dname // ' = ',drank,'  variable rank =', size(dims)
-  ierr = -1
-  return
+  if (present(ierr)) then
+    ierr = -1
+    return
+  else
+    error stop
+  endif
 endif
 
 !> check for matching size, else bad reads can occur.
 
-call h5ltget_dataset_info_f(self%lid, dname, ddims, dtype, dsize, ierr)
-if (check(ierr, 'ERROR: get_dataset_info ' // dname // ' read ' // self%filename)) return
+call h5ltget_dataset_info_f(self%lid, dname, ddims, dtype, dsize, ier)
+if (present(ierr)) ierr = ier
+if (check(ier, 'ERROR: get_dataset_info ' // dname // ' read ' // self%filename)) then
+  if (present(ierr)) return
+  error stop
+endif
 
 if(.not. all(dims == ddims)) then
   write(stderr,*) 'ERROR: shape mismatch ' // dname // ' = ',ddims,'  variable shape =', dims
-  ierr = -1
-  return
+  if (present(ierr)) then
+    ierr = -1
+    return
+  else
+    error stop
   endif
+endif
 
 end subroutine hdf_shape_check
 

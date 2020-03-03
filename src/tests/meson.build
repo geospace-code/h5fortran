@@ -26,7 +26,7 @@ test('deflate', test_deflate,
   timeout: 10)
 
 testh5 = executable('test_hdf5',
-  sources: ['test_hdf5_ifc.f90', 'test_lt.f90', 'test_array.f90', 'test_scalar.f90'],
+  sources: ['test_hdf5_ifc.f90', 'test_lt.f90', 'test_array.f90', 'test_scalar.f90', 'test_string.f90'],
   dependencies: hdf5_interface,
   fortran_args: quiet)
 test('h5interface', testh5,

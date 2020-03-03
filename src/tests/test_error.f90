@@ -89,6 +89,8 @@ character(*), intent(in) :: path
 integer :: u,ierr
 character(:), allocatable :: filename
 
+print *, 'test_wrong_type: begin test'
+
 filename = path // '/junk.h5'
 call h5f%initialize(filename, ierr, status='replace', action='write', verbose=.false.)
 if(ierr/=0) error stop 'test_wrong_type: creating file'

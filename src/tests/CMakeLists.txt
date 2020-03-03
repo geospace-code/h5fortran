@@ -27,7 +27,7 @@ endif()
 
 
 add_executable(testh5
-test_hdf5_ifc.f90 test_lt.f90 test_array.f90 test_scalar.f90)
+test_hdf5_ifc.f90 test_lt.f90 test_array.f90 test_scalar.f90 test_string.f90)
 target_link_libraries(testh5 PRIVATE h5fortran::h5fortran)
 if(${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU)
   target_compile_options(testh5 PRIVATE -Wno-compare-reals)
