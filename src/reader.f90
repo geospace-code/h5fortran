@@ -24,24 +24,26 @@ if (.not.self%exist(dname)) then
   ier = -1
 endif
 
+if (ier == 0) then
 select type (value)
 type is (character(*))
   block
     character(len(value)) :: buf
-    if (ier == 0) call h5ltread_dataset_string_f(self%lid, dname, buf, ier)
+    call h5ltread_dataset_string_f(self%lid, dname, buf, ier)
     value = buf
   end block
   return
 type is (real(real64))
-  if (ier == 0) call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ier)
+  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ier)
 type is (real(real32))
-  if (ier == 0) call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ier)
+  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ier)
 type is (integer(int32))
-  if (ier == 0) call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ier)
+  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ier)
 class default
   write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
   ier = -1
 end select
+endif
 
 if (present(ierr)) ierr = ier
 if (ier /= 0) then
@@ -62,29 +64,31 @@ dims = shape(value)
 
 call hdf_shape_check(self, dname, dims, ier)
 
+if (ier == 0) then
 select type (value)
 type is (real(real64))
 block
   real(real64) :: buf(dims(1))
-  if (ier == 0) call h5ltread_dataset_double_f(self%lid, dname, buf, dims, ier)
+  call h5ltread_dataset_double_f(self%lid, dname, buf, dims, ier)
   value = buf
   end block
 type is (real(real32))
   block
   real(real32) :: buf(dims(1))
-  if (ier == 0) call h5ltread_dataset_float_f(self%lid, dname, buf, dims, ier)
+  call h5ltread_dataset_float_f(self%lid, dname, buf, dims, ier)
   value = buf
   end block
 type is (integer(int32))
   block
   integer(int32) :: buf(dims(1))
-  if (ier == 0) call h5ltread_dataset_int_f(self%lid, dname, buf, dims, ier)
+  call h5ltread_dataset_int_f(self%lid, dname, buf, dims, ier)
   value = buf
   end block
 class default
   write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
   ier = -1
 end select
+endif
 
 if (present(ierr)) ierr = ier
 if (ier /= 0) then
@@ -105,29 +109,31 @@ dims = shape(value)
 
 call hdf_shape_check(self, dname, dims, ier)
 
+if (ier == 0) then
 select type (value)
 type is (real(real64))
   block
   real(real64) :: buf(dims(1), dims(2))
-  if (ier == 0) call h5ltread_dataset_double_f(self%lid, dname, buf, dims, ier)
+  call h5ltread_dataset_double_f(self%lid, dname, buf, dims, ier)
   value = buf
   end block
 type is (real(real32))
   block
   real(real32) :: buf(dims(1), dims(2))
-  if (ier == 0) call h5ltread_dataset_float_f(self%lid, dname, buf, dims, ier)
+  call h5ltread_dataset_float_f(self%lid, dname, buf, dims, ier)
   value = buf
   end block
 type is (integer(int32))
   block
   integer(int32) :: buf(dims(1), dims(2))
-  if (ier == 0) call h5ltread_dataset_int_f(self%lid, dname, buf, dims, ier)
+  call h5ltread_dataset_int_f(self%lid, dname, buf, dims, ier)
   value = buf
   end block
 class default
   write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
   ier = -1
 end select
+endif
 
 if (present(ierr)) ierr = ier
 if (ier /= 0) then
@@ -148,29 +154,31 @@ dims = shape(value)
 
 call hdf_shape_check(self, dname, dims, ier)
 
+if (ier == 0) then
 select type (value)
 type is (real(real64))
   block
   real(real64) :: buf(dims(1), dims(2), dims(3))
-  if (ier == 0) call h5ltread_dataset_double_f(self%lid, dname, buf, dims, ier)
+  call h5ltread_dataset_double_f(self%lid, dname, buf, dims, ier)
   value = buf
   end block
 type is (real(real32))
   block
   real(real32) :: buf(dims(1), dims(2), dims(3))
-  if (ier == 0) call h5ltread_dataset_float_f(self%lid, dname, buf, dims, ier)
+  call h5ltread_dataset_float_f(self%lid, dname, buf, dims, ier)
   value = buf
   end block
 type is (integer(int32))
   block
   integer(int32) :: buf(dims(1), dims(2), dims(3))
-  if (ier == 0) call h5ltread_dataset_int_f(self%lid, dname, buf, dims, ier)
+  call h5ltread_dataset_int_f(self%lid, dname, buf, dims, ier)
   value = buf
   end block
 class default
   write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
   ier = -1
 end select
+endif
 
 if (present(ierr)) ierr = ier
 if (ier /= 0) then
@@ -191,29 +199,31 @@ dims = shape(value)
 
 call hdf_shape_check(self, dname, dims, ier)
 
+if (ier == 0) then
 select type (value)
 type is (real(real64))
   block
   real(real64) :: buf(dims(1), dims(2), dims(3), dims(4))
-  if (ier == 0) call h5ltread_dataset_double_f(self%lid, dname, buf, dims, ier)
+  call h5ltread_dataset_double_f(self%lid, dname, buf, dims, ier)
   value = buf
   end block
 type is (real(real32))
   block
   real(real32) :: buf(dims(1), dims(2), dims(3), dims(4))
-  if (ier == 0) call h5ltread_dataset_float_f(self%lid, dname, buf, dims, ier)
+  call h5ltread_dataset_float_f(self%lid, dname, buf, dims, ier)
   value = buf
   end block
 type is (integer(int32))
   block
   integer(int32) :: buf(dims(1), dims(2), dims(3), dims(4))
-  if (ier == 0) call h5ltread_dataset_int_f(self%lid, dname, buf, dims, ier)
+  call h5ltread_dataset_int_f(self%lid, dname, buf, dims, ier)
   value = buf
   end block
 class default
   write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
   ier = -1
 end select
+endif
 
 if (present(ierr)) ierr = ier
 if (ier /= 0) then
@@ -234,29 +244,31 @@ dims = shape(value)
 
 call hdf_shape_check(self, dname, dims, ier)
 
+if (ier == 0) then
 select type (value)
 type is (real(real64))
   block
   real(real64) :: buf(dims(1), dims(2), dims(3), dims(4), dims(5))
-  if (ier == 0) call h5ltread_dataset_double_f(self%lid, dname, buf, dims, ier)
+  call h5ltread_dataset_double_f(self%lid, dname, buf, dims, ier)
   value = buf
   end block
 type is (real(real32))
   block
   real(real32) :: buf(dims(1), dims(2), dims(3), dims(4), dims(5))
-  if (ier == 0) call h5ltread_dataset_float_f(self%lid, dname, buf, dims, ier)
+  call h5ltread_dataset_float_f(self%lid, dname, buf, dims, ier)
   value = buf
   end block
 type is (integer(int32))
   block
   integer(int32) :: buf(dims(1), dims(2), dims(3), dims(4), dims(5))
-  if (ier == 0) call h5ltread_dataset_int_f(self%lid, dname, buf, dims, ier)
+  call h5ltread_dataset_int_f(self%lid, dname, buf, dims, ier)
   value = buf
   end block
 class default
   write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
   ier = -1
 end select
+endif
 
 if (present(ierr)) ierr = ier
 if (ier /= 0) then
@@ -277,29 +289,31 @@ dims = shape(value)
 
 call hdf_shape_check(self, dname, dims, ier)
 
+if (ier == 0) then
 select type (value)
 type is (real(real64))
   block
   real(real64) :: buf(dims(1), dims(2), dims(3), dims(4), dims(5), dims(6))
-  if (ier == 0) call h5ltread_dataset_double_f(self%lid, dname, buf, dims, ier)
+  call h5ltread_dataset_double_f(self%lid, dname, buf, dims, ier)
   value = buf
   end block
 type is (real(real32))
   block
   real(real32) :: buf(dims(1), dims(2), dims(3), dims(4), dims(5), dims(6))
-  if (ier == 0) call h5ltread_dataset_float_f(self%lid, dname, buf, dims, ier)
+  call h5ltread_dataset_float_f(self%lid, dname, buf, dims, ier)
   value = buf
   end block
 type is (integer(int32))
   block
   integer(int32) :: buf(dims(1), dims(2), dims(3), dims(4), dims(5), dims(6))
-  if (ier == 0) call h5ltread_dataset_int_f(self%lid, dname, buf, dims, ier)
+  call h5ltread_dataset_int_f(self%lid, dname, buf, dims, ier)
   value = buf
   end block
 class default
   write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
   ier = -1
 end select
+endif
 
 if (present(ierr)) ierr = ier
 if (ier /= 0) then
@@ -320,29 +334,31 @@ dims = shape(value)
 
 call hdf_shape_check(self, dname, dims, ier)
 
+if (ier == 0) then
 select type (value)
 type is (real(real64))
   block
   real(real64) :: buf(dims(1), dims(2), dims(3), dims(4), dims(5), dims(6), dims(7))
-  if (ier == 0) call h5ltread_dataset_double_f(self%lid, dname, buf, dims, ier)
+  call h5ltread_dataset_double_f(self%lid, dname, buf, dims, ier)
   value = buf
   end block
 type is (real(real32))
   block
   real(real32) :: buf(dims(1), dims(2), dims(3), dims(4), dims(5), dims(6), dims(7))
-  if (ier == 0) call h5ltread_dataset_float_f(self%lid, dname, buf, dims, ier)
+  call h5ltread_dataset_float_f(self%lid, dname, buf, dims, ier)
   value = buf
   end block
 type is (integer(int32))
   block
   integer(int32) :: buf(dims(1), dims(2), dims(3), dims(4), dims(5), dims(6), dims(7))
-  if (ier == 0) call h5ltread_dataset_int_f(self%lid, dname, buf, dims, ier)
+  call h5ltread_dataset_int_f(self%lid, dname, buf, dims, ier)
   value = buf
   end block
 class default
   write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
   ier = -1
 end select
+endif
 
 if (present(ierr)) ierr = ier
 if (ier /= 0) then
@@ -360,19 +376,21 @@ integer :: ier
 
 call h%initialize(filename, ier, status='old')
 
+if (ier == 0) then
 select type (value)
 type is (character(*))
-  if (ier == 0) call h%read(dname, value, ier)
+  call h%read(dname, value, ier)
 type is (real(real64))
-  if (ier == 0) call h%read(dname, value, ier)
+  call h%read(dname, value, ier)
 type is (real(real32))
-  if (ier == 0) call h%read(dname, value, ier)
+  call h%read(dname, value, ier)
 type is (integer(int32))
-  if (ier == 0) call h%read(dname, value, ier)
+  call h%read(dname, value, ier)
 class default
   write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
   ier = -1
 end select
+endif
 
 if (ier == 0) call h%finalize(ier)
 
@@ -391,17 +409,19 @@ integer :: ier
 
 call h%initialize(filename, ier, status='old')
 
+if (ier == 0) then
 select type (value)
 type is (real(real64))
-  if (ier == 0) call h%read(dname, value, ier)
+  call h%read(dname, value, ier)
 type is (real(real32))
-  if (ier == 0) call h%read(dname, value, ier)
+  call h%read(dname, value, ier)
 type is (integer(int32))
-  if (ier == 0) call h%read(dname, value, ier)
+  call h%read(dname, value, ier)
 class default
   write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
   ier = -1
 end select
+endif
 
 if (ier == 0) call h%finalize(ier)
 
@@ -420,17 +440,19 @@ integer :: ier
 
 call h%initialize(filename, ier, status='old')
 
+if (ier == 0) then
 select type (value)
 type is (real(real64))
-  if (ier == 0) call h%read(dname, value, ier)
+  call h%read(dname, value, ier)
 type is (real(real32))
-  if (ier == 0) call h%read(dname, value, ier)
+  call h%read(dname, value, ier)
 type is (integer(int32))
-  if (ier == 0) call h%read(dname, value, ier)
+  call h%read(dname, value, ier)
 class default
   write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
   ier = -1
 end select
+endif
 
 if (ier == 0) call h%finalize(ier)
 
@@ -449,17 +471,19 @@ integer :: ier
 
 call h%initialize(filename, ier, status='old')
 
+if (ier == 0) then
 select type (value)
 type is (real(real64))
-  if (ier == 0) call h%read(dname, value, ier)
+  call h%read(dname, value, ier)
 type is (real(real32))
-  if (ier == 0) call h%read(dname, value, ier)
+  call h%read(dname, value, ier)
 type is (integer(int32))
-  if (ier == 0) call h%read(dname, value, ier)
+  call h%read(dname, value, ier)
 class default
   write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
   ier = -1
 end select
+endif
 
 if (ier == 0) call h%finalize(ier)
 
@@ -478,17 +502,19 @@ integer :: ier
 
 call h%initialize(filename, ier, status='old')
 
+if (ier == 0) then
 select type (value)
 type is (real(real64))
-  if (ier == 0) call h%read(dname, value, ier)
+  call h%read(dname, value, ier)
 type is (real(real32))
-  if (ier == 0) call h%read(dname, value, ier)
+  call h%read(dname, value, ier)
 type is (integer(int32))
-  if (ier == 0) call h%read(dname, value, ier)
+  call h%read(dname, value, ier)
 class default
   write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
   ier = -1
 end select
+endif
 
 if (ier == 0) call h%finalize(ier)
 
@@ -507,17 +533,19 @@ integer :: ier
 
 call h%initialize(filename, ier, status='old')
 
+if (ier == 0) then
 select type (value)
 type is (real(real64))
-  if (ier == 0) call h%read(dname, value, ier)
+  call h%read(dname, value, ier)
 type is (real(real32))
-  if (ier == 0) call h%read(dname, value, ier)
+  call h%read(dname, value, ier)
 type is (integer(int32))
-  if (ier == 0) call h%read(dname, value, ier)
+  call h%read(dname, value, ier)
 class default
   write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
   ier = -1
 end select
+endif
 
 if (ier == 0) call h%finalize(ier)
 
@@ -536,17 +564,19 @@ integer :: ier
 
 call h%initialize(filename, ier, status='old')
 
+if (ier == 0) then
 select type (value)
 type is (real(real64))
-  if (ier == 0) call h%read(dname, value, ier)
+  call h%read(dname, value, ier)
 type is (real(real32))
-  if (ier == 0) call h%read(dname, value, ier)
+  call h%read(dname, value, ier)
 type is (integer(int32))
-  if (ier == 0) call h%read(dname, value, ier)
+  call h%read(dname, value, ier)
 class default
   write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
   ier = -1
 end select
+endif
 
 if (ier == 0) call h%finalize(ier)
 
@@ -565,17 +595,19 @@ integer :: ier
 
 call h%initialize(filename, ier, status='old')
 
+if (ier == 0) then
 select type (value)
 type is (real(real64))
-  if (ier == 0) call h%read(dname, value, ier)
+  call h%read(dname, value, ier)
 type is (real(real32))
-  if (ier == 0) call h%read(dname, value, ier)
+  call h%read(dname, value, ier)
 type is (integer(int32))
-  if (ier == 0) call h%read(dname, value, ier)
+  call h%read(dname, value, ier)
 class default
   write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
   ier = -1
 end select
+endif
 
 if (ier == 0) call h%finalize(ier)
 

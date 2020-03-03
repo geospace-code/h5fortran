@@ -37,22 +37,22 @@ r1 = i1
 r2 = i2
 
 !! write test data
-call h5f%initialize(path//'/test.h5', ierr, status='old',action='rw',comp_lvl=1, chunk_size=[2,2,1,1,1,1,1])
-if(ierr/=0) error stop
-call h5f%write('/int32-1d', i1, ierr)
-if(ierr/=0) error stop
-call h5f%write('/test/group2/int32-2d', i2, ierr)
-if(ierr/=0) error stop
-call h5f%write('/test/real2', r2, ierr)
-if(ierr/=0) error stop
-call h5f%write('/nan', nan, ierr)
-if(ierr/=0) error stop
+call h5f%initialize(path//'/test.h5', status='old',action='rw',comp_lvl=1, chunk_size=[2,2,1,1,1,1,1])
+
+call h5f%write('/int32-1d', i1)
+call h5f%write('/test/group2/int32-2d', i2)
+call h5f%write('/test/real2', r2)
+call h5f%write('/nan', nan)
+
 !> test writing wrong size
 call h5f%write('/int32-1d', [-1], ierr)
-if(ierr==0) error stop 'did not error for write array shape mismatch'
+if(ierr==0) error stop 'test_write_array: did not error for write array shape mismatch'
 
-call h5f%finalize(ierr)
-if(ierr/=0) error stop
+!> test writing wrong rank
+call h5f%write('/int32-1d', i2, ierr)
+if(ierr==0) error stop 'test_write_array: did not error for write array rank mismatch'
+
+call h5f%finalize()
 
 !! Read tests
 call h5f%initialize(path//'/test.h5', ierr,status='old',action='r')
@@ -76,7 +76,7 @@ if (.not.all(i2_8(2:5,3:6) == i2)) error stop 'read into larger array fail'
 
 !> check that 1D disk into 2D raises error
 call h5f%read('/int32-1d', i2, ierr)
-if (ierr==0) error stop 'failed to error on rank mismatch'
+if (ierr==0) error stop 'failed to error on read rank mismatch'
 
 ! --- real
 

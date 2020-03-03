@@ -536,57 +536,37 @@ subroutine hdf_shape_check(self, dname, dims, ierr)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
 integer(HSIZE_T), intent(in) :: dims(:)
-integer, intent(out), optional :: ierr
+integer, intent(out) :: ierr
 
 integer(SIZE_T) :: dsize
 integer(HSIZE_T) :: ddims(size(dims))
-integer :: dtype, drank, ier
+integer :: dtype, drank
 
 if (.not.self%exist(dname)) then
   write(stderr,*) 'ERROR: ' // dname // ' does not exist in ' // self%filename
-  if (present(ierr)) then
-    ierr = -1
-    return
-  else
-    error stop
-  endif
+  ierr = -1
+  return
 endif
 
 !> check for matching rank, else bad reads can occur--doesn't always crash without this check
-call h5ltget_dataset_ndims_f(self%lid, dname, drank, ier)
-if (present(ierr)) ierr = ier
-if (check(ier, 'ERROR: get_dataset_ndim ' // dname // ' read ' // self%filename)) then
-  if (present(ierr)) return
-  error stop
-endif
+call h5ltget_dataset_ndims_f(self%lid, dname, drank, ierr)
+if (check(ierr, 'ERROR: get_dataset_ndim ' // dname // ' read ' // self%filename)) return
 
 if (drank /= size(dims)) then
   write(stderr,'(A,I6,A,I6)') 'ERROR: rank mismatch ' // dname // ' = ',drank,'  variable rank =', size(dims)
-  if (present(ierr)) then
-    ierr = -1
-    return
-  else
-    error stop
-  endif
+  ierr = -1
+  return
 endif
 
 !> check for matching size, else bad reads can occur.
 
-call h5ltget_dataset_info_f(self%lid, dname, ddims, dtype, dsize, ier)
-if (present(ierr)) ierr = ier
-if (check(ier, 'ERROR: get_dataset_info ' // dname // ' read ' // self%filename)) then
-  if (present(ierr)) return
-  error stop
-endif
+call h5ltget_dataset_info_f(self%lid, dname, ddims, dtype, dsize, ierr)
+if (check(ierr, 'ERROR: get_dataset_info ' // dname // ' read ' // self%filename)) return
 
 if(.not. all(dims == ddims)) then
   write(stderr,*) 'ERROR: shape mismatch ' // dname // ' = ',ddims,'  variable shape =', dims
-  if (present(ierr)) then
-    ierr = -1
-    return
-  else
-    error stop
-  endif
+  ierr = -1
+  return
 endif
 
 end subroutine hdf_shape_check
