@@ -232,7 +232,7 @@ real :: val2(1000,1000,3) = 0.
 
 call h5f%initialize('test.h5')
 
-call h5f%write('/scope/')
+call h5f%write_group('/scope/')
 
 call h5f%finalize()
 ```
@@ -243,8 +243,6 @@ We make the hdf5%open(..., status=...) like Fortran open()
 
 * overwrite (truncate) existing file: open with `status='new'` or `status='replace'`
 * append to existing file or create file: `status='old'` or `status='unknown'`
-
-Note the trailing `/` on `/scope/`, that tells the API you are creating a group instead of a variable.
 
 ## Notes
 

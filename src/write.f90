@@ -62,7 +62,7 @@ if(exists) then
   if (check(ierr, 'ERROR: setup_write: open ' // dname // ' ' // self%filename)) return
   return
 else
-  call self%hdf_write_group(dname, ierr)
+  call self%write_group(dname, ierr)
   if (check(ierr, 'ERROR: setup_write: create ' // dname // ' ' // self%filename)) return
 endif
 

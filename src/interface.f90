@@ -33,13 +33,14 @@ integer :: libversion(3)  !< major, minor, rel
 
 contains
 !> initialize HDF5 file
-procedure, public :: initialize => hdf_initialize, finalize => hdf_finalize, writeattr, &
+procedure, public :: initialize => hdf_initialize, finalize => hdf_finalize, &
+  write_group, writeattr, &
   open => hdf_open_group, close => hdf_close_group, shape => hdf_get_shape, layout => hdf_get_layout, &
   exist => hdf_check_exist, exists => hdf_check_exist, is_contig => hdf_is_contig, is_chunked => hdf_is_chunked
 
 !> write group or dataset integer/real
 generic, public   :: write => hdf_write_scalar, hdf_write_1d, hdf_write_2d, hdf_write_3d, &
-hdf_write_4d, hdf_write_5d, hdf_write_6d, hdf_write_7d, hdf_write_group
+hdf_write_4d, hdf_write_5d, hdf_write_6d, hdf_write_7d
 
 !> read dataset integer/real
 generic, public   :: read => &
@@ -47,8 +48,7 @@ hdf_read_scalar, hdf_read_1d, hdf_read_2d, hdf_read_3d, &
   hdf_read_4d,hdf_read_5d, hdf_read_6d, hdf_read_7d
 
 !> private methods
-procedure,private :: hdf_write_group, &
-hdf_write_scalar, hdf_write_1d, hdf_write_2d, hdf_write_3d, &
+procedure,private :: hdf_write_scalar, hdf_write_1d, hdf_write_2d, hdf_write_3d, &
   hdf_write_4d, hdf_write_5d, hdf_write_6d, hdf_write_7d, &
 hdf_read_scalar, hdf_read_1d, hdf_read_2d, hdf_read_3d, &
   hdf_read_4d, hdf_read_5d, hdf_read_6d, hdf_read_7d
@@ -469,8 +469,7 @@ self%lid = 0
 end subroutine hdf_finalize
 
 
-subroutine hdf_write_group(self, gname, ierr)
-!! NOTE: needs to stay here instead of in submodule apparently?
+subroutine write_group(self, gname, ierr)
 
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: gname    !< relative path to group
@@ -518,7 +517,7 @@ do
   endif
 end do
 
-end subroutine hdf_write_group
+end subroutine write_group
 
 
 logical function check(ierr, msg)

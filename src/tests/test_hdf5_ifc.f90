@@ -1,5 +1,4 @@
 !! unit tests and registration tests of HDF5 OO interface
-use, intrinsic:: ieee_arithmetic, only: ieee_value, ieee_quiet_nan, ieee_is_nan
 use, intrinsic:: iso_fortran_env, only: int32, real32, real64, stderr=>error_unit
 
 use h5fortran, only: hdf5_file, h5write, h5read
@@ -10,8 +9,6 @@ use test_scalar, only : test_scalar_rw
 use test_string, only : test_string_rw, test_lowercase, test_strip_null
 
 implicit none
-
-real(real32) :: nan
 
 character(:), allocatable :: path
 character(256) :: argv
@@ -24,8 +21,6 @@ if (i /= 0 .or. l == 0) then
 endif
 path = trim(argv)
 print *, 'test path: ', path
-
-nan = ieee_value(1.0, ieee_quiet_nan)
 
 call test_string_rw(path)
 print *,'PASSED: HDF5 string write/read'
@@ -63,11 +58,9 @@ subroutine testGroup(path)
 type(hdf5_file) :: h5f
 character(*), intent(in) :: path
 
-integer :: ierr
-
 call h5f%initialize(path//'/test_groups.h5', status='new',action='rw')
 
-call h5f%write('/test/')
+call h5f%write_group('/test/')
 
 call h5f%open('/test')
 
@@ -106,7 +99,6 @@ end subroutine test_write_attributes
 subroutine test_writeExistingVariable(path)
 type(hdf5_file) :: h5f
 character(*), intent(in) :: path
-integer :: ierr
 character(:),allocatable :: fn
 
 fn = path//'/overwrite.h5'
