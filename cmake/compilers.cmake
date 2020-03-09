@@ -9,7 +9,8 @@ if(CMAKE_Fortran_COMPILER_ID STREQUAL Intel)
 elseif(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
   string(APPEND CMAKE_Fortran_FLAGS " -Wall -Wextra -fimplicit-none")
   string(APPEND CMAKE_Fortran_FLAGS_DEBUG " -fcheck=all -Werror=array-bounds")
-  add_compile_options(-march=native)
+  # -march=native is not for all CPU arches with GCC.
+  add_compile_options(-mtune=native)
 
   if(CMAKE_Fortran_COMPILER_VERSION VERSION_GREATER_EQUAL 8)
     string(APPEND CMAKE_Fortran_FLAGS " -std=f2018")
