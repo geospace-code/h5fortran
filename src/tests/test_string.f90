@@ -18,8 +18,6 @@ if (.not.(toLower(hello)=='hell0 th3re !>? ')) error stop 'error: lowercase conv
 
 if (.not.(trim(toLower(hello))=='hell0 th3re !>?')) error stop 'Allocatable lowercase conversion error'
 
-if(.not.all(toLower(['Hi','hI'])==['hi','hi'])) error stop 'error on array conversion'
-
 end subroutine test_lowercase
 
 

@@ -4,7 +4,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 project(h5fortran
   LANGUAGES C Fortran
-  VERSION 2.7.1
+  VERSION 2.7.2
   DESCRIPTION "thin, light, easy HDF5 Fortran interface"
   HOMEPAGE_URL https://github.com/scivision/h5fortran)
 enable_testing()
@@ -18,15 +18,18 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/compilers.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/hdf5.cmake)
 
 if(NOT HDF5OK)
+
   message(STATUS "HDF5 library not working with ${CMAKE_Fortran_COMPILER_ID} ${CMAKE_Fortran_COMPILER_VERSION}")
-  message(STATUS "h5fortran disabled")
-  unset(h5fortran)
-  unset(h5fortran::fortran)
+
   if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     message(FATAL_ERROR)
-  else()
-    return()
   endif()
+
+  unset(h5fortran)
+  unset(h5fortran::fortran)
+  message(STATUS "h5fortran disabled")
+  return()
+
 endif(NOT HDF5OK)
 
 set(CTEST_TEST_TIMEOUT 15)
@@ -36,6 +39,7 @@ set(CTEST_TEST_TIMEOUT 15)
 add_library(h5fortran)
 target_include_directories(h5fortran
   PUBLIC ${HDF5_INCLUDE_DIRS}
+  PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/include  # for IBM XL
   INTERFACE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
   $<INSTALL_INTERFACE:include>)
