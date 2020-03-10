@@ -858,7 +858,8 @@ if( NOT HDF5_FOUND )
                 )
 
                 # Fix for libhdf_hl_fortran in 1.10.6, needed for Windows specifically
-                if("hdf5hl_fortran" IN_LIST THIS_LIBRARY_SEARCH_RELEASE)
+                if("hdf5hl_fortran" IN_LIST THIS_LIBRARY_SEARCH_RELEASE OR
+                   "libhdf5hl_fortran" IN_LIST THIS_LIBRARY_SEARCH_RELEASE)  # windows
                   list(APPEND THIS_LIBRARY_SEARCH_RELEASE hdf5_hl_fortran)
                 endif()
                 # message(CHECK_START "looking for: ${THIS_LIBRARY_SEARCH_RELEASE}")
