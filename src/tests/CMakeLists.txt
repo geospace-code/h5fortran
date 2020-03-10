@@ -3,28 +3,16 @@ set(tmpdir ${CMAKE_CURRENT_BINARY_DIR})
 add_executable(test_minimal test_minimal.f90)
 target_link_libraries(test_minimal PRIVATE h5fortran::h5fortran)
 add_test(NAME h5fortran:minimal COMMAND $<TARGET_FILE:test_minimal> ${tmpdir})
-if(WIN32 AND HDF5_ROOT)
-  set_tests_properties(h5fortran:minimal PROPERTIES ENVIRONMENT "PATH=${HDF5_ROOT}/bin;$ENV{PATH}")
-endif()
 
 add_executable(test_errors test_error.f90)
 target_link_libraries(test_errors PRIVATE h5fortran::h5fortran)
 add_test(NAME h5fortran:ErrorCheck COMMAND $<TARGET_FILE:test_errors> ${tmpdir})
 set_tests_properties(h5fortran:ErrorCheck PROPERTIES SKIP_RETURN_CODE 77)
-if(WIN32 AND HDF5_ROOT)
-  set_tests_properties(h5fortran:ErrorCheck PROPERTIES ENVIRONMENT "PATH=${HDF5_ROOT}/bin;$ENV{PATH}")
-endif()
 
 add_executable(test_exist test_exist.f90)
 target_link_libraries(test_exist PRIVATE h5fortran::h5fortran)
 add_test(NAME h5fortran:test_exist COMMAND $<TARGET_FILE:test_exist> ${tmpdir})
-set_tests_properties(h5fortran:test_exist PROPERTIES
-SKIP_RETURN_CODE 77
-TIMEOUT 10)
-if(WIN32 AND HDF5_ROOT)
-  set_tests_properties(h5fortran:test_exist PROPERTIES ENVIRONMENT "PATH=${HDF5_ROOT}/bin;$ENV{PATH}")
-endif()
-
+set_tests_properties(h5fortran:test_exist PROPERTIES SKIP_RETURN_CODE 77)
 
 add_executable(testh5
 test_hdf5_ifc.f90 test_lt.f90 test_array.f90 test_scalar.f90 test_string.f90)
@@ -36,18 +24,11 @@ add_test(NAME h5fortran:module COMMAND $<TARGET_FILE:testh5> ${tmpdir})
 set_tests_properties(h5fortran:module PROPERTIES
   FIXTURES_SETUP h5files
   SKIP_RETURN_CODE 77)
-if(WIN32 AND HDF5_ROOT)
-  set_tests_properties(h5fortran:module PROPERTIES ENVIRONMENT "PATH=${HDF5_ROOT}/bin;$ENV{PATH}")
-endif()
 
 add_executable(test_deflate test_deflate.f90)
 target_link_libraries(test_deflate PRIVATE h5fortran::h5fortran)
 add_test(NAME h5fortran:deflate COMMAND $<TARGET_FILE:test_deflate> ${tmpdir})
 set_tests_properties(h5fortran:deflate PROPERTIES SKIP_RETURN_CODE 77)
-if(WIN32 AND HDF5_ROOT)
-  set_tests_properties(h5fortran:deflate PROPERTIES ENVIRONMENT "PATH=${HDF5_ROOT}/bin;$ENV{PATH}")
-endif()
-
 
 set(testfile ${tmpdir}/p5.h5)
 
@@ -61,9 +42,6 @@ set_tests_properties(h5fortran:ShapeCheck PROPERTIES
   REQUIRED_FILES ${testfile}
   RUN_SERIAL true
   SKIP_RETURN_CODE 77)
-if(WIN32 AND HDF5_ROOT)
-  set_tests_properties(h5fortran:ShapeCheck PROPERTIES ENVIRONMENT "PATH=${HDF5_ROOT}/bin;$ENV{PATH}")
-endif()
 
 # ---
 if(NOT test_shaky)
@@ -73,8 +51,7 @@ endif()
 find_package(Python3 COMPONENTS Interpreter)
 if(Python3_FOUND)
   add_test(NAME h5fortran:PythonShapeCheck
-    COMMAND Python3::Interpreter test_shape.py ${testfile} /group69/flux_node
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+    COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test_shape.py ${testfile} /group69/flux_node)
   set_tests_properties(h5fortran:PythonShapeCheck PROPERTIES
     FIXTURES_REQUIRED h5files
     REQUIRED_FILES ${testfile}
