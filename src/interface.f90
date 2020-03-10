@@ -430,7 +430,7 @@ case default
 end select
 
 if (present(ierr)) ierr = ier
-if (check(ier, 'ERROR: ' // filename // ' could not be created')) then
+if (check(ier, 'ERROR:initialize ' // filename // ' could not be created')) then
   if (present(ierr)) return
   error stop
 endif
@@ -446,7 +446,7 @@ integer :: ier
 !> close hdf5 file
 call h5fclose_f(self%lid, ier)
 if (present(ierr)) ierr = ier
-if (check(ier, 'ERROR: HDF5 file close: ' // self%filename)) then
+if (check(ier, 'ERROR:finalize: HDF5 file close: ' // self%filename)) then
   if (present(ierr)) return
   error stop
 endif
@@ -454,7 +454,7 @@ endif
 !>  Close Fortran interface.
 call h5close_f(ier)
 if (present(ierr)) ierr = ier
-if (check(ier, 'ERROR: HDF5 library close')) then
+if (check(ier, 'ERROR:finalize: HDF5 library close')) then
   if (present(ierr)) return
   error stop
 endif

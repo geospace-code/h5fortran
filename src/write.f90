@@ -27,7 +27,7 @@ integer :: ier
 call h5ltset_attribute_string_f(self%lid, dname, attr, attrval, ier)
 
 if (present(ierr)) ierr = ier
-if (check(ier, 'ERROR: ' // dname // ' writeattr ' // self%filename)) then
+if (check(ier, 'ERROR:writeattr ' // dname // ' ' // self%filename)) then
   if (present(ierr)) return
   error stop
 endif
