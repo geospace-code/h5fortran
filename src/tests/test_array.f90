@@ -1,7 +1,7 @@
 module test_array
 
 use, intrinsic:: ieee_arithmetic, only: ieee_value, ieee_quiet_nan, ieee_is_nan
-use, intrinsic :: iso_fortran_env, only: real32, real64, int32
+use, intrinsic :: iso_fortran_env, only: real32, real64, int32, stderr=>error_unit
 use h5fortran, only : hdf5_file, hsize_t
 
 implicit none
@@ -37,7 +37,7 @@ r1 = i1
 r2 = i2
 
 !! write test data
-call h5f%initialize(path//'/test.h5', status='old',action='rw',comp_lvl=1)
+call h5f%initialize(path//'/test.h5', status='old',action='rw',comp_lvl=1, verbose=.false.)
 
 call h5f%write('/int32-1d', i1)
 call h5f%write('/test/group2/int32-2d', i2)
@@ -55,21 +55,26 @@ if(ierr==0) error stop 'test_write_array: did not error for write array rank mis
 call h5f%finalize()
 
 !! Read tests
-call h5f%initialize(path//'/test.h5', ierr,status='old',action='r')
-if(ierr/=0) error stop
+call h5f%initialize(path//'/test.h5', status='old',action='r')
 !> int32
 
-call h5f%read('/int32-1d', i1t, ierr)
-if(ierr/=0) error stop
+call h5f%read('/int32-1d', i1t)
 if (.not.all(i1==i1t)) error stop 'read 1-d int32: does not match write'
 
-call h5f%read('/test/group2/int32-2d',i2t, ierr)
-if(ierr/=0) error stop
+print *, 'test_write_array: read slice 1d'
+i1t = 0
+call h5f%read('/int32-1d', i1t(:2), istart=[2], iend=[3], stride=[1])
+if (.not.all(i1t(:2)==[2,3])) then
+  write(stderr, *) 'read 1D slice does not match. expected [2,3] but got ',i1t(:2)
+  error stop
+endif
+
+call h5f%read('/test/group2/int32-2d',i2t)
 if (.not.all(i2==i2t)) error stop 'read 2-D: int32 does not match write'
 
 !> verify reading into larger array
 i2_8 = 0
-call h5f%read('/test/group2/int32-2d', i2_8(2:5,3:6), ierr)
+call h5f%read('/test/group2/int32-2d', i2_8(2:5,3:6))
 if (.not.all(i2_8(2:5,3:6) == i2)) error stop 'read into larger array fail'
 
 !> check error for reading array dimension mismatch

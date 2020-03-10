@@ -2,7 +2,8 @@ module h5fortran
 !! HDF5 object-oriented polymorphic interface
 use, intrinsic :: iso_c_binding, only : c_ptr, c_loc
 use, intrinsic :: iso_fortran_env, only : real32, real64, int64, int32, stderr=>error_unit
-use hdf5, only : HID_T, SIZE_T, HSIZE_T, H5F_ACC_RDONLY_F, H5F_ACC_RDWR_F, H5F_ACC_TRUNC_F, H5S_SELECT_SET_F, &
+use hdf5, only : HID_T, SIZE_T, HSIZE_T, H5F_ACC_RDONLY_F, H5F_ACC_RDWR_F, H5F_ACC_TRUNC_F, &
+  H5S_ALL_F, H5S_SELECT_SET_F, &
   H5T_NATIVE_DOUBLE, H5T_NATIVE_REAL, H5T_NATIVE_INTEGER, H5T_NATIVE_CHARACTER, &
   h5open_f, h5close_f, &
   h5dopen_f, h5dclose_f, h5dget_space_f, &
@@ -17,7 +18,7 @@ use string_utils, only : toLower, strip_trailing_null, truncate_string_null
 
 implicit none
 private
-public :: hdf5_file, toLower, hdf_shape_check, hdf_wrapup, hsize_t, strip_trailing_null, truncate_string_null, &
+public :: hdf5_file, toLower, hdf_shape_check, hdf_get_slice, hdf_wrapup, hsize_t, strip_trailing_null, truncate_string_null, &
   check, h5write, h5read
 
 !> Workaround for Intel 19.1 / 2020 bug with /stand:f18
@@ -276,11 +277,12 @@ class(*), intent(inout)      :: value
 integer, intent(out), optional :: ierr
 end subroutine hdf_read_scalar
 
-module subroutine hdf_read_1d(self, dname, value, ierr)
+module subroutine hdf_read_1d(self, dname, value, ierr, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(out) :: value(:)
 integer, intent(out), optional :: ierr
+integer, intent(in), optional, dimension(:) :: istart, iend, stride
 end subroutine hdf_read_1d
 
 module subroutine hdf_read_2d(self, dname, value, ierr)
@@ -547,6 +549,68 @@ call h5dclose_f(did, ierr)
 if (check(ierr, 'ERROR:h5dclose dataset')) return
 
 end subroutine hdf_wrapup
+
+
+subroutine hdf_get_slice(self, dname, i0, i1, i2, did, sid, mem_sid,  ierr)
+!! TODO untested
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: dname
+class(*), intent(in), dimension(:) :: i0, i1, i2
+integer(hid_t), intent(out) :: sid, did, mem_sid
+integer, intent(out) :: ierr
+
+integer(hsize_t), dimension(size(i0)) :: istart, iend, stride, mem_dims
+integer :: mem_rank
+
+select type (i0)
+type is (integer(int32))
+  istart = int(i0, int64)
+type is (integer(hsize_t))
+  istart = i0
+class default
+  error stop 'wrong integer type for istart'
+end select
+
+select type (i1)
+type is (integer(int32))
+  iend = int(i1, int64)
+type is (integer(hsize_t))
+  iend = i1
+class default
+  error stop 'wrong integer type for iend'
+end select
+
+select type (i2)
+type is (integer(int32))
+  stride = int(i2, int64)
+type is (integer(hsize_t))
+  stride = i2
+class default
+  error stop 'wrong integer type for stride'
+end select
+
+!! compensate for 0-based hyperslab vs. 1-based Fortran
+istart = istart - 1
+
+mem_dims = iend - istart
+mem_rank = size(mem_dims)
+
+
+call h5dopen_f(self%lid, dname, did, ierr)
+
+if(ierr == 0) call h5dget_space_f(did, sid, ierr)
+
+if(ierr == 0) call h5sselect_hyperslab_f(sid, H5S_SELECT_SET_F, istart, mem_dims, ierr, stride)
+
+if(ierr == 0) call h5screate_simple_f(mem_rank, mem_dims, mem_sid, ierr)
+
+if (ierr /= 0) then
+  write(stderr,*) 'ERROR:get_slice:', dname, self%filename
+  return
+endif
+
+
+end subroutine hdf_get_slice
 
 
 subroutine hdf_shape_check(self, dname, dims, ierr)
