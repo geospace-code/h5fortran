@@ -17,14 +17,11 @@ allocate(dims(0))
 select type (value)
 type is (character(*))
   call h5ltmake_dataset_string_f(self%lid, dname, value, ier)
+  if (present(ierr)) ierr = ier
   if (ier /= 0) then
     write(stderr,*) 'ERROR: ' // dname // ' write ' // self%filename
-    if (present(ierr)) then
-      ierr = ier
-      return
-    else
-      error stop
-    endif
+    if (present(ierr)) return
+    error stop
   endif
   return
 type is (real(real64))
@@ -61,20 +58,18 @@ integer(HID_T)  :: dtype, sid, did
 integer(HSIZE_T) :: dims(rank(value))
 integer :: ier
 
+dims = shape(value)
 select type (value)
 type is (real(real64))
-  dims = shape(value)
   dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
   call hdf_setup_write(self,dname,dtype,dims,sid,did, ier)
   if (ier == 0) call h5dwrite_f(did, dtype, value, dims, ier)
 type is (real(real32))
   dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
-  dims = shape(value)
   call hdf_setup_write(self,dname,dtype,dims,sid,did, ier)
   if (ier == 0) call h5dwrite_f(did, dtype, value, dims, ier)
 type is (integer(int32))
   dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
-  dims = shape(value)
   call hdf_setup_write(self,dname,dtype,dims,sid,did, ier)
   if (ier == 0) call h5dwrite_f(did, dtype, value, dims, ier)
 class default
@@ -99,20 +94,18 @@ integer(HID_T)  :: dtype, sid, did
 integer(HSIZE_T) :: dims(rank(value))
 integer :: ier
 
+dims = shape(value)
 select type (value)
 type is (real(real64))
-  dims = shape(value)
   dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
   call hdf_setup_write(self,dname,dtype,dims,sid,did, ier, chunk_size)
   if (ier == 0) call h5dwrite_f(did, dtype, value, dims, ier)
 type is (real(real32))
   dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
-  dims = shape(value)
   call hdf_setup_write(self,dname,dtype,dims,sid,did, ier, chunk_size)
   if (ier == 0) call h5dwrite_f(did, dtype, value, dims, ier)
 type is (integer(int32))
   dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
-  dims = shape(value)
   call hdf_setup_write(self,dname,dtype,dims,sid,did, ier, chunk_size)
   if (ier == 0) call h5dwrite_f(did, dtype, value, dims, ier)
 class default
@@ -137,20 +130,18 @@ integer(HID_T)  :: dtype, sid, did
 integer(HSIZE_T) :: dims(rank(value))
 integer :: ier
 
+dims = shape(value)
 select type (value)
 type is (real(real64))
-  dims = shape(value)
   dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
   call hdf_setup_write(self,dname,dtype,dims,sid,did, ier, chunk_size)
   if (ier == 0) call h5dwrite_f(did, dtype, value, dims, ier)
 type is (real(real32))
   dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
-  dims = shape(value)
   call hdf_setup_write(self,dname,dtype,dims,sid,did, ier, chunk_size)
   if (ier == 0) call h5dwrite_f(did, dtype, value, dims, ier)
 type is (integer(int32))
   dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
-  dims = shape(value)
   call hdf_setup_write(self,dname,dtype,dims,sid,did, ier, chunk_size)
   if (ier == 0) call h5dwrite_f(did, dtype, value, dims, ier)
 class default
@@ -175,20 +166,18 @@ integer(HID_T)  :: dtype, sid, did
 integer(HSIZE_T) :: dims(rank(value))
 integer :: ier
 
+dims = shape(value)
 select type (value)
 type is (real(real64))
-  dims = shape(value)
   dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
   call hdf_setup_write(self,dname,dtype,dims,sid,did, ier, chunk_size)
   if (ier == 0) call h5dwrite_f(did, dtype, value, dims, ier)
 type is (real(real32))
   dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
-  dims = shape(value)
   call hdf_setup_write(self,dname,dtype,dims,sid,did, ier, chunk_size)
   if (ier == 0) call h5dwrite_f(did, dtype, value, dims, ier)
 type is (integer(int32))
   dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
-  dims = shape(value)
   call hdf_setup_write(self,dname,dtype,dims,sid,did, ier, chunk_size)
   if (ier == 0) call h5dwrite_f(did, dtype, value, dims, ier)
 class default
@@ -213,20 +202,18 @@ integer(HID_T)  :: dtype, sid, did
 integer(HSIZE_T) :: dims(rank(value))
 integer :: ier
 
+dims = shape(value)
 select type (value)
 type is (real(real64))
-  dims = shape(value)
   dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
   call hdf_setup_write(self,dname,dtype,dims,sid,did, ier, chunk_size)
   if (ier == 0) call h5dwrite_f(did, dtype, value, dims, ier)
 type is (real(real32))
   dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
-  dims = shape(value)
   call hdf_setup_write(self,dname,dtype,dims,sid,did, ier, chunk_size)
   if (ier == 0) call h5dwrite_f(did, dtype, value, dims, ier)
 type is (integer(int32))
   dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
-  dims = shape(value)
   call hdf_setup_write(self,dname,dtype,dims,sid,did, ier, chunk_size)
   if (ier == 0) call h5dwrite_f(did, dtype, value, dims, ier)
 class default
@@ -251,20 +238,18 @@ integer(HID_T)  :: dtype, sid, did
 integer(HSIZE_T) :: dims(rank(value))
 integer :: ier
 
+dims = shape(value)
 select type (value)
 type is (real(real64))
-  dims = shape(value)
   dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
   call hdf_setup_write(self,dname,dtype,dims,sid,did, ier, chunk_size)
   if (ier == 0) call h5dwrite_f(did, dtype, value, dims, ier)
 type is (real(real32))
   dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
-  dims = shape(value)
   call hdf_setup_write(self,dname,dtype,dims,sid,did, ier, chunk_size)
   if (ier == 0) call h5dwrite_f(did, dtype, value, dims, ier)
 type is (integer(int32))
   dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
-  dims = shape(value)
   call hdf_setup_write(self,dname,dtype,dims,sid,did, ier, chunk_size)
   if (ier == 0) call h5dwrite_f(did, dtype, value, dims, ier)
 class default
@@ -289,20 +274,18 @@ integer(HID_T)  :: dtype, sid, did
 integer(HSIZE_T) :: dims(rank(value))
 integer :: ier
 
+dims = shape(value)
 select type (value)
 type is (real(real64))
-  dims = shape(value)
   dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
   call hdf_setup_write(self,dname,dtype,dims,sid,did, ier, chunk_size)
   if (ier == 0) call h5dwrite_f(did, dtype, value, dims, ier)
 type is (real(real32))
   dtype = h5kind_to_type(kind(value),H5_REAL_KIND)
-  dims = shape(value)
   call hdf_setup_write(self,dname,dtype,dims,sid,did, ier, chunk_size)
   if (ier == 0) call h5dwrite_f(did, dtype, value, dims, ier)
 type is (integer(int32))
   dtype = h5kind_to_type(kind(value),H5_INTEGER_KIND)
-  dims = shape(value)
   call hdf_setup_write(self,dname,dtype,dims,sid,did, ier, chunk_size)
   if (ier == 0) call h5dwrite_f(did, dtype, value, dims, ier)
 class default
@@ -334,7 +317,6 @@ type is (real(real64))
   if (ier == 0) call h%write(dname, value, ier)
 type is (real(real32))
   if (ier == 0) call h%write(dname, value, ier)
-
 type is (integer(int32))
   if (ier == 0) call h%write(dname, value, ier)
 class default
