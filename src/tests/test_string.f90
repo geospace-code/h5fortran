@@ -55,6 +55,7 @@ if (value /= '42') then
   error stop
 endif
 
+print *,'test_string_rw: reading too much data'
 !! try reading too much data, then truncating to first C_NULL
 call h5f%read('/little', val1k)
 final = truncate_string_null(val1k)
