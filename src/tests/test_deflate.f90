@@ -6,8 +6,6 @@ use hdf5, only: H5D_CHUNKED_F, H5D_CONTIGUOUS_F, hsize_t
 
 implicit none
 
-integer ::  ierr
-
 character(:), allocatable :: path
 character(256) :: argv
 integer :: i,l
@@ -37,7 +35,7 @@ real(real32) :: big2(N,N) = 0., big3(N,N,4) = 0.
 character(:), allocatable :: fn
 
 fn = path // '/deflate1.h5'
-call h5f%initialize(fn, status='new', action='rw', comp_lvl=1)
+call h5f%initialize(fn, status='new', action='rw', comp_lvl=1, debug=.true.)
 call h5f%write('/big2', big2, chunk_size=[100,100])
 call h5f%write('/small_contig', big2(:5,:5))
 call h5f%finalize()
@@ -61,7 +59,7 @@ call h5f%finalize()
 
 !======================================
 fn = path // '/deflate2.h5'
-call h5f%initialize(fn, status='new',action='rw',comp_lvl=1)
+call h5f%initialize(fn, status='new',action='rw',comp_lvl=1, debug=.true.)
 call h5f%write('/big3', big3, chunk_size=[100,100,1])
 call h5f%finalize()
 
@@ -73,12 +71,9 @@ print '(A,F6.2,A,I6)','filesize (Mbytes): ',fsize/1e6, '   3D compression ratio:
 if (h5f%comp_lvl > 0 .and. crat < 10) error stop '3D low compression'
 !======================================
 fn = path // '/deflate3.h5'
-call h5f%initialize(fn, ierr, status='new',action='rw',comp_lvl=1)
-if(ierr/=0) error stop '#3 init'
-call h5f%write('/ibig3', ibig3, ierr, chunk_size=[1000,100,1])
-if(ierr/=0) error stop '#3 write'
-call h5f%finalize(ierr)
-if (ierr /= 0) error stop '#3 finalize'
+call h5f%initialize(fn, status='new',action='rw',comp_lvl=1, debug=.true.)
+call h5f%write('/ibig3', ibig3, chunk_size=[1000,100,1])
+call h5f%finalize()
 
 inquire(file=fn, size=fsize)
 crat = (N*N*storage_size(ibig3)/8) / fsize
@@ -88,7 +83,7 @@ print '(A,F6.2,A,I6)','filesize (Mbytes): ',fsize/1e6, '   3D compression ratio:
 if (h5f%comp_lvl > 0 .and. crat < 10) error stop '3D low compression'
 !======================================
 fn = path // '/deflate4.h5'
-call h5f%initialize(fn, status='new',action='rw',comp_lvl=1)
+call h5f%initialize(fn, status='new',action='rw',comp_lvl=1, debug=.true.)
 call h5f%write('/ibig2', ibig2, chunk_size=[100,100])
 call h5f%finalize()
 
