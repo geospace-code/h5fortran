@@ -75,40 +75,33 @@ integer :: u,ierr
 character(:), allocatable :: filename
 
 filename = path // '/junk.h5'
-call h5f%initialize(filename, ierr, status='replace', action='readwrite', verbose=.false.)
-if(ierr/=0) error stop 'test_nonexist_variable: opening file'
+call h5f%initialize(filename, status='replace', action='readwrite', verbose=.false.)
 call h5f%read('/not-exist', u, ierr)
 if(ierr==0) error stop 'test_nonexist_variable: should have ierr/=0 on non-exist variable'
-call h5f%finalize(ierr)
-if (ierr/=0) error stop 'test_nonexist_variable: finalizing'
+call h5f%finalize()
 end subroutine test_nonexist_variable
 
 
 subroutine test_wrong_type(path)
 character(*), intent(in) :: path
-integer :: u,ierr
+integer :: u
 character(:), allocatable :: filename
 
-print *, 'test_wrong_type: begin test'
+print *, 'test_wrong_type: write'
 
 filename = path // '/junk.h5'
-call h5f%initialize(filename, ierr, status='replace', action='write', verbose=.false.)
-if(ierr/=0) error stop 'test_wrong_type: creating file'
-call h5f%write('/real32', 42., ierr)
-if(ierr/=0) error stop 'test_wrong_type: writing test variable'
-call h5f%finalize(ierr)
-if (ierr/=0) error stop 'test_nonexist_variable: finalizing'
+call h5f%initialize(filename, status='replace', action='write', verbose=.false.)
+call h5f%write('/real32', 42.)
+call h5f%finalize()
 
-call h5f%initialize(filename, ierr, status='old', action='read', verbose=.false.)
-if(ierr/=0) error stop 'test_wrong_type: opening file'
-call h5f%read('/real32', u, ierr)
-if(ierr/=0) then
-  write(stderr,*) 'read value /real32: ', u
-  error stop 'test_wrong_type: read mismatched variable type'
-endif
+
+print *, 'test_wrong_type: read'
+
+call h5f%initialize(filename, status='old', action='read', verbose=.false.)
+call h5f%read('/real32', u)
 if (u /= 42) error stop 'test_wrong_type: did not coerce real to integer'
-call h5f%finalize(ierr)
-if (ierr/=0) error stop 'test_nonexist_variable: finalizing'
+call h5f%finalize()
+
 end subroutine test_wrong_type
 
 
@@ -137,8 +130,7 @@ complex :: x
 x = (1, -1)
 
 filename = path // '/junk.h5'
-call h5f%initialize(filename, ierr, status='unknown', action='readwrite', verbose=.false.)
-if(ierr/=0) error stop 'test_unknown_read: opening file'
+call h5f%initialize(filename, status='unknown', action='readwrite', verbose=.false.)
 call h5f%read('/complex', x, ierr)
 if(ierr==0) error stop 'test_unknown_read: reading unknown type variable'
 end subroutine test_unknown_read
