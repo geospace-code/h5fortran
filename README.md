@@ -35,11 +35,17 @@ For example, reading a float HDF5 variable into an integer Fortran variable:  42
 Tested on systems with HDF5 1.8, 1.10 and 1.12 including:
 
 * MacOS (homebrew)
-* Ubuntu 16.04 / 18.04 (gfortran 6 or newer)
+* Ubuntu 16.04 / 18.04
 * Windows Subsystem for Linux
 * Windows MSYS2
+* IBM Power with Gfortran
 
-Currently, Cygwin does not have *Fortran* HDF5 libraries.
+Using Cygwin requires compiling the HDF5 Fortran libraries.
+
+Compilers known to work include:
+
+* Gfortran >= 6
+* Intel compiler
 
 ## Build
 
@@ -262,7 +268,7 @@ We make the hdf5%open(..., status=...) like Fortran open()
 ## Notes
 
 * The first character of the filename should be a character, NOT whitespace to avoid file open/creation errors.
-* Using compilers like PGI or Flang may require first compiling the HDF5 library yourself.
+* [PGI](https://www.fluidnumerics.com/resources/building-hdf5-with-pgi) or Flang compilers require first compiling the HDF5 library yourself.
 * Intel compiler HDF5 [compile notes](https://www.hdfgroup.org/downloads/hdf5/source-code/)
 * Polymorphic array rank is implemented by explicit code internally. We could have used pointers, but the code is simple enough to avoid the risk associated with explicit array pointers. Also, `select rank` support requires Gfortran-10 or Intel Fortran 2020, so we didn't want to make too-new compiler restriction.
 
