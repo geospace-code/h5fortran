@@ -215,7 +215,7 @@ call h5f%read('/foo', A)
 call h5f%finalize()
 ```
 
-### is dataset contiguous or chunked?
+### is dataset contiguous or chunked
 
 Assumed file handle h5f was already initialized, the logical status is inspected:
 
@@ -223,6 +223,14 @@ Assumed file handle h5f was already initialized, the logical status is inspected
 is_contig = h5f%is_contig('/foo')
 
 is_chunked = h5f%is_chunked('/foo')
+```
+
+### get chunk size
+
+if dataset is not chunks, chunk_size == -1
+
+```sh
+call h5f%chunk('/foo', chunk_size)
 ```
 
 ### Create group "scope"

@@ -175,7 +175,8 @@ do
 
   if (product(chunk_size) == 1) exit
   !! Element size larger than CHUNK_MAX
-  j = int(modulo(i, ndims), hsize_t)
+  j = int(modulo(i, ndims), hsize_t) + 1
+  if (j < 1 .or. j > ndims) error stop 'auto index bounds error'
   chunk_size(j) = ceiling(real(chunk_size(j)) / 2.0)
   i = i+1
 end do
