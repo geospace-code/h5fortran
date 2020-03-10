@@ -37,7 +37,7 @@ r1 = i1
 r2 = i2
 
 !! write test data
-call h5f%initialize(path//'/test.h5', status='old',action='rw',comp_lvl=1, chunk_size=[2,2,1,1,1,1,1])
+call h5f%initialize(path//'/test.h5', status='old',action='rw',comp_lvl=1)
 
 call h5f%write('/int32-1d', i1)
 call h5f%write('/test/group2/int32-2d', i2)

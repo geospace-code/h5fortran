@@ -32,16 +32,20 @@ set_tests_properties(h5fortran:deflate PROPERTIES SKIP_RETURN_CODE 77)
 
 set(testfile ${tmpdir}/p5.h5)
 
-# ====
 add_executable(test_shape test_shape.f90)
 target_link_libraries(test_shape PRIVATE h5fortran::h5fortran)
-
 add_test(NAME h5fortran:ShapeCheck COMMAND $<TARGET_FILE:test_shape> ${testfile} /group69/flux_node)
 set_tests_properties(h5fortran:ShapeCheck PROPERTIES
   FIXTURES_REQUIRED h5files
   REQUIRED_FILES ${testfile}
   RUN_SERIAL true
   SKIP_RETURN_CODE 77)
+
+if(WIN32 AND HDF5_ROOT)
+  foreach(t h5fortran:minimal h5fortran:ErrorCheck h5fortran:test_exist h5fortran:module h5fortran:deflate h5fortran:ShapeCheck)
+    set_tests_properties(${t} PROPERTIES ENVIRONMENT "PATH=${HDF5_ROOT}/bin;$ENV{PATH}")
+  endforeach()
+endif()
 
 # ---
 if(NOT test_shaky)

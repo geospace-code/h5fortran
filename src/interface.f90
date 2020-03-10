@@ -27,8 +27,7 @@ integer(HID_T) :: lid=0, &   !< location ID
                   glid   !< group location ID
 
 integer :: comp_lvl = 0 !< compression level (1-9)  0: disable compression
-integer(HSIZE_T) :: chunk_size(7) = [1,1,1,1,1,1,1]  !< chunk size per dimension
-logical :: verbose=.true.
+logical :: verbose=.true., debug=.false.
 integer :: libversion(3)  !< major, minor, rel
 
 contains
@@ -335,7 +334,7 @@ end interface
 contains
 
 
-subroutine hdf_initialize(self,filename,ierr, status,action,comp_lvl,chunk_size,verbose)
+subroutine hdf_initialize(self,filename,ierr, status,action,comp_lvl,verbose,debug)
 !! Opens hdf5 file
 
 class(hdf5_file), intent(inout)    :: self
@@ -344,8 +343,7 @@ integer, intent(out), optional :: ierr
 character(*), intent(in), optional :: status
 character(*), intent(in), optional :: action
 integer, intent(in), optional      :: comp_lvl
-class(*), intent(in), optional     :: chunk_size(7)
-logical, intent(in), optional      :: verbose
+logical, intent(in), optional      :: verbose, debug
 
 character(:), allocatable :: lstatus, laction
 logical :: exists
@@ -355,17 +353,7 @@ self%filename = filename
 
 if (present(comp_lvl)) self%comp_lvl = comp_lvl
 if (present(verbose)) self%verbose = verbose
-
-if (present(chunk_size)) then
-  select type(chunk_size)
-  type is (integer(int32))
-    self%chunk_size = chunk_size
-  type is (integer(int64))
-    self%chunk_size = chunk_size
-  class default
-    write(stderr,*) 'ERROR: chunk_size is rank-1, size-7 vector of {int32,int64}'
-  end select
-endif
+if (present(debug)) self%debug = debug
 
 !> Initialize FORTRAN interface.
 call h5open_f(ier)
@@ -380,7 +368,7 @@ endif
 
 !> get library version
 call h5get_libversion_f(self%libversion(1), self%libversion(2), self%libversion(3), ier)
-! if (self%verbose) print '(A,3I3)', 'HDF5 version: ',self%libversion
+if (self%debug) print '(A,3I3)', 'HDF5 version: ',self%libversion
 if (check(ier, 'ERROR: HDF5 library get version')) then
   if (present(ierr)) then
     ierr = ier

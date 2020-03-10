@@ -95,33 +95,28 @@ integer(HID_T), intent(out) :: pid
 integer, intent(out) :: ierr
 integer, intent(in), optional :: chunk_size(:)
 
-integer :: i
 integer(HSIZE_T) :: cs(size(dims))
 
 pid = 0
 if (self%comp_lvl < 1 .or. self%comp_lvl > 9) return
-if (.not.present(chunk_size) .and. all(self%chunk_size == 1) .or. any(self%chunk_size < 1)) return
-if (present(chunk_size)) then
-  if (any(chunk_size < 1)) return
-endif
 
 if (present(chunk_size)) then
   cs = chunk_size
+  where (cs > dims) cs = dims
 else
-  do i = 1,size(dims)
-    cs(i) = min(self%chunk_size(i), dims(i))
-  enddo
+  !! guess chunk size, keeping in mind 1 Megabyte recommended maximum chunk size
+  call guess_chunk_size(dims, cs)
 endif
 
-! print *,'dims: ',dims,'chunk size: ', cs
+if(any(cs < 1)) return
+
+if(self%debug) print *,'dims: ',dims,'chunk size: ', cs
 
 call h5pcreate_f(H5P_DATASET_CREATE_F, pid, ierr)
 if (check(ierr, 'ERROR: create property ' // self%filename)) return
 
 call h5pset_chunk_f(pid, size(dims), cs, ierr)
 if (check(ierr, 'ERROR: set chunk ' // self%filename)) return
-
-if (self%comp_lvl < 1 .or. self%comp_lvl > 9) return
 
 call h5pset_shuffle_f(pid, ierr)
 if (check(ierr, 'ERROR: enable Shuffle ' // self%filename)) return
@@ -130,6 +125,28 @@ call h5pset_deflate_f(pid, self%comp_lvl, ierr)
 if (check(ierr, 'ERROR: enable Deflate compression ' // self%filename)) return
 
 end subroutine hdf_set_deflate
+
+
+pure subroutine guess_chunk_size(dims, chunk_size)
+!! based on https://github.com/h5py/h5py/blob/master/h5py/_hl/filters.py
+!! refer to https://support.hdfgroup.org/HDF5/Tutor/layout.html
+integer(HSIZE_T), intent(in) :: dims(:)
+integer(HSIZE_T), intent(out) :: chunk_size(:)
+
+integer(hsize_t), parameter :: &
+CHUNK_BASE = 16*1024, &  !< Multiplier by which chunks are adjusted
+CHUNK_MIN = 8*1024, &    !< Soft lower limit (8k)
+CHUNK_MAX = 1024*1024, & !< Hard upper limit (1M)
+TYPESIZE = 8             !< bytes, assume real64 for simplicity
+
+if (product(dims) * TYPESIZE < CHUNK_MIN) then
+  chunk_size = 0
+  return
+endif
+
+chunk_size = dims
+
+end subroutine
 
 
 subroutine hdf_wrapup(did, sid, ierr)
