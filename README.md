@@ -144,7 +144,7 @@ type(hdf5_file) :: h5f
 * gzip compression may be applied for rank &ge; 2 arrays by setting `comp_lvl` to a value between 1 and 9.
   Shuffle filter is automatically applied for better compression
 * string attributes may be applied to any variable at time of writing or later.
-* `chunk_size` and `comp_lvl` options must be set to **enable compression**
+* h5f%initialize(..., `comp_lvl=1`) option enables GZIP compression., where comp_lvl is from 1 to 9. bigger comp_lvl gives more compression but isslower to write.
 
 `integer, intent(out) :: ierr` is an optional parameter. It will be non-zero if error detected.
 This value should be checked, particularly for write operations to avoid missing error conditions.
@@ -185,12 +185,11 @@ call h5f%write('/value2', val2)
 call h5f%finalize(ierr)
 ```
 
-chunk_size may optionally be set in the `%write()` method.
+chunk_size may optionally be set in the `%write()` method for 2-d to 7-d arrays.
+compression and chunking are disabled if any element of chunk_size is less than 1
+chunk_size may be manually specified in write() otherwise it will be set automatically.
 
-compression and chunking are disabled if:
-
-* any element of chunk_size is less than 1
-* chunk_size is not given in the initialize() call AND not specified in %write()
+Currently, data is written contiguous if not compressed and is only chunked if compression is used.
 
 ### check if a variable exists
 
@@ -227,10 +226,10 @@ is_chunked = h5f%is_chunked('/foo')
 
 ### get chunk size
 
-if dataset is not chunks, chunk_size == -1
+if dataset is not chunked, chunk_size == -1
 
 ```sh
-call h5f%chunk('/foo', chunk_size)
+call h5f%chunks('/foo', chunk_size)
 ```
 
 ### Create group "scope"
@@ -243,6 +242,14 @@ call h5f%initialize('test.h5')
 call h5f%write_group('/scope/')
 
 call h5f%finalize()
+```
+
+### verbose / debug
+
+set options debug and /or verbose for diagnostics
+
+```sh
+call h5f%initialize(..., verbose=.true., debug=.true.)
 ```
 
 ## Permissive syntax
