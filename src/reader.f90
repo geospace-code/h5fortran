@@ -5,7 +5,7 @@ submodule (h5fortran:read) reader
 !! to use "buf" variable.
 !! Even intent(inout) doesn't help without separate "buf" variable
 
-use hdf5, only: HSIZE_T, SIZE_T, H5_REAL_KIND, H5_INTEGER_KIND, H5KIND_TO_TYPE
+use hdf5, only: HSIZE_T, SIZE_T
 use H5LT, only: h5ltpath_valid_f
 
 implicit none
@@ -34,11 +34,11 @@ type is (character(*))
   end block
   return
 type is (real(real64))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ier)
+  call h5ltread_dataset_f(self%lid, dname, H5T_NATIVE_DOUBLE, value, dims,  ier)
 type is (real(real32))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ier)
+  call h5ltread_dataset_f(self%lid, dname, H5T_NATIVE_REAL, value, dims,  ier)
 type is (integer(int32))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ier)
+  call h5ltread_dataset_f(self%lid, dname, H5T_NATIVE_INTEGER, value, dims,  ier)
 class default
   write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
   ier = -1

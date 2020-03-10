@@ -1,8 +1,8 @@
 submodule (h5fortran) write
 !! This submodule is for writing HDF5 data via child submodules
 use hdf5, only: &
-h5screate_f, h5sclose_f, h5screate_simple_f, H5S_SCALAR_F, &
-h5dopen_f, h5dcreate_f, h5dwrite_f, h5dclose_f, &
+h5screate_f, H5S_SCALAR_F, &
+h5dcreate_f, h5dwrite_f, &
 h5pset_chunk_f, h5pset_deflate_f, h5pset_shuffle_f, h5pcreate_f, H5P_DATASET_CREATE_F, h5pclose_f, &
 h5gopen_f, h5gclose_f
 
@@ -182,21 +182,6 @@ do
 end do
 
 end subroutine guess_chunk_size
-
-
-subroutine hdf_wrapup(did, sid, ierr)
-integer(HID_T), intent(in) :: sid, did
-integer, intent(out) :: ierr
-
-if(sid /= 0) then
-  call h5sclose_f(sid, ierr)
-  if (check(ierr, 'ERROR: close dataspace')) return
-endif
-
-call h5dclose_f(did, ierr)
-if (check(ierr, 'ERROR: close dataset')) return
-
-end subroutine hdf_wrapup
 
 
 module procedure hdf_open_group

@@ -39,9 +39,15 @@ character(2) :: value
 character(1024) :: val1k
 character(:), allocatable :: final
 
-call h5f%initialize(path//'/test_string.h5', status='new', action='rw')
+call h5f%initialize(path//'/test_string.h5', status='replace', action='w')
 
+print *, 'test_string_rw: write'
 call h5f%write('/little', '42')
+call h5f%finalize()
+
+
+print *, 'test_string_rw: read'
+call h5f%initialize(path//'/test_string.h5', status='old', action='r')
 call h5f%read('/little', value)
 
 if (value /= '42') then

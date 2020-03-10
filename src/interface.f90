@@ -2,16 +2,22 @@ module h5fortran
 !! HDF5 object-oriented polymorphic interface
 use, intrinsic :: iso_c_binding, only : c_ptr, c_loc
 use, intrinsic :: iso_fortran_env, only : real32, real64, int64, int32, stderr=>error_unit
-use hdf5, only : HID_T, SIZE_T, HSIZE_T, H5F_ACC_RDONLY_F, H5F_ACC_RDWR_F, H5F_ACC_TRUNC_F, &
-    h5open_f, h5close_f, h5gcreate_f, h5gclose_f, h5fopen_f, h5fcreate_f, h5fclose_f, h5lexists_f, &
-    h5get_libversion_f, h5eset_auto_f
+use hdf5, only : HID_T, SIZE_T, HSIZE_T, H5F_ACC_RDONLY_F, H5F_ACC_RDWR_F, H5F_ACC_TRUNC_F, H5S_SELECT_SET_F, &
+  H5T_NATIVE_DOUBLE, H5T_NATIVE_REAL, H5T_NATIVE_INTEGER, H5T_NATIVE_CHARACTER, &
+  h5open_f, h5close_f, &
+  h5dopen_f, h5dclose_f, h5dget_space_f, &
+  h5gcreate_f, h5gclose_f, &
+  h5fopen_f, h5fcreate_f, h5fclose_f, &
+  h5lexists_f, &
+  h5sclose_f, h5sselect_hyperslab_f, h5screate_simple_f, &
+  h5get_libversion_f, h5eset_auto_f
 use h5lt, only : h5ltget_dataset_ndims_f, h5ltget_dataset_info_f
 
 use string_utils, only : toLower, strip_trailing_null, truncate_string_null
 
 implicit none
 private
-public :: hdf5_file, toLower, hdf_shape_check, hsize_t, strip_trailing_null, truncate_string_null, &
+public :: hdf5_file, toLower, hdf_shape_check, hdf_wrapup, hsize_t, strip_trailing_null, truncate_string_null, &
   check, h5write, h5read
 
 !> Workaround for Intel 19.1 / 2020 bug with /stand:f18
@@ -526,6 +532,21 @@ if (.not.check) return
 write(stderr, *) msg
 
 end function check
+
+
+subroutine hdf_wrapup(did, sid, ierr)
+integer(HID_T), intent(in) :: sid, did
+integer, intent(out) :: ierr
+
+if(sid /= 0) then
+  call h5sclose_f(sid, ierr)
+  if (check(ierr, 'ERROR:h5sclose dataspace')) return
+endif
+
+call h5dclose_f(did, ierr)
+if (check(ierr, 'ERROR:h5dclose dataset')) return
+
+end subroutine hdf_wrapup
 
 
 subroutine hdf_shape_check(self, dname, dims, ierr)
