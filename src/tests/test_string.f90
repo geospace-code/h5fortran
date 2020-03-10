@@ -39,16 +39,13 @@ character(2) :: value
 character(1024) :: val1k
 character(:), allocatable :: final
 
-integer :: ierr
-
-call h5f%initialize(path//'/test_string.h5', ierr, status='new', action='rw')
-if (ierr /= 0) error stop
+call h5f%initialize(path//'/test_string.h5', status='new', action='rw')
 
 call h5f%write('/little', '42')
 call h5f%read('/little', value)
 
 if (value /= '42') then
-  write(stderr,*) 'string dataset read/write verification failure. Value: '// value
+  write(stderr,*) 'test_string:  read/write verification failure. Value: '// value
   error stop
 endif
 
