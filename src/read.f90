@@ -1,9 +1,8 @@
 submodule (h5fortran) read
 !! This submodule is for reading HDF5 via submodules
-use hdf5, only : h5dopen_f, h5dread_f, h5dclose_f, h5dget_create_plist_f, &
+use hdf5, only : h5dopen_f, h5dclose_f, h5dget_create_plist_f, &
   h5pget_layout_f, h5pget_chunk_f, H5D_CONTIGUOUS_F, H5D_CHUNKED_F
-use H5LT, only : h5ltread_dataset_f, h5ltread_dataset_int_f, h5ltread_dataset_float_f, h5ltread_dataset_double_f,&
-  h5ltread_dataset_string_f, h5ltpath_valid_f
+use H5LT, only : h5ltpath_valid_f
 
 implicit none
 

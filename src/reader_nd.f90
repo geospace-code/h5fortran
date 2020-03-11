@@ -1,3 +1,4 @@
+!! conceptual--not tested--will use h5dread_f instead
 submodule (h5fortran:read) reader_ND
 
 implicit none

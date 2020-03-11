@@ -1,12 +1,8 @@
 submodule (h5fortran:read) reader
 !! This submodule is for reading 0-D..7-D data
-!! NOTE:
-!! Because of C interface to HDF5, anytime an array is read, we need
-!! to use "buf" variable.
-!! Even intent(inout) doesn't help without separate "buf" variable
 
-use hdf5, only: HSIZE_T, SIZE_T
-use H5LT, only: h5ltpath_valid_f
+use hdf5, only : h5dread_f
+use h5lt, only : h5ltread_dataset_string_f
 
 implicit none
 contains
