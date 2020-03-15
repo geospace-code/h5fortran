@@ -5,14 +5,6 @@ set(HDF5_USE_STATIC_LIBRARIES true)
 if(WIN32 AND CMAKE_Fortran_COMPILER_ID STREQUAL Intel)
   set(HDF5_NO_FIND_PACKAGE_CONFIG_FILE true)
   set(HDF5_USE_STATIC_LIBRARIES false)
-
-  if(NOT HDF5_ROOT)
-    # help CMake find binary HDF5
-    file(GLOB _h5guess "c:/Program Files/HDF_Group/HDF5/1.1*/")
-    if(EXISTS ${_h5guess})
-      set(HDF5_ROOT ${_h5guess})
-    endif()
-  endif()
 endif()
 
 find_package(HDF5 COMPONENTS Fortran HL)

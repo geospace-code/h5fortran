@@ -3,7 +3,7 @@ submodule (h5fortran) write
 use hdf5, only: &
 h5screate_f, H5S_SCALAR_F, &
 h5dcreate_f, &
-h5pset_chunk_f, h5pset_deflate_f, h5pset_shuffle_f, h5pcreate_f, H5P_DATASET_CREATE_F, h5pclose_f, &
+h5pset_chunk_f, h5pset_deflate_f, h5pset_shuffle_f, h5pset_fletcher32_f, h5pcreate_f, H5P_DATASET_CREATE_F, h5pclose_f, &
 h5gopen_f, h5gclose_f
 
 use H5LT, only: h5ltpath_valid_f, h5ltset_attribute_string_f, h5ltmake_dataset_string_f
@@ -125,6 +125,9 @@ if (check(ierr, 'ERROR: set chunk ' // self%filename)) return
 call h5pset_shuffle_f(pid, ierr)
 if (check(ierr, 'ERROR: enable Shuffle ' // self%filename)) return
 
+call h5pset_fletcher32_f(pid, ierr)
+if (check(ierr, 'ERROR: enable Fletcher32 checksum ' // self%filename)) return
+
 call h5pset_deflate_f(pid, self%comp_lvl, ierr)
 if (check(ierr, 'ERROR: enable Deflate compression ' // self%filename)) return
 
@@ -158,7 +161,8 @@ chunk_size = dims
 dset_size = product(chunk_size) * TYPESIZE
 target_size = int(CHUNK_BASE * (2**log10(real(dset_size) / 1e6)), hsize_t)
 if (target_size > CHUNK_MAX) target_size = CHUNK_MAX
-print *,'target_size [bytes]: ',target_size
+
+! print *,'target_size [bytes]: ',target_size
 
 i = 0
 do
