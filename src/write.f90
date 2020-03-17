@@ -4,7 +4,7 @@ use hdf5, only: &
 h5screate_f, H5S_SCALAR_F, &
 h5dcreate_f, &
 h5pset_chunk_f, h5pset_deflate_f, h5pset_shuffle_f, h5pset_fletcher32_f, h5pcreate_f, H5P_DATASET_CREATE_F, h5pclose_f, &
-h5gopen_f, h5gclose_f
+h5gopen_f
 
 use H5LT, only: h5ltpath_valid_f, h5ltset_attribute_string_f, h5ltmake_dataset_string_f
 
