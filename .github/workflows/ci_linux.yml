@@ -22,7 +22,6 @@ jobs:
         python-version: '3.x'
 
     - run: |
-        pip install cmake
         sudo apt update -yq
         sudo apt install -yq --no-install-recommends gfortran libhdf5-dev
 
