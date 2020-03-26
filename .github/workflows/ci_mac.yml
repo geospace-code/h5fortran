@@ -18,7 +18,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - run: brew install pkg-config gcc hdf5 ninja
+    - run: brew install pkg-config hdf5 ninja
 
     - run: ctest -S setup.cmake -V
       env:
@@ -34,7 +34,7 @@ jobs:
         python-version: '3.x'
 
     - run: pip install meson
-    - run: brew install pkg-config gcc hdf5 ninja
+    - run: brew install pkg-config hdf5 ninja
 
     - run: meson setup build
       env:

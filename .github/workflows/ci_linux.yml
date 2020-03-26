@@ -27,6 +27,8 @@ jobs:
         sudo apt install -yq --no-install-recommends gfortran libhdf5-dev
 
     - run: ctest -S setup.cmake -V
+      env:
+        FC: gfortran-7
 
   meson:
     runs-on: ubuntu-latest
@@ -39,11 +41,11 @@ jobs:
     - run: pip install meson
     - run: |
         sudo apt update -yq
-        sudo apt install -yq --no-install-recommends ninja-build gfortran libhdf5-dev
+        sudo apt install -yq --no-install-recommends gfortran ninja-build libhdf5-dev
 
     - run: meson setup build
       env:
-        FC: gfortran
+        FC: gfortran-7
 
     - run: ninja -C build
 
