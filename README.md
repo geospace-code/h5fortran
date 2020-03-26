@@ -1,6 +1,7 @@
 # Object-oriented Fortran 2008 HDF5 interface
 
 [![DOI](https://zenodo.org/badge/128736984.svg)](https://zenodo.org/badge/latestdoi/128736984)
+[![CDash](./archive/cdash.png)](https://my.cdash.org/index.php?project=h5fortran)
 
 ![ci_linux](https://github.com/scivision/h5fortran/workflows/ci_linux/badge.svg)
 ![ci_mac](https://github.com/scivision/h5fortran/workflows/ci_mac/badge.svg)
@@ -67,6 +68,48 @@ Platforms that currently do **not** have Fortran HDF5 libraries, and thus will *
 Build this HDF5 OO Fortran interface with Meson or CMake.
 The library `libh5fortran` is built, link it into your program as usual.
 
+### CMake
+
+Build and self-test via:
+
+```sh
+ctest -S setup.cmake -V
+```
+
+or alternatively:
+
+```sh
+cmake -B build
+
+cmake --build build
+```
+
+#### [optional] specify a particular HDF5 library
+
+```sh
+cmake -DHDF5_ROOT=/path/to/hdf5lib -B build
+```
+
+or set environment variable `HDF5_ROOT=/path/to/hdf5lib`
+
+#### use CMake target `h5fortran` via CMake FetchContent:
+
+```cmake
+include(FetchContent)
+
+FetchContent_Declare(h5fortran_proj
+  GIT_REPOSITORY https://github.com/scivision/h5fortran.git
+  GIT_TAG master  # whatever desired version is
+)
+
+FetchContent_MakeAvailable(h5fortran_proj)
+
+# ------------------------------------------------------
+# whatever your program is
+add_executable(myProj main.f90)
+target_link_libraries(myProj h5fortran::h5fortran)
+```
+
 ### Meson
 
 To build h5fortran as a standalone project
@@ -94,48 +137,6 @@ and have a file in the master project `subprojects/h5fortran.wrap` containing:
 directory = h5fortran
 url = https://github.com/scivision/h5fortran.git
 revision = head
-```
-
-### CMake
-
-```sh
-cmake -B build
-
-cmake --build build --parallel
-```
-
-Optionally run self-tests:
-
-```sh
-cd build
-
-ctest -V
-```
-
-To specify a particular HDF5 library, use
-
-```sh
-cmake -DHDF5_ROOT=/path/to/hdf5lib -B build
-```
-
-or set environment variable `HDF5_ROOT=/path/to/hdf5lib`
-
-To use CMake target `h5fortran` via CMake FetchContent:
-
-```cmake
-include(FetchContent)
-
-FetchContent_Declare(h5fortran_proj
-  GIT_REPOSITORY https://github.com/scivision/h5fortran.git
-  GIT_TAG master  # whatever desired version is
-)
-
-FetchContent_MakeAvailable(h5fortran_proj)
-
-# ------------------------------------------------------
-# whatever your program is
-add_executable(myProj main.f90)
-target_link_libraries(myProj h5fortran::h5fortran)
 ```
 
 ## Usage

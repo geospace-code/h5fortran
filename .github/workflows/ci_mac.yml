@@ -9,14 +9,21 @@ on:
       - "**.f90"
       - ".github/workflows/ci_mac.yml"
   pull_request:
-    paths:
-      - "**.build"
-      - "**.txt"
-      - "**.cmake"
-      - "**.f90"
-      - ".github/workflows/ci_mac.yml"
+  release:
 
 jobs:
+
+  cmake:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - run: brew install pkg-config gcc hdf5 ninja
+
+    - run: ctest -S setup.cmake -V
+      env:
+        FC: gfortran-9
+        CC: gcc-9
 
   meson:
     runs-on: macos-latest
@@ -26,7 +33,7 @@ jobs:
       with:
         python-version: '3.x'
 
-    - run: pip install -r requirements.txt
+    - run: pip install meson
     - run: brew install pkg-config gcc hdf5 ninja
 
     - run: meson setup build
@@ -47,28 +54,3 @@ jobs:
       with:
         name: Mac_Meson_Testlog
         path: build/meson-logs/testlog.txt
-
-  cmake:
-    runs-on: macos-latest
-    steps:
-    - uses: actions/checkout@v2
-    - run: brew install pkg-config gcc hdf5
-    - run: cmake -B build
-      env:
-        FC: gfortran-9
-        CC: gcc-9
-
-    - run: cmake --build build --parallel
-    - uses: actions/upload-artifact@v1
-      if: failure()
-      with:
-        name: Mac_CMake_Buildlog
-        path: build/CMakeFiles/CMakeError.log
-
-    - run: ctest -V
-      working-directory: build
-    - uses: actions/upload-artifact@v1
-      if: failure()
-      with:
-        name: Mac_CMake_Testlog
-        path: build/Testing/Temporary/LastTest.log
