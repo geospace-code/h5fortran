@@ -551,25 +551,31 @@ if (check(ierr, 'ERROR:h5dclose dataset')) return
 end subroutine hdf_wrapup
 
 
-subroutine hdf_get_slice(self, dname, i0, i1, i2, did, sid, mem_sid,  ierr)
-!! TODO untested
+subroutine hdf_get_slice(self, dname, did, sid, mem_sid, ierr, i0, i1, i2)
+!! setup array slices for read and write
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
-class(*), intent(in), dimension(:) :: i0, i1, i2
 integer(hid_t), intent(out) :: sid, did, mem_sid
 integer, intent(out) :: ierr
+class(*), intent(in), dimension(:) :: i0, i1
+class(*), intent(in), optional, dimension(:) :: i2
 
 integer(hsize_t), dimension(size(i0)) :: istart, iend, stride, mem_dims
 integer :: mem_rank
 
+!! istart
 select type (i0)
 type is (integer(int32))
   istart = int(i0, int64)
 type is (integer(hsize_t))
   istart = i0
 class default
-  error stop 'wrong integer type for istart'
+  ierr = -1
+  write(stderr,*) 'ERROR: wrong integer type for istart: ', dname, self%filename
+  return
 end select
+
+!! iend
 
 select type (i1)
 type is (integer(int32))
@@ -577,17 +583,29 @@ type is (integer(int32))
 type is (integer(hsize_t))
   iend = i1
 class default
-  error stop 'wrong integer type for iend'
+  ierr = -1
+  write(stderr,*) 'ERROR: wrong integer type for iend: ', dname, self%filename
+  return
 end select
 
-select type (i2)
-type is (integer(int32))
-  stride = int(i2, int64)
-type is (integer(hsize_t))
-  stride = i2
-class default
-  error stop 'wrong integer type for stride'
-end select
+!! stride
+
+if (present(i2)) then
+  select type (i2)
+  type is (integer(int32))
+    stride = int(i2, int64)
+  type is (integer(hsize_t))
+    stride = i2
+  class default
+    ierr = -1
+    write(stderr,*) 'ERROR: wrong integer type for stride: ', dname, self%filename
+    return
+  end select
+  if(self%debug) print *,'DEBUG: user-stride:',stride
+else
+  stride = 1
+  if(self%debug) print *, 'DEBUG: auto-stride',stride
+endif
 
 !! compensate for 0-based hyperslab vs. 1-based Fortran
 istart = istart - 1
@@ -600,7 +618,7 @@ call h5dopen_f(self%lid, dname, did, ierr)
 
 if(ierr == 0) call h5dget_space_f(did, sid, ierr)
 
-if(ierr == 0) call h5sselect_hyperslab_f(sid, H5S_SELECT_SET_F, istart, mem_dims, ierr, stride)
+if(ierr == 0) call h5sselect_hyperslab_f(sid, H5S_SELECT_SET_F, istart, mem_dims, ierr, stride=stride)
 
 if(ierr == 0) call h5screate_simple_f(mem_rank, mem_dims, mem_sid, ierr)
 

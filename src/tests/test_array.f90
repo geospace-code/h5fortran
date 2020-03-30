@@ -55,15 +55,23 @@ if(ierr==0) error stop 'test_write_array: did not error for write array rank mis
 call h5f%finalize()
 
 !! Read tests
-call h5f%initialize(path//'/test.h5', status='old',action='r')
+call h5f%initialize(path//'/test.h5', status='old',action='r', verbose=.false.)
 !> int32
 
 call h5f%read('/int32-1d', i1t)
 if (.not.all(i1==i1t)) error stop 'read 1-d int32: does not match write'
 
-print *, 'test_write_array: read slice 1d'
+print *, 'test_write_array: read slice 1d, stride=1'
 i1t = 0
 call h5f%read('/int32-1d', i1t(:2), istart=[2], iend=[3], stride=[1])
+if (.not.all(i1t(:2)==[2,3])) then
+  write(stderr, *) 'read 1D slice does not match. expected [2,3] but got ',i1t(:2)
+  error stop
+endif
+
+print *, 'test_write_array: read slice 1d, no stride'
+i1t = 0
+call h5f%read('/int32-1d', i1t(:2), istart=[2], iend=[3])
 if (.not.all(i1t(:2)==[2,3])) then
   write(stderr, *) 'read 1D slice does not match. expected [2,3] but got ',i1t(:2)
   error stop

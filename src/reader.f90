@@ -70,8 +70,12 @@ sid = H5S_ALL_F
 mem_sid = H5S_ALL_F
 dims = shape(value)
 
-if(present(istart) .or. present(iend) .or. present(stride)) then
-  call hdf_get_slice(self, dname, istart, iend, stride, did, sid, mem_sid,  ier)
+if(present(istart) .and. present(iend)) then
+  if(present(stride)) then
+    call hdf_get_slice(self, dname, did, sid, mem_sid, ier, istart, iend, stride)
+  else
+    call hdf_get_slice(self, dname, did, sid, mem_sid, ier, istart, iend)
+  endif
 else
   call hdf_shape_check(self, dname, dims, ier)
   if (ier == 0) call h5dopen_f(self%lid, dname, did, ier)
