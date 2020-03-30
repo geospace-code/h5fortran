@@ -30,6 +30,9 @@ Polymorphic API with read/write for types int32, real32, real64 with rank:
 * 1-D .. 7-D
 
 as well as character (string) variables and attributes.
+
+Array slicing on read is supported, that is, reading part of a disk HDF5 array into a variable of matching shape.
+
 Mismatched datatypes are coerced as per standard Fortran rules.
 For example, reading a float HDF5 variable into an integer Fortran variable:  42.3 => 42
 
@@ -92,7 +95,7 @@ cmake -DHDF5_ROOT=/path/to/hdf5lib -B build
 
 or set environment variable `HDF5_ROOT=/path/to/hdf5lib`
 
-#### use CMake target `h5fortran` via CMake FetchContent:
+#### use CMake target `h5fortran` via CMake FetchContent
 
 ```cmake
 include(FetchContent)
@@ -219,6 +222,26 @@ allocate(A(dims(1), dims(2), dims(3)))
 call h5f%read('/foo', A)
 
 call h5f%finalize()
+```
+
+### read slice (part of) a disk array
+
+Reading a disk HDF5 array into a variable of matching shape is done with `istart=` and `iend=` arguments, which have 1-D arguments for the start and stop index desired from each dimension.
+
+For example, support HDF5 disk variable "/foo" is shape (10,20,30) and you wish to read just part of this array like:
+
+* dim 1: 5-7
+* dim 2: 1-5
+* dim 3: 2-8
+
+then do:
+
+```fortran
+real, dimension(3,5,7) :: A
+
+call h5f%initialize('test.h5', status='old',action='r')
+
+call h5f%read('/foo', A, istart=[5, 1, 2], iend=[7, 5, 8])
 ```
 
 ### is dataset contiguous or chunked

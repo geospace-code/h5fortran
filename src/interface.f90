@@ -285,46 +285,52 @@ integer, intent(out), optional :: ierr
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
 end subroutine hdf_read_1d
 
-module subroutine hdf_read_2d(self, dname, value, ierr)
+module subroutine hdf_read_2d(self, dname, value, ierr, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(out) :: value(:,:)
 integer, intent(out), optional :: ierr
+integer, intent(in), optional, dimension(:) :: istart, iend, stride
 end subroutine hdf_read_2d
 
-module subroutine hdf_read_3d(self, dname, value, ierr)
+module subroutine hdf_read_3d(self, dname, value, ierr, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(out) :: value(:,:,:)
 integer, intent(out), optional :: ierr
+integer, intent(in), optional, dimension(:) :: istart, iend, stride
 end subroutine hdf_read_3d
 
-module subroutine hdf_read_4d(self, dname, value, ierr)
+module subroutine hdf_read_4d(self, dname, value, ierr, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(out) :: value(:,:,:,:)
 integer, intent(out), optional :: ierr
+integer, intent(in), optional, dimension(:) :: istart, iend, stride
 end subroutine hdf_read_4d
 
-module subroutine hdf_read_5d(self, dname, value, ierr)
+module subroutine hdf_read_5d(self, dname, value, ierr, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(out) :: value(:,:,:,:,:)
 integer, intent(out), optional :: ierr
+integer, intent(in), optional, dimension(:) :: istart, iend, stride
 end subroutine hdf_read_5d
 
-module subroutine hdf_read_6d(self, dname, value, ierr)
+module subroutine hdf_read_6d(self, dname, value, ierr, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(out) :: value(:,:,:,:,:,:)
 integer, intent(out), optional :: ierr
+integer, intent(in), optional, dimension(:) :: istart, iend, stride
 end subroutine hdf_read_6d
 
-module subroutine hdf_read_7d(self, dname, value, ierr)
+module subroutine hdf_read_7d(self, dname, value, ierr, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(out) :: value(:,:,:,:,:,:,:)
 integer, intent(out), optional :: ierr
+integer, intent(in), optional, dimension(:) :: istart, iend, stride
 end subroutine hdf_read_7d
 
 

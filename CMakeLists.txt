@@ -4,7 +4,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 project(h5fortran
   LANGUAGES C Fortran
-  VERSION 2.8.4
+  VERSION 2.9.0
   DESCRIPTION "thin, light, easy HDF5 Fortran interface"
   HOMEPAGE_URL https://github.com/scivision/h5fortran)
 enable_testing()
@@ -52,9 +52,13 @@ add_subdirectory(src)
 
 if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
   add_subdirectory(src/tests)
-endif()
 
-# --- install
-if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
   include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/install.cmake)
+
+  include(FeatureSummary)
+  set_package_properties(Threads PROPERTIES DESCRIPTION "the system threads library")
+  set_package_properties(HDF5 PROPERTIES URL "https://hdfgroup.org/" DESCRIPTION "fast, versatile file I/O format" TYPE REQUIRED)
+  set_package_properties(ZLIB PROPERTIES URL "https://www.zlib.net/" DESCRIPTION "patent-free compression library")
+  set_package_properties(SZIP PROPERTIES URL "http://www.compressconsult.com/szip/" DESCRIPTION "compression library")
+  feature_summary(WHAT ALL)
 endif()

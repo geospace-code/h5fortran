@@ -37,7 +37,7 @@ r1 = i1
 r2 = i2
 
 !! write test data
-call h5f%initialize(path//'/test.h5', status='old',action='rw',comp_lvl=1, verbose=.false.)
+call h5f%initialize(path//'/test.h5', status='old',action='rw',comp_lvl=1, verbose=.False.)
 
 call h5f%write('/int32-1d', i1)
 call h5f%write('/test/group2/int32-2d', i2)
@@ -79,6 +79,14 @@ endif
 
 call h5f%read('/test/group2/int32-2d',i2t)
 if (.not.all(i2==i2t)) error stop 'read 2-D: int32 does not match write'
+
+print *, 'test_write_array: read slice 2d, stride=1'
+i2t = 0
+call h5f%read('/test/group2/int32-2d', i2t(:2,:3), istart=[2,1], iend=[3,3], stride=[1,1])
+if (.not.all(i2t(:2,:3)==i2(2:3,1:3))) then
+  write(stderr, *) 'read 2D slice does not match. expected:',i2(2:3,1:3),' but got ',i2t(:2,:3)
+  error stop
+endif
 
 !> verify reading into larger array
 i2_8 = 0

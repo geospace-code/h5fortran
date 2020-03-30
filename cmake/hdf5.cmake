@@ -29,16 +29,20 @@ find_package(SZIP)
 if(SZIP_FOUND)
   list(APPEND HDF5_LIBRARIES SZIP::SZIP)
 endif()
+
 find_package(ZLIB)
 if(ZLIB_FOUND)
   list(APPEND HDF5_LIBRARIES ZLIB::ZLIB)
 endif()
+
 set(THREADS_PREFER_PTHREAD_FLAG true)
 find_package(Threads)
 if(Threads_FOUND)
   list(APPEND HDF5_LIBRARIES Threads::Threads)
 endif()
+
 list(APPEND HDF5_LIBRARIES ${CMAKE_DL_LIBS})
+
 if(UNIX)
   list(APPEND HDF5_LIBRARIES m)
 endif()

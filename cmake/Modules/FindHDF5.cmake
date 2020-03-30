@@ -125,6 +125,9 @@ The following variables can be set to guide the search for HDF5 libraries and in
 
 ``HDF5_NO_FIND_PACKAGE_CONFIG_FILE``
   Set ``true`` to skip trying to find ``hdf5-config.cmake``.
+
+``HDF5_NO_WRAPPER``
+  Set ``true`` to skip using the h5cc/h5fc compiler wrapper to find HDF5 library and flags.
 #]=======================================================================]
 
 # This module is maintained by Will Dicharry <wdicharry@stellarscience.com>.
@@ -549,7 +552,7 @@ if(NOT HDF5_FOUND AND NOT HDF5_NO_FIND_PACKAGE_CONFIG_FILE)
     endif()
 endif()
 
-if(NOT HDF5_FOUND)
+if(NOT HDF5_FOUND AND NOT HDF5_NO_WRAPPER)
   set(_HDF5_NEED_TO_SEARCH False)
   set(HDF5_COMPILER_NO_INTERROGATE True)
   # Only search for languages we've enabled
