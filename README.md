@@ -57,9 +57,8 @@ Requirements:
 
 * modern Fortran compiler (this project uses `submodule` and `error stop`). For example, Gfortran &ge; 6.
 * HDF5 Fortran library (>= 1.8.7, including 1.10.x and 1.12.x)
-  * Mac / Homebrew: `brew install gcc hdf5`
-  * Linux: `apt install gfortran libhdf5-dev`
-  * Windows Subsystem for Linux: `apt install gfortran libhdf5-dev`
+  * MacOS / Homebrew: `brew install gcc hdf5`
+  * Linux / Windows Subsystem for Linux: `apt install gfortran libhdf5-dev` or `python scripts/compile_hdf5.py`
   * Windows MSYS2: `pacman -S mingw-w64-x86_64-hdf5`
 
 Note that some precompiled HDF5 libraries include C / C++ without Fortran.
