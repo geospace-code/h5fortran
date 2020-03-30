@@ -3,13 +3,12 @@ name: ci_linux
 on:
   push:
     paths:
-      - "**.build"
       - "**.txt"
       - "**.cmake"
       - "**.f90"
       - ".github/workflows/ci_linux.yml"
   pull_request:
-  release:
+
 
 jobs:
 
@@ -27,37 +26,4 @@ jobs:
 
     - run: ctest -S setup.cmake -V
       env:
-        FC: gfortran-7
-
-  meson:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-python@v1
-      with:
-        python-version: '3.x'
-
-    - run: pip install meson
-    - run: |
-        sudo apt update -yq
-        sudo apt install -yq --no-install-recommends gfortran ninja-build libhdf5-dev
-
-    - run: meson setup build
-      env:
-        FC: gfortran-7
-
-    - run: ninja -C build
-
-    # this catches configuration and build log
-    - uses: actions/upload-artifact@v1
-      if: failure()
-      with:
-        name: Linux_Meson_Buildlog
-        path: build/meson-logs/meson-log.txt
-
-    - run: meson test -C build -v
-    - uses: actions/upload-artifact@v1
-      if: failure()
-      with:
-        name: Linux_Meson_Testlog
-        path: build/meson-logs/testlog.txt
+        FC: gfortran

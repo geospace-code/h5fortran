@@ -3,13 +3,12 @@ name: ci_mac
 on:
   push:
     paths:
-      - "**.build"
       - "**.txt"
       - "**.cmake"
       - "**.f90"
       - ".github/workflows/ci_mac.yml"
   pull_request:
-  release:
+
 
 jobs:
 
@@ -24,33 +23,3 @@ jobs:
       env:
         FC: gfortran-9
         CC: gcc-9
-
-  meson:
-    runs-on: macos-latest
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-python@v1
-      with:
-        python-version: '3.x'
-
-    - run: pip install meson
-    - run: brew install pkg-config hdf5 ninja
-
-    - run: meson setup build
-      env:
-        FC: gfortran-9
-        CC: gcc-9
-
-    - run: ninja -C build
-    - uses: actions/upload-artifact@v1
-      if: failure()
-      with:
-        name: Mac_Meson_Buildlog
-        path: build/meson-logs/meson-log.txt
-
-    - run: meson test -C build -v
-    - uses: actions/upload-artifact@v1
-      if: failure()
-      with:
-        name: Mac_Meson_Testlog
-        path: build/meson-logs/testlog.txt
