@@ -1,7 +1,9 @@
-!! This submodule is for reading double precision float (64 bit)
-submodule (hdf5_interface:read) read_real64
+submodule (h5fortran:read) reader
+!! This submodule is for reading 0-D..7-D data
 
-use H5LT, only: HSIZE_T, SIZE_T, H5_REAL_KIND, H5_INTEGER_KIND, H5KIND_TO_TYPE, h5ltpath_valid_f
+use hdf5, only : h5dread_f
+use h5lt, only : h5ltread_dataset_string_f
+
 implicit none
 contains
 
@@ -9,39 +11,51 @@ contains
 module procedure hdf_read_scalar
 
 integer(HSIZE_T) :: dims(rank(value))
-logical :: exists
+integer(hid_t) :: did, sid
+integer :: ier
 
+ier = 0
+sid = 0
+
+if (.not.self%exist(dname)) then
+  write(stderr,*) 'ERROR: ' // dname // ' does not exist in ' // self%filename
+  ier = -1
+endif
+
+if(ier == 0) then
+call h5dopen_f(self%lid, dname, did, ier)
+
+if (ier == 0) then
 select type (value)
 type is (character(*))
-  call h5ltpath_valid_f(self%lid, dname, .true., exists, ierr)
-  if (.not.exists) then
-    write(stderr,*) 'ERROR: ' // dname // ' does not exist in ' // self%filename
-    ierr = -1
-    return
-  endif
+  call hdf_wrapup(did, sid, ier)  !< FIXME: till character is treated same as other types
   block
-    !! Need to use "buf" variable, even intent(inout) doesn't help without
-    !! separate "buf" variable
     character(len(value)) :: buf
-    call h5ltread_dataset_string_f(self%lid, dname, buf, ierr)
-    if (ierr /= 0)  then
-      write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
-      return
-    endif
+    call h5ltread_dataset_string_f(self%lid, dname, buf, ier)
     value = buf
   end block
   return
 type is (real(real64))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
+  call h5dread_f(did, H5T_NATIVE_DOUBLE, value, dims, ier)
 type is (real(real32))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
+  call h5dread_f(did, H5T_NATIVE_REAL, value, dims, ier)
 type is (integer(int32))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
-type is (integer(int64))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
+  call h5dread_f(did, H5T_NATIVE_INTEGER, value, dims, ier)
+class default
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
+  ier = -1
 end select
+endif
 
-if (ierr /= 0) write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
+if(ier == 0) call hdf_wrapup(did, sid, ier)
+endif
+
+if (present(ierr)) ierr = ier
+if (ier /= 0) then
+  write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
+  if (present(ierr)) return
+  error stop
+endif
 
 end procedure hdf_read_scalar
 
@@ -49,22 +63,46 @@ end procedure hdf_read_scalar
 module procedure hdf_read_1d
 
 integer(HSIZE_T) :: dims(rank(value))
+integer(hid_t) :: did, sid, mem_sid
+integer :: ier
 
-call hdf_setup_read(self, dname, dims, ierr)
-if (ierr /= 0) return
+sid = H5S_ALL_F
+mem_sid = H5S_ALL_F
+dims = shape(value)
 
+if(present(istart) .and. present(iend)) then
+  if(present(stride)) then
+    call hdf_get_slice(self, dname, did, sid, mem_sid, ier, istart, iend, stride)
+  else
+    call hdf_get_slice(self, dname, did, sid, mem_sid, ier, istart, iend)
+  endif
+else
+  call hdf_shape_check(self, dname, dims, ier)
+  if (ier == 0) call h5dopen_f(self%lid, dname, did, ier)
+endif
+
+if(ier == 0) then
 select type (value)
 type is (real(real64))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
+  call h5dread_f(did, H5T_NATIVE_DOUBLE, value, dims, ier, mem_sid, sid)
 type is (real(real32))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
+  call h5dread_f(did, H5T_NATIVE_REAL, value, dims, ier, mem_sid, sid)
 type is (integer(int32))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
-type is (integer(int64))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
+  call h5dread_f(did, H5T_NATIVE_INTEGER, value, dims, ier, mem_sid, sid)
+class default
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
+  ier = -1
 end select
+endif
 
-if (ierr /= 0) write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
+if(ier == 0) call hdf_wrapup(did, sid, ier)
+
+if (present(ierr)) ierr = ier
+if (ier /= 0) then
+  write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
+  if (present(ierr)) return
+  error stop
+endif
 
 end procedure hdf_read_1d
 
@@ -72,22 +110,46 @@ end procedure hdf_read_1d
 module procedure hdf_read_2d
 
 integer(HSIZE_T) :: dims(rank(value))
+integer(hid_t) :: did, sid, mem_sid
+integer :: ier
 
-call hdf_setup_read(self, dname, dims, ierr)
-if (ierr /= 0) return
+sid = H5S_ALL_F
+mem_sid = H5S_ALL_F
+dims = shape(value)
 
+if(present(istart) .and. present(iend)) then
+  if(present(stride)) then
+    call hdf_get_slice(self, dname, did, sid, mem_sid, ier, istart, iend, stride)
+  else
+    call hdf_get_slice(self, dname, did, sid, mem_sid, ier, istart, iend)
+  endif
+else
+  call hdf_shape_check(self, dname, dims, ier)
+  if (ier == 0) call h5dopen_f(self%lid, dname, did, ier)
+endif
+
+if(ier == 0) then
 select type (value)
 type is (real(real64))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
+  call h5dread_f(did, H5T_NATIVE_DOUBLE, value, dims, ier, mem_sid, sid)
 type is (real(real32))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
+  call h5dread_f(did, H5T_NATIVE_REAL, value, dims, ier, mem_sid, sid)
 type is (integer(int32))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
-type is (integer(int64))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
+  call h5dread_f(did, H5T_NATIVE_INTEGER, value, dims, ier, mem_sid, sid)
+class default
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
+  ier = -1
 end select
+endif
 
-if (ierr /= 0) write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
+if(ier == 0) call hdf_wrapup(did, sid, ier)
+
+if (present(ierr)) ierr = ier
+if (ier /= 0) then
+  write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
+  if (present(ierr)) return
+  error stop
+endif
 
 end procedure hdf_read_2d
 
@@ -95,22 +157,46 @@ end procedure hdf_read_2d
 module procedure hdf_read_3d
 
 integer(HSIZE_T) :: dims(rank(value))
+integer(hid_t) :: did, sid, mem_sid
+integer :: ier
 
-call hdf_setup_read(self, dname, dims, ierr)
-if (ierr /= 0) return
+sid = H5S_ALL_F
+mem_sid = H5S_ALL_F
+dims = shape(value)
 
+if(present(istart) .and. present(iend)) then
+  if(present(stride)) then
+    call hdf_get_slice(self, dname, did, sid, mem_sid, ier, istart, iend, stride)
+  else
+    call hdf_get_slice(self, dname, did, sid, mem_sid, ier, istart, iend)
+  endif
+else
+  call hdf_shape_check(self, dname, dims, ier)
+  if (ier == 0) call h5dopen_f(self%lid, dname, did, ier)
+endif
+
+if(ier == 0) then
 select type (value)
 type is (real(real64))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
+  call h5dread_f(did, H5T_NATIVE_DOUBLE, value, dims, ier, mem_sid, sid)
 type is (real(real32))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
+  call h5dread_f(did, H5T_NATIVE_REAL, value, dims, ier, mem_sid, sid)
 type is (integer(int32))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
-type is (integer(int64))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
+  call h5dread_f(did, H5T_NATIVE_INTEGER, value, dims, ier, mem_sid, sid)
+class default
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
+  ier = -1
 end select
+endif
 
-if (ierr /= 0) write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
+if(ier == 0) call hdf_wrapup(did, sid, ier)
+
+if (present(ierr)) ierr = ier
+if (ier /= 0) then
+  write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
+  if (present(ierr)) return
+  error stop
+endif
 
 end procedure hdf_read_3d
 
@@ -118,22 +204,46 @@ end procedure hdf_read_3d
 module procedure hdf_read_4d
 
 integer(HSIZE_T) :: dims(rank(value))
+integer(hid_t) :: did, sid, mem_sid
+integer :: ier
 
-call hdf_setup_read(self, dname, dims, ierr)
-if (ierr /= 0) return
+sid = H5S_ALL_F
+mem_sid = H5S_ALL_F
+dims = shape(value)
 
+if(present(istart) .and. present(iend)) then
+  if(present(stride)) then
+    call hdf_get_slice(self, dname, did, sid, mem_sid, ier, istart, iend, stride)
+  else
+    call hdf_get_slice(self, dname, did, sid, mem_sid, ier, istart, iend)
+  endif
+else
+  call hdf_shape_check(self, dname, dims, ier)
+  if (ier == 0) call h5dopen_f(self%lid, dname, did, ier)
+endif
+
+if(ier == 0) then
 select type (value)
 type is (real(real64))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
+  call h5dread_f(did, H5T_NATIVE_DOUBLE, value, dims, ier, mem_sid, sid)
 type is (real(real32))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
+  call h5dread_f(did, H5T_NATIVE_REAL, value, dims, ier, mem_sid, sid)
 type is (integer(int32))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
-type is (integer(int64))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
+  call h5dread_f(did, H5T_NATIVE_INTEGER, value, dims, ier, mem_sid, sid)
+class default
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
+  ier = -1
 end select
+endif
 
-if (ierr /= 0) write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
+if(ier == 0) call hdf_wrapup(did, sid, ier)
+
+if (present(ierr)) ierr = ier
+if (ier /= 0) then
+  write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
+  if (present(ierr)) return
+  error stop
+endif
 
 end procedure hdf_read_4d
 
@@ -141,22 +251,46 @@ end procedure hdf_read_4d
 module procedure hdf_read_5d
 
 integer(HSIZE_T) :: dims(rank(value))
+integer(hid_t) :: did, sid, mem_sid
+integer :: ier
 
-call hdf_setup_read(self, dname, dims, ierr)
-if (ierr /= 0) return
+sid = H5S_ALL_F
+mem_sid = H5S_ALL_F
+dims = shape(value)
 
+if(present(istart) .and. present(iend)) then
+  if(present(stride)) then
+    call hdf_get_slice(self, dname, did, sid, mem_sid, ier, istart, iend, stride)
+  else
+    call hdf_get_slice(self, dname, did, sid, mem_sid, ier, istart, iend)
+  endif
+else
+  call hdf_shape_check(self, dname, dims, ier)
+  if (ier == 0) call h5dopen_f(self%lid, dname, did, ier)
+endif
+
+if(ier == 0) then
 select type (value)
 type is (real(real64))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
+  call h5dread_f(did, H5T_NATIVE_DOUBLE, value, dims, ier, mem_sid, sid)
 type is (real(real32))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
+  call h5dread_f(did, H5T_NATIVE_REAL, value, dims, ier, mem_sid, sid)
 type is (integer(int32))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
-type is (integer(int64))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
+  call h5dread_f(did, H5T_NATIVE_INTEGER, value, dims, ier, mem_sid, sid)
+class default
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
+  ier = -1
 end select
+endif
 
-if (ierr /= 0) write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
+if(ier == 0) call hdf_wrapup(did, sid, ier)
+
+if (present(ierr)) ierr = ier
+if (ier /= 0) then
+  write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
+  if (present(ierr)) return
+  error stop
+endif
 
 end procedure hdf_read_5d
 
@@ -164,22 +298,46 @@ end procedure hdf_read_5d
 module procedure hdf_read_6d
 
 integer(HSIZE_T) :: dims(rank(value))
+integer(hid_t) :: did, sid, mem_sid
+integer :: ier
 
-call hdf_setup_read(self, dname, dims, ierr)
-if (ierr /= 0) return
+sid = H5S_ALL_F
+mem_sid = H5S_ALL_F
+dims = shape(value)
 
+if(present(istart) .and. present(iend)) then
+  if(present(stride)) then
+    call hdf_get_slice(self, dname, did, sid, mem_sid, ier, istart, iend, stride)
+  else
+    call hdf_get_slice(self, dname, did, sid, mem_sid, ier, istart, iend)
+  endif
+else
+  call hdf_shape_check(self, dname, dims, ier)
+  if (ier == 0) call h5dopen_f(self%lid, dname, did, ier)
+endif
+
+if(ier == 0) then
 select type (value)
 type is (real(real64))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
+  call h5dread_f(did, H5T_NATIVE_DOUBLE, value, dims, ier, mem_sid, sid)
 type is (real(real32))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
+  call h5dread_f(did, H5T_NATIVE_REAL, value, dims, ier, mem_sid, sid)
 type is (integer(int32))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
-type is (integer(int64))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
+  call h5dread_f(did, H5T_NATIVE_INTEGER, value, dims, ier, mem_sid, sid)
+class default
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
+  ier = -1
 end select
+endif
 
-if (ierr /= 0) write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
+if(ier == 0) call hdf_wrapup(did, sid, ier)
+
+if (present(ierr)) ierr = ier
+if (ier /= 0) then
+  write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
+  if (present(ierr)) return
+  error stop
+endif
 
 end procedure hdf_read_6d
 
@@ -187,24 +345,48 @@ end procedure hdf_read_6d
 module procedure hdf_read_7d
 
 integer(HSIZE_T) :: dims(rank(value))
+integer(hid_t) :: did, sid, mem_sid
+integer :: ier
 
-call hdf_setup_read(self, dname, dims, ierr)
-if (ierr /= 0) return
+sid = H5S_ALL_F
+mem_sid = H5S_ALL_F
+dims = shape(value)
 
+if(present(istart) .and. present(iend)) then
+  if(present(stride)) then
+    call hdf_get_slice(self, dname, did, sid, mem_sid, ier, istart, iend, stride)
+  else
+    call hdf_get_slice(self, dname, did, sid, mem_sid, ier, istart, iend)
+  endif
+else
+  call hdf_shape_check(self, dname, dims, ier)
+  if (ier == 0) call h5dopen_f(self%lid, dname, did, ier)
+endif
+
+if(ier == 0) then
 select type (value)
 type is (real(real64))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
+  call h5dread_f(did, H5T_NATIVE_DOUBLE, value, dims, ier, mem_sid, sid)
 type is (real(real32))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_REAL_KIND), value, dims,  ierr)
+  call h5dread_f(did, H5T_NATIVE_REAL, value, dims, ier, mem_sid, sid)
 type is (integer(int32))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
-type is (integer(int64))
-  call h5ltread_dataset_f(self%lid, dname, h5kind_to_type(kind(value),H5_INTEGER_KIND), value, dims,  ierr)
+  call h5dread_f(did, H5T_NATIVE_INTEGER, value, dims, ier, mem_sid, sid)
+class default
+  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
+  ier = -1
 end select
+endif
 
-if (ierr /= 0) write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
+if(ier == 0) call hdf_wrapup(did, sid, ier)
+
+if (present(ierr)) ierr = ier
+if (ier /= 0) then
+  write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
+  if (present(ierr)) return
+  error stop
+endif
 
 end procedure hdf_read_7d
 
 
-end submodule read_real64
+end submodule reader

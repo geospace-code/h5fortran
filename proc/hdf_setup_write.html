@@ -5,12 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
    
-   <meta name="description" content="Object-oriented Fortran 2018 HDF5 interface">
+   <meta name="description" content="Object-oriented Fortran 2008 HDF5 interface">
     
     <meta name="author" content="Michael Hirsch, Ph.D." >
     <link rel="icon" href="../favicon.png">
 
-    <title>hdf_setup_write &ndash; Object-oriented Fortran 2018 HDF5 interface</title>
+    <title>hdf_setup_write &ndash; Object-oriented Fortran 2008 HDF5 interface</title>
 
     <link href="../css/bootstrap.min.css" rel="stylesheet">
     <link href="../css/pygments.css" rel="stylesheet">
@@ -44,7 +44,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="../index.html">Object-oriented Fortran 2018 HDF5 interface </a>
+          <a class="navbar-brand" href="../index.html">Object-oriented Fortran 2008 HDF5 interface </a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
@@ -71,6 +71,8 @@
             <li><a href="../lists/types.html">Derived Types</a></li>
         
         
+            <li><a href="../lists/programs.html">Programs</a></li>
+        
             </ul>
             </li>
 
@@ -88,6 +90,8 @@
                              
 <li class="visible-xs hidden-sm visible-lg"><a href="../lists/types.html">Derived Types</a></li>
 
+
+<li class="visible-xs hidden-sm visible-lg"><a href="../lists/programs.html">Programs</a></li>
 
           </ul>
         
@@ -109,7 +113,7 @@
   
   <div class="row">
     <h1>hdf_setup_write
-      <small>Module Procedure</small>
+      <small>Subroutine</small>
     
     </h1>
     
@@ -126,7 +130,7 @@
      <li><i class="fa fa-list-ol"></i>
        <a data-toggle="tooltip"
     data-placement="bottom" data-html="true"
-    title=" 1.2% of total for procedures.">44 statements</a>
+    title=" 0.4% of total for procedures.">44 statements</a>
      </li> 
      
      
@@ -193,10 +197,8 @@
     
     <div class="col-md-9" id='text'>
     <h2>
-module procedure hdf_setup_write <small>module subroutine hdf_setup_write(self, dname, dtype, dims, ierr, chunk_size)</small>
+subroutine hdf_setup_write(self, dname, dtype, dims, sid, did, ierr, chunk_size)
     
-    
-   <a href='../interface/hdf_setup_write.html'><button type="button" class="btn btn-info depwarn">Interface &rarr;</button></a>
     
    
 </h2>
@@ -205,9 +207,7 @@ module procedure hdf_setup_write <small>module subroutine hdf_setup_write(self, 
 
 
     
-    <p>hdf_setup_write(self, dname, dtype, dims, ierr, chunk_size)</p>
-<p>open dataset
- sentinel value for unused property</p>
+    <p>open dataset</p>
     
 
     <h3>Arguments</h3>
@@ -228,7 +228,7 @@ module procedure hdf_setup_write <small>module subroutine hdf_setup_write(self, 
   
 <tr>
   
-  <td><span class="anchor" id="variable-self~5"></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
+  <td><span class="anchor" id="variable-self~31"></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
   <td>intent(inout)</td>
   <td></td>
   
@@ -243,7 +243,7 @@ module procedure hdf_setup_write <small>module subroutine hdf_setup_write(self, 
   
 <tr>
   
-  <td><span class="anchor" id="variable-dname~2"></span>character(len=*),</td>
+  <td><span class="anchor" id="variable-dname~42"></span>character(len=*),</td>
   <td>intent(in)</td>
   <td></td>
   
@@ -273,7 +273,7 @@ module procedure hdf_setup_write <small>module subroutine hdf_setup_write(self, 
   
 <tr>
   
-  <td><span class="anchor" id="variable-dims~2"></span>integer(kind=HSIZE_T),</td>
+  <td><span class="anchor" id="variable-dims~3"></span>integer(kind=HSIZE_T),</td>
   <td>intent(in)</td>
   <td></td>
   
@@ -288,7 +288,37 @@ module procedure hdf_setup_write <small>module subroutine hdf_setup_write(self, 
   
 <tr>
   
-  <td><span class="anchor" id="variable-ierr~5"></span>integer,</td>
+  <td><span class="anchor" id="variable-sid~3"></span>integer(kind=HID_T),</td>
+  <td>intent(out)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>sid</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" id="variable-did~3"></span>integer(kind=HID_T),</td>
+  <td>intent(out)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>did</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" id="variable-ierr~44"></span>integer,</td>
   <td>intent(out)</td>
   <td></td>
   
@@ -303,7 +333,7 @@ module procedure hdf_setup_write <small>module subroutine hdf_setup_write(self, 
   
 <tr>
   
-  <td><span class="anchor" id="variable-chunk_size~2"></span>integer,</td>
+  <td><span class="anchor" id="variable-chunk_size~8"></span>integer,</td>
   <td>intent(in),</td>
   <td>optional</td>
   
@@ -332,142 +362,220 @@ module procedure hdf_setup_write <small>module subroutine hdf_setup_write(self, 
 <!-- Generated by graphviz version 2.40.1 (20161225.0304)
  -->
 <!-- Title: proc~~hdf_setup_write~~CallsGraph Pages: 1 -->
-<svg id="prochdf_setup_writeCallsGraph" width="461pt" height="200pt"
- viewBox="0.00 0.00 461.00 200.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<g id="proc~~hdf_setup_write~~CallsGraph" class="graph" transform="scale(1 1) rotate(0) translate(4 196)">
+<svg id="prochdf_setup_writeCallsGraph" width="395pt" height="407pt"
+ viewBox="0.00 0.00 395.00 407.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="proc~~hdf_setup_write~~CallsGraph" class="graph" transform="scale(1 1) rotate(0) translate(4 403)">
 <title>proc~~hdf_setup_write~~CallsGraph</title>
-<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-196 457,-196 457,4 -4,4"/>
+<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-403 391,-403 391,4 -4,4"/>
 <!-- proc~hdf_setup_write -->
 <g id="proc~~hdf_setup_write~~CallsGraph_node1" class="node">
 <title>proc~hdf_setup_write</title>
-<polygon fill="none" stroke="#000000" points="87,-108 0,-108 0,-84 87,-84 87,-108"/>
-<text text-anchor="middle" x="43.5" y="-93.6" font-family="Helvetica" font-size="10.50" fill="#000000">hdf_setup_write</text>
+<polygon fill="none" stroke="#000000" points="88,-170 0,-170 0,-146 88,-146 88,-170"/>
+<text text-anchor="middle" x="44" y="-155.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#000000">hdf_setup_write</text>
 </g>
-<!-- h5ltpath_valid_f -->
+<!-- proc~hdf_set_deflate -->
 <g id="proc~~hdf_setup_write~~CallsGraph_node2" class="node">
-<title>h5ltpath_valid_f</title>
-<polygon fill="#777777" stroke="#777777" points="209,-192 123,-192 123,-168 209,-168 209,-192"/>
-<text text-anchor="middle" x="166" y="-177.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">h5ltpath_valid_f</text>
+<title>proc~hdf_set_deflate</title>
+<g id="a_proc~~hdf_setup_write~~CallsGraph_node2"><a xlink:href=".././proc/hdf_set_deflate.html" xlink:title="hdf_set_deflate">
+<polygon fill="#d9534f" stroke="#d9534f" points="215.5,-314 129.5,-314 129.5,-290 215.5,-290 215.5,-314"/>
+<text text-anchor="middle" x="172.5" y="-299.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">hdf_set_deflate</text>
+</a>
 </g>
-<!-- proc~hdf_setup_write&#45;&gt;h5ltpath_valid_f -->
+</g>
+<!-- proc~hdf_setup_write&#45;&gt;proc~hdf_set_deflate -->
 <g id="proc~~hdf_setup_write~~CallsGraph_edge1" class="edge">
-<title>proc~hdf_setup_write&#45;&gt;h5ltpath_valid_f</title>
-<path fill="none" stroke="#000000" d="M56.8979,-108.1067C72.1817,-121.5535 98.2664,-143.4169 123,-159 125.2933,-160.4448 127.7004,-161.8625 130.1551,-163.2364"/>
-<polygon fill="#000000" stroke="#000000" points="128.659,-166.4045 139.1344,-167.9908 131.9346,-160.2182 128.659,-166.4045"/>
+<title>proc~hdf_setup_write&#45;&gt;proc~hdf_set_deflate</title>
+<path fill="none" stroke="#000000" d="M48.9982,-170.1632C59.4981,-194.3583 86.0518,-248.9472 124,-281 125.5246,-282.2878 127.1402,-283.5083 128.8204,-284.6637"/>
+<polygon fill="#000000" stroke="#000000" points="127.253,-287.8037 137.6368,-289.9081 130.8317,-281.7876 127.253,-287.8037"/>
 </g>
 <!-- h5dopen_f -->
 <g id="proc~~hdf_setup_write~~CallsGraph_node3" class="node">
 <title>h5dopen_f</title>
-<polygon fill="#777777" stroke="#777777" points="197.5,-150 134.5,-150 134.5,-126 197.5,-126 197.5,-150"/>
-<text text-anchor="middle" x="166" y="-135.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">h5dopen_f</text>
+<polygon fill="#777777" stroke="#777777" points="204.5,-272 140.5,-272 140.5,-248 204.5,-248 204.5,-272"/>
+<text text-anchor="middle" x="172.5" y="-257.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">h5dopen_f</text>
 </g>
 <!-- proc~hdf_setup_write&#45;&gt;h5dopen_f -->
 <g id="proc~~hdf_setup_write~~CallsGraph_edge2" class="edge">
 <title>proc~hdf_setup_write&#45;&gt;h5dopen_f</title>
-<path fill="none" stroke="#000000" d="M78.6036,-108.0355C92.9867,-112.9669 109.7378,-118.7101 124.7044,-123.8415"/>
-<polygon fill="#000000" stroke="#000000" points="123.6445,-127.178 134.2391,-127.1105 125.9148,-120.5564 123.6445,-127.178"/>
+<path fill="none" stroke="#000000" d="M53.4344,-170.1531C67.3233,-187.3793 94.8024,-219.02 124,-239 126.2646,-240.5497 128.662,-242.0239 131.1302,-243.4191"/>
+<polygon fill="#000000" stroke="#000000" points="129.7742,-246.6574 140.2677,-248.1193 132.9762,-240.4327 129.7742,-246.6574"/>
 </g>
-<!-- interface~hdf_set_deflate -->
+<!-- h5ltpath_valid_f -->
 <g id="proc~~hdf_setup_write~~CallsGraph_node4" class="node">
-<title>interface~hdf_set_deflate</title>
-<g id="a_proc~~hdf_setup_write~~CallsGraph_node4"><a xlink:href=".././interface/hdf_set_deflate.html" xlink:title="hdf_set_deflate">
-<polygon fill="#a7506f" stroke="#a7506f" points="207.5,-108 124.5,-108 124.5,-84 207.5,-84 207.5,-108"/>
-<text text-anchor="middle" x="166" y="-93.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">hdf_set_deflate</text>
+<title>h5ltpath_valid_f</title>
+<polygon fill="#777777" stroke="#777777" points="216.5,-230 128.5,-230 128.5,-206 216.5,-206 216.5,-230"/>
+<text text-anchor="middle" x="172.5" y="-215.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">h5ltpath_valid_f</text>
+</g>
+<!-- proc~hdf_setup_write&#45;&gt;h5ltpath_valid_f -->
+<g id="proc~~hdf_setup_write~~CallsGraph_edge3" class="edge">
+<title>proc~hdf_setup_write&#45;&gt;h5ltpath_valid_f</title>
+<path fill="none" stroke="#000000" d="M70.0039,-170.1419C89.3371,-179.1691 115.9345,-191.5881 137.1899,-201.5128"/>
+<polygon fill="#000000" stroke="#000000" points="135.993,-204.8167 146.5348,-205.8762 138.9546,-198.474 135.993,-204.8167"/>
+</g>
+<!-- proc~hdf_shape_check -->
+<g id="proc~~hdf_setup_write~~CallsGraph_node5" class="node">
+<title>proc~hdf_shape_check</title>
+<g id="a_proc~~hdf_setup_write~~CallsGraph_node5"><a xlink:href=".././proc/hdf_shape_check.html" xlink:title="hdf_shape_check">
+<polygon fill="#d9534f" stroke="#d9534f" points="221,-108 124,-108 124,-84 221,-84 221,-108"/>
+<text text-anchor="middle" x="172.5" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">hdf_shape_check</text>
 </a>
 </g>
 </g>
-<!-- proc~hdf_setup_write&#45;&gt;interface~hdf_set_deflate -->
-<g id="proc~~hdf_setup_write~~CallsGraph_edge3" class="edge">
-<title>proc~hdf_setup_write&#45;&gt;interface~hdf_set_deflate</title>
-<path fill="none" stroke="#000000" d="M87.0338,-96C95.8277,-96 105.1547,-96 114.2,-96"/>
-<polygon fill="#000000" stroke="#000000" points="114.2493,-99.5001 124.2492,-96 114.2492,-92.5001 114.2493,-99.5001"/>
+<!-- proc~hdf_setup_write&#45;&gt;proc~hdf_shape_check -->
+<g id="proc~~hdf_setup_write~~CallsGraph_edge5" class="edge">
+<title>proc~hdf_setup_write&#45;&gt;proc~hdf_shape_check</title>
+<path fill="none" stroke="#000000" d="M66.5639,-145.9398C82.4838,-137.5532 104.3832,-126.2618 124,-117 127.3941,-115.3975 130.9419,-113.771 134.5075,-112.169"/>
+<polygon fill="#000000" stroke="#000000" points="136.1636,-115.2637 143.8945,-108.0191 133.3332,-108.8614 136.1636,-115.2637"/>
 </g>
 <!-- h5dcreate_f -->
-<g id="proc~~hdf_setup_write~~CallsGraph_node5" class="node">
+<g id="proc~~hdf_setup_write~~CallsGraph_node6" class="node">
 <title>h5dcreate_f</title>
-<polygon fill="#777777" stroke="#777777" points="200,-66 132,-66 132,-42 200,-42 200,-66"/>
-<text text-anchor="middle" x="166" y="-51.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">h5dcreate_f</text>
+<polygon fill="#777777" stroke="#777777" points="207.5,-150 137.5,-150 137.5,-126 207.5,-126 207.5,-150"/>
+<text text-anchor="middle" x="172.5" y="-135.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">h5dcreate_f</text>
 </g>
 <!-- proc~hdf_setup_write&#45;&gt;h5dcreate_f -->
-<g id="proc~~hdf_setup_write~~CallsGraph_edge4" class="edge">
+<g id="proc~~hdf_setup_write~~CallsGraph_edge6" class="edge">
 <title>proc~hdf_setup_write&#45;&gt;h5dcreate_f</title>
-<path fill="none" stroke="#000000" d="M78.6036,-83.9645C92.1604,-79.3165 107.8209,-73.9471 122.108,-69.0487"/>
-<polygon fill="#000000" stroke="#000000" points="123.4126,-72.3015 131.7369,-65.7473 121.1423,-65.6798 123.4126,-72.3015"/>
+<path fill="none" stroke="#000000" d="M88.2224,-151.1171C100.8251,-149.1556 114.57,-147.0163 127.2339,-145.0453"/>
+<polygon fill="#000000" stroke="#000000" points="127.7731,-148.5036 137.1158,-143.5073 126.6965,-141.5869 127.7731,-148.5036"/>
 </g>
-<!-- h5screate_f -->
-<g id="proc~~hdf_setup_write~~CallsGraph_node6" class="node">
-<title>h5screate_f</title>
-<polygon fill="#777777" stroke="#777777" points="199.5,-24 132.5,-24 132.5,0 199.5,0 199.5,-24"/>
-<text text-anchor="middle" x="166" y="-9.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">h5screate_f</text>
-</g>
-<!-- proc~hdf_setup_write&#45;&gt;h5screate_f -->
-<g id="proc~~hdf_setup_write~~CallsGraph_edge5" class="edge">
-<title>proc~hdf_setup_write&#45;&gt;h5screate_f</title>
-<path fill="none" stroke="#000000" d="M56.8979,-83.8933C72.1817,-70.4465 98.2664,-48.5831 123,-33 125.2933,-31.5552 127.7004,-30.1375 130.1551,-28.7636"/>
-<polygon fill="#000000" stroke="#000000" points="131.9346,-31.7818 139.1344,-24.0092 128.659,-25.5955 131.9346,-31.7818"/>
-</g>
-<!-- proc~hdf_set_deflate -->
+<!-- proc~check -->
 <g id="proc~~hdf_setup_write~~CallsGraph_node7" class="node">
-<title>proc~hdf_set_deflate</title>
-<g id="a_proc~~hdf_setup_write~~CallsGraph_node7"><a xlink:href=".././proc/hdf_set_deflate.html" xlink:title="hdf_set_deflate">
-<polygon fill="#d9534f" stroke="#d9534f" points="328,-108 245,-108 245,-84 328,-84 328,-108"/>
-<text text-anchor="middle" x="286.5" y="-93.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">hdf_set_deflate</text>
+<title>proc~check</title>
+<g id="a_proc~~hdf_setup_write~~CallsGraph_node7"><a xlink:href=".././proc/check.html" xlink:title="check">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="349,-189 295,-189 295,-165 349,-165 349,-189"/>
+<text text-anchor="middle" x="322" y="-174.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">check</text>
 </a>
 </g>
 </g>
-<!-- interface~hdf_set_deflate&#45;&gt;proc~hdf_set_deflate -->
-<g id="proc~~hdf_setup_write~~CallsGraph_edge6" class="edge">
-<title>interface~hdf_set_deflate&#45;&gt;proc~hdf_set_deflate</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M207.8069,-96C216.4992,-96 225.7583,-96 234.7589,-96"/>
-<polygon fill="#000000" stroke="#000000" points="234.7671,-99.5001 244.767,-96 234.767,-92.5001 234.7671,-99.5001"/>
+<!-- proc~hdf_setup_write&#45;&gt;proc~check -->
+<g id="proc~~hdf_setup_write~~CallsGraph_edge7" class="edge">
+<title>proc~hdf_setup_write&#45;&gt;proc~check</title>
+<path fill="none" stroke="#000000" d="M88.0499,-161.0106C142.3654,-164.7228 233.7327,-170.9673 284.7278,-174.4526"/>
+<polygon fill="#000000" stroke="#000000" points="284.7535,-177.9625 294.9689,-175.1526 285.2308,-170.9787 284.7535,-177.9625"/>
+</g>
+<!-- h5pclose_f -->
+<g id="proc~~hdf_setup_write~~CallsGraph_node8" class="node">
+<title>h5pclose_f</title>
+<polygon fill="#777777" stroke="#777777" points="204.5,-66 140.5,-66 140.5,-42 204.5,-42 204.5,-66"/>
+<text text-anchor="middle" x="172.5" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">h5pclose_f</text>
+</g>
+<!-- proc~hdf_setup_write&#45;&gt;h5pclose_f -->
+<g id="proc~~hdf_setup_write~~CallsGraph_edge4" class="edge">
+<title>proc~hdf_setup_write&#45;&gt;h5pclose_f</title>
+<path fill="none" stroke="#000000" d="M53.1382,-145.8248C66.8711,-128.2207 94.3947,-95.5251 124,-75 126.3682,-73.3581 128.8853,-71.8031 131.4791,-70.3382"/>
+<polygon fill="#000000" stroke="#000000" points="133.1928,-73.3927 140.4886,-65.7102 129.9943,-67.1662 133.1928,-73.3927"/>
+</g>
+<!-- h5screate_f -->
+<g id="proc~~hdf_setup_write~~CallsGraph_node9" class="node">
+<title>h5screate_f</title>
+<polygon fill="#777777" stroke="#777777" points="207,-24 138,-24 138,0 207,0 207,-24"/>
+<text text-anchor="middle" x="172.5" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">h5screate_f</text>
+</g>
+<!-- proc~hdf_setup_write&#45;&gt;h5screate_f -->
+<g id="proc~~hdf_setup_write~~CallsGraph_edge8" class="edge">
+<title>proc~hdf_setup_write&#45;&gt;h5screate_f</title>
+<path fill="none" stroke="#000000" d="M48.9445,-145.6367C59.3478,-121.0441 85.7365,-65.5607 124,-33 125.5461,-31.6844 127.1872,-30.4393 128.8953,-29.2624"/>
+<polygon fill="#000000" stroke="#000000" points="131.0546,-32.0507 137.8653,-23.9351 127.4801,-26.0322 131.0546,-32.0507"/>
+</g>
+<!-- proc~hdf_set_deflate&#45;&gt;proc~check -->
+<g id="proc~~hdf_setup_write~~CallsGraph_edge13" class="edge">
+<title>proc~hdf_set_deflate&#45;&gt;proc~check</title>
+<path fill="none" stroke="#000000" d="M208.8902,-289.9511C213.3112,-287.4617 217.4953,-284.5025 221,-281 249.4412,-252.5766 227.226,-225.0241 257,-198 264.7715,-190.9463 274.9379,-186.2598 284.9146,-183.1469"/>
+<polygon fill="#000000" stroke="#000000" points="285.9717,-186.4874 294.7323,-180.5291 284.1682,-179.7237 285.9717,-186.4874"/>
 </g>
 <!-- h5pset_shuffle_f -->
-<g id="proc~~hdf_setup_write~~CallsGraph_node8" class="node">
+<g id="proc~~hdf_setup_write~~CallsGraph_node10" class="node">
 <title>h5pset_shuffle_f</title>
-<polygon fill="#777777" stroke="#777777" points="452.5,-171 364.5,-171 364.5,-147 452.5,-147 452.5,-171"/>
-<text text-anchor="middle" x="408.5" y="-156.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">h5pset_shuffle_f</text>
+<polygon fill="#777777" stroke="#777777" points="367.5,-273 276.5,-273 276.5,-249 367.5,-249 367.5,-273"/>
+<text text-anchor="middle" x="322" y="-258.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">h5pset_shuffle_f</text>
 </g>
 <!-- proc~hdf_set_deflate&#45;&gt;h5pset_shuffle_f -->
-<g id="proc~~hdf_setup_write~~CallsGraph_edge7" class="edge">
-<title>proc~hdf_set_deflate&#45;&gt;h5pset_shuffle_f</title>
-<path fill="none" stroke="#000000" d="M308.0433,-108.0931C323.5,-116.6667 344.8862,-128.3202 364,-138 366.896,-139.4666 369.9128,-140.9606 372.9507,-142.4414"/>
-<polygon fill="#000000" stroke="#000000" points="371.4986,-145.6267 382.0279,-146.8041 374.531,-139.3176 371.4986,-145.6267"/>
-</g>
-<!-- h5pset_chunk_f -->
-<g id="proc~~hdf_setup_write~~CallsGraph_node9" class="node">
-<title>h5pset_chunk_f</title>
-<polygon fill="#777777" stroke="#777777" points="452.5,-129 364.5,-129 364.5,-105 452.5,-105 452.5,-129"/>
-<text text-anchor="middle" x="408.5" y="-114.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">h5pset_chunk_f</text>
-</g>
-<!-- proc~hdf_set_deflate&#45;&gt;h5pset_chunk_f -->
-<g id="proc~~hdf_setup_write~~CallsGraph_edge8" class="edge">
-<title>proc~hdf_set_deflate&#45;&gt;h5pset_chunk_f</title>
-<path fill="none" stroke="#000000" d="M328.1443,-103.1683C336.4794,-104.603 345.3525,-106.1303 354.0461,-107.6268"/>
-<polygon fill="#000000" stroke="#000000" points="353.6774,-111.1147 364.1263,-109.3619 354.865,-104.2162 353.6774,-111.1147"/>
-</g>
-<!-- h5pset_deflate_f -->
-<g id="proc~~hdf_setup_write~~CallsGraph_node10" class="node">
-<title>h5pset_deflate_f</title>
-<polygon fill="#777777" stroke="#777777" points="453,-87 364,-87 364,-63 453,-63 453,-87"/>
-<text text-anchor="middle" x="408.5" y="-72.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">h5pset_deflate_f</text>
-</g>
-<!-- proc~hdf_set_deflate&#45;&gt;h5pset_deflate_f -->
 <g id="proc~~hdf_setup_write~~CallsGraph_edge9" class="edge">
-<title>proc~hdf_set_deflate&#45;&gt;h5pset_deflate_f</title>
-<path fill="none" stroke="#000000" d="M328.1443,-88.8317C336.3802,-87.4141 345.1413,-85.906 353.7355,-84.4267"/>
-<polygon fill="#000000" stroke="#000000" points="354.445,-87.8561 363.7064,-82.7104 353.2575,-80.9576 354.445,-87.8561"/>
+<title>proc~hdf_set_deflate&#45;&gt;h5pset_shuffle_f</title>
+<path fill="none" stroke="#000000" d="M215.7416,-290.1411C232.1056,-285.6533 250.9356,-280.4892 268.1559,-275.7666"/>
+<polygon fill="#000000" stroke="#000000" points="269.3599,-279.0657 278.0781,-273.0455 267.5085,-272.315 269.3599,-279.0657"/>
 </g>
 <!-- h5pcreate_f -->
-<g id="proc~~hdf_setup_write~~CallsGraph_node11" class="node">
+<g id="proc~~hdf_setup_write~~CallsGraph_node12" class="node">
 <title>h5pcreate_f</title>
-<polygon fill="#777777" stroke="#777777" points="442.5,-45 374.5,-45 374.5,-21 442.5,-21 442.5,-45"/>
-<text text-anchor="middle" x="408.5" y="-30.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">h5pcreate_f</text>
+<polygon fill="#777777" stroke="#777777" points="357,-231 287,-231 287,-207 357,-207 357,-231"/>
+<text text-anchor="middle" x="322" y="-216.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">h5pcreate_f</text>
 </g>
 <!-- proc~hdf_set_deflate&#45;&gt;h5pcreate_f -->
 <g id="proc~~hdf_setup_write~~CallsGraph_edge10" class="edge">
 <title>proc~hdf_set_deflate&#45;&gt;h5pcreate_f</title>
-<path fill="none" stroke="#000000" d="M308.0433,-83.9069C323.5,-75.3333 344.8862,-63.6798 364,-54 366.896,-52.5334 369.9128,-51.0394 372.9507,-49.5586"/>
-<polygon fill="#000000" stroke="#000000" points="374.531,-52.6824 382.0279,-45.1959 371.4986,-46.3733 374.531,-52.6824"/>
+<path fill="none" stroke="#000000" d="M205.6662,-289.9919C211.017,-287.4028 216.3272,-284.4029 221,-281 240.6026,-266.7246 236.7342,-253.3171 257,-240 263.1323,-235.9703 270.0974,-232.6618 277.1346,-229.9612"/>
+<polygon fill="#000000" stroke="#000000" points="278.4014,-233.2265 286.7039,-226.6448 276.1091,-226.6125 278.4014,-233.2265"/>
+</g>
+<!-- h5pset_deflate_f -->
+<g id="proc~~hdf_setup_write~~CallsGraph_node13" class="node">
+<title>h5pset_deflate_f</title>
+<polygon fill="#777777" stroke="#777777" points="368,-399 276,-399 276,-375 368,-375 368,-399"/>
+<text text-anchor="middle" x="322" y="-384.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">h5pset_deflate_f</text>
+</g>
+<!-- proc~hdf_set_deflate&#45;&gt;h5pset_deflate_f -->
+<g id="proc~~hdf_setup_write~~CallsGraph_edge11" class="edge">
+<title>proc~hdf_set_deflate&#45;&gt;h5pset_deflate_f</title>
+<path fill="none" stroke="#000000" d="M185.588,-314.1713C201.4277,-328.3402 229.4186,-351.6284 257,-366 260.5659,-367.8581 264.3275,-369.5923 268.1703,-371.203"/>
+<polygon fill="#000000" stroke="#000000" points="267.236,-374.5947 277.8248,-374.9521 269.77,-368.0695 267.236,-374.5947"/>
+</g>
+<!-- proc~guess_chunk_size -->
+<g id="proc~~hdf_setup_write~~CallsGraph_node14" class="node">
+<title>proc~guess_chunk_size</title>
+<g id="a_proc~~hdf_setup_write~~CallsGraph_node14"><a xlink:href=".././proc/guess_chunk_size.html" xlink:title="guess_chunk_size">
+<polygon fill="#d9534f" stroke="#d9534f" points="372,-357 272,-357 272,-333 372,-333 372,-357"/>
+<text text-anchor="middle" x="322" y="-342.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">guess_chunk_size</text>
+</a>
+</g>
+</g>
+<!-- proc~hdf_set_deflate&#45;&gt;proc~guess_chunk_size -->
+<g id="proc~~hdf_setup_write~~CallsGraph_edge12" class="edge">
+<title>proc~hdf_set_deflate&#45;&gt;proc~guess_chunk_size</title>
+<path fill="none" stroke="#000000" d="M214.5419,-314.0923C231.9652,-319.1037 252.3417,-324.9645 270.639,-330.2273"/>
+<polygon fill="#000000" stroke="#000000" points="269.6958,-333.5978 280.2736,-332.9984 271.6307,-326.8705 269.6958,-333.5978"/>
+</g>
+<!-- h5pset_fletcher32_f -->
+<g id="proc~~hdf_setup_write~~CallsGraph_node16" class="node">
+<title>h5pset_fletcher32_f</title>
+<polygon fill="#777777" stroke="#777777" points="375.5,-315 268.5,-315 268.5,-291 375.5,-291 375.5,-315"/>
+<text text-anchor="middle" x="322" y="-300.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">h5pset_fletcher32_f</text>
+</g>
+<!-- proc~hdf_set_deflate&#45;&gt;h5pset_fletcher32_f -->
+<g id="proc~~hdf_setup_write~~CallsGraph_edge14" class="edge">
+<title>proc~hdf_set_deflate&#45;&gt;h5pset_fletcher32_f</title>
+<path fill="none" stroke="#000000" d="M215.7416,-302.2892C228.9957,-302.3779 243.8676,-302.4774 258.1915,-302.5732"/>
+<polygon fill="#000000" stroke="#000000" points="258.4706,-306.075 268.4938,-302.6421 258.5175,-299.0752 258.4706,-306.075"/>
+</g>
+<!-- proc~hdf_shape_check&#45;&gt;proc~check -->
+<g id="proc~~hdf_setup_write~~CallsGraph_edge15" class="edge">
+<title>proc~hdf_shape_check&#45;&gt;proc~check</title>
+<path fill="none" stroke="#000000" d="M202.017,-108.0663C208.3501,-110.8529 214.9535,-113.9109 221,-117 235.073,-124.1899 269.1188,-144.6617 293.7995,-159.7004"/>
+<polygon fill="#000000" stroke="#000000" points="292.0556,-162.7364 302.4143,-164.9605 295.7035,-156.762 292.0556,-162.7364"/>
+</g>
+<!-- h5ltget_dataset_ndims_f -->
+<g id="proc~~hdf_setup_write~~CallsGraph_node11" class="node">
+<title>h5ltget_dataset_ndims_f</title>
+<polygon fill="#777777" stroke="#777777" points="387,-128 257,-128 257,-104 387,-104 387,-128"/>
+<text text-anchor="middle" x="322" y="-113.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">h5ltget_dataset_ndims_f</text>
+</g>
+<!-- proc~hdf_shape_check&#45;&gt;h5ltget_dataset_ndims_f -->
+<g id="proc~~hdf_setup_write~~CallsGraph_edge16" class="edge">
+<title>proc~hdf_shape_check&#45;&gt;h5ltget_dataset_ndims_f</title>
+<path fill="none" stroke="#000000" d="M221.0384,-102.4934C229.3392,-103.6039 238.1338,-104.7804 246.9343,-105.9578"/>
+<polygon fill="#000000" stroke="#000000" points="246.4709,-109.4269 256.8467,-107.2838 247.3992,-102.4887 246.4709,-109.4269"/>
+</g>
+<!-- h5ltget_dataset_info_f -->
+<g id="proc~~hdf_setup_write~~CallsGraph_node15" class="node">
+<title>h5ltget_dataset_info_f</title>
+<polygon fill="#777777" stroke="#777777" points="381,-86 263,-86 263,-62 381,-62 381,-86"/>
+<text text-anchor="middle" x="322" y="-71.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">h5ltget_dataset_info_f</text>
+</g>
+<!-- proc~hdf_shape_check&#45;&gt;h5ltget_dataset_info_f -->
+<g id="proc~~hdf_setup_write~~CallsGraph_edge17" class="edge">
+<title>proc~hdf_shape_check&#45;&gt;h5ltget_dataset_info_f</title>
+<path fill="none" stroke="#000000" d="M221.0384,-88.8572C231.1177,-87.374 241.925,-85.7836 252.5868,-84.2147"/>
+<polygon fill="#000000" stroke="#000000" points="253.352,-87.6398 262.7358,-82.7211 252.3328,-80.7144 253.352,-87.6398"/>
 </g>
 </g>
 </svg>
@@ -479,46 +587,46 @@ module procedure hdf_setup_write <small>module subroutine hdf_setup_write(self, 
 <!-- Generated by graphviz version 2.40.1 (20161225.0304)
  -->
 <!-- Title: Graph Key Pages: 1 -->
-<svg width="551pt" height="32pt"
- viewBox="0.00 0.00 551.00 32.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg width="560pt" height="32pt"
+ viewBox="0.00 0.00 559.50 32.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 28)">
 <title>Graph Key</title>
-<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-28 547,-28 547,4 -4,4"/>
+<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-28 555.5,-28 555.5,4 -4,4"/>
 <!-- Subroutine -->
 <g id="node1" class="node">
 <title>Subroutine</title>
-<polygon fill="#d9534f" stroke="#d9534f" points="63,-24 0,-24 0,0 63,0 63,-24"/>
-<text text-anchor="middle" x="31.5" y="-9.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">Subroutine</text>
+<polygon fill="#d9534f" stroke="#d9534f" points="64,-24 0,-24 0,0 64,0 64,-24"/>
+<text text-anchor="middle" x="32" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">Subroutine</text>
 </g>
 <!-- Function -->
 <g id="node2" class="node">
 <title>Function</title>
-<polygon fill="#d94e8f" stroke="#d94e8f" points="135.5,-24 81.5,-24 81.5,0 135.5,0 135.5,-24"/>
-<text text-anchor="middle" x="108.5" y="-9.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">Function</text>
+<polygon fill="#d94e8f" stroke="#d94e8f" points="136,-24 82,-24 82,0 136,0 136,-24"/>
+<text text-anchor="middle" x="109" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">Function</text>
 </g>
 <!-- Interface -->
 <g id="node3" class="node">
 <title>Interface</title>
-<polygon fill="#a7506f" stroke="#a7506f" points="207.5,-24 153.5,-24 153.5,0 207.5,0 207.5,-24"/>
-<text text-anchor="middle" x="180.5" y="-9.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">Interface</text>
+<polygon fill="#a7506f" stroke="#a7506f" points="209.5,-24 154.5,-24 154.5,0 209.5,0 209.5,-24"/>
+<text text-anchor="middle" x="182" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">Interface</text>
 </g>
 <!-- Unknown Procedure Type -->
 <g id="node4" class="node">
 <title>Unknown Procedure Type</title>
-<polygon fill="#777777" stroke="#777777" points="359,-24 226,-24 226,0 359,0 359,-24"/>
-<text text-anchor="middle" x="292.5" y="-9.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">Unknown Procedure Type</text>
+<polygon fill="#777777" stroke="#777777" points="364,-24 228,-24 228,0 364,0 364,-24"/>
+<text text-anchor="middle" x="296" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">Unknown Procedure Type</text>
 </g>
 <!-- Program -->
 <g id="node5" class="node">
 <title>Program</title>
-<polygon fill="#f0ad4e" stroke="#f0ad4e" points="431.5,-24 377.5,-24 377.5,0 431.5,0 431.5,-24"/>
-<text text-anchor="middle" x="404.5" y="-9.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">Program</text>
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="436,-24 382,-24 382,0 436,0 436,-24"/>
+<text text-anchor="middle" x="409" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">Program</text>
 </g>
 <!-- This Page&#39;s Entity -->
 <g id="node6" class="node">
 <title>This Page&#39;s Entity</title>
-<polygon fill="none" stroke="#000000" points="543,-24 450,-24 450,0 543,0 543,-24"/>
-<text text-anchor="middle" x="496.5" y="-9.6" font-family="Helvetica" font-size="10.50" fill="#000000">This Page&#39;s Entity</text>
+<polygon fill="none" stroke="#000000" points="551.5,-24 454.5,-24 454.5,0 551.5,0 551.5,-24"/>
+<text text-anchor="middle" x="503" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#000000">This Page&#39;s Entity</text>
 </g>
 </g>
 </svg>
@@ -545,271 +653,271 @@ module procedure hdf_setup_write <small>module subroutine hdf_setup_write(self, 
 <!-- Generated by graphviz version 2.40.1 (20161225.0304)
  -->
 <!-- Title: proc~~hdf_setup_write~~CalledByGraph Pages: 1 -->
-<svg id="prochdf_setup_writeCalledByGraph" width="464pt" height="326pt"
- viewBox="0.00 0.00 464.00 326.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<g id="proc~~hdf_setup_write~~CalledByGraph" class="graph" transform="scale(1 1) rotate(0) translate(4 322)">
+<svg id="prochdf_setup_writeCalledByGraph" width="350pt" height="368pt"
+ viewBox="0.00 0.00 350.00 368.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="proc~~hdf_setup_write~~CalledByGraph" class="graph" transform="scale(1 1) rotate(0) translate(4 364)">
 <title>proc~~hdf_setup_write~~CalledByGraph</title>
-<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-322 460,-322 460,4 -4,4"/>
+<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-364 346,-364 346,4 -4,4"/>
 <!-- proc~hdf_setup_write -->
 <g id="proc~~hdf_setup_write~~CalledByGraph_node1" class="node">
 <title>proc~hdf_setup_write</title>
-<polygon fill="none" stroke="#000000" points="456,-171 369,-171 369,-147 456,-147 456,-171"/>
-<text text-anchor="middle" x="412.5" y="-156.6" font-family="Helvetica" font-size="10.50" fill="#000000">hdf_setup_write</text>
+<polygon fill="none" stroke="#000000" points="342,-192 254,-192 254,-168 342,-168 342,-192"/>
+<text text-anchor="middle" x="298" y="-177.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#000000">hdf_setup_write</text>
 </g>
-<!-- interface~hdf_setup_write -->
+<!-- proc~hdf_write_8d -->
 <g id="proc~~hdf_setup_write~~CalledByGraph_node2" class="node">
-<title>interface~hdf_setup_write</title>
-<g id="a_proc~~hdf_setup_write~~CalledByGraph_node2"><a xlink:href=".././interface/hdf_setup_write.html" xlink:title="hdf_setup_write">
-<polygon fill="#a7506f" stroke="#a7506f" points="333,-171 246,-171 246,-147 333,-147 333,-171"/>
-<text text-anchor="middle" x="289.5" y="-156.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">hdf_setup_write</text>
+<title>proc~hdf_write_8d</title>
+<g id="a_proc~~hdf_setup_write~~CalledByGraph_node2"><a xlink:href=".././proc/hdf_write_8d.html" xlink:title="hdf_write_8d">
+<polygon fill="#777777" stroke="#777777" points="209.5,-360 135.5,-360 135.5,-336 209.5,-336 209.5,-360"/>
+<text text-anchor="middle" x="172.5" y="-345.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">hdf_write_8d</text>
 </a>
 </g>
 </g>
-<!-- interface~hdf_setup_write&#45;&gt;proc~hdf_setup_write -->
+<!-- proc~hdf_write_8d&#45;&gt;proc~hdf_setup_write -->
 <g id="proc~~hdf_setup_write~~CalledByGraph_edge1" class="edge">
-<title>interface~hdf_setup_write&#45;&gt;proc~hdf_setup_write</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M333.2115,-159C341.4587,-159 350.1729,-159 358.6873,-159"/>
-<polygon fill="#000000" stroke="#000000" points="358.9293,-162.5001 368.9292,-159 358.9292,-155.5001 358.9293,-162.5001"/>
-</g>
-<!-- proc~hdf_write_2d -->
-<g id="proc~~hdf_setup_write~~CalledByGraph_node3" class="node">
-<title>proc~hdf_write_2d</title>
-<g id="a_proc~~hdf_setup_write~~CalledByGraph_node3"><a xlink:href=".././proc/hdf_write_2d.html" xlink:title="hdf_write_2d">
-<polygon fill="#d9534f" stroke="#d9534f" points="203,-318 130,-318 130,-294 203,-294 203,-318"/>
-<text text-anchor="middle" x="166.5" y="-303.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">hdf_write_2d</text>
-</a>
-</g>
-</g>
-<!-- proc~hdf_write_2d&#45;&gt;interface~hdf_setup_write -->
-<g id="proc~~hdf_setup_write~~CalledByGraph_edge2" class="edge">
-<title>proc~hdf_write_2d&#45;&gt;interface~hdf_setup_write</title>
-<path fill="none" stroke="#000000" d="M197.3511,-293.813C201.8632,-291.285 206.2467,-288.3511 210,-285 243.3614,-255.2137 267.9246,-208.1826 280.355,-180.7907"/>
-<polygon fill="#000000" stroke="#000000" points="283.6935,-181.8936 284.5181,-171.3309 277.2865,-179.074 283.6935,-181.8936"/>
-</g>
-<!-- proc~hdf_write_6d -->
-<g id="proc~~hdf_setup_write~~CalledByGraph_node4" class="node">
-<title>proc~hdf_write_6d</title>
-<g id="a_proc~~hdf_setup_write~~CalledByGraph_node4"><a xlink:href=".././proc/hdf_write_6d.html" xlink:title="hdf_write_6d">
-<polygon fill="#d9534f" stroke="#d9534f" points="203,-276 130,-276 130,-252 203,-252 203,-276"/>
-<text text-anchor="middle" x="166.5" y="-261.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">hdf_write_6d</text>
-</a>
-</g>
-</g>
-<!-- proc~hdf_write_6d&#45;&gt;interface~hdf_setup_write -->
-<g id="proc~~hdf_setup_write~~CalledByGraph_edge3" class="edge">
-<title>proc~hdf_write_6d&#45;&gt;interface~hdf_setup_write</title>
-<path fill="none" stroke="#000000" d="M195.4335,-251.8662C200.4766,-249.2449 205.5321,-246.2668 210,-243 235.0728,-224.6677 258.8719,-197.8202 273.7821,-179.4415"/>
-<polygon fill="#000000" stroke="#000000" points="276.8713,-181.1799 280.3542,-171.1739 271.3917,-176.824 276.8713,-181.1799"/>
-</g>
-<!-- proc~hdf_write_5d -->
-<g id="proc~~hdf_setup_write~~CalledByGraph_node5" class="node">
-<title>proc~hdf_write_5d</title>
-<g id="a_proc~~hdf_setup_write~~CalledByGraph_node5"><a xlink:href=".././proc/hdf_write_5d.html" xlink:title="hdf_write_5d">
-<polygon fill="#d9534f" stroke="#d9534f" points="203,-234 130,-234 130,-210 203,-210 203,-234"/>
-<text text-anchor="middle" x="166.5" y="-219.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">hdf_write_5d</text>
-</a>
-</g>
-</g>
-<!-- proc~hdf_write_5d&#45;&gt;interface~hdf_setup_write -->
-<g id="proc~~hdf_setup_write~~CalledByGraph_edge4" class="edge">
-<title>proc~hdf_write_5d&#45;&gt;interface~hdf_setup_write</title>
-<path fill="none" stroke="#000000" d="M191.8785,-209.9394C197.8431,-207.052 204.1619,-203.9501 210,-201 225.8858,-192.9726 243.392,-183.7639 257.9236,-176.0187"/>
-<polygon fill="#000000" stroke="#000000" points="259.8283,-178.9693 266.9965,-171.1675 256.5276,-172.7963 259.8283,-178.9693"/>
-</g>
-<!-- proc~hdf_write_scalar -->
-<g id="proc~~hdf_setup_write~~CalledByGraph_node6" class="node">
-<title>proc~hdf_write_scalar</title>
-<g id="a_proc~~hdf_setup_write~~CalledByGraph_node6"><a xlink:href=".././proc/hdf_write_scalar.html" xlink:title="hdf_write_scalar">
-<polygon fill="#d9534f" stroke="#d9534f" points="210,-192 123,-192 123,-168 210,-168 210,-192"/>
-<text text-anchor="middle" x="166.5" y="-177.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">hdf_write_scalar</text>
-</a>
-</g>
-</g>
-<!-- proc~hdf_write_scalar&#45;&gt;interface~hdf_setup_write -->
-<g id="proc~~hdf_setup_write~~CalledByGraph_edge5" class="edge">
-<title>proc~hdf_write_scalar&#45;&gt;interface~hdf_setup_write</title>
-<path fill="none" stroke="#000000" d="M210.2115,-172.5371C218.5493,-171.1135 227.3644,-169.6085 235.9679,-168.1396"/>
-<polygon fill="#000000" stroke="#000000" points="236.6609,-171.572 245.9292,-166.4389 235.4828,-164.6719 236.6609,-171.572"/>
-</g>
-<!-- proc~hdf_write_4d -->
-<g id="proc~~hdf_setup_write~~CalledByGraph_node7" class="node">
-<title>proc~hdf_write_4d</title>
-<g id="a_proc~~hdf_setup_write~~CalledByGraph_node7"><a xlink:href=".././proc/hdf_write_4d.html" xlink:title="hdf_write_4d">
-<polygon fill="#d9534f" stroke="#d9534f" points="203,-150 130,-150 130,-126 203,-126 203,-150"/>
-<text text-anchor="middle" x="166.5" y="-135.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">hdf_write_4d</text>
-</a>
-</g>
-</g>
-<!-- proc~hdf_write_4d&#45;&gt;interface~hdf_setup_write -->
-<g id="proc~~hdf_setup_write~~CalledByGraph_edge6" class="edge">
-<title>proc~hdf_write_4d&#45;&gt;interface~hdf_setup_write</title>
-<path fill="none" stroke="#000000" d="M203.071,-144.2438C213.3723,-146.0026 224.7969,-147.9531 235.8749,-149.8445"/>
-<polygon fill="#000000" stroke="#000000" points="235.4625,-153.3247 245.9089,-151.5576 236.6406,-146.4245 235.4625,-153.3247"/>
-</g>
-<!-- proc~hdf_write_7d -->
-<g id="proc~~hdf_setup_write~~CalledByGraph_node8" class="node">
-<title>proc~hdf_write_7d</title>
-<g id="a_proc~~hdf_setup_write~~CalledByGraph_node8"><a xlink:href=".././proc/hdf_write_7d.html" xlink:title="hdf_write_7d">
-<polygon fill="#d9534f" stroke="#d9534f" points="203,-108 130,-108 130,-84 203,-84 203,-108"/>
-<text text-anchor="middle" x="166.5" y="-93.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">hdf_write_7d</text>
-</a>
-</g>
-</g>
-<!-- proc~hdf_write_7d&#45;&gt;interface~hdf_setup_write -->
-<g id="proc~~hdf_setup_write~~CalledByGraph_edge7" class="edge">
-<title>proc~hdf_write_7d&#45;&gt;interface~hdf_setup_write</title>
-<path fill="none" stroke="#000000" d="M191.8785,-108.0606C197.8431,-110.948 204.1619,-114.0499 210,-117 225.8858,-125.0274 243.392,-134.2361 257.9236,-141.9813"/>
-<polygon fill="#000000" stroke="#000000" points="256.5276,-145.2037 266.9965,-146.8325 259.8283,-139.0307 256.5276,-145.2037"/>
-</g>
-<!-- proc~hdf_write_3d -->
-<g id="proc~~hdf_setup_write~~CalledByGraph_node9" class="node">
-<title>proc~hdf_write_3d</title>
-<g id="a_proc~~hdf_setup_write~~CalledByGraph_node9"><a xlink:href=".././proc/hdf_write_3d.html" xlink:title="hdf_write_3d">
-<polygon fill="#d9534f" stroke="#d9534f" points="203,-66 130,-66 130,-42 203,-42 203,-66"/>
-<text text-anchor="middle" x="166.5" y="-51.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">hdf_write_3d</text>
-</a>
-</g>
-</g>
-<!-- proc~hdf_write_3d&#45;&gt;interface~hdf_setup_write -->
-<g id="proc~~hdf_setup_write~~CalledByGraph_edge8" class="edge">
-<title>proc~hdf_write_3d&#45;&gt;interface~hdf_setup_write</title>
-<path fill="none" stroke="#000000" d="M195.4335,-66.1338C200.4766,-68.7551 205.5321,-71.7332 210,-75 235.0728,-93.3323 258.8719,-120.1798 273.7821,-138.5585"/>
-<polygon fill="#000000" stroke="#000000" points="271.3917,-141.176 280.3542,-146.8261 276.8713,-136.8201 271.3917,-141.176"/>
+<title>proc~hdf_write_8d&#45;&gt;proc~hdf_setup_write</title>
+<path fill="none" stroke="#000000" d="M205.4406,-335.934C209.966,-333.4123 214.3162,-330.4484 218,-327 256.1149,-291.3206 280.1374,-233.3058 291.0724,-201.8884"/>
+<polygon fill="#000000" stroke="#000000" points="294.4186,-202.9181 294.2805,-192.3241 287.782,-200.6919 294.4186,-202.9181"/>
 </g>
 <!-- proc~hdf_write_1d -->
-<g id="proc~~hdf_setup_write~~CalledByGraph_node10" class="node">
+<g id="proc~~hdf_setup_write~~CalledByGraph_node3" class="node">
 <title>proc~hdf_write_1d</title>
-<g id="a_proc~~hdf_setup_write~~CalledByGraph_node10"><a xlink:href=".././proc/hdf_write_1d.html" xlink:title="hdf_write_1d">
-<polygon fill="#d9534f" stroke="#d9534f" points="203,-24 130,-24 130,0 203,0 203,-24"/>
-<text text-anchor="middle" x="166.5" y="-9.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">hdf_write_1d</text>
+<g id="a_proc~~hdf_setup_write~~CalledByGraph_node3"><a xlink:href=".././proc/hdf_write_1d.html" xlink:title="hdf_write_1d">
+<polygon fill="#d9534f" stroke="#d9534f" points="209.5,-318 135.5,-318 135.5,-294 209.5,-294 209.5,-318"/>
+<text text-anchor="middle" x="172.5" y="-303.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">hdf_write_1d</text>
 </a>
 </g>
 </g>
-<!-- proc~hdf_write_1d&#45;&gt;interface~hdf_setup_write -->
+<!-- proc~hdf_write_1d&#45;&gt;proc~hdf_setup_write -->
+<g id="proc~~hdf_setup_write~~CalledByGraph_edge4" class="edge">
+<title>proc~hdf_write_1d&#45;&gt;proc~hdf_setup_write</title>
+<path fill="none" stroke="#000000" d="M204.0373,-293.9135C208.9541,-291.3473 213.7924,-288.3752 218,-285 247.6952,-261.1794 272.5368,-224.0624 286.3205,-200.9342"/>
+<polygon fill="#000000" stroke="#000000" points="289.3732,-202.6471 291.3719,-192.2425 283.321,-199.1298 289.3732,-202.6471"/>
+</g>
+<!-- proc~hdf_write_4d -->
+<g id="proc~~hdf_setup_write~~CalledByGraph_node4" class="node">
+<title>proc~hdf_write_4d</title>
+<g id="a_proc~~hdf_setup_write~~CalledByGraph_node4"><a xlink:href=".././proc/hdf_write_4d.html" xlink:title="hdf_write_4d">
+<polygon fill="#d9534f" stroke="#d9534f" points="209.5,-276 135.5,-276 135.5,-252 209.5,-252 209.5,-276"/>
+<text text-anchor="middle" x="172.5" y="-261.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">hdf_write_4d</text>
+</a>
+</g>
+</g>
+<!-- proc~hdf_write_4d&#45;&gt;proc~hdf_setup_write -->
+<g id="proc~~hdf_setup_write~~CalledByGraph_edge3" class="edge">
+<title>proc~hdf_write_4d&#45;&gt;proc~hdf_setup_write</title>
+<path fill="none" stroke="#000000" d="M201.431,-251.8907C207.0524,-249.1937 212.8073,-246.1818 218,-243 239.1127,-230.0632 261.0702,-212.424 276.6283,-199.1004"/>
+<polygon fill="#000000" stroke="#000000" points="279.316,-201.4016 284.5672,-192.1997 274.7238,-196.1184 279.316,-201.4016"/>
+</g>
+<!-- proc~hdf_write_2d -->
+<g id="proc~~hdf_setup_write~~CalledByGraph_node5" class="node">
+<title>proc~hdf_write_2d</title>
+<g id="a_proc~~hdf_setup_write~~CalledByGraph_node5"><a xlink:href=".././proc/hdf_write_2d.html" xlink:title="hdf_write_2d">
+<polygon fill="#d9534f" stroke="#d9534f" points="209.5,-234 135.5,-234 135.5,-210 209.5,-210 209.5,-234"/>
+<text text-anchor="middle" x="172.5" y="-219.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">hdf_write_2d</text>
+</a>
+</g>
+</g>
+<!-- proc~hdf_write_2d&#45;&gt;proc~hdf_setup_write -->
+<g id="proc~~hdf_setup_write~~CalledByGraph_edge2" class="edge">
+<title>proc~hdf_write_2d&#45;&gt;proc~hdf_setup_write</title>
+<path fill="none" stroke="#000000" d="M208.4633,-209.9645C222.1166,-205.3952 237.8529,-200.1289 252.2877,-195.2981"/>
+<polygon fill="#000000" stroke="#000000" points="253.6592,-198.53 262.0315,-192.0373 251.4376,-191.8919 253.6592,-198.53"/>
+</g>
+<!-- proc~hdf_write_3d -->
+<g id="proc~~hdf_setup_write~~CalledByGraph_node6" class="node">
+<title>proc~hdf_write_3d</title>
+<g id="a_proc~~hdf_setup_write~~CalledByGraph_node6"><a xlink:href=".././proc/hdf_write_3d.html" xlink:title="hdf_write_3d">
+<polygon fill="#d9534f" stroke="#d9534f" points="209.5,-192 135.5,-192 135.5,-168 209.5,-168 209.5,-192"/>
+<text text-anchor="middle" x="172.5" y="-177.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">hdf_write_3d</text>
+</a>
+</g>
+</g>
+<!-- proc~hdf_write_3d&#45;&gt;proc~hdf_setup_write -->
+<g id="proc~~hdf_setup_write~~CalledByGraph_edge5" class="edge">
+<title>proc~hdf_write_3d&#45;&gt;proc~hdf_setup_write</title>
+<path fill="none" stroke="#000000" d="M209.8143,-180C220.4357,-180 232.2273,-180 243.6418,-180"/>
+<polygon fill="#000000" stroke="#000000" points="243.974,-183.5001 253.974,-180 243.9739,-176.5001 243.974,-183.5001"/>
+</g>
+<!-- proc~hdf_write_7d -->
+<g id="proc~~hdf_setup_write~~CalledByGraph_node7" class="node">
+<title>proc~hdf_write_7d</title>
+<g id="a_proc~~hdf_setup_write~~CalledByGraph_node7"><a xlink:href=".././proc/hdf_write_7d.html" xlink:title="hdf_write_7d">
+<polygon fill="#d9534f" stroke="#d9534f" points="209.5,-150 135.5,-150 135.5,-126 209.5,-126 209.5,-150"/>
+<text text-anchor="middle" x="172.5" y="-135.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">hdf_write_7d</text>
+</a>
+</g>
+</g>
+<!-- proc~hdf_write_7d&#45;&gt;proc~hdf_setup_write -->
+<g id="proc~~hdf_setup_write~~CalledByGraph_edge6" class="edge">
+<title>proc~hdf_write_7d&#45;&gt;proc~hdf_setup_write</title>
+<path fill="none" stroke="#000000" d="M208.4633,-150.0355C222.1166,-154.6048 237.8529,-159.8711 252.2877,-164.7019"/>
+<polygon fill="#000000" stroke="#000000" points="251.4376,-168.1081 262.0315,-167.9627 253.6592,-161.47 251.4376,-168.1081"/>
+</g>
+<!-- proc~hdf_write_5d -->
+<g id="proc~~hdf_setup_write~~CalledByGraph_node8" class="node">
+<title>proc~hdf_write_5d</title>
+<g id="a_proc~~hdf_setup_write~~CalledByGraph_node8"><a xlink:href=".././proc/hdf_write_5d.html" xlink:title="hdf_write_5d">
+<polygon fill="#d9534f" stroke="#d9534f" points="209.5,-108 135.5,-108 135.5,-84 209.5,-84 209.5,-108"/>
+<text text-anchor="middle" x="172.5" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">hdf_write_5d</text>
+</a>
+</g>
+</g>
+<!-- proc~hdf_write_5d&#45;&gt;proc~hdf_setup_write -->
+<g id="proc~~hdf_setup_write~~CalledByGraph_edge7" class="edge">
+<title>proc~hdf_write_5d&#45;&gt;proc~hdf_setup_write</title>
+<path fill="none" stroke="#000000" d="M201.431,-108.1093C207.0524,-110.8063 212.8073,-113.8182 218,-117 239.1127,-129.9368 261.0702,-147.576 276.6283,-160.8996"/>
+<polygon fill="#000000" stroke="#000000" points="274.7238,-163.8816 284.5672,-167.8003 279.316,-158.5984 274.7238,-163.8816"/>
+</g>
+<!-- proc~hdf_write_scalar -->
+<g id="proc~~hdf_setup_write~~CalledByGraph_node9" class="node">
+<title>proc~hdf_write_scalar</title>
+<g id="a_proc~~hdf_setup_write~~CalledByGraph_node9"><a xlink:href=".././proc/hdf_write_scalar.html" xlink:title="hdf_write_scalar">
+<polygon fill="#d9534f" stroke="#d9534f" points="218,-66 127,-66 127,-42 218,-42 218,-66"/>
+<text text-anchor="middle" x="172.5" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">hdf_write_scalar</text>
+</a>
+</g>
+</g>
+<!-- proc~hdf_write_scalar&#45;&gt;proc~hdf_setup_write -->
+<g id="proc~~hdf_setup_write~~CalledByGraph_edge8" class="edge">
+<title>proc~hdf_write_scalar&#45;&gt;proc~hdf_setup_write</title>
+<path fill="none" stroke="#000000" d="M204.0373,-66.0865C208.9541,-68.6527 213.7924,-71.6248 218,-75 247.6952,-98.8206 272.5368,-135.9376 286.3205,-159.0658"/>
+<polygon fill="#000000" stroke="#000000" points="283.321,-160.8702 291.3719,-167.7575 289.3732,-157.3529 283.321,-160.8702"/>
+</g>
+<!-- proc~hdf_write_6d -->
+<g id="proc~~hdf_setup_write~~CalledByGraph_node10" class="node">
+<title>proc~hdf_write_6d</title>
+<g id="a_proc~~hdf_setup_write~~CalledByGraph_node10"><a xlink:href=".././proc/hdf_write_6d.html" xlink:title="hdf_write_6d">
+<polygon fill="#d9534f" stroke="#d9534f" points="209.5,-24 135.5,-24 135.5,0 209.5,0 209.5,-24"/>
+<text text-anchor="middle" x="172.5" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">hdf_write_6d</text>
+</a>
+</g>
+</g>
+<!-- proc~hdf_write_6d&#45;&gt;proc~hdf_setup_write -->
 <g id="proc~~hdf_setup_write~~CalledByGraph_edge9" class="edge">
-<title>proc~hdf_write_1d&#45;&gt;interface~hdf_setup_write</title>
-<path fill="none" stroke="#000000" d="M197.3511,-24.187C201.8632,-26.715 206.2467,-29.6489 210,-33 243.3614,-62.7863 267.9246,-109.8174 280.355,-137.2093"/>
-<polygon fill="#000000" stroke="#000000" points="277.2865,-138.926 284.5181,-146.6691 283.6935,-136.1064 277.2865,-138.926"/>
-</g>
-<!-- interface~hdf_write_5d -->
-<g id="proc~~hdf_setup_write~~CalledByGraph_node11" class="node">
-<title>interface~hdf_write_5d</title>
-<g id="a_proc~~hdf_setup_write~~CalledByGraph_node11"><a xlink:href=".././interface/hdf_write_5d.html" xlink:title="hdf_write_5d">
-<polygon fill="#a7506f" stroke="#a7506f" points="80,-234 7,-234 7,-210 80,-210 80,-234"/>
-<text text-anchor="middle" x="43.5" y="-219.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">hdf_write_5d</text>
-</a>
-</g>
-</g>
-<!-- interface~hdf_write_5d&#45;&gt;proc~hdf_write_5d -->
-<g id="proc~~hdf_setup_write~~CalledByGraph_edge12" class="edge">
-<title>interface~hdf_write_5d&#45;&gt;proc~hdf_write_5d</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M80.071,-222C92.4758,-222 106.5093,-222 119.605,-222"/>
-<polygon fill="#000000" stroke="#000000" points="119.8575,-225.5001 129.8575,-222 119.8574,-218.5001 119.8575,-225.5001"/>
-</g>
-<!-- interface~hdf_write_7d -->
-<g id="proc~~hdf_setup_write~~CalledByGraph_node12" class="node">
-<title>interface~hdf_write_7d</title>
-<g id="a_proc~~hdf_setup_write~~CalledByGraph_node12"><a xlink:href=".././interface/hdf_write_7d.html" xlink:title="hdf_write_7d">
-<polygon fill="#a7506f" stroke="#a7506f" points="80,-108 7,-108 7,-84 80,-84 80,-108"/>
-<text text-anchor="middle" x="43.5" y="-93.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">hdf_write_7d</text>
-</a>
-</g>
-</g>
-<!-- interface~hdf_write_7d&#45;&gt;proc~hdf_write_7d -->
-<g id="proc~~hdf_setup_write~~CalledByGraph_edge15" class="edge">
-<title>interface~hdf_write_7d&#45;&gt;proc~hdf_write_7d</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M80.071,-96C92.4758,-96 106.5093,-96 119.605,-96"/>
-<polygon fill="#000000" stroke="#000000" points="119.8575,-99.5001 129.8575,-96 119.8574,-92.5001 119.8575,-99.5001"/>
-</g>
-<!-- interface~hdf_write_1d -->
-<g id="proc~~hdf_setup_write~~CalledByGraph_node13" class="node">
-<title>interface~hdf_write_1d</title>
-<g id="a_proc~~hdf_setup_write~~CalledByGraph_node13"><a xlink:href=".././interface/hdf_write_1d.html" xlink:title="hdf_write_1d">
-<polygon fill="#a7506f" stroke="#a7506f" points="80,-24 7,-24 7,0 80,0 80,-24"/>
-<text text-anchor="middle" x="43.5" y="-9.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">hdf_write_1d</text>
-</a>
-</g>
-</g>
-<!-- interface~hdf_write_1d&#45;&gt;proc~hdf_write_1d -->
-<g id="proc~~hdf_setup_write~~CalledByGraph_edge17" class="edge">
-<title>interface~hdf_write_1d&#45;&gt;proc~hdf_write_1d</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M80.071,-12C92.4758,-12 106.5093,-12 119.605,-12"/>
-<polygon fill="#000000" stroke="#000000" points="119.8575,-15.5001 129.8575,-12 119.8574,-8.5001 119.8575,-15.5001"/>
-</g>
-<!-- interface~hdf_write_3d -->
-<g id="proc~~hdf_setup_write~~CalledByGraph_node14" class="node">
-<title>interface~hdf_write_3d</title>
-<g id="a_proc~~hdf_setup_write~~CalledByGraph_node14"><a xlink:href=".././interface/hdf_write_3d.html" xlink:title="hdf_write_3d">
-<polygon fill="#a7506f" stroke="#a7506f" points="80,-66 7,-66 7,-42 80,-42 80,-66"/>
-<text text-anchor="middle" x="43.5" y="-51.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">hdf_write_3d</text>
-</a>
-</g>
-</g>
-<!-- interface~hdf_write_3d&#45;&gt;proc~hdf_write_3d -->
-<g id="proc~~hdf_setup_write~~CalledByGraph_edge16" class="edge">
-<title>interface~hdf_write_3d&#45;&gt;proc~hdf_write_3d</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M80.071,-54C92.4758,-54 106.5093,-54 119.605,-54"/>
-<polygon fill="#000000" stroke="#000000" points="119.8575,-57.5001 129.8575,-54 119.8574,-50.5001 119.8575,-57.5001"/>
+<title>proc~hdf_write_6d&#45;&gt;proc~hdf_setup_write</title>
+<path fill="none" stroke="#000000" d="M205.4406,-24.066C209.966,-26.5877 214.3162,-29.5516 218,-33 256.1149,-68.6794 280.1374,-126.6942 291.0724,-158.1116"/>
+<polygon fill="#000000" stroke="#000000" points="287.782,-159.3081 294.2805,-167.6759 294.4186,-157.0819 287.782,-159.3081"/>
 </g>
 <!-- interface~hdf_write_scalar -->
-<g id="proc~~hdf_setup_write~~CalledByGraph_node15" class="node">
+<g id="proc~~hdf_setup_write~~CalledByGraph_node11" class="node">
 <title>interface~hdf_write_scalar</title>
-<g id="a_proc~~hdf_setup_write~~CalledByGraph_node15"><a xlink:href=".././interface/hdf_write_scalar.html" xlink:title="hdf_write_scalar">
-<polygon fill="#a7506f" stroke="#a7506f" points="87,-192 0,-192 0,-168 87,-168 87,-192"/>
-<text text-anchor="middle" x="43.5" y="-177.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">hdf_write_scalar</text>
+<g id="a_proc~~hdf_setup_write~~CalledByGraph_node11"><a xlink:href=".././interface/hdf_write_scalar.html" xlink:title="hdf_write_scalar">
+<polygon fill="#a7506f" stroke="#a7506f" points="91,-66 0,-66 0,-42 91,-42 91,-66"/>
+<text text-anchor="middle" x="45.5" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">hdf_write_scalar</text>
 </a>
 </g>
 </g>
 <!-- interface~hdf_write_scalar&#45;&gt;proc~hdf_write_scalar -->
-<g id="proc~~hdf_setup_write~~CalledByGraph_edge13" class="edge">
+<g id="proc~~hdf_setup_write~~CalledByGraph_edge16" class="edge">
 <title>interface~hdf_write_scalar&#45;&gt;proc~hdf_write_scalar</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M87.2115,-180C95.4587,-180 104.1729,-180 112.6873,-180"/>
-<polygon fill="#000000" stroke="#000000" points="112.9293,-183.5001 122.9292,-180 112.9292,-176.5001 112.9293,-183.5001"/>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M91.3499,-54C99.5329,-54 108.1406,-54 116.568,-54"/>
+<polygon fill="#000000" stroke="#000000" points="116.7174,-57.5001 126.7174,-54 116.7174,-50.5001 116.7174,-57.5001"/>
+</g>
+<!-- interface~hdf_write_6d -->
+<g id="proc~~hdf_setup_write~~CalledByGraph_node12" class="node">
+<title>interface~hdf_write_6d</title>
+<g id="a_proc~~hdf_setup_write~~CalledByGraph_node12"><a xlink:href=".././interface/hdf_write_6d.html" xlink:title="hdf_write_6d">
+<polygon fill="#a7506f" stroke="#a7506f" points="82.5,-24 8.5,-24 8.5,0 82.5,0 82.5,-24"/>
+<text text-anchor="middle" x="45.5" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">hdf_write_6d</text>
+</a>
+</g>
+</g>
+<!-- interface~hdf_write_6d&#45;&gt;proc~hdf_write_6d -->
+<g id="proc~~hdf_setup_write~~CalledByGraph_edge17" class="edge">
+<title>interface~hdf_write_6d&#45;&gt;proc~hdf_write_6d</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M82.5751,-12C95.8898,-12 111.0911,-12 125.1589,-12"/>
+<polygon fill="#000000" stroke="#000000" points="125.159,-15.5001 135.159,-12 125.1589,-8.5001 125.159,-15.5001"/>
+</g>
+<!-- interface~hdf_write_3d -->
+<g id="proc~~hdf_setup_write~~CalledByGraph_node13" class="node">
+<title>interface~hdf_write_3d</title>
+<g id="a_proc~~hdf_setup_write~~CalledByGraph_node13"><a xlink:href=".././interface/hdf_write_3d.html" xlink:title="hdf_write_3d">
+<polygon fill="#a7506f" stroke="#a7506f" points="82.5,-192 8.5,-192 8.5,-168 82.5,-168 82.5,-192"/>
+<text text-anchor="middle" x="45.5" y="-177.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">hdf_write_3d</text>
+</a>
+</g>
+</g>
+<!-- interface~hdf_write_3d&#45;&gt;proc~hdf_write_3d -->
+<g id="proc~~hdf_setup_write~~CalledByGraph_edge13" class="edge">
+<title>interface~hdf_write_3d&#45;&gt;proc~hdf_write_3d</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M82.5751,-180C95.8898,-180 111.0911,-180 125.1589,-180"/>
+<polygon fill="#000000" stroke="#000000" points="125.159,-183.5001 135.159,-180 125.1589,-176.5001 125.159,-183.5001"/>
+</g>
+<!-- interface~hdf_write_1d -->
+<g id="proc~~hdf_setup_write~~CalledByGraph_node14" class="node">
+<title>interface~hdf_write_1d</title>
+<g id="a_proc~~hdf_setup_write~~CalledByGraph_node14"><a xlink:href=".././interface/hdf_write_1d.html" xlink:title="hdf_write_1d">
+<polygon fill="#a7506f" stroke="#a7506f" points="82.5,-318 8.5,-318 8.5,-294 82.5,-294 82.5,-318"/>
+<text text-anchor="middle" x="45.5" y="-303.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">hdf_write_1d</text>
+</a>
+</g>
+</g>
+<!-- interface~hdf_write_1d&#45;&gt;proc~hdf_write_1d -->
+<g id="proc~~hdf_setup_write~~CalledByGraph_edge10" class="edge">
+<title>interface~hdf_write_1d&#45;&gt;proc~hdf_write_1d</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M82.5751,-306C95.8898,-306 111.0911,-306 125.1589,-306"/>
+<polygon fill="#000000" stroke="#000000" points="125.159,-309.5001 135.159,-306 125.1589,-302.5001 125.159,-309.5001"/>
 </g>
 <!-- interface~hdf_write_4d -->
-<g id="proc~~hdf_setup_write~~CalledByGraph_node16" class="node">
+<g id="proc~~hdf_setup_write~~CalledByGraph_node15" class="node">
 <title>interface~hdf_write_4d</title>
-<g id="a_proc~~hdf_setup_write~~CalledByGraph_node16"><a xlink:href=".././interface/hdf_write_4d.html" xlink:title="hdf_write_4d">
-<polygon fill="#a7506f" stroke="#a7506f" points="80,-150 7,-150 7,-126 80,-126 80,-150"/>
-<text text-anchor="middle" x="43.5" y="-135.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">hdf_write_4d</text>
+<g id="a_proc~~hdf_setup_write~~CalledByGraph_node15"><a xlink:href=".././interface/hdf_write_4d.html" xlink:title="hdf_write_4d">
+<polygon fill="#a7506f" stroke="#a7506f" points="82.5,-276 8.5,-276 8.5,-252 82.5,-252 82.5,-276"/>
+<text text-anchor="middle" x="45.5" y="-261.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">hdf_write_4d</text>
 </a>
 </g>
 </g>
 <!-- interface~hdf_write_4d&#45;&gt;proc~hdf_write_4d -->
-<g id="proc~~hdf_setup_write~~CalledByGraph_edge14" class="edge">
+<g id="proc~~hdf_setup_write~~CalledByGraph_edge11" class="edge">
 <title>interface~hdf_write_4d&#45;&gt;proc~hdf_write_4d</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M80.071,-138C92.4758,-138 106.5093,-138 119.605,-138"/>
-<polygon fill="#000000" stroke="#000000" points="119.8575,-141.5001 129.8575,-138 119.8574,-134.5001 119.8575,-141.5001"/>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M82.5751,-264C95.8898,-264 111.0911,-264 125.1589,-264"/>
+<polygon fill="#000000" stroke="#000000" points="125.159,-267.5001 135.159,-264 125.1589,-260.5001 125.159,-267.5001"/>
+</g>
+<!-- interface~hdf_write_5d -->
+<g id="proc~~hdf_setup_write~~CalledByGraph_node16" class="node">
+<title>interface~hdf_write_5d</title>
+<g id="a_proc~~hdf_setup_write~~CalledByGraph_node16"><a xlink:href=".././interface/hdf_write_5d.html" xlink:title="hdf_write_5d">
+<polygon fill="#a7506f" stroke="#a7506f" points="82.5,-108 8.5,-108 8.5,-84 82.5,-84 82.5,-108"/>
+<text text-anchor="middle" x="45.5" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">hdf_write_5d</text>
+</a>
+</g>
+</g>
+<!-- interface~hdf_write_5d&#45;&gt;proc~hdf_write_5d -->
+<g id="proc~~hdf_setup_write~~CalledByGraph_edge15" class="edge">
+<title>interface~hdf_write_5d&#45;&gt;proc~hdf_write_5d</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M82.5751,-96C95.8898,-96 111.0911,-96 125.1589,-96"/>
+<polygon fill="#000000" stroke="#000000" points="125.159,-99.5001 135.159,-96 125.1589,-92.5001 125.159,-99.5001"/>
 </g>
 <!-- interface~hdf_write_2d -->
 <g id="proc~~hdf_setup_write~~CalledByGraph_node17" class="node">
 <title>interface~hdf_write_2d</title>
 <g id="a_proc~~hdf_setup_write~~CalledByGraph_node17"><a xlink:href=".././interface/hdf_write_2d.html" xlink:title="hdf_write_2d">
-<polygon fill="#a7506f" stroke="#a7506f" points="80,-318 7,-318 7,-294 80,-294 80,-318"/>
-<text text-anchor="middle" x="43.5" y="-303.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">hdf_write_2d</text>
+<polygon fill="#a7506f" stroke="#a7506f" points="82.5,-234 8.5,-234 8.5,-210 82.5,-210 82.5,-234"/>
+<text text-anchor="middle" x="45.5" y="-219.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">hdf_write_2d</text>
 </a>
 </g>
 </g>
 <!-- interface~hdf_write_2d&#45;&gt;proc~hdf_write_2d -->
-<g id="proc~~hdf_setup_write~~CalledByGraph_edge10" class="edge">
+<g id="proc~~hdf_setup_write~~CalledByGraph_edge12" class="edge">
 <title>interface~hdf_write_2d&#45;&gt;proc~hdf_write_2d</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M80.071,-306C92.4758,-306 106.5093,-306 119.605,-306"/>
-<polygon fill="#000000" stroke="#000000" points="119.8575,-309.5001 129.8575,-306 119.8574,-302.5001 119.8575,-309.5001"/>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M82.5751,-222C95.8898,-222 111.0911,-222 125.1589,-222"/>
+<polygon fill="#000000" stroke="#000000" points="125.159,-225.5001 135.159,-222 125.1589,-218.5001 125.159,-225.5001"/>
 </g>
-<!-- interface~hdf_write_6d -->
+<!-- interface~hdf_write_7d -->
 <g id="proc~~hdf_setup_write~~CalledByGraph_node18" class="node">
-<title>interface~hdf_write_6d</title>
-<g id="a_proc~~hdf_setup_write~~CalledByGraph_node18"><a xlink:href=".././interface/hdf_write_6d.html" xlink:title="hdf_write_6d">
-<polygon fill="#a7506f" stroke="#a7506f" points="80,-276 7,-276 7,-252 80,-252 80,-276"/>
-<text text-anchor="middle" x="43.5" y="-261.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">hdf_write_6d</text>
+<title>interface~hdf_write_7d</title>
+<g id="a_proc~~hdf_setup_write~~CalledByGraph_node18"><a xlink:href=".././interface/hdf_write_7d.html" xlink:title="hdf_write_7d">
+<polygon fill="#a7506f" stroke="#a7506f" points="82.5,-150 8.5,-150 8.5,-126 82.5,-126 82.5,-150"/>
+<text text-anchor="middle" x="45.5" y="-135.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">hdf_write_7d</text>
 </a>
 </g>
 </g>
-<!-- interface~hdf_write_6d&#45;&gt;proc~hdf_write_6d -->
-<g id="proc~~hdf_setup_write~~CalledByGraph_edge11" class="edge">
-<title>interface~hdf_write_6d&#45;&gt;proc~hdf_write_6d</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M80.071,-264C92.4758,-264 106.5093,-264 119.605,-264"/>
-<polygon fill="#000000" stroke="#000000" points="119.8575,-267.5001 129.8575,-264 119.8574,-260.5001 119.8575,-267.5001"/>
+<!-- interface~hdf_write_7d&#45;&gt;proc~hdf_write_7d -->
+<g id="proc~~hdf_setup_write~~CalledByGraph_edge14" class="edge">
+<title>interface~hdf_write_7d&#45;&gt;proc~hdf_write_7d</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M82.5751,-138C95.8898,-138 111.0911,-138 125.1589,-138"/>
+<polygon fill="#000000" stroke="#000000" points="125.159,-141.5001 135.159,-138 125.1589,-134.5001 125.159,-141.5001"/>
 </g>
 </g>
 </svg>
@@ -821,46 +929,46 @@ module procedure hdf_setup_write <small>module subroutine hdf_setup_write(self, 
 <!-- Generated by graphviz version 2.40.1 (20161225.0304)
  -->
 <!-- Title: Graph Key Pages: 1 -->
-<svg width="551pt" height="32pt"
- viewBox="0.00 0.00 551.00 32.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg width="560pt" height="32pt"
+ viewBox="0.00 0.00 559.50 32.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 28)">
 <title>Graph Key</title>
-<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-28 547,-28 547,4 -4,4"/>
+<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-28 555.5,-28 555.5,4 -4,4"/>
 <!-- Subroutine -->
 <g id="node1" class="node">
 <title>Subroutine</title>
-<polygon fill="#d9534f" stroke="#d9534f" points="63,-24 0,-24 0,0 63,0 63,-24"/>
-<text text-anchor="middle" x="31.5" y="-9.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">Subroutine</text>
+<polygon fill="#d9534f" stroke="#d9534f" points="64,-24 0,-24 0,0 64,0 64,-24"/>
+<text text-anchor="middle" x="32" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">Subroutine</text>
 </g>
 <!-- Function -->
 <g id="node2" class="node">
 <title>Function</title>
-<polygon fill="#d94e8f" stroke="#d94e8f" points="135.5,-24 81.5,-24 81.5,0 135.5,0 135.5,-24"/>
-<text text-anchor="middle" x="108.5" y="-9.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">Function</text>
+<polygon fill="#d94e8f" stroke="#d94e8f" points="136,-24 82,-24 82,0 136,0 136,-24"/>
+<text text-anchor="middle" x="109" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">Function</text>
 </g>
 <!-- Interface -->
 <g id="node3" class="node">
 <title>Interface</title>
-<polygon fill="#a7506f" stroke="#a7506f" points="207.5,-24 153.5,-24 153.5,0 207.5,0 207.5,-24"/>
-<text text-anchor="middle" x="180.5" y="-9.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">Interface</text>
+<polygon fill="#a7506f" stroke="#a7506f" points="209.5,-24 154.5,-24 154.5,0 209.5,0 209.5,-24"/>
+<text text-anchor="middle" x="182" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">Interface</text>
 </g>
 <!-- Unknown Procedure Type -->
 <g id="node4" class="node">
 <title>Unknown Procedure Type</title>
-<polygon fill="#777777" stroke="#777777" points="359,-24 226,-24 226,0 359,0 359,-24"/>
-<text text-anchor="middle" x="292.5" y="-9.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">Unknown Procedure Type</text>
+<polygon fill="#777777" stroke="#777777" points="364,-24 228,-24 228,0 364,0 364,-24"/>
+<text text-anchor="middle" x="296" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">Unknown Procedure Type</text>
 </g>
 <!-- Program -->
 <g id="node5" class="node">
 <title>Program</title>
-<polygon fill="#f0ad4e" stroke="#f0ad4e" points="431.5,-24 377.5,-24 377.5,0 431.5,0 431.5,-24"/>
-<text text-anchor="middle" x="404.5" y="-9.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">Program</text>
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="436,-24 382,-24 382,0 436,0 436,-24"/>
+<text text-anchor="middle" x="409" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">Program</text>
 </g>
 <!-- This Page&#39;s Entity -->
 <g id="node6" class="node">
 <title>This Page&#39;s Entity</title>
-<polygon fill="none" stroke="#000000" points="543,-24 450,-24 450,0 543,0 543,-24"/>
-<text text-anchor="middle" x="496.5" y="-9.6" font-family="Helvetica" font-size="10.50" fill="#000000">This Page&#39;s Entity</text>
+<polygon fill="none" stroke="#000000" points="551.5,-24 454.5,-24 454.5,0 551.5,0 551.5,-24"/>
+<text text-anchor="middle" x="503" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#000000">This Page&#39;s Entity</text>
 </g>
 </g>
 </svg>
@@ -945,7 +1053,7 @@ module procedure hdf_setup_write <small>module subroutine hdf_setup_write(self, 
             
           </p>
         </div>
-        <div class="col-xs-12 col-md-4 col-md-pull-4"><p class="text-center"> Object-oriented Fortran 2018 HDF5 interface was developed by Michael Hirsch, Ph.D.</p></div>
+        <div class="col-xs-12 col-md-4 col-md-pull-4"><p class="text-center"> Object-oriented Fortran 2008 HDF5 interface was developed by Michael Hirsch, Ph.D.</p></div>
       </div>
       <br>
       </div> <!-- /container -->    

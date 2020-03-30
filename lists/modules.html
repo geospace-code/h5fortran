@@ -5,13 +5,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
    
-   <meta name="description" content="Object-oriented Fortran 2018 HDF5 interface">
+   <meta name="description" content="Object-oriented Fortran 2008 HDF5 interface">
     
     <meta name="author" content="Michael Hirsch, Ph.D." >
     <link rel="icon" href="../favicon.png">
 
     <title>
-All Modules &ndash; Object-oriented Fortran 2018 HDF5 interface
+All Modules &ndash; Object-oriented Fortran 2008 HDF5 interface
 </title>
 
     <link href="../css/bootstrap.min.css" rel="stylesheet">
@@ -46,7 +46,7 @@ All Modules &ndash; Object-oriented Fortran 2018 HDF5 interface
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="../index.html">Object-oriented Fortran 2018 HDF5 interface </a>
+          <a class="navbar-brand" href="../index.html">Object-oriented Fortran 2008 HDF5 interface </a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
@@ -73,6 +73,8 @@ All Modules &ndash; Object-oriented Fortran 2018 HDF5 interface
             <li><a href="../lists/types.html">Derived Types</a></li>
         
         
+            <li><a href="../lists/programs.html">Programs</a></li>
+        
             </ul>
             </li>
 
@@ -90,6 +92,8 @@ All Modules &ndash; Object-oriented Fortran 2018 HDF5 interface
                              
 <li class="visible-xs hidden-sm visible-lg"><a href="../lists/types.html">Derived Types</a></li>
 
+
+<li class="visible-xs hidden-sm visible-lg"><a href="../lists/programs.html">Programs</a></li>
 
           </ul>
         
@@ -117,23 +121,41 @@ All Modules &ndash; Object-oriented Fortran 2018 HDF5 interface
 			 <tbody>
              
 			 
-			   <tr class="active"><td><a href='../module/hdf5_interface.html'>hdf5_interface</a></td><td><a href='../sourcefile/hdf5_interface.f90.html'>hdf5_interface.f90</a></td><td><p>HDF5 object-oriented polymorphic interface</p></td></tr>
+			   <tr class="active"><td><a href='../module/h5fortran.html'>h5fortran</a></td><td><a href='../sourcefile/interface.f90.html'>interface.f90</a></td><td><p>HDF5 object-oriented polymorphic interface
+ Workaround for Intel 19.1 / 2020 bug with /stand:f18
+ error #6410: This name has not been declared as an array or a function.   [RANK]</p></td></tr>
                
                   
-			   <tr class="active submod"><td>&nbsp;&nbsp;&nbsp;<a href='../module/read.html'>read</a></td><td><a href='../sourcefile/read.f90.html'>read.f90</a></td><td></td></tr>
+			   <tr class="active submod"><td>&nbsp;&nbsp;&nbsp;<a href='../module/read.html'>read</a></td><td><a href='../sourcefile/read.f90.html'>read.f90</a></td><td><p>This submodule is for reading HDF5 via submodules</p></td></tr>
                
                   
-			   <tr class="active submod"><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='../module/read_real64.html'>read_real64</a></td><td><a href='../sourcefile/reader.f90.html'>reader.f90</a></td><td></td></tr>
+			   <tr class="active submod"><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='../module/reader.html'>reader</a></td><td><a href='../sourcefile/reader.f90.html'>reader.f90</a></td><td><p>This submodule is for reading 0-D..7-D data</p></td></tr>
+               
+               
+			 
+			   <tr class="active submod"><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='../module/reader_lt.html'>reader_lt</a></td><td><a href='../sourcefile/reader_lt.f90.html'>reader_lt.f90</a></td><td></td></tr>
+               
+               
+			 
+			   <tr class="active submod"><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='../module/reader_nd.html'>reader_ND</a></td><td><a href='../sourcefile/reader_nd.f90.html'>reader_nd.f90</a></td><td></td></tr>
                
                
 			 
                
                
 			 
-			   <tr class="active submod"><td>&nbsp;&nbsp;&nbsp;<a href='../module/write.html'>write</a></td><td><a href='../sourcefile/write.f90.html'>write.f90</a></td><td></td></tr>
+			   <tr class="active submod"><td>&nbsp;&nbsp;&nbsp;<a href='../module/write.html'>write</a></td><td><a href='../sourcefile/write.f90.html'>write.f90</a></td><td><p>This submodule is for writing HDF5 data via child submodules</p></td></tr>
                
                   
-			   <tr class="active submod"><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='../module/writer_nd.html'>writer_ND</a></td><td><a href='../sourcefile/writer.f90.html'>writer.f90</a></td><td></td></tr>
+			   <tr class="active submod"><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='../module/writer.html'>writer</a></td><td><a href='../sourcefile/writer.f90.html'>writer.f90</a></td><td><p>This submodule is for writing 0-D..7-D data</p></td></tr>
+               
+               
+			 
+			   <tr class="active submod"><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='../module/writer_lt.html'>writer_lt</a></td><td><a href='../sourcefile/writer_lt.f90.html'>writer_lt.f90</a></td><td></td></tr>
+               
+               
+			 
+			   <tr class="active submod"><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='../module/writer_nd.html'>writer_ND</a></td><td><a href='../sourcefile/writer_nd.f90.html'>writer_nd.f90</a></td><td></td></tr>
                
                
 			 
@@ -147,6 +169,22 @@ All Modules &ndash; Object-oriented Fortran 2018 HDF5 interface
                
                <!---->
 			 
+			   <tr class="active"><td><a href='../module/test_array.html'>test_array</a></td><td><a href='../sourcefile/test_array.f90.html'>test_array.f90</a></td><td></td></tr>
+               
+               <!--active-->
+			 
+			   <tr class=""><td><a href='../module/test_lt.html'>test_lt</a></td><td><a href='../sourcefile/test_lt.f90.html'>test_lt.f90</a></td><td></td></tr>
+               
+               <!---->
+			 
+			   <tr class="active"><td><a href='../module/test_scalar.html'>test_scalar</a></td><td><a href='../sourcefile/test_scalar.f90.html'>test_scalar.f90</a></td><td></td></tr>
+               
+               <!--active-->
+			 
+			   <tr class=""><td><a href='../module/test_string.html'>test_string</a></td><td><a href='../sourcefile/test_string.f90.html'>test_string.f90</a></td><td></td></tr>
+               
+               <!---->
+			 
 			 </tbody></table>
              <div class="depgraph"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
@@ -154,158 +192,525 @@ All Modules &ndash; Object-oriented Fortran 2018 HDF5 interface
 <!-- Generated by graphviz version 2.40.1 (20161225.0304)
  -->
 <!-- Title: module~~graph~~ModuleGraph Pages: 1 -->
-<svg id="modulegraphModuleGraph" width="512pt" height="170pt"
- viewBox="0.00 0.00 512.00 170.35" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<g id="module~~graph~~ModuleGraph" class="graph" transform="scale(1 1) rotate(0) translate(4 166.3483)">
+<svg id="modulegraphModuleGraph" width="535pt" height="614pt"
+ viewBox="0.00 0.00 535.00 613.96" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="module~~graph~~ModuleGraph" class="graph" transform="scale(1 1) rotate(0) translate(4 609.9645)">
 <title>module~~graph~~ModuleGraph</title>
-<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-166.3483 508,-166.3483 508,4 -4,4"/>
-<!-- module~hdf5_interface -->
+<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-609.9645 531,-609.9645 531,4 -4,4"/>
+<!-- module~read -->
 <g id="module~~graph~~ModuleGraph_node1" class="node">
-<title>module~hdf5_interface</title>
-<g id="a_module~~graph~~ModuleGraph_node1"><a xlink:href=".././module/hdf5_interface.html" xlink:title="hdf5_interface">
-<polygon fill="#337ab7" stroke="#337ab7" points="311,-119.3483 232,-119.3483 232,-95.3483 311,-95.3483 311,-119.3483"/>
-<text text-anchor="middle" x="271.5" y="-104.9483" font-family="Helvetica" font-size="10.50" fill="#ffffff">hdf5_interface</text>
+<title>module~read</title>
+<g id="a_module~~graph~~ModuleGraph_node1"><a xlink:href=".././module/read.html" xlink:title="read">
+<polygon fill="#5bc0de" stroke="#5bc0de" points="419,-150 365,-150 365,-126 419,-126 419,-150"/>
+<text text-anchor="middle" x="392" y="-135.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">read</text>
 </a>
 </g>
 </g>
-<!-- module~string_utils -->
-<g id="module~~graph~~ModuleGraph_node5" class="node">
-<title>module~string_utils</title>
-<g id="a_module~~graph~~ModuleGraph_node5"><a xlink:href=".././module/string_utils.html" xlink:title="string_utils">
-<polygon fill="#337ab7" stroke="#337ab7" points="184,-120.3483 123,-120.3483 123,-96.3483 184,-96.3483 184,-120.3483"/>
-<text text-anchor="middle" x="153.5" y="-105.9483" font-family="Helvetica" font-size="10.50" fill="#ffffff">string_utils</text>
+<!-- module~h5fortran -->
+<g id="module~~graph~~ModuleGraph_node14" class="node">
+<title>module~h5fortran</title>
+<g id="a_module~~graph~~ModuleGraph_node14"><a xlink:href=".././module/h5fortran.html" xlink:title="h5fortran">
+<polygon fill="#337ab7" stroke="#337ab7" points="307.5,-352 251.5,-352 251.5,-328 307.5,-328 307.5,-352"/>
+<text text-anchor="middle" x="279.5" y="-337.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">h5fortran</text>
 </a>
 </g>
 </g>
-<!-- module~hdf5_interface&#45;&gt;module~string_utils -->
-<g id="module~~graph~~ModuleGraph_edge1" class="edge">
-<title>module~hdf5_interface&#45;&gt;module~string_utils</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M231.8794,-107.684C219.8655,-107.7859 206.6455,-107.8979 194.5404,-108.0005"/>
-<polygon fill="#000000" stroke="#000000" points="194.2179,-104.503 184.248,-108.0877 194.2773,-111.5027 194.2179,-104.503"/>
+<!-- module~read&#45;&gt;module~h5fortran -->
+<g id="module~~graph~~ModuleGraph_edge3" class="edge">
+<title>module~read&#45;&gt;module~h5fortran</title>
+<path fill="none" stroke="#000000" d="M371.5432,-150.0821C366.4652,-153.9513 361.4848,-158.6432 358,-164 320.6143,-221.4696 362.3173,-258.5477 322,-314 319.9018,-316.8859 317.3763,-319.5168 314.6157,-321.8999"/>
+<polygon fill="#000000" stroke="#000000" points="312.3522,-319.2201 306.3728,-327.9664 316.5014,-324.8579 312.3522,-319.2201"/>
 </g>
 <!-- H5LT -->
-<g id="module~~graph~~ModuleGraph_node8" class="node">
+<g id="module~~graph~~ModuleGraph_node24" class="node">
 <title>H5LT</title>
-<polygon fill="#337ab7" stroke="#337ab7" points="180.5,-78.3483 126.5,-78.3483 126.5,-54.3483 180.5,-54.3483 180.5,-78.3483"/>
-<text text-anchor="middle" x="153.5" y="-63.9483" font-family="Helvetica" font-size="10.50" fill="#ffffff">H5LT</text>
-</g>
-<!-- module~hdf5_interface&#45;&gt;H5LT -->
-<g id="module~~graph~~ModuleGraph_edge2" class="edge">
-<title>module~hdf5_interface&#45;&gt;H5LT</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M236.7343,-95.2687C222.1521,-90.202 205.1793,-84.3046 190.3783,-79.1619"/>
-<polygon fill="#000000" stroke="#000000" points="191.1294,-75.7177 180.5346,-75.7416 188.8319,-82.3299 191.1294,-75.7177"/>
-</g>
-<!-- iso_fortran_env -->
-<g id="module~~graph~~ModuleGraph_node9" class="node">
-<title>iso_fortran_env</title>
-<g id="a_module~~graph~~ModuleGraph_node9"><a xlink:href="http://fortranwiki.org/fortran/show/ISO_FORTRAN_ENV" xlink:title="iso_fortran_env">
-<polygon fill="#337ab7" stroke="#337ab7" points="196,-162.3483 111,-162.3483 111,-138.3483 196,-138.3483 196,-162.3483"/>
-<text text-anchor="middle" x="153.5" y="-147.9483" font-family="Helvetica" font-size="10.50" fill="#ffffff">iso_fortran_env</text>
-</a>
-</g>
-</g>
-<!-- module~hdf5_interface&#45;&gt;iso_fortran_env -->
-<g id="module~~graph~~ModuleGraph_edge3" class="edge">
-<title>module~hdf5_interface&#45;&gt;iso_fortran_env</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M238.3164,-119.4406C225.1346,-124.2441 209.8112,-129.8281 195.8443,-134.9177"/>
-<polygon fill="#000000" stroke="#000000" points="194.6318,-131.6344 186.4345,-138.3467 197.0285,-138.2113 194.6318,-131.6344"/>
-</g>
-<!-- module~write -->
-<g id="module~~graph~~ModuleGraph_node2" class="node">
-<title>module~write</title>
-<g id="a_module~~graph~~ModuleGraph_node2"><a xlink:href=".././module/write.html" xlink:title="write">
-<polygon fill="#5bc0de" stroke="#5bc0de" points="401,-119.3483 347,-119.3483 347,-95.3483 401,-95.3483 401,-119.3483"/>
-<text text-anchor="middle" x="374" y="-104.9483" font-family="Helvetica" font-size="10.50" fill="#ffffff">write</text>
-</a>
-</g>
-</g>
-<!-- module~write&#45;&gt;module~hdf5_interface -->
-<g id="module~~graph~~ModuleGraph_edge5" class="edge">
-<title>module~write&#45;&gt;module~hdf5_interface</title>
-<path fill="none" stroke="#000000" d="M346.801,-107.3483C338.9574,-107.3483 330.1418,-107.3483 321.3796,-107.3483"/>
-<polygon fill="#000000" stroke="#000000" points="321.1796,-103.8484 311.1796,-107.3483 321.1796,-110.8484 321.1796,-103.8484"/>
-</g>
-<!-- module~write&#45;&gt;H5LT -->
-<g id="module~~graph~~ModuleGraph_edge4" class="edge">
-<title>module~write&#45;&gt;H5LT</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M356.966,-95.1421C337.206,-82.3301 303.2654,-64.414 271.5,-67.3483"/>
-</g>
-<!-- module~writer_nd -->
-<g id="module~~graph~~ModuleGraph_node3" class="node">
-<title>module~writer_nd</title>
-<g id="a_module~~graph~~ModuleGraph_node3"><a xlink:href=".././module/writer_nd.html" xlink:title="writer_ND">
-<polygon fill="#5bc0de" stroke="#5bc0de" points="499.5,-89.3483 441.5,-89.3483 441.5,-65.3483 499.5,-65.3483 499.5,-89.3483"/>
-<text text-anchor="middle" x="470.5" y="-74.9483" font-family="Helvetica" font-size="10.50" fill="#ffffff">writer_ND</text>
-</a>
-</g>
-</g>
-<!-- module~writer_nd&#45;&gt;module~write -->
-<g id="module~~graph~~ModuleGraph_edge7" class="edge">
-<title>module~writer_nd&#45;&gt;module~write</title>
-<path fill="none" stroke="#000000" d="M441.2849,-86.4307C431.7158,-89.4056 420.957,-92.7503 410.8964,-95.8779"/>
-<polygon fill="#000000" stroke="#000000" points="409.6486,-92.6005 401.1384,-98.9115 411.7267,-99.2849 409.6486,-92.6005"/>
-</g>
-<!-- module~writer_nd&#45;&gt;H5LT -->
-<g id="module~~graph~~ModuleGraph_edge6" class="edge">
-<title>module~writer_nd&#45;&gt;H5LT</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M441.4441,-73.306C402.6385,-68.4976 331.7797,-61.78 271.5,-67.3483"/>
-</g>
-<!-- module~read -->
-<g id="module~~graph~~ModuleGraph_node4" class="node">
-<title>module~read</title>
-<g id="a_module~~graph~~ModuleGraph_node4"><a xlink:href=".././module/read.html" xlink:title="read">
-<polygon fill="#5bc0de" stroke="#5bc0de" points="401,-39.3483 347,-39.3483 347,-15.3483 401,-15.3483 401,-39.3483"/>
-<text text-anchor="middle" x="374" y="-24.9483" font-family="Helvetica" font-size="10.50" fill="#ffffff">read</text>
-</a>
-</g>
-</g>
-<!-- module~read&#45;&gt;module~hdf5_interface -->
-<g id="module~~graph~~ModuleGraph_edge9" class="edge">
-<title>module~read&#45;&gt;module~hdf5_interface</title>
-<path fill="none" stroke="#000000" d="M360.8892,-39.4425C348.4198,-50.7356 328.9527,-67.8309 311,-81.3483 307.36,-84.089 303.4417,-86.8634 299.5369,-89.5281"/>
-<polygon fill="#000000" stroke="#000000" points="297.5071,-86.6746 291.1235,-95.1304 301.3869,-92.5011 297.5071,-86.6746"/>
+<polygon fill="#337ab7" stroke="#337ab7" points="306.5,-129 252.5,-129 252.5,-105 306.5,-105 306.5,-129"/>
+<text text-anchor="middle" x="279.5" y="-114.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">H5LT</text>
 </g>
 <!-- module~read&#45;&gt;H5LT -->
-<g id="module~~graph~~ModuleGraph_edge8" class="edge">
+<g id="module~~graph~~ModuleGraph_edge2" class="edge">
 <title>module~read&#45;&gt;H5LT</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M353.2673,-39.43C333.149,-50.1701 301.3632,-64.5897 271.5,-67.3483"/>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M364.7669,-132.9165C350.364,-130.228 332.4661,-126.887 316.7921,-123.9612"/>
+<polygon fill="#000000" stroke="#000000" points="317.3447,-120.504 306.8722,-122.1095 316.0602,-127.3851 317.3447,-120.504"/>
+</g>
+<!-- hdf5 -->
+<g id="module~~graph~~ModuleGraph_node26" class="node">
+<title>hdf5</title>
+<polygon fill="#337ab7" stroke="#337ab7" points="184.5,-209 130.5,-209 130.5,-185 184.5,-185 184.5,-209"/>
+<text text-anchor="middle" x="157.5" y="-194.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">hdf5</text>
+</g>
+<!-- module~read&#45;&gt;hdf5 -->
+<g id="module~~graph~~ModuleGraph_edge1" class="edge">
+<title>module~read&#45;&gt;hdf5</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M373.5477,-150.1077C351.7826,-163.0571 314.1661,-181.3217 279.5,-178"/>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M279.5,-178C250.7469,-175.2448 218.4615,-180.6543 194.3289,-186.3966"/>
+<polygon fill="#000000" stroke="#000000" points="193.3686,-183.0289 184.5195,-188.8551 195.0704,-189.8189 193.3686,-183.0289"/>
+</g>
+<!-- module~string_utils -->
+<g id="module~~graph~~ModuleGraph_node2" class="node">
+<title>module~string_utils</title>
+<g id="a_module~~graph~~ModuleGraph_node2"><a xlink:href=".././module/string_utils.html" xlink:title="string_utils">
+<polygon fill="#337ab7" stroke="#337ab7" points="189.5,-352 125.5,-352 125.5,-328 189.5,-328 189.5,-352"/>
+<text text-anchor="middle" x="157.5" y="-337.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">string_utils</text>
+</a>
+</g>
 </g>
 <!-- iso_c_binding -->
-<g id="module~~graph~~ModuleGraph_node7" class="node">
+<g id="module~~graph~~ModuleGraph_node22" class="node">
 <title>iso_c_binding</title>
-<g id="a_module~~graph~~ModuleGraph_node7"><a xlink:href="http://fortranwiki.org/fortran/show/ISO_C_BINDING" xlink:title="iso_c_binding">
-<polygon fill="#337ab7" stroke="#337ab7" points="75,-120.3483 0,-120.3483 0,-96.3483 75,-96.3483 75,-120.3483"/>
-<text text-anchor="middle" x="37.5" y="-105.9483" font-family="Helvetica" font-size="10.50" fill="#ffffff">iso_c_binding</text>
+<g id="a_module~~graph~~ModuleGraph_node22"><a xlink:href="http://fortranwiki.org/fortran/show/ISO_C_BINDING" xlink:title="iso_c_binding">
+<polygon fill="#337ab7" stroke="#337ab7" points="78,-352 0,-352 0,-328 78,-328 78,-352"/>
+<text text-anchor="middle" x="39" y="-337.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">iso_c_binding</text>
 </a>
 </g>
 </g>
 <!-- module~string_utils&#45;&gt;iso_c_binding -->
-<g id="module~~graph~~ModuleGraph_edge10" class="edge">
+<g id="module~~graph~~ModuleGraph_edge4" class="edge">
 <title>module~string_utils&#45;&gt;iso_c_binding</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M122.7187,-108.3483C111.2873,-108.3483 98.0315,-108.3483 85.43,-108.3483"/>
-<polygon fill="#000000" stroke="#000000" points="85.053,-104.8484 75.053,-108.3483 85.0529,-111.8484 85.053,-104.8484"/>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M125.4322,-340C114.0797,-340 101.0274,-340 88.563,-340"/>
+<polygon fill="#000000" stroke="#000000" points="88.2814,-336.5001 78.2813,-340 88.2813,-343.5001 88.2814,-336.5001"/>
 </g>
-<!-- module~read_real64 -->
-<g id="module~~graph~~ModuleGraph_node6" class="node">
-<title>module~read_real64</title>
-<g id="a_module~~graph~~ModuleGraph_node6"><a xlink:href=".././module/read_real64.html" xlink:title="read_real64">
-<polygon fill="#5bc0de" stroke="#5bc0de" points="504,-28.3483 437,-28.3483 437,-4.3483 504,-4.3483 504,-28.3483"/>
-<text text-anchor="middle" x="470.5" y="-13.9483" font-family="Helvetica" font-size="10.50" fill="#ffffff">read_real64</text>
+<!-- module~reader_lt -->
+<g id="module~~graph~~ModuleGraph_node3" class="node">
+<title>module~reader_lt</title>
+<g id="a_module~~graph~~ModuleGraph_node3"><a xlink:href=".././module/reader_lt.html" xlink:title="reader_lt">
+<polygon fill="#5bc0de" stroke="#5bc0de" points="522,-192 467,-192 467,-168 522,-168 522,-192"/>
+<text text-anchor="middle" x="494.5" y="-177.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">reader_lt</text>
 </a>
 </g>
 </g>
-<!-- module~read_real64&#45;&gt;module~read -->
-<g id="module~~graph~~ModuleGraph_edge12" class="edge">
-<title>module~read_real64&#45;&gt;module~read</title>
-<path fill="none" stroke="#000000" d="M436.749,-20.1955C428.48,-21.1381 419.5846,-22.1521 411.1653,-23.1118"/>
-<polygon fill="#000000" stroke="#000000" points="410.745,-19.637 401.2058,-24.2471 411.5378,-26.5919 410.745,-19.637"/>
+<!-- module~reader_lt&#45;&gt;module~read -->
+<g id="module~~graph~~ModuleGraph_edge5" class="edge">
+<title>module~reader_lt&#45;&gt;module~read</title>
+<path fill="none" stroke="#000000" d="M466.762,-168.6342C454.9506,-163.7944 441.012,-158.083 428.3898,-152.9109"/>
+<polygon fill="#000000" stroke="#000000" points="429.6315,-149.6374 419.0511,-149.0844 426.9774,-156.1147 429.6315,-149.6374"/>
 </g>
-<!-- module~read_real64&#45;&gt;H5LT -->
+<!-- module~reader_nd -->
+<g id="module~~graph~~ModuleGraph_node4" class="node">
+<title>module~reader_nd</title>
+<g id="a_module~~graph~~ModuleGraph_node4"><a xlink:href=".././module/reader_nd.html" xlink:title="reader_ND">
+<polygon fill="#5bc0de" stroke="#5bc0de" points="527,-150 462,-150 462,-126 527,-126 527,-150"/>
+<text text-anchor="middle" x="494.5" y="-135.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">reader_ND</text>
+</a>
+</g>
+</g>
+<!-- module~reader_nd&#45;&gt;module~read -->
+<g id="module~~graph~~ModuleGraph_edge6" class="edge">
+<title>module~reader_nd&#45;&gt;module~read</title>
+<path fill="none" stroke="#000000" d="M461.7865,-138C451.5043,-138 440.0715,-138 429.485,-138"/>
+<polygon fill="#000000" stroke="#000000" points="429.2547,-134.5001 419.2547,-138 429.2546,-141.5001 429.2547,-134.5001"/>
+</g>
+<!-- module~test_string -->
+<g id="module~~graph~~ModuleGraph_node5" class="node">
+<title>module~test_string</title>
+<g id="a_module~~graph~~ModuleGraph_node5"><a xlink:href=".././module/test_string.html" xlink:title="test_string">
+<polygon fill="#337ab7" stroke="#337ab7" points="423,-394 361,-394 361,-370 423,-370 423,-394"/>
+<text text-anchor="middle" x="392" y="-379.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">test_string</text>
+</a>
+</g>
+</g>
+<!-- module~test_string&#45;&gt;module~h5fortran -->
+<g id="module~~graph~~ModuleGraph_edge7" class="edge">
+<title>module~test_string&#45;&gt;module~h5fortran</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M360.9611,-370.4121C347.4332,-365.3617 331.4525,-359.3956 317.2445,-354.0913"/>
+<polygon fill="#000000" stroke="#000000" points="318.3359,-350.7628 307.7433,-350.5442 315.8875,-357.3207 318.3359,-350.7628"/>
+</g>
+<!-- module~test_string&#45;&gt;iso_c_binding -->
+<g id="module~~graph~~ModuleGraph_edge8" class="edge">
+<title>module~test_string&#45;&gt;iso_c_binding</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M360.8306,-383.1768C315.843,-384.548 230.1347,-385.9348 157.5,-380"/>
+</g>
+<!-- iso_fortran_env -->
+<g id="module~~graph~~ModuleGraph_node25" class="node">
+<title>iso_fortran_env</title>
+<g id="a_module~~graph~~ModuleGraph_node25"><a xlink:href="http://fortranwiki.org/fortran/show/ISO_FORTRAN_ENV" xlink:title="iso_fortran_env">
+<polygon fill="#337ab7" stroke="#337ab7" points="201,-432 114,-432 114,-408 201,-408 201,-432"/>
+<text text-anchor="middle" x="157.5" y="-417.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">iso_fortran_env</text>
+</a>
+</g>
+</g>
+<!-- module~test_string&#45;&gt;iso_fortran_env -->
+<g id="module~~graph~~ModuleGraph_edge9" class="edge">
+<title>module~test_string&#45;&gt;iso_fortran_env</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M371.5244,-394.2703C340.499,-412.7463 284.6223,-445.5194 279.5,-445"/>
+</g>
+<!-- module~writer_lt -->
+<g id="module~~graph~~ModuleGraph_node6" class="node">
+<title>module~writer_lt</title>
+<g id="a_module~~graph~~ModuleGraph_node6"><a xlink:href=".././module/writer_lt.html" xlink:title="writer_lt">
+<polygon fill="#5bc0de" stroke="#5bc0de" points="521.5,-66 467.5,-66 467.5,-42 521.5,-42 521.5,-66"/>
+<text text-anchor="middle" x="494.5" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">writer_lt</text>
+</a>
+</g>
+</g>
+<!-- module~write -->
+<g id="module~~graph~~ModuleGraph_node10" class="node">
+<title>module~write</title>
+<g id="a_module~~graph~~ModuleGraph_node10"><a xlink:href=".././module/write.html" xlink:title="write">
+<polygon fill="#5bc0de" stroke="#5bc0de" points="419,-108 365,-108 365,-84 419,-84 419,-108"/>
+<text text-anchor="middle" x="392" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">write</text>
+</a>
+</g>
+</g>
+<!-- module~writer_lt&#45;&gt;module~write -->
+<g id="module~~graph~~ModuleGraph_edge10" class="edge">
+<title>module~writer_lt&#45;&gt;module~write</title>
+<path fill="none" stroke="#000000" d="M467.301,-65.145C455.4856,-69.9864 441.4644,-75.7316 428.7429,-80.9444"/>
+<polygon fill="#000000" stroke="#000000" points="427.2524,-77.7726 419.3261,-84.803 429.9065,-84.25 427.2524,-77.7726"/>
+</g>
+<!-- module~test_array -->
+<g id="module~~graph~~ModuleGraph_node7" class="node">
+<title>module~test_array</title>
+<g id="a_module~~graph~~ModuleGraph_node7"><a xlink:href=".././module/test_array.html" xlink:title="test_array">
+<polygon fill="#337ab7" stroke="#337ab7" points="422.5,-562 361.5,-562 361.5,-538 422.5,-538 422.5,-562"/>
+<text text-anchor="middle" x="392" y="-547.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">test_array</text>
+</a>
+</g>
+</g>
+<!-- module~test_array&#45;&gt;module~h5fortran -->
+<g id="module~~graph~~ModuleGraph_edge12" class="edge">
+<title>module~test_array&#45;&gt;module~h5fortran</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M367.7041,-537.8388C364.1178,-535.2815 360.7207,-532.3318 358,-529 328.6513,-493.0592 339.8336,-473.8375 322,-431 311.9352,-406.8236 299.0521,-379.6938 290.1217,-361.3971"/>
+<polygon fill="#000000" stroke="#000000" points="293.1615,-359.6471 285.6099,-352.2158 286.8791,-362.7343 293.1615,-359.6471"/>
+</g>
+<!-- ieee_arithmetic -->
+<g id="module~~graph~~ModuleGraph_node21" class="node">
+<title>ieee_arithmetic</title>
+<g id="a_module~~graph~~ModuleGraph_node21"><a xlink:href="http://fortranwiki.org/fortran/show/IEEE_ARITHMETIC" xlink:title="ieee_arithmetic">
+<polygon fill="#337ab7" stroke="#337ab7" points="322,-562 237,-562 237,-538 322,-538 322,-562"/>
+<text text-anchor="middle" x="279.5" y="-547.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">ieee_arithmetic</text>
+</a>
+</g>
+</g>
+<!-- module~test_array&#45;&gt;ieee_arithmetic -->
 <g id="module~~graph~~ModuleGraph_edge11" class="edge">
-<title>module~read_real64&#45;&gt;H5LT</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M271.5,-67.3483C244.6103,-69.8322 214.1277,-69.4931 190.881,-68.5796"/>
-<polygon fill="#000000" stroke="#000000" points="190.8942,-65.0768 180.7481,-68.1275 190.5821,-72.0698 190.8942,-65.0768"/>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M436.7729,-6.2916C411.3847,-.4483 376.1036,3.9397 347,-6.3483 306.3272,-20.7258 314.4563,-63.3802 271.5,-67.3483"/>
+<title>module~test_array&#45;&gt;ieee_arithmetic</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M361.2589,-550C352.278,-550 342.1964,-550 332.2606,-550"/>
+<polygon fill="#000000" stroke="#000000" points="332.0114,-546.5001 322.0114,-550 332.0113,-553.5001 332.0114,-546.5001"/>
+</g>
+<!-- module~test_array&#45;&gt;iso_fortran_env -->
+<g id="module~~graph~~ModuleGraph_edge13" class="edge">
+<title>module~test_array&#45;&gt;iso_fortran_env</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M370.5447,-537.9546C366.2446,-535.2112 361.8645,-532.1653 358,-529 318.4695,-496.6217 330.3374,-450.1552 279.5,-445"/>
+</g>
+<!-- module~test_lt -->
+<g id="module~~graph~~ModuleGraph_node8" class="node">
+<title>module~test_lt</title>
+<g id="a_module~~graph~~ModuleGraph_node8"><a xlink:href=".././module/test_lt.html" xlink:title="test_lt">
+<polygon fill="#337ab7" stroke="#337ab7" points="419,-310 365,-310 365,-286 419,-286 419,-310"/>
+<text text-anchor="middle" x="392" y="-295.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">test_lt</text>
+</a>
+</g>
+</g>
+<!-- module~test_lt&#45;&gt;module~h5fortran -->
+<g id="module~~graph~~ModuleGraph_edge14" class="edge">
+<title>module~test_lt&#45;&gt;module~h5fortran</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M364.7669,-308.167C350.4423,-313.5149 332.6604,-320.1534 317.0477,-325.9822"/>
+<polygon fill="#000000" stroke="#000000" points="315.8014,-322.7114 307.6572,-329.488 318.2498,-329.2693 315.8014,-322.7114"/>
+</g>
+<!-- module~reader -->
+<g id="module~~graph~~ModuleGraph_node9" class="node">
+<title>module~reader</title>
+<g id="a_module~~graph~~ModuleGraph_node9"><a xlink:href=".././module/reader.html" xlink:title="reader">
+<polygon fill="#5bc0de" stroke="#5bc0de" points="521.5,-234 467.5,-234 467.5,-210 521.5,-210 521.5,-234"/>
+<text text-anchor="middle" x="494.5" y="-219.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">reader</text>
+</a>
+</g>
+</g>
+<!-- module~reader&#45;&gt;module~read -->
+<g id="module~~graph~~ModuleGraph_edge17" class="edge">
+<title>module~reader&#45;&gt;module~read</title>
+<path fill="none" stroke="#000000" d="M474.0649,-209.7996C469.9492,-207.0675 465.7415,-204.0653 462,-201 444.2519,-186.4595 443.1587,-179.2315 426,-164 423.1658,-161.4841 420.1115,-158.9388 417.0372,-156.4756"/>
+<polygon fill="#000000" stroke="#000000" points="419.0345,-153.5951 408.9903,-150.2237 414.7398,-159.1229 419.0345,-153.5951"/>
+</g>
+<!-- h5lt -->
+<g id="module~~graph~~ModuleGraph_node23" class="node">
+<title>h5lt</title>
+<polygon fill="#337ab7" stroke="#337ab7" points="184.5,-270 130.5,-270 130.5,-246 184.5,-246 184.5,-270"/>
+<text text-anchor="middle" x="157.5" y="-255.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">h5lt</text>
+</g>
+<!-- module~reader&#45;&gt;h5lt -->
+<g id="module~~graph~~ModuleGraph_edge16" class="edge">
+<title>module~reader&#45;&gt;h5lt</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M392,-178C350.7547,-176.6825 358.4382,-219.6307 322,-239 282.3157,-260.0949 229.756,-262.5114 194.8442,-261.1954"/>
+<polygon fill="#000000" stroke="#000000" points="194.7722,-257.6875 184.6099,-260.6837 194.4226,-264.6788 194.7722,-257.6875"/>
+</g>
+<!-- module~reader&#45;&gt;hdf5 -->
+<g id="module~~graph~~ModuleGraph_edge15" class="edge">
+<title>module~reader&#45;&gt;hdf5</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M471.8082,-209.9307C446.8567,-197.0833 408.1619,-178.5163 392,-178"/>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M392,-178C342.0255,-176.4036 329.272,-182.7692 279.5,-178"/>
+</g>
+<!-- module~write&#45;&gt;module~h5fortran -->
+<g id="module~~graph~~ModuleGraph_edge20" class="edge">
+<title>module~write&#45;&gt;module~h5fortran</title>
+<path fill="none" stroke="#000000" d="M366.8557,-108.0346C363.4622,-110.5824 360.3475,-113.5623 358,-117 307.8081,-190.5034 372.3487,-240.6039 322,-314 320.0917,-316.7818 317.7785,-319.3194 315.2281,-321.6227"/>
+<polygon fill="#000000" stroke="#000000" points="312.8844,-319.0074 307.0325,-327.8395 317.1149,-324.5844 312.8844,-319.0074"/>
+</g>
+<!-- module~write&#45;&gt;H5LT -->
+<g id="module~~graph~~ModuleGraph_edge19" class="edge">
+<title>module~write&#45;&gt;H5LT</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M364.7669,-101.0835C350.364,-103.772 332.4661,-107.113 316.7921,-110.0388"/>
+<polygon fill="#000000" stroke="#000000" points="316.0602,-106.6149 306.8722,-111.8905 317.3447,-113.496 316.0602,-106.6149"/>
+</g>
+<!-- module~write&#45;&gt;hdf5 -->
+<g id="module~~graph~~ModuleGraph_edge18" class="edge">
+<title>module~write&#45;&gt;hdf5</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M377.0806,-83.9547C355.5394,-68.0959 314.4712,-43.5984 279.5,-56"/>
+</g>
+<!-- module~writer -->
+<g id="module~~graph~~ModuleGraph_node11" class="node">
+<title>module~writer</title>
+<g id="a_module~~graph~~ModuleGraph_node11"><a xlink:href=".././module/writer.html" xlink:title="writer">
+<polygon fill="#5bc0de" stroke="#5bc0de" points="521.5,-24 467.5,-24 467.5,0 521.5,0 521.5,-24"/>
+<text text-anchor="middle" x="494.5" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">writer</text>
+</a>
+</g>
+</g>
+<!-- module~writer&#45;&gt;module~write -->
+<g id="module~~graph~~ModuleGraph_edge22" class="edge">
+<title>module~writer&#45;&gt;module~write</title>
+<path fill="none" stroke="#000000" d="M474.0649,-24.2004C469.9492,-26.9325 465.7415,-29.9347 462,-33 444.2519,-47.5405 443.1587,-54.7685 426,-70 423.1658,-72.5159 420.1115,-75.0612 417.0372,-77.5244"/>
+<polygon fill="#000000" stroke="#000000" points="414.7398,-74.8771 408.9903,-83.7763 419.0345,-80.4049 414.7398,-74.8771"/>
+</g>
+<!-- module~writer&#45;&gt;hdf5 -->
+<g id="module~~graph~~ModuleGraph_edge21" class="edge">
+<title>module~writer&#45;&gt;hdf5</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M467.374,-15.0944C425.9509,-20.3622 344.8543,-32.8238 279.5,-56"/>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M279.5,-56C224.4624,-79.407 185.3206,-142.4723 167.7982,-175.7587"/>
+<polygon fill="#000000" stroke="#000000" points="164.6742,-174.1805 163.2466,-184.6787 170.9094,-177.3621 164.6742,-174.1805"/>
+</g>
+<!-- module~writer_nd -->
+<g id="module~~graph~~ModuleGraph_node12" class="node">
+<title>module~writer_nd</title>
+<g id="a_module~~graph~~ModuleGraph_node12"><a xlink:href=".././module/writer_nd.html" xlink:title="writer_ND">
+<polygon fill="#5bc0de" stroke="#5bc0de" points="524.5,-108 464.5,-108 464.5,-84 524.5,-84 524.5,-108"/>
+<text text-anchor="middle" x="494.5" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">writer_ND</text>
+</a>
+</g>
+</g>
+<!-- module~writer_nd&#45;&gt;module~write -->
+<g id="module~~graph~~ModuleGraph_edge23" class="edge">
+<title>module~writer_nd&#45;&gt;module~write</title>
+<path fill="none" stroke="#000000" d="M464.301,-96C453.3597,-96 440.869,-96 429.3831,-96"/>
+<polygon fill="#000000" stroke="#000000" points="429.1907,-92.5001 419.1906,-96 429.1906,-99.5001 429.1907,-92.5001"/>
+</g>
+<!-- module~test_scalar -->
+<g id="module~~graph~~ModuleGraph_node13" class="node">
+<title>module~test_scalar</title>
+<g id="a_module~~graph~~ModuleGraph_node13"><a xlink:href=".././module/test_scalar.html" xlink:title="test_scalar">
+<polygon fill="#337ab7" stroke="#337ab7" points="424,-352 360,-352 360,-328 424,-328 424,-352"/>
+<text text-anchor="middle" x="392" y="-337.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">test_scalar</text>
+</a>
+</g>
+</g>
+<!-- module~test_scalar&#45;&gt;module~h5fortran -->
+<g id="module~~graph~~ModuleGraph_edge24" class="edge">
+<title>module~test_scalar&#45;&gt;module~h5fortran</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M359.762,-340C346.62,-340 331.3253,-340 317.6337,-340"/>
+<polygon fill="#000000" stroke="#000000" points="317.5384,-336.5001 307.5383,-340 317.5383,-343.5001 317.5384,-336.5001"/>
+</g>
+<!-- module~test_scalar&#45;&gt;iso_fortran_env -->
+<g id="module~~graph~~ModuleGraph_edge26" class="edge">
+<title>module~test_scalar&#45;&gt;iso_fortran_env</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M370.5447,-352.0454C366.2446,-354.7888 361.8645,-357.8347 358,-361 318.4695,-393.3783 330.3374,-450.1552 279.5,-445"/>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M279.5,-445C256.8452,-442.7027 232.1819,-438.0642 210.9971,-433.3998"/>
+<polygon fill="#000000" stroke="#000000" points="211.7409,-429.9797 201.2155,-431.1909 210.1989,-436.8078 211.7409,-429.9797"/>
+</g>
+<!-- module~test_scalar&#45;&gt;hdf5 -->
+<g id="module~~graph~~ModuleGraph_edge25" class="edge">
+<title>module~test_scalar&#45;&gt;hdf5</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M367.5148,-327.9883C363.9513,-325.413 360.6108,-322.4186 358,-319 323.6868,-274.0706 359.2206,-239.552 322,-197 308.3778,-181.4265 300.0962,-179.9736 279.5,-178"/>
+</g>
+<!-- module~h5fortran&#45;&gt;module~string_utils -->
+<g id="module~~graph~~ModuleGraph_edge28" class="edge">
+<title>module~h5fortran&#45;&gt;module~string_utils</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M251.2041,-340C235.9315,-340 216.7757,-340 199.7705,-340"/>
+<polygon fill="#000000" stroke="#000000" points="199.5142,-336.5001 189.5142,-340 199.5142,-343.5001 199.5142,-336.5001"/>
+</g>
+<!-- module~h5fortran&#45;&gt;iso_c_binding -->
+<g id="module~~graph~~ModuleGraph_edge27" class="edge">
+<title>module~h5fortran&#45;&gt;iso_c_binding</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M259.3936,-352.0112C235.7004,-364.87 194.8227,-383.0496 157.5,-380"/>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M157.5,-380C127.7703,-377.5708 95.8243,-366.2303 72.6016,-356.2419"/>
+<polygon fill="#000000" stroke="#000000" points="73.7749,-352.9334 63.215,-352.0739 70.934,-359.331 73.7749,-352.9334"/>
+</g>
+<!-- module~h5fortran&#45;&gt;h5lt -->
+<g id="module~~graph~~ModuleGraph_edge29" class="edge">
+<title>module~h5fortran&#45;&gt;h5lt</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M259.0116,-327.8329C251.9727,-323.5562 244.0842,-318.655 237,-314 218.4829,-301.8324 198.0574,-287.4224 182.5469,-276.2672"/>
+<polygon fill="#000000" stroke="#000000" points="184.1896,-273.1361 174.0341,-270.1168 180.0901,-278.8102 184.1896,-273.1361"/>
+</g>
+<!-- module~h5fortran&#45;&gt;iso_fortran_env -->
+<g id="module~~graph~~ModuleGraph_edge30" class="edge">
+<title>module~h5fortran&#45;&gt;iso_fortran_env</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M262.5605,-352.1164C246.8032,-363.2757 222.5771,-380.1502 201,-394 196.5783,-396.8382 191.8524,-399.7671 187.2048,-402.5899"/>
+<polygon fill="#000000" stroke="#000000" points="185.2375,-399.6886 178.4645,-407.8358 188.8398,-405.6905 185.2375,-399.6886"/>
+</g>
+<!-- module~h5fortran&#45;&gt;hdf5 -->
+<g id="module~~graph~~ModuleGraph_edge31" class="edge">
+<title>module~h5fortran&#45;&gt;hdf5</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M254.283,-327.896C248.0834,-324.0776 241.8429,-319.4164 237,-314 211.8197,-285.8377 223.3272,-267.4739 201,-237 195.4215,-229.3861 188.2345,-222.0786 181.3156,-215.8407"/>
+<polygon fill="#000000" stroke="#000000" points="183.2921,-212.9241 173.429,-209.055 178.7266,-218.2303 183.2921,-212.9241"/>
+</g>
+<!-- program~test_error -->
+<g id="module~~graph~~ModuleGraph_node15" class="node">
+<title>program~test_error</title>
+<g id="a_module~~graph~~ModuleGraph_node15"><a xlink:href=".././program/test_error.html" xlink:title="test_error">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="421.5,-520 362.5,-520 362.5,-496 421.5,-496 421.5,-520"/>
+<text text-anchor="middle" x="392" y="-505.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">test_error</text>
+</a>
+</g>
+</g>
+<!-- program~test_error&#45;&gt;module~h5fortran -->
+<g id="module~~graph~~ModuleGraph_edge32" class="edge">
+<title>program~test_error&#45;&gt;module~h5fortran</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M368.7944,-495.9837C364.9128,-493.3506 361.1346,-490.3379 358,-487 339.3535,-467.144 305.6679,-396.9689 289.1547,-361.2399"/>
+<polygon fill="#000000" stroke="#000000" points="292.3329,-359.7737 284.9793,-352.1464 285.9714,-362.6947 292.3329,-359.7737"/>
+</g>
+<!-- program~test_error&#45;&gt;iso_fortran_env -->
+<g id="module~~graph~~ModuleGraph_edge33" class="edge">
+<title>program~test_error&#45;&gt;iso_fortran_env</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M372.2591,-495.8053C342.7986,-477.7824 289.689,-446.0332 279.5,-445"/>
+</g>
+<!-- program~test_shape -->
+<g id="module~~graph~~ModuleGraph_node16" class="node">
+<title>program~test_shape</title>
+<g id="a_module~~graph~~ModuleGraph_node16"><a xlink:href=".././program/test_shape.html" xlink:title="test_shape">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="424.5,-478 359.5,-478 359.5,-454 424.5,-454 424.5,-478"/>
+<text text-anchor="middle" x="392" y="-463.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">test_shape</text>
+</a>
+</g>
+</g>
+<!-- program~test_shape&#45;&gt;module~h5fortran -->
+<g id="module~~graph~~ModuleGraph_edge35" class="edge">
+<title>program~test_shape&#45;&gt;module~h5fortran</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M369.5536,-453.8107C365.511,-451.1594 361.4806,-448.1848 358,-445 330.3778,-419.7248 305.8412,-383.577 291.8302,-360.9659"/>
+<polygon fill="#000000" stroke="#000000" points="294.674,-358.9057 286.4916,-352.1753 288.691,-362.5394 294.674,-358.9057"/>
+</g>
+<!-- program~test_shape&#45;&gt;iso_fortran_env -->
+<g id="module~~graph~~ModuleGraph_edge34" class="edge">
+<title>program~test_shape&#45;&gt;iso_fortran_env</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M359.2279,-458.3858C336.8961,-453.5673 306.5811,-447.7462 279.5,-445"/>
+</g>
+<!-- program~test_deflate -->
+<g id="module~~graph~~ModuleGraph_node17" class="node">
+<title>program~test_deflate</title>
+<g id="a_module~~graph~~ModuleGraph_node17"><a xlink:href=".././program/test_deflate.html" xlink:title="test_deflate">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="426,-230 358,-230 358,-206 426,-206 426,-230"/>
+<text text-anchor="middle" x="392" y="-215.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">test_deflate</text>
+</a>
+</g>
+</g>
+<!-- program~test_deflate&#45;&gt;module~h5fortran -->
+<g id="module~~graph~~ModuleGraph_edge37" class="edge">
+<title>program~test_deflate&#45;&gt;module~h5fortran</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M373.064,-230.1476C367.7663,-234.1332 362.2904,-238.8698 358,-244 335.5568,-270.8366 345.8054,-288.364 322,-314 319.2962,-316.9117 316.1943,-319.6156 312.9242,-322.0926"/>
+<polygon fill="#000000" stroke="#000000" points="310.878,-319.2514 304.58,-327.7712 314.8163,-325.0385 310.878,-319.2514"/>
+</g>
+<!-- program~test_deflate&#45;&gt;iso_c_binding -->
+<g id="module~~graph~~ModuleGraph_edge38" class="edge">
+<title>program~test_deflate&#45;&gt;iso_c_binding</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M377.2878,-230.0029C356.3279,-246.8001 316.3224,-277.754 279.5,-300"/>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M279.5,-300C216.1285,-338.2855 186.6547,-304.7514 114,-319 105.3234,-320.7016 96.186,-322.9041 87.3892,-325.2405"/>
+<polygon fill="#000000" stroke="#000000" points="86.3614,-321.8931 77.6449,-327.9158 88.2147,-328.6433 86.3614,-321.8931"/>
+</g>
+<!-- program~test_deflate&#45;&gt;iso_fortran_env -->
+<g id="module~~graph~~ModuleGraph_edge39" class="edge">
+<title>program~test_deflate&#45;&gt;iso_fortran_env</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M279.5,-300C261.7905,-310.6991 251.8274,-304.5693 237,-319 210.5031,-344.788 225.9258,-366.6904 201,-394 198.2753,-396.9852 195.1278,-399.7363 191.797,-402.2411"/>
+<polygon fill="#000000" stroke="#000000" points="189.6333,-399.4778 183.2759,-407.9533 193.5312,-405.2922 189.6333,-399.4778"/>
+</g>
+<!-- program~test_deflate&#45;&gt;hdf5 -->
+<g id="module~~graph~~ModuleGraph_edge36" class="edge">
+<title>program~test_deflate&#45;&gt;hdf5</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M368.648,-205.8698C346.4239,-195.2633 311.6899,-181.0845 279.5,-178"/>
+</g>
+<!-- program~test_hdf5 -->
+<g id="module~~graph~~ModuleGraph_node18" class="node">
+<title>program~test_hdf5</title>
+<g id="a_module~~graph~~ModuleGraph_node18"><a xlink:href=".././program/test_hdf5.html" xlink:title="test_hdf5">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="523,-373 466,-373 466,-349 523,-349 523,-373"/>
+<text text-anchor="middle" x="494.5" y="-358.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">test_hdf5</text>
+</a>
+</g>
+</g>
+<!-- program~test_hdf5&#45;&gt;module~test_string -->
+<g id="module~~graph~~ModuleGraph_edge44" class="edge">
+<title>program~test_hdf5&#45;&gt;module~test_string</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M465.948,-366.8497C455.789,-368.931 444.1389,-371.3179 433.1364,-373.5721"/>
+<polygon fill="#000000" stroke="#000000" points="432.3695,-370.1564 423.2754,-375.5923 433.7745,-377.014 432.3695,-370.1564"/>
+</g>
+<!-- program~test_hdf5&#45;&gt;module~test_array -->
+<g id="module~~graph~~ModuleGraph_edge42" class="edge">
+<title>program~test_hdf5&#45;&gt;module~test_array</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M492.2189,-373.3447C486.1759,-403.1519 467.3057,-480.1914 426,-529 425.3921,-529.7183 424.7533,-530.4194 424.0884,-531.1031"/>
+<polygon fill="#000000" stroke="#000000" points="421.5863,-528.6346 416.1958,-537.7556 426.0977,-533.9869 421.5863,-528.6346"/>
+</g>
+<!-- program~test_hdf5&#45;&gt;module~test_lt -->
+<g id="module~~graph~~ModuleGraph_edge41" class="edge">
+<title>program~test_hdf5&#45;&gt;module~test_lt</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M474.737,-348.853C459.2807,-339.353 437.5863,-326.0189 420.29,-315.388"/>
+<polygon fill="#000000" stroke="#000000" points="422.0545,-312.3643 411.7024,-310.1097 418.3891,-318.3279 422.0545,-312.3643"/>
+</g>
+<!-- program~test_hdf5&#45;&gt;module~test_scalar -->
+<g id="module~~graph~~ModuleGraph_edge43" class="edge">
+<title>program~test_hdf5&#45;&gt;module~test_scalar</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M465.948,-355.1503C456.0723,-353.127 444.7873,-350.815 434.0581,-348.6168"/>
+<polygon fill="#000000" stroke="#000000" points="434.5047,-345.1356 424.0056,-346.5573 433.0996,-351.9932 434.5047,-345.1356"/>
+</g>
+<!-- program~test_hdf5&#45;&gt;module~h5fortran -->
+<g id="module~~graph~~ModuleGraph_edge45" class="edge">
+<title>program~test_hdf5&#45;&gt;module~h5fortran</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M489.0279,-348.9608C479.4512,-329.5538 457.6169,-292.014 426,-277 398.6996,-264.0358 385.8418,-265.2435 358,-277 336.8633,-285.9252 339.9259,-299.6793 322,-314 318.4056,-316.8715 314.4703,-319.6721 310.4908,-322.3074"/>
+<polygon fill="#000000" stroke="#000000" points="308.4136,-319.4795 301.8237,-327.7755 312.1487,-325.3997 308.4136,-319.4795"/>
+</g>
+<!-- program~test_hdf5&#45;&gt;iso_fortran_env -->
+<g id="module~~graph~~ModuleGraph_edge40" class="edge">
+<title>program~test_hdf5&#45;&gt;iso_fortran_env</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M492.4102,-373.2826C485.1223,-414.5106 459.4433,-546.7314 426,-571 358.0142,-620.3349 308.9137,-614.4099 237,-571 190.3107,-542.8165 169.6611,-477.0909 161.7434,-442.3849"/>
+<polygon fill="#000000" stroke="#000000" points="165.1019,-441.3498 159.6033,-432.2936 158.2542,-442.8021 165.1019,-441.3498"/>
+</g>
+<!-- program~test_exist -->
+<g id="module~~graph~~ModuleGraph_node19" class="node">
+<title>program~test_exist</title>
+<g id="a_module~~graph~~ModuleGraph_node19"><a xlink:href=".././program/test_exist.html" xlink:title="test_exist">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="421,-436 363,-436 363,-412 421,-412 421,-436"/>
+<text text-anchor="middle" x="392" y="-421.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">test_exist</text>
+</a>
+</g>
+</g>
+<!-- program~test_exist&#45;&gt;module~h5fortran -->
+<g id="module~~graph~~ModuleGraph_edge46" class="edge">
+<title>program~test_exist&#45;&gt;module~h5fortran</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M371.599,-411.9643C367.0538,-409.1277 362.3073,-406.0413 358,-403 338.2471,-389.0529 316.9128,-371.7767 301.4779,-358.8452"/>
+<polygon fill="#000000" stroke="#000000" points="303.4559,-355.9345 293.5574,-352.1568 298.9396,-361.2828 303.4559,-355.9345"/>
+</g>
+<!-- program~test_exist&#45;&gt;iso_fortran_env -->
+<g id="module~~graph~~ModuleGraph_edge47" class="edge">
+<title>program~test_exist&#45;&gt;iso_fortran_env</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M362.587,-434.199C340.0024,-440.8811 307.9648,-447.8865 279.5,-445"/>
+</g>
+<!-- program~test_minimal -->
+<g id="module~~graph~~ModuleGraph_node20" class="node">
+<title>program~test_minimal</title>
+<g id="a_module~~graph~~ModuleGraph_node20"><a xlink:href=".././program/test_minimal.html" xlink:title="test_minimal">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="316,-230 243,-230 243,-206 316,-206 316,-230"/>
+<text text-anchor="middle" x="279.5" y="-215.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">test_minimal</text>
+</a>
+</g>
+</g>
+<!-- program~test_minimal&#45;&gt;h5lt -->
+<g id="module~~graph~~ModuleGraph_edge49" class="edge">
+<title>program~test_minimal&#45;&gt;h5lt</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M242.896,-230.0013C227.5809,-235.0227 209.8095,-240.8494 194.457,-245.883"/>
+<polygon fill="#000000" stroke="#000000" points="193.1795,-242.6184 184.7676,-249.0598 195.3604,-249.27 193.1795,-242.6184"/>
+</g>
+<!-- program~test_minimal&#45;&gt;hdf5 -->
+<g id="module~~graph~~ModuleGraph_edge48" class="edge">
+<title>program~test_minimal&#45;&gt;hdf5</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M242.896,-211.6993C227.7268,-209.0882 210.1477,-206.0623 194.8963,-203.4371"/>
+<polygon fill="#000000" stroke="#000000" points="195.2165,-199.9408 184.7676,-201.6936 194.029,-206.8393 195.2165,-199.9408"/>
 </g>
 </g>
 </svg>
@@ -317,46 +722,46 @@ All Modules &ndash; Object-oriented Fortran 2018 HDF5 interface
 <!-- Generated by graphviz version 2.40.1 (20161225.0304)
  -->
 <!-- Title: Graph Key Pages: 1 -->
-<svg width="482pt" height="32pt"
- viewBox="0.00 0.00 481.50 32.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg width="490pt" height="32pt"
+ viewBox="0.00 0.00 489.50 32.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 28)">
 <title>Graph Key</title>
-<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-28 477.5,-28 477.5,4 -4,4"/>
+<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-28 485.5,-28 485.5,4 -4,4"/>
 <!-- Module -->
 <g id="node1" class="node">
 <title>Module</title>
 <polygon fill="#337ab7" stroke="#337ab7" points="54,-24 0,-24 0,0 54,0 54,-24"/>
-<text text-anchor="middle" x="27" y="-9.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">Module</text>
+<text text-anchor="middle" x="27" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">Module</text>
 </g>
 <!-- Submodule -->
 <g id="node2" class="node">
 <title>Submodule</title>
-<polygon fill="#5bc0de" stroke="#5bc0de" points="136,-24 72,-24 72,0 136,0 136,-24"/>
-<text text-anchor="middle" x="104" y="-9.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">Submodule</text>
+<polygon fill="#5bc0de" stroke="#5bc0de" points="139.5,-24 72.5,-24 72.5,0 139.5,0 139.5,-24"/>
+<text text-anchor="middle" x="106" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">Submodule</text>
 </g>
 <!-- Subroutine -->
 <g id="node3" class="node">
 <title>Subroutine</title>
-<polygon fill="#d9534f" stroke="#d9534f" points="217.5,-24 154.5,-24 154.5,0 217.5,0 217.5,-24"/>
-<text text-anchor="middle" x="186" y="-9.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">Subroutine</text>
+<polygon fill="#d9534f" stroke="#d9534f" points="222,-24 158,-24 158,0 222,0 222,-24"/>
+<text text-anchor="middle" x="190" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">Subroutine</text>
 </g>
 <!-- Function -->
 <g id="node4" class="node">
 <title>Function</title>
-<polygon fill="#d94e8f" stroke="#d94e8f" points="290,-24 236,-24 236,0 290,0 290,-24"/>
-<text text-anchor="middle" x="263" y="-9.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">Function</text>
+<polygon fill="#d94e8f" stroke="#d94e8f" points="294,-24 240,-24 240,0 294,0 294,-24"/>
+<text text-anchor="middle" x="267" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">Function</text>
 </g>
 <!-- Program -->
 <g id="node5" class="node">
 <title>Program</title>
-<polygon fill="#f0ad4e" stroke="#f0ad4e" points="362,-24 308,-24 308,0 362,0 362,-24"/>
-<text text-anchor="middle" x="335" y="-9.6" font-family="Helvetica" font-size="10.50" fill="#ffffff">Program</text>
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="366,-24 312,-24 312,0 366,0 366,-24"/>
+<text text-anchor="middle" x="339" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">Program</text>
 </g>
 <!-- This Page&#39;s Entity -->
 <g id="node6" class="node">
 <title>This Page&#39;s Entity</title>
-<polygon fill="none" stroke="#000000" points="473.5,-24 380.5,-24 380.5,0 473.5,0 473.5,-24"/>
-<text text-anchor="middle" x="427" y="-9.6" font-family="Helvetica" font-size="10.50" fill="#000000">This Page&#39;s Entity</text>
+<polygon fill="none" stroke="#000000" points="481.5,-24 384.5,-24 384.5,0 481.5,0 481.5,-24"/>
+<text text-anchor="middle" x="433" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#000000">This Page&#39;s Entity</text>
 </g>
 </g>
 </svg>
@@ -384,7 +789,7 @@ All Modules &ndash; Object-oriented Fortran 2018 HDF5 interface
             
           </p>
         </div>
-        <div class="col-xs-12 col-md-4 col-md-pull-4"><p class="text-center"> Object-oriented Fortran 2018 HDF5 interface was developed by Michael Hirsch, Ph.D.</p></div>
+        <div class="col-xs-12 col-md-4 col-md-pull-4"><p class="text-center"> Object-oriented Fortran 2008 HDF5 interface was developed by Michael Hirsch, Ph.D.</p></div>
       </div>
       <br>
       </div> <!-- /container -->    
