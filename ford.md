@@ -5,7 +5,6 @@ project_github: https://github.com/scivision/h5fortran
 project_website: https://scivision.github.io/h5fortran
 summary: Object-oriented Fortran 2008 HDF5 interface
 author: Michael Hirsch, Ph.D.
-author_description: SciVision, Inc.
 github: https://github.com/scivision
 license: by
 exclude: CMakeFortranCompilerId.F

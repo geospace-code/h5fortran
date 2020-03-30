@@ -1,3 +1,4 @@
+program test_deflate
 !! unit tests and registration tests of HDF5 deflate compression write
 use, intrinsic:: iso_fortran_env, only: int32, real32, real64, stderr=>error_unit
 use, intrinsic:: iso_c_binding, only: c_null_char

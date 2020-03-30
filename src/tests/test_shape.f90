@@ -1,3 +1,4 @@
+program test_shape
 !! This program shows how HDF5 dimension orders are distinct in different langauges
 use h5fortran, only: hdf5_file,hsize_t
 use, intrinsic:: iso_fortran_env, only: real64, stdout=>output_unit, stderr=>error_unit

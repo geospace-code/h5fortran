@@ -1,3 +1,4 @@
+program test_minimal
 use hdf5, only : HID_T, HSIZE_T, H5_INTEGER_KIND, h5kind_to_type, h5open_f, h5close_f, h5fclose_f, h5fcreate_f, H5F_ACC_TRUNC_F
 use h5lt, only : h5ltmake_dataset_f
 

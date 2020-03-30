@@ -1,3 +1,4 @@
+program test_exist
 !! test "exist" variable
 use, intrinsic :: iso_fortran_env, only : stderr=>error_unit
 use h5fortran, only: hdf5_file, h5write

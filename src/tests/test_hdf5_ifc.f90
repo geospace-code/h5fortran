@@ -1,3 +1,4 @@
+program test_hdf5
 !! unit tests and registration tests of HDF5 OO interface
 use, intrinsic:: iso_fortran_env, only: int32, real32, real64, stderr=>error_unit
 
