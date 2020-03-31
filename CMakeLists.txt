@@ -5,7 +5,7 @@ endif()
 project(h5fortran
   LANGUAGES C Fortran
   VERSION 2.9.0
-  DESCRIPTION "thin, light, easy HDF5 Fortran interface"
+  DESCRIPTION "thin, light object-oriented HDF5 Fortran interface"
   HOMEPAGE_URL https://github.com/scivision/h5fortran)
 enable_testing()
 include(CTest)

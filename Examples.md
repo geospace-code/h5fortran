@@ -1,0 +1,146 @@
+# h5fortran Examples
+
+All examples assume:
+
+```fortran
+use h5fortran, only: hdf5_file
+type(hdf5_file) :: h5f
+```
+
+* gzip compression may be applied for rank &ge; 2 arrays by setting `comp_lvl` to a value between 1 and 9.
+  Shuffle filter is automatically applied for better compression
+* string attributes may be applied to any variable at time of writing or later.
+* h5f%initialize(..., `comp_lvl=1`) option enables GZIP compression., where comp_lvl is from 1 to 9. bigger comp_lvl gives more compression but isslower to write.
+
+`integer, intent(out) :: ierr` is an optional parameter. It will be non-zero if error detected.
+This value should be checked, particularly for write operations to avoid missing error conditions.
+If `ierr` is omitted, then h5fortran will raise `error stop` if an error occurs.
+
+## Create new HDF5 file, with variable "value1"
+
+```fortran
+call h5f%initialize('test.h5', status='new',action='w')
+
+call h5f%write('/value1', 123.)
+
+call h5f%finalize(ierr)
+```
+
+## Add/append variable "value1" to existing HDF5 file "test.h5"
+
+* if file `test.h5` exists, add a variable to it
+* if file `test.h5` does not exist, create it and add a variable to it.
+
+```fortran
+call h5f%initialize('test.h5', status='unknown',action='rw')
+
+call h5f%write('/value1', 123.)
+
+call h5f%finalize(ierr)
+```
+
+## Add gzip compressed 3-D array "value2" to existing HDF5 file "test.h5"
+
+```fortran
+real :: val2(1000,1000,3) = 0.
+
+call h5f%initialize('test.h5', comp_lvl=1)
+
+call h5f%write('/value2', val2)
+
+call h5f%finalize(ierr)
+```
+
+chunk_size may optionally be set in the `%write()` method for 2-d to 7-d arrays.
+compression and chunking are disabled if any element of chunk_size is less than 1
+chunk_size may be manually specified in write() otherwise it will be set automatically.
+
+Currently, data is written contiguous if not compressed and is only chunked if compression is used.
+
+## check if a variable exists
+
+the logical method %exists() checks if a dataset (variable) exists in the initialized HDF5 file.
+
+```fortran
+exists = h5f%exists("/foo")
+```
+
+## Read scalar, 3-D array of unknown size
+
+```fortran
+call h5f%initialize('test.h5', status='old',action='r')
+
+integer(hsize_t), allocatable :: dims(:)
+real, allocatable :: A(:,:,:)
+
+call h5f%shape('/foo',dims)
+allocate(A(dims(1), dims(2), dims(3)))
+call h5f%read('/foo', A)
+
+call h5f%finalize()
+```
+
+## read slice (part of) a disk array
+
+Reading a disk HDF5 array into a variable of matching shape is done with `istart=` and `iend=` arguments, which have 1-D arguments for the start and stop index desired from each dimension.
+
+For example, support HDF5 disk variable "/foo" is shape (10,20,30) and you wish to read just part of this array like:
+
+* dim 1: 5-7
+* dim 2: 1-5
+* dim 3: 2-8
+
+then do:
+
+```fortran
+real, dimension(3,5,7) :: A
+
+call h5f%initialize('test.h5', status='old',action='r')
+
+call h5f%read('/foo', A, istart=[5, 1, 2], iend=[7, 5, 8])
+```
+
+## is dataset contiguous or chunked
+
+Assumed file handle h5f was already initialized, the logical status is inspected:
+
+```fortran
+is_contig = h5f%is_contig('/foo')
+
+is_chunked = h5f%is_chunked('/foo')
+```
+
+## get chunk size
+
+if dataset is not chunked, chunk_size == -1
+
+```sh
+call h5f%chunks('/foo', chunk_size)
+```
+
+## Create group "scope"
+
+```fortran
+real :: val2(1000,1000,3) = 0.
+
+call h5f%initialize('test.h5')
+
+call h5f%write_group('/scope/')
+
+call h5f%finalize()
+```
+
+## verbose / debug
+
+set options debug and /or verbose for diagnostics
+
+```sh
+call h5f%initialize(..., verbose=.true., debug=.true.)
+```
+
+## Permissive syntax
+
+We make the hdf5%open(..., status=...) like Fortran open()
+
+* overwrite (truncate) existing file: open with `status='new'` or `status='replace'`
+* append to existing file or create file: `status='old'` or `status='unknown'`
