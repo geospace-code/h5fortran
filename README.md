@@ -58,6 +58,10 @@ Compilers known to work include:
 Using CMake:
 
 ```sh
+git clone https://github.com/scivision/h5fortran.git
+
+cd h5fortran
+
 ctest -S setup.cmake -V
 ```
 

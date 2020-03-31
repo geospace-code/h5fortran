@@ -21,8 +21,10 @@ Most programs and libraries intended for use by practitioners such as modelers a
 
 h5fortran [@h5fortran] is a Fortran 2008 interface to HDF5 that abstracts away most details of a frequently-used subset of HDF5 operations.
 h5fortran makes HDF5 use from Fortran as easy as in high-level scripting languages.
-h5fortran is known to work for Gfortran 6 or newer and Intel Fortran 19.0 or newer for Linux, MacOS, Windows on Intel / AMD, ARM and IBM POWER systems.
-The Fortran 2008 standard is adhered to by h5fortran, so the main limit to Fortran compiler support is the compiler supporting Fortran 2008 standard.
+h5fortran adheres to Fortran 2008 standard, working on Gfortran and Intel compilers for Linux, MacOS, Windows on Intel / AMD, ARM and IBM POWER systems.
+CMake is used to build h5fortran, and CPack can be used to generate distributable binary archives.
+Conan package manager may be used to obtain prereqs and install h5fortran.
+Meson build system is also supported by h5fortran.
 
 h5fortran has general applicability to projects needing to do any of:
 

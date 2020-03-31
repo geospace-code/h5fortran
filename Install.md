@@ -2,7 +2,7 @@
 
 h5fortran is typically built and installed with CMake or Meson.
 
-Requirements:
+## Requirements
 
 * modern Fortran compiler (this project uses `submodule` and `error stop`). For example, Gfortran &ge; 6 or Intel &ge; 19.0.
 * HDF5 Fortran library (>= 1.8.7, including 1.10.x and 1.12.x)
@@ -19,6 +19,16 @@ Platforms that currently do **not** have Fortran HDF5 libraries, and thus will *
 Build this HDF5 OO Fortran interface with Meson or CMake.
 The library `libh5fortran` is built, link it into your program as usual.
 
+If you use
+[conan](https://conan.io),
+get the prereqs and build by:
+
+```sh
+conan install . -if build
+
+conan build . -bf build
+```
+
 ## CMake
 
 Build and self-test via:
@@ -33,6 +43,28 @@ or alternatively:
 cmake -B build
 
 cmake --build build
+```
+
+### [optional] install
+
+To install h5fortran to a directory, to use in many programs do like:
+
+```sh
+cmake -B build -DCMAKE_INSTALL_PREFIX=~/lib
+
+cmake --build build --target install
+```
+
+### [optional] create distributable archive
+
+If you wish to create a .zip archive that is usable on systems with compatible Fortran ABI:
+
+```sh
+ctest -S setup.cmake
+
+cd build
+
+cpack
 ```
 
 ### [optional] specify a particular HDF5 library
