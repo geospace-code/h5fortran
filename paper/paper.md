@@ -44,4 +44,5 @@ h5fortran was originally developed for the GEMINI [@gemini3d] [@zettergren] iono
 
 While other HDF5 interfaces exist, h5fortran presents a broad set of commonly used features, comprehensive test coverage and robustness across compilers and computing systems.
 We have written a companion library for NetCDF4 called nc4fortran [@nc4fortran], which by design has a nearly identical user-facing API.
-Other Fortran HDF5 interfaces such as [@hdf5_utils] use a functional interface mimicking the HDF5 LT functions, which require the end user to keep track of extra variables versus the single object used by h5fortran.
+Other Fortran HDF5 interfaces such as HDF5_Utils [@hdf5_utils] use a functional interface mimicking the HDF5 LT functions, which require the end user to keep track of extra variables versus the single object used by h5fortran.
+A package for C++ with similar priorities of using modern language features and simple commands is h5pp [@h5pp].
