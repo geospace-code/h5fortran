@@ -3,7 +3,9 @@ module test_scalar
 use, intrinsic :: iso_fortran_env, only: real32, real64, int32, stderr=>error_unit
 use hdf5, only: HSIZE_T
 use h5fortran, only: hdf5_file
-implicit none
+
+implicit none (external)
+
 contains
 
 subroutine test_scalar_rw(path)

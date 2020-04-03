@@ -5,7 +5,7 @@ use, intrinsic:: iso_c_binding, only: c_null_char
 use h5fortran, only: hdf5_file, toLower, strip_trailing_null, truncate_string_null
 use hdf5, only: H5D_CHUNKED_F, H5D_CONTIGUOUS_F, hsize_t
 
-implicit none
+implicit none (external)
 
 character(:), allocatable :: path
 character(256) :: argv

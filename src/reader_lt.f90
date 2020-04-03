@@ -1,5 +1,6 @@
 submodule (h5fortran:read) reader_lt
-implicit none
+
+implicit none (external)
 
 contains
 

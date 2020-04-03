@@ -1,6 +1,7 @@
 program read_slice
 !! example of Fortran reading smaller array into slice of larger array via subroutine
-implicit none
+
+implicit none (external)
 
 type :: foo
 integer :: i44(4,4)

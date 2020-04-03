@@ -2,7 +2,6 @@
 
 [![DOI](https://zenodo.org/badge/128736984.svg)](https://zenodo.org/badge/latestdoi/128736984)
 [![CDash](./archive/cdash.png)](https://my.cdash.org/index.php?project=h5fortran)
-
 ![ci_linux](https://github.com/scivision/h5fortran/workflows/ci_linux/badge.svg)
 ![ci_mac](https://github.com/scivision/h5fortran/workflows/ci_mac/badge.svg)
 
@@ -50,8 +49,8 @@ Tested on systems with HDF5 1.8, 1.10 and 1.12 including:
 
 Compilers known to work include:
 
-* Gfortran >= 6
-* Intel compiler
+* Gfortran &ge; 6
+* Intel compiler &ge; 19.1 / 2020
 
 ## Install
 

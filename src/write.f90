@@ -8,7 +8,8 @@ h5gopen_f
 
 use H5LT, only: h5ltpath_valid_f, h5ltset_attribute_string_f, h5ltmake_dataset_string_f
 
-implicit none
+implicit none (external)
+
 contains
 
 module procedure writeattr

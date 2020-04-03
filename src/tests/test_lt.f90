@@ -1,7 +1,9 @@
 module test_lt
 
 use h5fortran, only : h5write, h5read
-implicit none
+
+implicit none (external)
+
 contains
 
 subroutine test_readwrite_lt(path)
