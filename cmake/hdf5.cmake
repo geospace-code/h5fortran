@@ -40,7 +40,7 @@ endif()
 set(THREADS_PREFER_PTHREAD_FLAG true)
 find_package(Threads)
 if(Threads_FOUND)
-  list(APPEND HDF5_LIBRARIES Threads::Threads)
+  list(APPEND HDF5_LIBRARIES ${CMAKE_THREAD_LIBS_INIT})  # CMAKE_THREAD_LIBS_INIT is more reliable than Threads::Threads
 endif()
 
 list(APPEND HDF5_LIBRARIES ${CMAKE_DL_LIBS})
