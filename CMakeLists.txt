@@ -4,11 +4,12 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 project(h5fortran
   LANGUAGES C Fortran
-  VERSION 2.9.1
+  VERSION 2.9.2
   DESCRIPTION "thin, light object-oriented HDF5 Fortran interface"
   HOMEPAGE_URL https://github.com/scivision/h5fortran)
 enable_testing()
 include(CTest)
+include(FeatureSummary)
 
 option(test_shaky "run shaky tests" OFF)
 
@@ -19,19 +20,11 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/compilers.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/hdf5.cmake)
 
 if(NOT HDF5OK)
-
-  message(STATUS "HDF5 library not working with ${CMAKE_Fortran_COMPILER_ID} ${CMAKE_Fortran_COMPILER_VERSION}")
-
-  if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
-    message(FATAL_ERROR)
+  message(STATUS "h5fortran: HDF5 not working")
+  if(NOT PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+    return()
   endif()
-
-  unset(h5fortran)
-  unset(h5fortran::fortran)
-  message(STATUS "h5fortran disabled")
-  return()
-
-endif(NOT HDF5OK)
+endif()
 
 set(CTEST_TEST_TIMEOUT 15)
 
@@ -55,7 +48,6 @@ if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 
   include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/install.cmake)
 
-  include(FeatureSummary)
   set_package_properties(Threads PROPERTIES DESCRIPTION "the system threads library")
   set_package_properties(HDF5 PROPERTIES URL "https://hdfgroup.org/" DESCRIPTION "fast, versatile file I/O format" TYPE REQUIRED)
   set_package_properties(ZLIB PROPERTIES URL "https://www.zlib.net/" DESCRIPTION "patent-free compression library")

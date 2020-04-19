@@ -16,7 +16,7 @@ use h5lt, only : h5ltget_dataset_ndims_f, h5ltget_dataset_info_f
 
 use string_utils, only : toLower, strip_trailing_null, truncate_string_null
 
-implicit none (external)
+implicit none (type, external)
 private
 public :: hdf5_file, toLower, hdf_shape_check, hdf_get_slice, hdf_wrapup, hsize_t, strip_trailing_null, truncate_string_null, &
   check, h5write, h5read

@@ -3,7 +3,7 @@ program test_error
 use, intrinsic:: iso_fortran_env, only: int32, real32, real64, stderr=>error_unit
 use h5fortran, only: hdf5_file
 
-implicit none (external)
+implicit none (type, external)
 
 type(hdf5_file) :: h5f
 

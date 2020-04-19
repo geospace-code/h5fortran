@@ -7,7 +7,12 @@ if(WIN32 AND CMAKE_Fortran_COMPILER_ID STREQUAL Intel)
   set(HDF5_USE_STATIC_LIBRARIES false)
 endif()
 
-find_package(HDF5 COMPONENTS Fortran HL)
+if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+  find_package(HDF5 COMPONENTS Fortran HL REQUIRED)
+else()
+  find_package(HDF5 COMPONENTS Fortran HL)
+endif()
+
 if(NOT HDF5_FOUND)
   return()
 endif()

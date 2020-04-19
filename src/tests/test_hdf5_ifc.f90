@@ -9,7 +9,7 @@ use test_array, only : test_write_array, test_readwrite_array
 use test_scalar, only : test_scalar_rw
 use test_string, only : test_string_rw, test_lowercase, test_strip_null
 
-implicit none (external)
+implicit none (type, external)
 
 character(:), allocatable :: path
 character(256) :: argv

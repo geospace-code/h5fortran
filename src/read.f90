@@ -4,7 +4,7 @@ use hdf5, only : h5dget_create_plist_f, &
   h5pget_layout_f, h5pget_chunk_f, H5D_CONTIGUOUS_F, H5D_CHUNKED_F
 use H5LT, only : h5ltpath_valid_f
 
-implicit none (external)
+implicit none (type, external)
 
 contains
 

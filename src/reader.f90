@@ -4,7 +4,7 @@ submodule (h5fortran:read) reader
 use hdf5, only : h5dread_f
 use h5lt, only : h5ltread_dataset_string_f
 
-implicit none (external)
+implicit none (type, external)
 
 contains
 

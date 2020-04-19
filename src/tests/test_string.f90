@@ -5,7 +5,7 @@ use, intrinsic:: iso_c_binding, only: c_null_char
 
 use h5fortran, only : toLower, hdf5_file, strip_trailing_null, truncate_string_null
 
-implicit none (external)
+implicit none (type, external)
 
 contains
 

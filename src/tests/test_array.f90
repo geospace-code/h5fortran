@@ -4,7 +4,7 @@ use, intrinsic:: ieee_arithmetic, only: ieee_value, ieee_quiet_nan, ieee_is_nan
 use, intrinsic :: iso_fortran_env, only: real32, real64, int32, stderr=>error_unit
 use h5fortran, only : hdf5_file, hsize_t
 
-implicit none (external)
+implicit none (type, external)
 
 real(real32) :: nan
 

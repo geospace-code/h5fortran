@@ -1,6 +1,6 @@
 submodule (h5fortran:write) writer_lt
 
-implicit none (external)
+implicit none (type, external)
 
 contains
 

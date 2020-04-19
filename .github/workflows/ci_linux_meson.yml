@@ -4,7 +4,6 @@ on:
   push:
     paths:
       - "**.build"
-      - "**.f90"
       - ".github/workflows/ci_linux_meson.yml"
   pull_request:
 

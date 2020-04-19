@@ -2,7 +2,7 @@ module test_lt
 
 use h5fortran, only : h5write, h5read
 
-implicit none (external)
+implicit none (type, external)
 
 contains
 

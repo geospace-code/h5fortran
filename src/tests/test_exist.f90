@@ -3,7 +3,7 @@ program test_exist
 use, intrinsic :: iso_fortran_env, only : stderr=>error_unit
 use h5fortran, only: hdf5_file, h5write
 
-implicit none (external)
+implicit none (type, external)
 
 type(hdf5_file) :: h
 character(:), allocatable :: path
