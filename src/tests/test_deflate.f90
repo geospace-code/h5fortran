@@ -24,16 +24,18 @@ print *,'PASSED: HDF5 compression'
 
 contains
 
-recursive subroutine test_hdf5_deflate(path)
+subroutine test_hdf5_deflate(path)
 type(hdf5_file) :: h5f
 character(*), intent(in) :: path
 integer(hsize_t), parameter :: N=1000
 integer(hsize_t) :: crat, chunks(3)
 integer ::  fsize, layout
 
-integer :: ibig2(N,N), ibig3(N,N,4)
-real(real32) :: big2(N,N), big3(N,N,4)
+integer, allocatable :: ibig2(:,:), ibig3(:,:,:)
+real(real32), allocatable :: big2(:,:), big3(:,:,:)
 character(:), allocatable :: fn
+
+allocate(ibig2(N,N), ibig3(N,N,4), big2(N,N), big3(N,N,4))
 
 ibig2 = 0
 ibig3 = 0
