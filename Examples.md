@@ -59,10 +59,16 @@ Currently, data is written contiguous if not compressed and is only chunked if c
 
 ## check if a variable exists
 
-the logical method %exists() checks if a dataset (variable) exists in the initialized HDF5 file.
+the logical method %exist() checks if a dataset (variable) exists in the initialized HDF5 file.
 
 ```fortran
-exists = h5f%exists("/foo")
+exists = h5f%exist("/foo")
+```
+
+A convenience method that checks existance of a dataset without creating the h5 object manually is:
+
+```fortran
+exists = h5exist("my.h5", "/foo")
 ```
 
 ## Read scalar, 3-D array of unknown size

@@ -19,7 +19,7 @@ use string_utils, only : toLower, strip_trailing_null, truncate_string_null
 implicit none (type, external)
 private
 public :: hdf5_file, toLower, hdf_shape_check, hdf_get_slice, hdf_wrapup, hsize_t, strip_trailing_null, truncate_string_null, &
-  check, h5write, h5read
+  check, h5write, h5read, h5exist
 
 !> Workaround for Intel 19.1 / 2020 bug with /stand:f18
 !> error #6410: This name has not been declared as an array or a function.   [RANK]
@@ -74,6 +74,11 @@ end interface h5read
 
 !> Submodules
 interface
+
+module logical function h5exist(filename, dname)
+character(*), intent(in) :: filename, dname
+end function h5exist
+
 
 module subroutine lt0write(filename, dname, value, ierr)
 character(*), intent(in) :: filename, dname

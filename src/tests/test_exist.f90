@@ -1,7 +1,7 @@
 program test_exist
 !! test "exist" variable
 use, intrinsic :: iso_fortran_env, only : stderr=>error_unit
-use h5fortran, only: hdf5_file, h5write
+use h5fortran, only: hdf5_file, h5write, h5exist
 
 implicit none (type, external)
 
@@ -24,5 +24,10 @@ if(i/=0) error stop
 if (.not. h%exist('/x')) error stop 'x exists'
 
 if (h%exist('/foo')) error stop 'foo not exist'
+
+call h%finalize()
+
+if (.not. h5exist(path, '/x')) error stop 'x exists'
+if (h5exist(path, '/foo')) error stop 'foo not exist'
 
 end program
