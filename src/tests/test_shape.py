@@ -4,6 +4,7 @@ import subprocess
 import argparse
 import sys
 from pathlib import Path
+
 try:
     import h5py
 except ImportError:

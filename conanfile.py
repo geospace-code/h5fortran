@@ -22,4 +22,4 @@ class H5fortranConan(ConanFile):
         args = f'-DCMAKE_INSTALL_PREFIX="{self.package_folder}"'
         print(cmake.command_line)
         self.run(f"cmake {self.source_folder} {cmake.command_line} {args}")
-        self.run(f"cmake --build . --target install")
+        self.run("cmake --build . --target install")

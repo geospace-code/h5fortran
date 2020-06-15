@@ -10,74 +10,142 @@ Use the full compiler path if it's not getting the right compiler.
 """
 import subprocess
 import shutil
+import logging
 from pathlib import Path
 from argparse import ArgumentParser
 import typing as T
 import sys
 import os
 
-from web import url_retrieve, extract_tar
-
 # ========= user parameters ======================
 BUILDDIR = "build"
-HDF5VERSION = "1.12.0"
-HDF5URL = f"https://zenodo.org/record/3700903/files/hdf5-{HDF5VERSION}.tar.bz2?download=1"
-HDF5MD5 = "1fa68c4b11b6ef7a9d72ffa55995f898"
+HDF5_TAG = "1.12/master"
+HDF5_GIT = "https://bitbucket.hdfgroup.org/scm/hdffv/hdf5.git"
+
 
 # ========= end of user parameters ================
 
 nice = ["nice"] if sys.platform == "linux" else []
 
 
-def hdf5(prefix: Path, workdir: Path):
+def hdf5(dirs: T.Dict[str, Path], env: T.Mapping[str, str]):
+    """ build and install HDF5
+    some systems have broken libz and so have trouble extracting tar.bz2 from Python.
+    To avoid this, we git clone the release instead.
     """
-    build and install HDF5
 
-    Parameters
-    ----------
-
-    prefix: pathlib.Path
-        where to install the library
-    workdir: pathlib.Path
-        where to keep the source files when building
-    """
     if os.name == "nt":
-        raise NotImplementedError("Please use binaries from HDF Group for Windows appropriate for your compiler.")
+        if "ifort" in env["FC"]:
+            msg = """
+For Windows with Intel compiler, use HDF5 binaries from HDF Group.
+https://www.hdfgroup.org/downloads/hdf5/
+look for filename like hdf5-1.12.0-Std-win10_64-vs14-Intel.zip
+            """
+        elif "gfortran" in env["FC"]:
+            msg = """
+For MSYS2 on Windows, just use MSYS2 HDF5.
+Install from the MSYS2 terminal like:
+pacman -S mingw-w64-x86_64-hdf5
+reference: https://packages.msys2.org/package/mingw-w64-x86_64-hdf5
+            """
+        else:
+            msg = """
+For Windows, use HDF5 binaries from HDF Group.
+https://www.hdfgroup.org/downloads/hdf5/
+Instead of this, it is generally best to use MSYS2 or Windows Subsystem for Linux
+            """
+        raise SystemExit(msg)
 
-    prefix = Path(prefix).expanduser().resolve()
-    workdir = Path(workdir).expanduser().resolve()
+    hdf5_name = "hdf5"
+    install_dir = dirs["prefix"] / hdf5_name
+    source_dir = dirs["workdir"] / hdf5_name
 
-    hdf5_dir = f"hdf5-{HDF5VERSION}"
-    install_dir = prefix / hdf5_dir
-    source_dir = workdir / hdf5_dir
+    git_update(source_dir, HDF5_GIT, tag=HDF5_TAG)
 
-    tarfn = workdir / f"hdf5-{HDF5VERSION}.tar.bz2"
-    url_retrieve(HDF5URL, tarfn, ("md5", HDF5MD5))
-    extract_tar(tarfn, source_dir)
+    cmd = [
+        "./configure",
+        f"--prefix={install_dir}",
+        "--enable-fortran",
+        "--enable-build-mode=production",
+    ]
 
-    cmd = nice + ["./configure", f"--prefix={install_dir}", "--enable-fortran", "--enable-build-mode=production"]
+    subprocess.check_call(nice + cmd, cwd=source_dir, env=env)
 
-    subprocess.check_call(cmd, cwd=source_dir)
-
-    cmd = nice + ["make", "-C", str(source_dir), "-j", "install"]
-    subprocess.check_call(cmd)
+    cmd = ["make", "-C", str(source_dir), "-j", "install"]
+    subprocess.check_call(nice + cmd)
 
 
-def cmake_build(args: T.List[str], source_dir: Path, build_dir: Path):
-    """ build and install with CMake """
-    cmake = shutil.which("cmake")
-    if not cmake:
-        raise EnvironmentError("CMake not found.")
+def git_update(path: Path, repo: str, tag: str = None):
+    """
+    Use Git to update a local repo, or clone it if not already existing.
 
-    subprocess.check_call(nice + [cmake] + args + ["-B", str(build_dir), "-S", str(source_dir)])
+    we use cwd= instead of "git -C" for very old Git versions that might be on your HPC.
+    """
+    GITEXE = shutil.which("git")
 
-    subprocess.check_call(nice + [cmake, "--build", str(build_dir), "--parallel", "--target", "install"])
+    if not GITEXE:
+        logging.error("Git not available.")
+        return
+
+    if path.is_dir():
+        subprocess.check_call([GITEXE, "-C", str(path), "pull"])
+    else:
+        # shallow clone
+        if tag:
+            subprocess.check_call(
+                [
+                    GITEXE,
+                    "clone",
+                    repo,
+                    "--depth",
+                    "1",
+                    "--branch",
+                    tag,
+                    "--single-branch",
+                    str(path),
+                ]
+            )
+        else:
+            subprocess.check_call([GITEXE, "clone", repo, "--depth", "1", str(path)])
+
+
+def get_compilers(fc_name: str, cc_name: str, cxx_name: str) -> T.Mapping[str, str]:
+    """ get paths to compilers """
+    env = os.environ
+
+    fc = env.get("FC", "")
+    if fc_name not in fc:
+        fc = shutil.which(fc_name)
+    if not fc:
+        raise FileNotFoundError(fc_name)
+
+    cc = env.get("CC", "")
+    if cc_name not in cc:
+        cc = shutil.which(cc_name)
+    if not cc:
+        raise FileNotFoundError(cc_name)
+
+    cxx = env.get("CXX", "")
+    if cxx_name not in cxx:
+        cxx = shutil.which(cxx_name)
+    if not cxx:
+        raise FileNotFoundError(cxx_name)
+
+    env.update({"FC": fc, "CC": cc, "CXX": cxx})
+
+    return env
 
 
 if __name__ == "__main__":
     p = ArgumentParser()
-    p.add_argument("-prefix", help="toplevel path to install libraries under", default="~/lib")
-    p.add_argument("-workdir", help="toplevel path to where you keep code repos", default="~/code")
+    p.add_argument(
+        "-prefix", help="toplevel path to install libraries under", default="~/lib"
+    )
+    p.add_argument(
+        "-workdir", help="toplevel path to where you keep code repos", default="~/code"
+    )
     P = p.parse_args()
 
-    hdf5(P.prefix, P.workdir)
+    env = get_compilers("gfortran", "gcc", "g++")
+
+    hdf5({"prefix": P.prefix, "workdir": P.workdir}, env)
