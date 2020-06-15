@@ -1,0 +1,35 @@
+{
+    "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+    "@type": "SoftwareSourceCode",
+    "license": "https://spdx.org/licenses/BSD-3-Clause",
+    "codeRepository": "https://github.com/scivision/h5fortran",
+    "contIntegration": "https://github.com/scivision/h5fortran/actions",
+    "dateModified": "2020-04-19",
+    "downloadUrl": "https://github.com/scivision/h5fortran/releases",
+    "issueTracker": "https://github.com/scivision/h5fortran/issues",
+    "name": "h5fortran",
+    "version": "2.9.2",
+    "identifier": "10.5281/zenodo.3757269",
+    "description": "Lightweight object-oriented HDF5 Fortran interface",
+    "applicationCategory": "file I/O",
+    "developmentStatus": "active",
+    "funder": {
+        "@type": "Organization",
+        "name": "NASA"
+    },
+    "keywords": [
+        "hdf5",
+        "object-oriented"
+    ],
+    "programmingLanguage": [
+        "Fortran"
+    ],
+    "author": [
+        {
+            "@type": "Person",
+            "@id": "https://orcid.org/0000-0002-1637-6526",
+            "givenName": "Michael",
+            "familyName": "Hirsch"
+        }
+    ]
+}
