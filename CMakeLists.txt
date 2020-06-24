@@ -6,7 +6,7 @@ project(h5fortran
   LANGUAGES C Fortran
   VERSION 2.9.3
   DESCRIPTION "thin, light object-oriented HDF5 Fortran interface"
-  HOMEPAGE_URL https://github.com/scivision/h5fortran)
+  HOMEPAGE_URL https://github.com/geospace-code/h5fortran)
 enable_testing()
 include(CTest)
 include(FeatureSummary)

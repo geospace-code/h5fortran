@@ -81,7 +81,7 @@ or set environment variable `HDF5_ROOT=/path/to/hdf5lib`
 include(FetchContent)
 
 FetchContent_Declare(h5fortran_proj
-  GIT_REPOSITORY https://github.com/scivision/h5fortran.git
+  GIT_REPOSITORY https://github.com/geospace-code/h5fortran.git
   GIT_TAG master  # whatever desired version is
 )
 
@@ -121,6 +121,6 @@ and have a file in the master project `subprojects/h5fortran.wrap` containing:
 ```ini
 [wrap-git]
 directory = h5fortran
-url = https://github.com/scivision/h5fortran.git
+url = https://github.com/geospace-code/h5fortran.git
 revision = head
 ```

@@ -2,8 +2,8 @@
 
 [![DOI](https://zenodo.org/badge/128736984.svg)](https://zenodo.org/badge/latestdoi/128736984)
 [![CDash](./archive/cdash.png)](https://my.cdash.org/index.php?project=h5fortran)
-![ci_linux](https://github.com/scivision/h5fortran/workflows/ci_linux/badge.svg)
-![ci_mac](https://github.com/scivision/h5fortran/workflows/ci_mac/badge.svg)
+![ci_linux](https://github.com/geospace-code/h5fortran/workflows/ci_linux/badge.svg)
+![ci_mac](https://github.com/geospace-code/h5fortran/workflows/ci_mac/badge.svg)
 
 Simple, robust, thin HDF5 polymorphic read/write interface.
 Reading or writing {real64,real32,int32} from scalar to 7d is as simple as
@@ -16,7 +16,7 @@ call h5write('foo.h5', '/x', x)
 call h5read('bar.h5', '/y', y)
 ```
 
-* For NetCDF4 see [nc4fortran](https://github.com/scivision/nc4fortran/).
+* For NetCDF4 see [nc4fortran](https://github.com/geospace-code/nc4fortran/).
 * Designed for easy use using **static** or **shared** linking via:
   * CMake ExternalProject
   * CMake FetchContent
@@ -57,7 +57,7 @@ Compilers known to work include:
 Using CMake:
 
 ```sh
-git clone https://github.com/scivision/h5fortran.git
+git clone https://github.com/geospace-code/h5fortran.git
 
 cd h5fortran
 

@@ -5,7 +5,7 @@ class H5fortranConan(ConanFile):
     name = "h5fortran"
     version = "2.9.0"
     license = "MIT"  # noqa: A003
-    url = "https://github.com/scivision/h5fortran"
+    url = "https://github.com/geospace-code/h5fortran"
     requires = "hdf5/[>=1.10]"
     build_policy = "missing"
     description = "Easy, thin, robust polymorphic Fortran HDF5 interface"
@@ -15,7 +15,7 @@ class H5fortranConan(ConanFile):
     generators = "cmake"
 
     def source(self):
-        self.run("git clone https://github.com/scivision/h5fortran.git")
+        self.run("git clone https://github.com/geospace-code/h5fortran.git")
 
     def build(self):
         cmake = CMake(self)
