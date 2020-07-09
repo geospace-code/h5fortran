@@ -9,7 +9,6 @@ on:
 
 jobs:
 
-
   meson:
     runs-on: ubuntu-latest
     steps:
@@ -24,12 +23,7 @@ jobs:
         sudo apt install -yq --no-install-recommends gfortran libhdf5-dev
 
     - run: meson setup build
-      env:
-        FC: gfortran-7
-
-    - run: ninja -C build
-
-    # this catches configuration and build log
+    - run: meson compile -C build
     - uses: actions/upload-artifact@v1
       if: failure()
       with:

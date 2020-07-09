@@ -5,10 +5,7 @@ on:
     paths:
       - "**.txt"
       - "**.cmake"
-      - "**.f90"
       - ".github/workflows/ci_mac.yml"
-  pull_request:
-
 
 jobs:
 

@@ -23,5 +23,3 @@ jobs:
         sudo apt install -yq --no-install-recommends gfortran libhdf5-dev
 
     - run: ctest -S setup.cmake -V
-      env:
-        FC: gfortran
