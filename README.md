@@ -76,12 +76,21 @@ python3 scripts/compile_hdf5.py
 
 The simplest example h5fortran usage is like:
 
+
 ```fortran
 use h5fortran
 
-real :: x, x2
-
 call h5write('golt.h5','/x', [1,2,3,4,5,6])
+```
+
+or
+
+```fortran
+use h5fortran
+
+real :: x2
+
+if(.not. is_hdf5('golt.h5')) error stop 'golt.h5 is not an HDF5 file'
 
 call h5read('golt.h5', '/x', x2)
 ```
