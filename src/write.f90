@@ -28,7 +28,7 @@ integer :: ier
 call h5ltset_attribute_string_f(self%lid, dname, attr, attrval, ier)
 
 if (present(ierr)) ierr = ier
-if (check(ier, 'ERROR:writeattr ' // dname // ' ' // self%filename)) then
+if (check(ier, self%filename, dname)) then
   if (present(ierr)) return
   error stop
 endif
@@ -53,18 +53,18 @@ pid = 0
 sid = 0
 
 call h5ltpath_valid_f(self%lid, dname, .true., exists, ierr)
-if (check(ierr,  'ERROR: setup_write: ' // dname // ' check exist ' // self%filename)) return
+if (check(ierr, self%filename, dname)) return
 
 if(exists) then
   call hdf_shape_check(self, dname, dims, ierr)
   if (ierr/=0) return
   !> open dataset
   call h5dopen_f(self%lid, dname, did, ierr)
-  if (check(ierr, 'ERROR:setup_write: open ' // dname // ' ' // self%filename)) return
+  if (check(ierr, self%filename, dname)) return
   return
 else
   call self%write_group(dname, ierr)
-  if (check(ierr, 'ERROR:setup_write: create ' // dname // ' ' // self%filename)) return
+  if (check(ierr, self%filename, dname)) return
 endif
 
 if(size(dims) >= 2) then
@@ -77,17 +77,17 @@ if(size(dims) == 0) then
 else
   call h5screate_simple_f(size(dims), dims, sid, ierr)
 endif
-if (check(ierr,  'ERROR:setup_write: dataspace ' // dname // ' create ' // self%filename)) return
+if (check(ierr, self%filename, dname)) return
 
 if(pid == 0) then
   call h5dcreate_f(self%lid, dname, dtype, sid, did, ierr)
 else
   call h5dcreate_f(self%lid, dname, dtype, sid, did, ierr, pid)
-  if (check(ierr, 'ERROR:setup_write: create ' // dname // ' property: ' // self%filename)) return
+  if (check(ierr, self%filename, dname)) return
   call h5pclose_f(pid, ierr)
-  if (check(ierr, 'ERROR:setup_write: close property: ' // self%filename)) return
+  if (check(ierr, self%filename, dname)) return
 endif
-if (check(ierr,  'ERROR:setup_write: dataset ' // dname // ' create ' // self%filename)) return
+if (check(ierr, self%filename, dname)) return
 
 end subroutine hdf_setup_write
 
@@ -118,19 +118,19 @@ if(any(cs < 1)) return
 if(self%debug) print *,'DEBUG:set_deflate: dims: ',dims,'chunk size: ', cs
 
 call h5pcreate_f(H5P_DATASET_CREATE_F, pid, ierr)
-if (check(ierr, 'ERROR: create property ' // self%filename)) return
+if (check(ierr, self%filename)) return
 
 call h5pset_chunk_f(pid, size(dims), cs, ierr)
-if (check(ierr, 'ERROR: set chunk ' // self%filename)) return
+if (check(ierr, self%filename)) return
 
 call h5pset_shuffle_f(pid, ierr)
-if (check(ierr, 'ERROR: enable Shuffle ' // self%filename)) return
+if (check(ierr, self%filename)) return
 
 call h5pset_fletcher32_f(pid, ierr)
-if (check(ierr, 'ERROR: enable Fletcher32 checksum ' // self%filename)) return
+if (check(ierr, self%filename)) return
 
 call h5pset_deflate_f(pid, self%comp_lvl, ierr)
-if (check(ierr, 'ERROR: enable Deflate compression ' // self%filename)) return
+if (check(ierr, self%filename)) return
 
 if(self%debug) print *,'TRACE: set_deflate done'
 
@@ -195,7 +195,7 @@ integer :: ier
 call h5gopen_f(self%lid, gname, self%gid, ier)
 
 if (present(ierr)) ierr = ier
-if (check(ier, 'ERROR: opening group ' // gname // ' in ' // self%filename)) then
+if (check(ier, self%filename, gname)) then
   if (present(ierr)) return
   error stop
 endif
@@ -213,7 +213,7 @@ integer :: ier
 call h5gclose_f(self%gid, ier)
 
 if (present(ierr)) ierr = ier
-if (check(ier,  'ERROR: closing group '//self%filename)) then
+if (check(ier, self%filename)) then
   if (present(ierr)) return
   error stop
 endif

@@ -8,7 +8,7 @@ use hdf5, only : HID_T, SIZE_T, HSIZE_T, H5F_ACC_RDONLY_F, H5F_ACC_RDWR_F, H5F_A
   h5open_f, h5close_f, &
   h5dopen_f, h5dclose_f, h5dget_space_f, &
   h5gcreate_f, h5gclose_f, &
-  h5fopen_f, h5fcreate_f, h5fclose_f, &
+  h5fopen_f, h5fcreate_f, h5fclose_f, h5fis_hdf5_f, &
   h5lexists_f, &
   h5sclose_f, h5sselect_hyperslab_f, h5screate_simple_f, &
   h5get_libversion_f, h5eset_auto_f
@@ -18,8 +18,8 @@ use string_utils, only : toLower, strip_trailing_null, truncate_string_null
 
 implicit none (type, external)
 private
-public :: hdf5_file, toLower, hdf_shape_check, hdf_get_slice, hdf_wrapup, hsize_t, strip_trailing_null, truncate_string_null, &
-  check, h5write, h5read, h5exist
+public :: hdf5_file, toLower, h5write, h5read, h5exist, is_hdf5, &
+  check, hdf_shape_check, hdf_get_slice, hdf_wrapup, hsize_t, strip_trailing_null, truncate_string_null
 
 !> Workaround for Intel 19.1 / 2020 bug with /stand:f18
 !> error #6410: This name has not been declared as an array or a function.   [RANK]
@@ -64,11 +64,11 @@ hdf_read_scalar, hdf_read_1d, hdf_read_2d, hdf_read_3d, &
 end type hdf5_file
 
 interface h5write
-  procedure lt0write, lt1write, lt2write, lt3write, lt4write, lt5write, lt6write, lt7write
+procedure lt0write, lt1write, lt2write, lt3write, lt4write, lt5write, lt6write, lt7write
 end interface h5write
 
 interface h5read
-  procedure lt0read, lt1read, lt2read, lt3read, lt4read, lt5read, lt6read, lt7read
+procedure lt0read, lt1read, lt2read, lt3read, lt4read, lt5read, lt6read, lt7read
 end interface h5read
 
 
@@ -429,7 +429,12 @@ select case(lstatus)
 case ('old', 'unknown')
   select case(laction)
     case('read','r')  !< Open an existing file.
-      call h5fopen_f(filename,H5F_ACC_RDONLY_F,self%lid,ier)
+      call h5fis_hdf5_f(filename, exists, ier)
+      if (exists .and. ier == 0) then
+        call h5fopen_f(filename,H5F_ACC_RDONLY_F,self%lid,ier)
+      else
+        ier = 127
+      endif
     case('write','readwrite','w','rw', 'r+', 'append', 'a')
       inquire(file=filename, exist=exists)
       if(lstatus /= 'old' .and. .not.exists) then
@@ -440,7 +445,7 @@ case ('old', 'unknown')
     case default
       write(stderr,*) 'Unsupported action -> ' // laction
       ier = 128
-    endselect
+    end select
 case('new','replace')
   call h5fcreate_f(filename, H5F_ACC_TRUNC_F, self%lid, ier)
 case default
@@ -449,7 +454,7 @@ case default
 end select
 
 if (present(ierr)) ierr = ier
-if (check(ier, 'ERROR:initialize ' // filename // ' could not be created')) then
+if (check(ier, filename)) then
   if (present(ierr)) return
   error stop
 endif
@@ -484,6 +489,24 @@ self%lid = 0
 end subroutine hdf_finalize
 
 
+logical function is_hdf5(filename)
+!! is this file HDF5?
+
+character(*), intent(in) :: filename
+integer :: ierr
+
+call h5fis_hdf5_f(filename, is_hdf5, ierr)
+
+if (ierr/=0) then
+  is_hdf5 = .false.  !< sometimes h5fis_hdf5_f is .true. for missing file
+  write(stderr,*) 'ERROR: could not determine if HDF5 file: ' // filename
+  return
+endif
+
+
+end function is_hdf5
+
+
 subroutine write_group(self, gname, ierr)
 
 class(hdf5_file), intent(in) :: self
@@ -510,7 +533,7 @@ do
   sp = sp + ep
   call h5lexists_f(self%lid, gname(1:sp-1), gexist, ier)
   if (present(ierr)) ierr = ier
-  if (check(ier, 'ERROR: did not find group ' // gname // ' in ' // self%filename)) then
+  if (check(ier, self%filename, gname)) then
       if (present(ierr)) return
       error stop
   endif
@@ -518,14 +541,14 @@ do
   if(.not.gexist) then
     call h5gcreate_f(self%lid, gname(1:sp-1), gid, ier)
     if (present(ierr)) ierr = ier
-    if (check(ier, 'ERROR: creating group ' // gname // ' in ' // self%filename)) then
+    if (check(ier, self%filename, gname)) then
       if (present(ierr)) return
       error stop
     endif
 
     call h5gclose_f(gid, ier)
     if (present(ierr)) ierr = ier
-    if (check(ier, 'ERROR: closing group ' // gname // ' in ' // self%filename)) then
+    if (check(ier, self%filename, gname)) then
       if (present(ierr)) return
       error stop
     endif
@@ -535,14 +558,29 @@ end do
 end subroutine write_group
 
 
-logical function check(ierr, msg)
+logical function check(ierr, filename, dname)
 integer, intent(in) :: ierr
-character(*), intent(in) :: msg
+character(*), intent(in), optional :: filename, dname
 
-check = ierr /= 0
-if (.not.check) return
+character(:), allocatable :: fn, dn
 
-write(stderr, *) msg
+check = .true.
+fn = ""
+dn = ""
+if (present(filename)) fn = filename
+if (present(dname)) dn = dname
+
+select case (ierr)
+case (0)
+  check = .false.
+  return
+case (6)
+  write(stderr,*) 'ERROR: ' // fn // ':' // dname // ' datatype is not handled by h5fortran.'
+case (128)
+  write(stderr,*) 'ERROR:initialize ' // fn // ' could not be opened or created'
+case default
+  write(stderr,*) 'ERROR: ' // fn // ':' // dn
+end select
 
 end function check
 

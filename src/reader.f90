@@ -43,8 +43,7 @@ type is (real(real32))
 type is (integer(int32))
   call h5dread_f(did, H5T_NATIVE_INTEGER, value, dims, ier)
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
-  ier = -1
+  ier = 6
 end select
 endif
 
@@ -52,8 +51,7 @@ if(ier == 0) call hdf_wrapup(did, sid, ier)
 endif
 
 if (present(ierr)) ierr = ier
-if (ier /= 0) then
-  write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
+if (check(ier, self%filename, dname)) then
   if (present(ierr)) return
   error stop
 endif
@@ -91,16 +89,14 @@ type is (real(real32))
 type is (integer(int32))
   call h5dread_f(did, H5T_NATIVE_INTEGER, value, dims, ier, mem_sid, sid)
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
-  ier = -1
+  ier = 6
 end select
 endif
 
 if(ier == 0) call hdf_wrapup(did, sid, ier)
 
 if (present(ierr)) ierr = ier
-if (ier /= 0) then
-  write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
+if (check(ier, self%filename, dname)) then
   if (present(ierr)) return
   error stop
 endif
@@ -138,16 +134,14 @@ type is (real(real32))
 type is (integer(int32))
   call h5dread_f(did, H5T_NATIVE_INTEGER, value, dims, ier, mem_sid, sid)
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
-  ier = -1
+  ier = 6
 end select
 endif
 
 if(ier == 0) call hdf_wrapup(did, sid, ier)
 
 if (present(ierr)) ierr = ier
-if (ier /= 0) then
-  write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
+if (check(ier, self%filename, dname)) then
   if (present(ierr)) return
   error stop
 endif
@@ -185,16 +179,14 @@ type is (real(real32))
 type is (integer(int32))
   call h5dread_f(did, H5T_NATIVE_INTEGER, value, dims, ier, mem_sid, sid)
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
-  ier = -1
+  ier = 6
 end select
 endif
 
 if(ier == 0) call hdf_wrapup(did, sid, ier)
 
 if (present(ierr)) ierr = ier
-if (ier /= 0) then
-  write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
+if (check(ier, self%filename, dname)) then
   if (present(ierr)) return
   error stop
 endif
@@ -232,16 +224,14 @@ type is (real(real32))
 type is (integer(int32))
   call h5dread_f(did, H5T_NATIVE_INTEGER, value, dims, ier, mem_sid, sid)
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
-  ier = -1
+  ier = 6
 end select
 endif
 
 if(ier == 0) call hdf_wrapup(did, sid, ier)
 
 if (present(ierr)) ierr = ier
-if (ier /= 0) then
-  write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
+if (check(ier, self%filename, dname)) then
   if (present(ierr)) return
   error stop
 endif
@@ -279,16 +269,14 @@ type is (real(real32))
 type is (integer(int32))
   call h5dread_f(did, H5T_NATIVE_INTEGER, value, dims, ier, mem_sid, sid)
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
-  ier = -1
+  ier = 6
 end select
 endif
 
 if(ier == 0) call hdf_wrapup(did, sid, ier)
 
 if (present(ierr)) ierr = ier
-if (ier /= 0) then
-  write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
+if (check(ier, self%filename, dname)) then
   if (present(ierr)) return
   error stop
 endif
@@ -326,16 +314,14 @@ type is (real(real32))
 type is (integer(int32))
   call h5dread_f(did, H5T_NATIVE_INTEGER, value, dims, ier, mem_sid, sid)
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
-  ier = -1
+  ier = 6
 end select
 endif
 
 if(ier == 0) call hdf_wrapup(did, sid, ier)
 
 if (present(ierr)) ierr = ier
-if (ier /= 0) then
-  write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
+if (check(ier, self%filename, dname)) then
   if (present(ierr)) return
   error stop
 endif
@@ -373,16 +359,14 @@ type is (real(real32))
 type is (integer(int32))
   call h5dread_f(did, H5T_NATIVE_INTEGER, value, dims, ier, mem_sid, sid)
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled by h5fortran.'
-  ier = -1
+  ier = 6
 end select
 endif
 
 if(ier == 0) call hdf_wrapup(did, sid, ier)
 
 if (present(ierr)) ierr = ier
-if (ier /= 0) then
-  write(stderr,*) 'ERROR: ' // dname // ' read ' // self%filename
+if (check(ier, self%filename, dname)) then
   if (present(ierr)) return
   error stop
 endif

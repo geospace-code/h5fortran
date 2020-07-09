@@ -21,14 +21,13 @@ type is (real(real32))
 type is (integer(int32))
   if (ier == 0) call h%write(dname, value, ier)
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
-  ier = -1
+  ier = 6
 end select
 
 if (ier == 0) call h%finalize(ier)
 
 if (present(ierr)) ierr = ier
-if (check(ier, 'ERROR: ' // dname // ' write_lt ' // filename)) then
+if (check(ier, filename, dname)) then
   if (present(ierr)) return
   error stop
 endif
@@ -50,14 +49,13 @@ type is (real(real32))
 type is (integer(int32))
   if (ier == 0) call h%write(dname, value, ier)
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
-  ier = -1
+  ier = 6
 end select
 
 if (ier == 0) call h%finalize(ier)
 
 if (present(ierr)) ierr = ier
-if (check(ier, 'ERROR: ' // dname // ' write_lt ' // filename)) then
+if (check(ier, filename, dname)) then
   if (present(ierr)) return
   error stop
 endif
@@ -79,14 +77,13 @@ type is (real(real32))
 type is (integer(int32))
   if (ier == 0) call h%write(dname, value, ier)
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
-  ier = -1
+  ier = 6
 end select
 
 if (ier == 0) call h%finalize(ier)
 
 if (present(ierr)) ierr = ier
-if (check(ier, 'ERROR: ' // dname // ' write_lt ' // filename)) then
+if (check(ier, filename, dname)) then
   if (present(ierr)) return
   error stop
 endif
@@ -108,14 +105,13 @@ type is (real(real32))
 type is (integer(int32))
   if (ier == 0) call h%write(dname, value, ier)
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
-  ier = -1
+  ier = 6
 end select
 
 if (ier == 0) call h%finalize(ier)
 
 if (present(ierr)) ierr = ier
-if (check(ier, 'ERROR: ' // dname // ' write_lt ' // filename)) then
+if (check(ier, filename, dname)) then
   if (present(ierr)) return
   error stop
 endif
@@ -137,14 +133,13 @@ type is (real(real32))
 type is (integer(int32))
   if (ier == 0) call h%write(dname, value, ier)
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
-  ier = -1
+  ier = 6
 end select
 
 if (ier == 0) call h%finalize(ier)
 
 if (present(ierr)) ierr = ier
-if (check(ier, 'ERROR: ' // dname // ' write_lt ' // filename)) then
+if (check(ier, filename, dname)) then
   if (present(ierr)) return
   error stop
 endif
@@ -166,14 +161,13 @@ type is (real(real32))
 type is (integer(int32))
   if (ier == 0) call h%write(dname, value, ier)
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
-  ier = -1
+  ier = 6
 end select
 
 if (ier == 0) call h%finalize(ier)
 
 if (present(ierr)) ierr = ier
-if (check(ier, 'ERROR: ' // dname // ' write_lt ' // filename)) then
+if (check(ier, filename, dname)) then
   if (present(ierr)) return
   error stop
 endif
@@ -195,14 +189,13 @@ type is (real(real32))
 type is (integer(int32))
   if (ier == 0) call h%write(dname, value, ier)
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
-  ier = -1
+  ier = 6
 end select
 
 if (ier == 0) call h%finalize(ier)
 
 if (present(ierr)) ierr = ier
-if (check(ier, 'ERROR: ' // dname // ' write_lt ' // filename)) then
+if (check(ier, filename, dname)) then
   if (present(ierr)) return
   error stop
 endif
@@ -224,14 +217,13 @@ type is (real(real32))
 type is (integer(int32))
   if (ier == 0) call h%write(dname, value, ier)
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
-  ier = -1
+  ier = 6
 end select
 
 if (ier == 0) call h%finalize(ier)
 
 if (present(ierr)) ierr = ier
-if (check(ier, 'ERROR: ' // dname // ' write_lt ' // filename)) then
+if (check(ier, filename, dname)) then
   if (present(ierr)) return
   error stop
 endif

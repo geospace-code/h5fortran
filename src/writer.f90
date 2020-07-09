@@ -19,8 +19,7 @@ select type (value)
 type is (character(*))
   call h5ltmake_dataset_string_f(self%lid, dname, value, ier)
   if (present(ierr)) ierr = ier
-  if (ier /= 0) then
-    write(stderr,*) 'ERROR: ' // dname // ' write ' // self%filename
+  if (check(ier, self%filename, dname)) then
     if (present(ierr)) return
     error stop
   endif
@@ -36,14 +35,13 @@ type is (integer(int32))
   call hdf_setup_write(self,dname, H5T_NATIVE_INTEGER, dims,sid,did, ier)
   if (ier == 0) call h5dwrite_f(did, H5T_NATIVE_INTEGER, value, dims, ier)
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
-  ier = -1
+  ier = 6
 end select
 
 if(ier == 0) call hdf_wrapup(did, sid, ier)
 
 if (present(ierr)) ierr = ier
-if (check(ier, 'ERROR: ' // dname // ' write ' // self%filename)) then
+if (check(ier, self%filename, dname)) then
   if (present(ierr)) return
   error stop
 endif
@@ -70,14 +68,13 @@ type is (integer(int32))
   call hdf_setup_write(self,dname, H5T_NATIVE_INTEGER, dims,sid,did, ier)
   if (ier == 0) call h5dwrite_f(did, H5T_NATIVE_INTEGER, value, dims, ier)
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
-  ier = -1
+  ier = 6
 end select
 
 if(ier == 0) call hdf_wrapup(did, sid, ier)
 
 if (present(ierr)) ierr = ier
-if (check(ier, 'ERROR: ' // dname // ' write ' // self%filename)) then
+if (check(ier, self%filename, dname)) then
   if (present(ierr)) return
   error stop
 endif
@@ -103,14 +100,13 @@ type is (integer(int32))
   call hdf_setup_write(self,dname, H5T_NATIVE_INTEGER, dims,sid,did, ier, chunk_size)
   if (ier == 0) call h5dwrite_f(did, H5T_NATIVE_INTEGER, value, dims, ier)
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
-  ier = -1
+  ier = 6
 end select
 
 if(ier == 0) call hdf_wrapup(did, sid, ier)
 
 if (present(ierr)) ierr = ier
-if (check(ier, 'ERROR: ' // dname // ' write ' // self%filename)) then
+if (check(ier, self%filename, dname)) then
   if (present(ierr)) return
   error stop
 endif
@@ -136,14 +132,13 @@ type is (integer(int32))
   call hdf_setup_write(self,dname, H5T_NATIVE_INTEGER, dims,sid,did, ier, chunk_size)
   if (ier == 0) call h5dwrite_f(did, H5T_NATIVE_INTEGER, value, dims, ier)
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
-  ier = -1
+  ier = 6
 end select
 
 if(ier == 0) call hdf_wrapup(did, sid, ier)
 
 if (present(ierr)) ierr = ier
-if (check(ier, 'ERROR: ' // dname // ' write ' // self%filename)) then
+if (check(ier, self%filename, dname)) then
   if (present(ierr)) return
   error stop
 endif
@@ -169,14 +164,13 @@ type is (integer(int32))
   call hdf_setup_write(self,dname, H5T_NATIVE_INTEGER, dims,sid,did, ier, chunk_size)
   if (ier == 0) call h5dwrite_f(did, H5T_NATIVE_INTEGER, value, dims, ier)
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
-  ier = -1
+  ier = 6
 end select
 
 if(ier == 0) call hdf_wrapup(did, sid, ier)
 
 if (present(ierr)) ierr = ier
-if (check(ier, 'ERROR: ' // dname // ' write ' // self%filename)) then
+if (check(ier, self%filename, dname)) then
   if (present(ierr)) return
   error stop
 endif
@@ -202,14 +196,13 @@ type is (integer(int32))
   call hdf_setup_write(self,dname, H5T_NATIVE_INTEGER, dims,sid,did, ier, chunk_size)
   if (ier == 0) call h5dwrite_f(did, H5T_NATIVE_INTEGER, value, dims, ier)
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
-  ier = -1
+  ier = 6
 end select
 
 if(ier == 0) call hdf_wrapup(did, sid, ier)
 
 if (present(ierr)) ierr = ier
-if (check(ier, 'ERROR: ' // dname // ' write ' // self%filename)) then
+if (check(ier, self%filename, dname)) then
   if (present(ierr)) return
   error stop
 endif
@@ -235,14 +228,13 @@ type is (integer(int32))
   call hdf_setup_write(self,dname, H5T_NATIVE_INTEGER, dims,sid,did, ier, chunk_size)
   if (ier == 0) call h5dwrite_f(did, H5T_NATIVE_INTEGER, value, dims, ier)
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
-  ier = -1
+  ier = 6
 end select
 
 if(ier == 0) call hdf_wrapup(did, sid, ier)
 
 if (present(ierr)) ierr = ier
-if (check(ier, 'ERROR: ' // dname // ' write ' // self%filename)) then
+if (check(ier, self%filename, dname)) then
   if (present(ierr)) return
   error stop
 endif
@@ -268,14 +260,13 @@ type is (integer(int32))
   call hdf_setup_write(self,dname, H5T_NATIVE_INTEGER, dims,sid,did, ier, chunk_size)
   if (ier == 0) call h5dwrite_f(did, H5T_NATIVE_INTEGER, value, dims, ier)
 class default
-  write(stderr,*) 'ERROR: ' // dname // ' datatype is not handled yet by h5fortran.'
-  ier = -1
+  ier = 6
 end select
 
 if(ier == 0) call hdf_wrapup(did, sid, ier)
 
 if (present(ierr)) ierr = ier
-if (check(ier, 'ERROR: ' // dname // ' write ' // self%filename)) then
+if (check(ier, self%filename, dname)) then
   if (present(ierr)) return
   error stop
 endif
