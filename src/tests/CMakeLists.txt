@@ -50,16 +50,12 @@ set_tests_properties(h5fortran:ShapeCheck PROPERTIES
   SKIP_RETURN_CODE 77)
 
 if(WIN32 AND MSVC)
-  if(NOT DEFINED HDF5_ROOT AND DEFINED ENV{HDF5_ROOT})
-    file(TO_CMAKE_PATH "$ENV{HDF5_ROOT}" HDF5_ROOT)
-  endif()
-
   foreach(t h5fortran:minimal h5fortran:ErrorCheck h5fortran:test_exist h5fortran:module h5fortran:deflate h5fortran:ShapeCheck)
     set_tests_properties(${t} PROPERTIES ENVIRONMENT "PATH=${HDF5_ROOT}/bin;$ENV{PATH}")
   endforeach()
 endif()
 
-# ---
+# --- shaky tests
 if(NOT test_shaky)
   return()
 endif()

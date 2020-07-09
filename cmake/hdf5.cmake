@@ -54,6 +54,17 @@ if(UNIX)
   list(APPEND HDF5_LIBRARIES m)
 endif()
 
+if(WIN32 AND MSVC)
+  # this stanza must be BEFORE if(DEFINED HDF5OK)
+  if(NOT DEFINED HDF5_ROOT AND DEFINED ENV{HDF5_ROOT})
+    file(TO_CMAKE_PATH "$ENV{HDF5_ROOT}" HDF5_ROOT)
+  endif()
+
+  if(DEFINED HDF5_ROOT)
+    set(ENV{PATH} "${HDF5_ROOT}/bin;$ENV{PATH}")
+  endif()
+endif()
+
 if(DEFINED HDF5OK)
   return()
 endif()

@@ -21,12 +21,12 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/hdf5.cmake)
 
 if(NOT HDF5OK)
   message(STATUS "h5fortran: HDF5 not working")
-  if(NOT PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+  if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+    message(FATAL_ERROR)
+  else()
     return()
   endif()
 endif()
-
-set(CTEST_TEST_TIMEOUT 15)
 
 # --- build
 
