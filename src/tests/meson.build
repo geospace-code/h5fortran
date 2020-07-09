@@ -2,6 +2,7 @@ test_minimal = executable('test_minimal', 'test_minimal.f90',
   dependencies: hdf5_interface)
 test('minimal', test_minimal,
   suite: 'h5basic',
+  priority: 100,
   timeout: 10)
 
 test_error = executable('test_error', 'test_error.f90',
