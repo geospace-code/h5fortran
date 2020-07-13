@@ -12,7 +12,9 @@ character(256) :: argv
 integer :: i,l
 
 call get_command_argument(1, argv, length=l, status=i)
-if (i /= 0 .or. l == 0) error stop 'specify path'
+if (i /= 0 .or. l == 0) call get_environment_variable("BINDIR", argv, length=l, status=i)
+if (i /= 0 .or. l == 0) argv = '.'
+
 filename = trim(argv) // '/junk_minimal.h5'
 print *, 'test path: ', filename
 
