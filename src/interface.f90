@@ -379,7 +379,6 @@ integer, intent(in), optional      :: comp_lvl
 logical, intent(in), optional      :: verbose, debug
 
 character(:), allocatable :: lstatus, laction
-logical :: exists
 integer :: ier
 
 self%filename = filename
@@ -425,29 +424,30 @@ if(present(action)) laction = toLower(action)
 select case(lstatus)
 case ('old', 'unknown')
   select case(laction)
-    case('read','r')  !< Open an existing file.
-      call h5fis_hdf5_f(filename, exists, ier)
-      if (exists .and. ier == 0) then
-        call h5fopen_f(filename,H5F_ACC_RDONLY_F,self%lid,ier)
-      else
-        ier = 127
-      endif
-    case('write','readwrite','w','rw', 'r+', 'append', 'a')
-      call h5fis_hdf5_f(filename, exists, ier)
-      if(lstatus /= 'old' .and. (.not. exists .or. ier/=0) ) then
-        call h5fcreate_f(filename, H5F_ACC_TRUNC_F, self%lid, ier)
-      else
+    case('read','r')
+      call h5fopen_f(filename, H5F_ACC_RDONLY_F, self%lid,ier)
+    case('r+')
+      call h5fopen_f(filename, H5F_ACC_RDWR_F, self%lid, ier)
+    case('readwrite', 'rw', 'append', 'a')
+      if(is_hdf5(filename)) then
         call h5fopen_f(filename, H5F_ACC_RDWR_F, self%lid, ier)
+      else
+        call h5fcreate_f(filename, H5F_ACC_TRUNC_F, self%lid, ier)
       endif
+    case ('w','write')
+      call h5fcreate_f(filename, H5F_ACC_TRUNC_F, self%lid, ier)
     case default
       write(stderr,*) 'Unsupported action -> ' // laction
-      ier = 128
+      error stop 128
     end select
 case('new','replace')
   call h5fcreate_f(filename, H5F_ACC_TRUNC_F, self%lid, ier)
+case('scratch')
+  write(stderr,*) 'In-memory HDF5 file images are a possible future h5fortran feature.'
+  error stop 128
 case default
   write(stderr,*) 'Unsupported status -> '// lstatus
-  ier = 128
+  error stop 128
 end select
 
 if (present(ierr)) ierr = ier

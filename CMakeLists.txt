@@ -4,7 +4,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 project(h5fortran
   LANGUAGES C Fortran
-  VERSION 2.10.1
+  VERSION 2.10.2
   DESCRIPTION "thin, light object-oriented HDF5 Fortran interface"
   HOMEPAGE_URL https://github.com/geospace-code/h5fortran)
 enable_testing()
@@ -12,6 +12,7 @@ include(CTest)
 include(FeatureSummary)
 
 option(test_shaky "run shaky tests" OFF)
+option(prototype "build / test conceptual testing-only code" OFF)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
 # set(HDF5_FIND_DEBUG true)
@@ -52,5 +53,7 @@ if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
   set_package_properties(HDF5 PROPERTIES URL "https://hdfgroup.org/" DESCRIPTION "fast, versatile file I/O format" TYPE REQUIRED)
   set_package_properties(ZLIB PROPERTIES URL "https://www.zlib.net/" DESCRIPTION "patent-free compression library")
   set_package_properties(SZIP PROPERTIES URL "http://www.compressconsult.com/szip/" DESCRIPTION "compression library")
+
+  add_feature_info(PrototypeOnly prototype "Prototype testing-only code (no benefit to end users)")
   feature_summary(WHAT ALL)
 endif()
