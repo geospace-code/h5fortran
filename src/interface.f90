@@ -390,25 +390,19 @@ if (present(debug)) self%debug = debug
 
 !> Initialize FORTRAN interface.
 call h5open_f(ier)
+if(present(ierr)) ierr = ier
 if (check(ier, 'ERROR: HDF5 library initialize')) then
-  if (present(ierr)) then
-    ierr = ier
-    return
-  else
-    error stop
-  endif
+  if (present(ierr)) return
+  error stop
 endif
 
 !> get library version
 call h5get_libversion_f(self%libversion(1), self%libversion(2), self%libversion(3), ier)
 if (self%debug) print '(A,3I3)', 'HDF5 version: ',self%libversion
+if(present(ierr)) ierr = ier
 if (check(ier, 'ERROR: HDF5 library get version')) then
-  if (present(ierr)) then
-    ierr = ier
-    return
-  else
-    error stop
-  endif
+  if (present(ierr)) return
+  error stop
 endif
 
 if(self%verbose) then
@@ -416,13 +410,10 @@ if(self%verbose) then
 else
   call h5eset_auto_f(0, ier)
 endif
+if(present(ierr)) ierr = ier
 if (check(ier, 'ERROR: HDF5 library set traceback')) then
-  if (present(ierr)) then
-    ierr = ier
-    return
-  else
-    error stop
-  endif
+  if (present(ierr)) return
+  error stop
 endif
 
 lstatus = 'unknown'
@@ -442,8 +433,8 @@ case ('old', 'unknown')
         ier = 127
       endif
     case('write','readwrite','w','rw', 'r+', 'append', 'a')
-      inquire(file=filename, exist=exists)
-      if(lstatus /= 'old' .and. .not.exists) then
+      call h5fis_hdf5_f(filename, exists, ier)
+      if(lstatus /= 'old' .and. (.not. exists .or. ier/=0) ) then
         call h5fcreate_f(filename, H5F_ACC_TRUNC_F, self%lid, ier)
       else
         call h5fopen_f(filename, H5F_ACC_RDWR_F, self%lid, ier)
@@ -540,8 +531,8 @@ do
   call h5lexists_f(self%lid, gname(1:sp-1), gexist, ier)
   if (present(ierr)) ierr = ier
   if (check(ier, self%filename, gname)) then
-      if (present(ierr)) return
-      error stop
+    if (present(ierr)) return
+    error stop
   endif
 
   if(.not.gexist) then
