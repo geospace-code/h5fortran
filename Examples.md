@@ -71,6 +71,23 @@ A convenience method that checks existance of a dataset without creating the h5 
 exists = h5exist("my.h5", "/foo")
 ```
 
+## check variable shape, rank/ndims
+
+`h5f%rank == h5f%ndims` for convenience, both methods are equivalent.
+
+```fortran
+call h5f%initialize('test.h5', status='old',action='r')
+
+integer :: drank
+integer(hsize_t), allocatable :: dims(:)
+
+drank = h5f%rank('/foo')
+call h5f%shape('/foo',dims)
+
+if (drank /= size(dims)) error stop
+```
+
+
 ## Read scalar, 3-D array of unknown size
 
 ```fortran

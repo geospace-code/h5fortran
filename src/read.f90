@@ -8,20 +8,32 @@ implicit none (type, external)
 
 contains
 
+module procedure hdf_get_ndims
+!! get rank or "ndims"
+integer :: ier
+
+drank = -1
+
+if (self%exist(dname)) then
+  call h5ltget_dataset_ndims_f(self%lid, dname, drank, ier)
+else
+  write(stderr, *) 'ERROR:get_shape: ' // dname // ' does not exist in ' // self%filename
+endif
+
+end procedure hdf_get_ndims
 
 module procedure hdf_get_shape
 !! must get dims before info, as "dims" must be allocated or segfault occurs.
 integer(SIZE_T) :: dsize
 integer :: dtype, drank, ier
 
-ier = 0
+ier = -1
 
-if (.not.self%exist(dname)) then
+if (self%exist(dname)) then
+  call h5ltget_dataset_ndims_f(self%lid, dname, drank, ier)
+else
   write(stderr, *) 'ERROR:get_shape: ' // dname // ' does not exist in ' // self%filename
-  ier = -1
 endif
-
-if (ier == 0) call h5ltget_dataset_ndims_f(self%lid, dname, drank, ier)
 
 if (ier == 0) then
   allocate(dims(drank))

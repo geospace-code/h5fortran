@@ -5,11 +5,11 @@ use, intrinsic:: iso_fortran_env, only: real64, stdout=>output_unit, stderr=>err
 
 implicit none (type, external)
 
-type(hdf5_file) :: h5f
+type(hdf5_file) :: h
 character(1024) :: argv
 character(:), allocatable :: fn, dname
 integer(HSIZE_T), allocatable :: dims(:)
-integer :: ierr
+integer :: drank
 logical :: exists
 
 if (command_argument_count() /= 2) error stop "filename dset_name"
@@ -26,13 +26,16 @@ if (.not. exists) then
   error stop 77
 endif
 
-call h5f%initialize(fn, ierr, status='old', action='r')
+call h%initialize(fn, status='old', action='r')
 
-call h5f%shape(dname, dims, ierr)
+drank = h%ndims(dname)
+
+call h%shape(dname, dims)
+
+if (drank /= size(dims)) error stop 'rank /= size(dims)'
 
 print '(/,A,100I8)', 'Fortran dims: ',dims
 
-call h5F%finalize(ierr)
-if(ierr/=0) error stop 'finalize'
+call h%finalize()
 
 end program

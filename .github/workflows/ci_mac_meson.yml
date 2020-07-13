@@ -3,7 +3,7 @@ name: ci_mac_meson
 on:
   push:
     paths:
-      - "**.build"
+      - "**/meson.build"
       - ".github/workflows/ci_mac_meson.yml"
 
 jobs:

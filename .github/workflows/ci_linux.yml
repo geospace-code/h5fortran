@@ -3,7 +3,7 @@ name: ci_linux
 on:
   push:
     paths:
-      - "**.txt"
+      - "**/CMakeLists.txt"
       - "**.cmake"
       - "**.f90"
       - ".github/workflows/ci_linux.yml"
@@ -22,4 +22,4 @@ jobs:
         sudo apt update -yq
         sudo apt install -yq --no-install-recommends gfortran libhdf5-dev
 
-    - run: ctest -S setup.cmake -V
+    - run: ctest -S setup.cmake -VV

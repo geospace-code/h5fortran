@@ -42,6 +42,7 @@ contains
 procedure, public :: initialize => hdf_initialize, finalize => hdf_finalize, &
   write_group, writeattr, &
   open => hdf_open_group, close => hdf_close_group, &
+  rank => hdf_get_ndims, ndims => hdf_get_ndims, &
   shape => hdf_get_shape, layout => hdf_get_layout, chunks => hdf_get_chunk, &
   exist => hdf_check_exist, exists => hdf_check_exist, &
   is_contig => hdf_is_contig, is_chunked => hdf_is_chunked
@@ -239,6 +240,11 @@ integer, intent(in), optional :: chunk_size(rank(value))
 integer, intent(out), optional :: ierr
 end subroutine hdf_write_7d
 
+
+module integer function hdf_get_ndims(self, dname) result (drank)
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: dname
+end function hdf_get_ndims
 
 module subroutine hdf_get_shape(self, dname, dims, ierr)
 class(hdf5_file), intent(in) :: self
