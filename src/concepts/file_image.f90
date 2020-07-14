@@ -1,7 +1,6 @@
 module file_image
-!! prototyping for possible inclusion in h5fortran someday.
-!! HDF5 file images are an in-RAM super fast HDF5 file that can be
-!! used in a file-based API
+!! HDF5 file images are an in-RAM fast HDF5 virtual file.
+!! there are many caveats to their use and they might never be included in h5fortran
 
 use, intrinsic :: iso_fortran_env, only : stderr=>error_unit, real32, real64, int32
 use, intrinsic :: iso_c_binding, only : c_ptr, c_loc, c_sizeof, c_associated
@@ -9,6 +8,11 @@ use hdf5, only :  h5pcreate_f, h5pclose_f, &
  h5pset_file_image_f, h5pget_file_image_f, &
  H5P_FILE_ACCESS_F, hid_t, size_t, &
  h5open_f, h5close_f
+
+!  use h5lt, only : H5LTopen_file_image_f
+!! h5ltopen_file_image_f does NOT exist yet as of HDF5 1.12.0. The API was specified for HDF5 1.8.9,
+!! but never implemented (yet).
+
 implicit none (type, external)
 private
 public :: hid_t, create_file_image, close_file_image, write_file_image, read_file_image
@@ -16,7 +20,6 @@ public :: hid_t, create_file_image, close_file_image, write_file_image, read_fil
 contains
 
 subroutine create_file_image(fapl_id)
-!! pre-alpha planning / testing
 
 integer(hid_t), intent(out) :: fapl_id
 

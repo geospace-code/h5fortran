@@ -1,2 +1,1 @@
 option('test_shaky', type: 'boolean', value: false, description: 'run shaky tests')
-option('prototype', type: 'boolean', value: false, description: 'prototype dev-only code')
