@@ -101,7 +101,7 @@ For detailed examples see [Examples.md](./Examples.md).
 
 * The first character of the filename should be a character, NOT whitespace to avoid file open/creation errors.
 * [PGI](https://www.fluidnumerics.com/resources/building-hdf5-with-pgi) or Flang compilers require first compiling the HDF5 library yourself.
-* Polymorphic array rank is implemented by explicit code internally. We could have used pointers, but the code is simple enough to avoid the risk associated with explicit array pointers. Also, `select rank` support requires Gfortran-10 or Intel Fortran 2020, so we didn't want to make too-new compiler restriction.
+* Polymorphic array rank is implemented.
 
 ### Missing datatypes
 

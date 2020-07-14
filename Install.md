@@ -17,7 +17,8 @@ Platforms that currently do **not** have Fortran HDF5 libraries, and thus will *
 * Conda
 
 Build this HDF5 OO Fortran interface with Meson or CMake.
-The library `libh5fortran` is built, link it into your program as usual.
+The library `libh5fortran` is built, link it into your program as usual along with the HDF5 libraries and include files.
+It's generally recommended you use a metabuild system with HDF5 (CMake or Meson) unless you are experience with Makefiles and need to use them.
 
 If you use
 [conan](https://conan.io),
@@ -35,14 +36,6 @@ Build and self-test via:
 
 ```sh
 ctest -S setup.cmake -V
-```
-
-or alternatively:
-
-```sh
-cmake -B build
-
-cmake --build build
 ```
 
 ### [optional] install
@@ -105,7 +98,7 @@ meson test -C build
 
 Meson &ge; 0.53.0 has enhanced HDF5 dependency finding and is recommended.
 
-### h5foftran Meson subproject
+### h5fortran Meson subproject
 
 To include h5fortran as a Meson subproject, in the master project meson.build (that uses h5fortran) have like:
 
