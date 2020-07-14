@@ -1,9 +1,6 @@
 
 if(WIN32)
-  set(is_abs "
-if (scan('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', path(1:1)) > 0 .and. &
-    path(2:2) == ':') is_absolute_path = .true.
-")
+  set(is_abs "if (lge(path(1:1), 'A' .and. lle(path(1:1), 'z') .and. path(2:2) == ':') is_absolute_path = .true.")
 else()
   set(is_abs "if(path(1:1) == '/') is_absolute_path=.true.")
 endif()

@@ -1,10 +1,7 @@
 conf_data = configuration_data()
 
 if os == 'windows'
-  code = '''
-  if (scan('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', path(1:1)) > 0 .and. &
-      path(2:2) == ':') is_absolute_path = .true.
-'''
+  code = '''if (lge(path(1:1), 'A') .and. lle(path(1:1), 'z') .and. path(2:2) == ':') is_absolute_path = .true.'''
 else
   code = '''if(path(1:1) == '/') is_absolute_path=.true.'''
 endif
