@@ -26,6 +26,20 @@ call h5f%write('/value1', 123.)
 call h5f%finalize(ierr)
 ```
 
+## create temporary "scratch" file
+
+Analogous to regular Fortran `open(status='scratch')`, the file created will attempt to be delted.
+A distinction is that filename (not full path, just name) must be specified:
+
+```sh
+call h5%initialize('orbits.h5', status='scratch')
+
+...
+
+call h5%finalize()
+!! scratch file deleted by %finalize
+```
+
 ## Add/append variable "value1" to existing HDF5 file "test.h5"
 
 * if file `test.h5` exists, add a variable to it

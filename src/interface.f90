@@ -14,6 +14,7 @@ use hdf5, only : HID_T, SIZE_T, HSIZE_T, H5F_ACC_RDONLY_F, H5F_ACC_RDWR_F, H5F_A
   h5get_libversion_f, h5eset_auto_f
 use h5lt, only : h5ltget_dataset_ndims_f, h5ltget_dataset_info_f
 
+use pathlib, only : unlink, get_tempdir
 use string_utils, only : toLower, strip_trailing_null, truncate_string_null
 
 implicit none (type, external)
@@ -35,7 +36,9 @@ integer(HID_T) :: lid=0, &   !< location ID
 
 integer :: comp_lvl = 0 !< compression level (1-9)  0: disable compression
 logical :: verbose=.true., debug=.false.
+logical :: is_scratch = .false.  !< will be auto-deleted on close
 integer :: libversion(3)  !< major, minor, rel
+
 
 contains
 !> initialize HDF5 file
@@ -371,7 +374,7 @@ subroutine hdf_initialize(self,filename,ierr, status,action,comp_lvl,verbose,deb
 !! Opens hdf5 file
 
 class(hdf5_file), intent(inout)    :: self
-character(*), intent(in)           :: filename
+character(*), intent(in) :: filename
 integer, intent(out), optional :: ierr
 character(*), intent(in), optional :: status
 character(*), intent(in), optional :: action
@@ -443,8 +446,9 @@ case ('old', 'unknown')
 case('new','replace')
   call h5fcreate_f(filename, H5F_ACC_TRUNC_F, self%lid, ier)
 case('scratch')
-  write(stderr,*) 'In-memory HDF5 file images are a possible future h5fortran feature.'
-  error stop 128
+  call h5fcreate_f(filename, H5F_ACC_TRUNC_F, self%lid, ier)
+  self%is_scratch = .true.
+  self%filename = get_tempdir() // '/' // filename
 case default
   write(stderr,*) 'Unsupported status -> '// lstatus
   error stop 128
@@ -483,6 +487,10 @@ endif
 !> sentinel lid
 self%lid = 0
 
+if(self%is_scratch) then
+  if (unlink(self%filename)) write(stderr,*) 'WARNING: could not delete scratch file: ' // self%filename
+endif
+
 end subroutine hdf_finalize
 
 
@@ -492,14 +500,14 @@ logical function is_hdf5(filename)
 character(*), intent(in) :: filename
 integer :: ierr
 
+inquire(file=filename, exist=is_hdf5)
+!! avoid warning/error messages
+if (.not. is_hdf5) return
+
 call h5fis_hdf5_f(filename, is_hdf5, ierr)
 
-if (ierr/=0) then
-  is_hdf5 = .false.  !< sometimes h5fis_hdf5_f is .true. for missing file
-  write(stderr,*) 'ERROR: could not determine if HDF5 file: ' // filename
-  return
-endif
-
+if (ierr/=0) is_hdf5 = .false.
+!! sometimes h5fis_hdf5_f is .true. for missing file
 
 end function is_hdf5
 
