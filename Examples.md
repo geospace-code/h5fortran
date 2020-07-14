@@ -28,8 +28,10 @@ call h5f%finalize(ierr)
 
 ## create temporary "scratch" file
 
-Analogous to regular Fortran `open(status='scratch')`, the file created will attempt to be delted.
-A distinction is that filename (not full path, just name) must be specified:
+Analogous to regular Fortran `open(status='scratch')`, the file created will attempt to be deleted.
+A distinction is that filename (or full path) must be specified.
+If the full path is not specified, the system temporary directory will be used if found.
+Otherwise, the current working directory + filename will be used.
 
 ```sh
 call h5%initialize('orbits.h5', status='scratch')
