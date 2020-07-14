@@ -10,6 +10,7 @@ Use the full compiler path if it's not getting the right compiler.
 """
 import subprocess
 import shutil
+import tempfile
 import logging
 from pathlib import Path
 from argparse import ArgumentParser
@@ -26,6 +27,37 @@ HDF5_GIT = "https://bitbucket.hdfgroup.org/scm/hdffv/hdf5.git"
 # ========= end of user parameters ================
 
 nice = ["nice"] if sys.platform == "linux" else []
+
+
+def cli():
+    p = ArgumentParser(description="Compile HDF library")
+    p.add_argument(
+        "compiler",
+        help="compiler to build libraries for",
+        choices=["gcc", "intel", "ibmxl"],
+    )
+    p.add_argument("-prefix", help="toplevel path to install libraries under")
+    p.add_argument(
+        "-workdir",
+        help="top-level directory to build under (can be deleted when done)",
+        default=tempfile.gettempdir(),
+    )
+    P = p.parse_args()
+
+    compiler = P.compiler
+
+    prefix = P.prefix if P.prefix else f"~/lib_{P.compiler}"
+
+    if compiler == "gcc":
+        env = gcc_compilers()
+    elif compiler == "intel":
+        env = intel_compilers()
+    elif compiler == "ibmxl":
+        env = ibmxl_compilers()
+    else:
+        raise ValueError(f"unknown compiler {compiler}")
+
+    hdf5({"prefix": prefix, "workdir": P.workdir}, env)
 
 
 def hdf5(dirs: T.Dict[str, Path], env: T.Mapping[str, str]):
@@ -109,43 +141,36 @@ def git_update(path: Path, repo: str, tag: str = None):
             subprocess.check_call([GITEXE, "clone", repo, "--depth", "1", str(path)])
 
 
-def get_compilers(fc_name: str, cc_name: str, cxx_name: str) -> T.Mapping[str, str]:
+def get_compilers(**kwargs) -> T.Mapping[str, str]:
     """ get paths to compilers """
     env = os.environ
 
-    fc = env.get("FC", "")
-    if fc_name not in fc:
-        fc = shutil.which(fc_name)
-    if not fc:
-        raise FileNotFoundError(fc_name)
-
-    cc = env.get("CC", "")
-    if cc_name not in cc:
-        cc = shutil.which(cc_name)
-    if not cc:
-        raise FileNotFoundError(cc_name)
-
-    cxx = env.get("CXX", "")
-    if cxx_name not in cxx:
-        cxx = shutil.which(cxx_name)
-    if not cxx:
-        raise FileNotFoundError(cxx_name)
-
-    env.update({"FC": fc, "CC": cc, "CXX": cxx})
+    for k, v in kwargs.items():
+        c = env.get(k, "")
+        if v not in c:
+            c = shutil.which(v)
+        if not c:
+            raise FileNotFoundError(v)
+        env.update({k: c})
 
     return env
 
 
+def gcc_compilers() -> T.Mapping[str, str]:
+    return get_compilers(FC="gfortran", CC="gcc", CXX="g++")
+
+
+def intel_compilers() -> T.Mapping[str, str]:
+    return get_compilers(
+        FC="ifort",
+        CC="icl" if os.name == "nt" else "icc",
+        CXX="icl" if os.name == "nt" else "icpc",
+    )
+
+
+def ibmxl_compilers() -> T.Mapping[str, str]:
+    return get_compilers(FC="xlf", CC="xlc", CXX="xlc++")
+
+
 if __name__ == "__main__":
-    p = ArgumentParser()
-    p.add_argument(
-        "-prefix", help="toplevel path to install libraries under", default="~/lib"
-    )
-    p.add_argument(
-        "-workdir", help="toplevel path to where you keep code repos", default="~/code"
-    )
-    P = p.parse_args()
-
-    env = get_compilers("gfortran", "gcc", "g++")
-
-    hdf5({"prefix": P.prefix, "workdir": P.workdir}, env)
+    cli()
