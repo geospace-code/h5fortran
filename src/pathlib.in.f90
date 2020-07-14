@@ -21,6 +21,18 @@ get_tempdir = trim(argv)
 end function get_tempdir
 
 
+pure logical function is_absolute_path(path)
+!! heuristic to determine absolute path
+
+character(*), intent(in) :: path
+
+is_absolute_path = .false.
+
+@is_abs@
+
+end function
+
+
 logical function unlink(filename)
 !! deletes file in Fortran standard manner.
 character(*), intent(in) :: filename

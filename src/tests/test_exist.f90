@@ -55,6 +55,6 @@ call s%finalize()
 inquire(file=s%filename, exist=e)
 if(e) error stop 'scratch file not autodeleted'
 
-print *,'OK: scratch file', s%filename
+print *,'OK: scratch file ', s%filename
 
 end program

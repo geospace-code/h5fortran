@@ -14,7 +14,7 @@ use hdf5, only : HID_T, SIZE_T, HSIZE_T, H5F_ACC_RDONLY_F, H5F_ACC_RDWR_F, H5F_A
   h5get_libversion_f, h5eset_auto_f
 use h5lt, only : h5ltget_dataset_ndims_f, h5ltget_dataset_info_f
 
-use pathlib, only : unlink, get_tempdir
+use pathlib, only : unlink, get_tempdir, is_absolute_path
 use string_utils, only : toLower, strip_trailing_null, truncate_string_null
 
 implicit none (type, external)
@@ -448,7 +448,7 @@ case('new','replace')
 case('scratch')
   call h5fcreate_f(filename, H5F_ACC_TRUNC_F, self%lid, ier)
   self%is_scratch = .true.
-  self%filename = get_tempdir() // '/' // filename
+  if(.not.is_absolute_path(filename)) self%filename = get_tempdir() // '/' // filename
 case default
   write(stderr,*) 'Unsupported status -> '// lstatus
   error stop 128
