@@ -1,12 +1,8 @@
 conf_data = configuration_data()
 
-if os == 'windows'
-  code = '''if (lge(path(1:1), 'A') .and. lle(path(1:1), 'z') .and. path(2:2) == ':') is_absolute_path = .true.'''
-else
-  code = '''if(path(1:1) == '/') is_absolute_path=.true.'''
-endif
+is_windows = os == 'windows' ? '.true.' : '.false.'
 
-conf_data.set('is_abs', code)
+conf_data.set('is_windows', is_windows)
 pathlib_src = configure_file(
   input : 'pathlib.in.f90',
   output : 'pathlib.f90',

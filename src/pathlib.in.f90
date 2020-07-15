@@ -28,7 +28,11 @@ character(*), intent(in) :: path
 
 is_absolute_path = .false.
 
-@is_abs@
+if(@is_windows@) then
+  if (lge(path(1:1), 'A') .and. lle(path(1:1), 'z') .and. path(2:2) == ':') is_absolute_path = .true.
+else
+  if(path(1:1) == '/') is_absolute_path=.true.
+endif
 
 end function
 
