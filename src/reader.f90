@@ -15,6 +15,8 @@ integer(HSIZE_T) :: dims(rank(value))
 integer(hid_t) :: did, sid
 integer :: ier
 
+if(.not.self%is_open) error stop 'h5fortran:reader: file handle is not open'
+
 ier = 0
 sid = 0
 

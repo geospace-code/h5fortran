@@ -13,6 +13,8 @@ integer(HID_T)  :: sid, did
 integer(HSIZE_T), allocatable :: dims(:)
 integer :: ier
 
+if(.not.self%is_open) error stop 'h5fortran:writer: file handle is not open'
+
 allocate(dims(0))
 
 select type (value)

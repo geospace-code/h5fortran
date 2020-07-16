@@ -35,8 +35,11 @@ integer(HID_T) :: lid=0, &   !< location ID
                   glid   !< group location ID
 
 integer :: comp_lvl = 0 !< compression level (1-9)  0: disable compression
-logical :: verbose=.true., debug=.false.
-logical :: is_scratch = .false.  !< will be auto-deleted on close
+logical :: verbose=.true.
+logical :: debug=.false.
+logical :: is_open = .false.
+logical :: is_scratch = .false.
+!! will be auto-deleted on close
 integer :: libversion(3)  !< major, minor, rel
 
 
@@ -384,6 +387,11 @@ logical, intent(in), optional      :: verbose, debug
 character(:), allocatable :: lstatus, laction
 integer :: ier
 
+if(self%is_open) then
+  write(stderr,*) 'WARNING:h5fortran:initialize: file handle already open: '//self%filename
+  return
+endif
+
 self%filename = filename
 
 if (present(comp_lvl)) self%comp_lvl = comp_lvl
@@ -460,6 +468,8 @@ if (check(ier, filename)) then
   error stop
 endif
 
+self%is_open = .true.
+
 end subroutine hdf_initialize
 
 
@@ -467,6 +477,11 @@ subroutine hdf_finalize(self, ierr)
 class(hdf5_file), intent(inout) :: self
 integer, intent(out), optional :: ierr
 integer :: ier
+
+if (.not. self%is_open) then
+  write(stderr,*) 'WARNING:h5fortran:finalize: file handle is already closed: '// self%filename
+  return
+endif
 
 !> close hdf5 file
 call h5fclose_f(self%lid, ier)
@@ -490,6 +505,8 @@ self%lid = 0
 if(self%is_scratch) then
   if (unlink(self%filename)) write(stderr,*) 'WARNING: could not delete scratch file: ' // self%filename
 endif
+
+self%is_open = .false.
 
 end subroutine hdf_finalize
 
@@ -523,6 +540,8 @@ integer :: ier
 
 integer :: sp, ep, sl
 logical :: gexist
+
+if(.not.self%is_open) error stop 'h5fortran:write_group: file handle is not open'
 
 sl = len(gname)
 sp = 1
@@ -617,6 +636,8 @@ class(*), intent(in), optional, dimension(:) :: i2
 integer(hsize_t), dimension(size(i0)) :: istart, iend, stride, mem_dims
 integer :: mem_rank
 
+if(.not.self%is_open) error stop 'h5fortran:slice: file handle is not open'
+
 !! istart
 select type (i0)
 type is (integer(int32))
@@ -694,6 +715,8 @@ integer, intent(out) :: ierr
 integer(SIZE_T) :: dsize
 integer(HSIZE_T) :: ddims(size(dims))
 integer :: dtype, drank
+
+if(.not.self%is_open) error stop 'h5fortran:shape: file handle is not open'
 
 if (.not.self%exist(dname)) then
   write(stderr,*) 'ERROR: ' // dname // ' does not exist in ' // self%filename

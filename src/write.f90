@@ -16,6 +16,8 @@ module procedure writeattr
 
 integer :: ier
 
+if(.not.self%is_open) error stop 'h5fortran:write: file handle is not open'
+
 !call self%write(dname, ier)
 
 ! if (ier == 0) call h5ltpath_valid_f(self%lid, dname, .true., exists, ier)
@@ -47,6 +49,8 @@ integer, intent(out) :: ierr
 
 logical :: exists
 integer(HID_T) :: pid
+
+if(.not.self%is_open) error stop 'h5fortran:write: file handle is not open'
 
 !! sentinel values
 pid = 0
@@ -100,6 +104,8 @@ integer, intent(out) :: ierr
 integer, intent(in), optional :: chunk_size(:)
 
 integer(HSIZE_T) :: cs(size(dims))
+
+if(.not.self%is_open) error stop 'h5fortran:write: file handle is not open'
 
 pid = 0
 if (self%comp_lvl < 1 .or. self%comp_lvl > 9) return
@@ -192,6 +198,9 @@ end subroutine guess_chunk_size
 module procedure hdf_open_group
 
 integer :: ier
+
+if(.not.self%is_open) error stop 'h5fortran:write: file handle is not open'
+
 call h5gopen_f(self%lid, gname, self%gid, ier)
 
 if (present(ierr)) ierr = ier
@@ -209,6 +218,8 @@ end procedure hdf_open_group
 module procedure hdf_close_group
 
 integer :: ier
+
+if(.not.self%is_open) error stop 'h5fortran:write: file handle is not open'
 
 call h5gclose_f(self%gid, ier)
 

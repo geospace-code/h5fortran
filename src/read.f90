@@ -12,6 +12,8 @@ module procedure hdf_get_ndims
 !! get rank or "ndims"
 integer :: ier
 
+if(.not.self%is_open) error stop 'h5fortran:read: file handle is not open'
+
 drank = -1
 
 if (self%exist(dname)) then
@@ -26,6 +28,8 @@ module procedure hdf_get_shape
 !! must get dims before info, as "dims" must be allocated or segfault occurs.
 integer(SIZE_T) :: dsize
 integer :: dtype, drank, ier
+
+if(.not.self%is_open) error stop 'h5fortran:read: file handle is not open'
 
 ier = -1
 
@@ -53,6 +57,8 @@ module procedure hdf_get_chunk
 
 integer :: ierr, drank
 integer(HID_T) :: pid, did
+
+if(.not.self%is_open) error stop 'h5fortran:read: file handle is not open'
 
 chunk_size = -1
 if (.not.self%exist(dname)) then
@@ -88,6 +94,8 @@ module procedure hdf_get_layout
 integer(HID_T) :: pid, did
 integer :: ierr
 
+if(.not.self%is_open) error stop 'h5fortran:read: file handle is not open'
+
 layout = -1
 
 if (.not.self%exist(dname)) then
@@ -120,9 +128,15 @@ module procedure hdf_check_exist
 
 integer :: ierr
 
+exists = .false.
+
+if(.not.self%is_open) then
+  write(stderr,*) 'h5fortran:read: file handle is not open' // self%filename
+  return
+endif
+
 if (self%lid == 0) then
   write(stderr,*) 'ERROR: must initialize file before checking existance of variable'
-  exists = .false.
   return
 endif
 
