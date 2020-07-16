@@ -42,6 +42,14 @@ If `%finalize()` or hdf5_close is not called, data loss can result.
 call h5f%finalize()
 ```
 
+At any time during the program, the `%flush()` method can be called to request the operating system to write a file to disk.
+This could be useful during a long-running program (say, an HPC simulation) to help ensure data isn't lost of an HDF5 file is open for a long time.
+The flush request is on a per-file basis, so if multiple files are open, flush each file to protect against data loss in this case.
+
+```fortran
+call h5f%flush()
+```
+
 ## create temporary "scratch" file
 
 Analogous to regular Fortran `open(status='scratch')`, the file created will attempt to be deleted.

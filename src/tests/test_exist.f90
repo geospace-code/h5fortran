@@ -103,6 +103,7 @@ call g%initialize(filename='B.h5', status='scratch')
 if (h%is_open) error stop 'is_open not isolated at constructor'
 call h%initialize(filename='C.h5', status='scratch')
 
+call f%flush()
 
 call f%finalize(ierr)
 if (ierr/=0) error stop 'close a.h5'

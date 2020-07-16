@@ -4,14 +4,14 @@ use, intrinsic :: iso_c_binding, only : c_ptr, c_loc
 use, intrinsic :: iso_fortran_env, only : real32, real64, int64, int32, stderr=>error_unit
 use hdf5, only : HID_T, SIZE_T, HSIZE_T, H5F_ACC_RDONLY_F, H5F_ACC_RDWR_F, H5F_ACC_TRUNC_F, &
   H5S_ALL_F, H5S_SELECT_SET_F, &
-  H5T_NATIVE_DOUBLE, H5T_NATIVE_REAL, H5T_NATIVE_INTEGER, H5T_NATIVE_CHARACTER, &
+  H5T_NATIVE_DOUBLE, H5T_NATIVE_REAL, H5T_NATIVE_INTEGER, H5T_NATIVE_CHARACTER, H5F_SCOPE_GLOBAL_F, &
   h5open_f, h5close_f, &
   h5dopen_f, h5dclose_f, h5dget_space_f, &
   h5gcreate_f, h5gclose_f, &
   h5fopen_f, h5fcreate_f, h5fclose_f, h5fis_hdf5_f, &
   h5lexists_f, &
   h5sclose_f, h5sselect_hyperslab_f, h5screate_simple_f, &
-  h5get_libversion_f, h5eset_auto_f
+  h5get_libversion_f, h5eset_auto_f, h5fflush_f
 use h5lt, only : h5ltget_dataset_ndims_f, h5ltget_dataset_info_f
 
 use pathlib, only : unlink, get_tempdir, is_absolute_path
@@ -47,7 +47,7 @@ contains
 !> initialize HDF5 file
 procedure, public :: initialize => hdf_initialize, finalize => hdf_finalize, &
   write_group, writeattr, &
-  open => hdf_open_group, close => hdf_close_group, &
+  open => hdf_open_group, close => hdf_close_group, flush => hdf_flush, &
   rank => hdf_get_ndims, ndims => hdf_get_ndims, &
   shape => hdf_get_shape, layout => hdf_get_layout, chunks => hdf_get_chunk, &
   exist => hdf_check_exist, exists => hdf_check_exist, &
@@ -520,6 +520,22 @@ endif
 self%is_open = .false.
 
 end subroutine hdf_finalize
+
+
+subroutine hdf_flush(self, ierr)
+
+class(hdf5_file), intent(in) :: self
+integer, intent(out), optional :: ierr
+integer :: ier
+
+call h5fflush_f(self%lid, H5F_SCOPE_GLOBAL_F, ier)
+if (present(ierr)) ierr = ier
+if (check(ier, 'ERROR: HDF5 flush ' // self%filename)) then
+  if (present(ierr)) return
+  error stop
+endif
+
+end subroutine hdf_flush
 
 
 subroutine hdf5_close(ierr)
