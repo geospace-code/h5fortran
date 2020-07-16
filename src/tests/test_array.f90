@@ -103,19 +103,15 @@ if (ierr==0) error stop 'failed to error on read rank mismatch'
 
 block
   integer(HSIZE_T), allocatable :: dims(:)
-  call h5f%shape('/test/real2',dims, ierr)
-  if(ierr/=0) error stop
+  call h5f%shape('/test/real2',dims)
   allocate(rr2(dims(1), dims(2)))
-  call h5f%read('/test/real2',rr2, ierr)
-  if(ierr/=0) error stop
+  call h5f%read('/test/real2',rr2)
   if (.not.all(r2 == rr2)) error stop 'real 2-D: read does not match write'
 end block
 
-call h5f%read('/nan',nant, ierr)
-if(ierr/=0) error stop
+call h5f%read('/nan',nant)
 if (.not.ieee_is_nan(nant)) error stop 'failed storing or reading NaN'
-call h5f%finalize(ierr)
-if(ierr/=0) error stop
+call h5f%finalize()
 
 end subroutine test_write_array
 
@@ -128,27 +124,23 @@ integer, intent(in) :: ng, nn, pn
 
 real(real32), allocatable :: flux(:,:),fo(:)
 character(2) :: pnc,ic
-integer :: i, ierr
+integer :: i
 
 allocate(flux(nn,ng),fo(nn))
 flux = 1.0
 write(pnc,'(I2)') pn
 
-call h5f%initialize(path//'/p'//trim(adjustl(pnc))//'.h5', ierr, status='new',action='w')
-if(ierr/=0) error stop
+call h5f%initialize(path//'/p'//trim(adjustl(pnc))//'.h5',  status='new')
 
 do i = 1,ng
   write(ic,'(I2)') i
-  call h5f%write('/group'//trim(adjustl(ic))//'/flux_node',flux(:,i), ierr)
-  if (ierr /= 0) error stop
+  call h5f%write('/group'//trim(adjustl(ic))//'/flux_node',flux(:,i))
 enddo
 
-call h5f%read('/group1/flux_node',fo, ierr)
-if (ierr /= 0) error stop
+call h5f%read('/group1/flux_node',fo)
 if (.not.all(fo == flux(:,1))) error stop 'test_read_write: read does not match write'
 
-call h5f%finalize(ierr)
-if(ierr/=0) error stop
+call h5f%finalize()
 
 end subroutine test_readwrite_array
 

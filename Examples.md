@@ -23,7 +23,23 @@ call h5f%initialize('test.h5', status='new',action='w')
 
 call h5f%write('/value1', 123.)
 
-call h5f%finalize(ierr)
+call h5f%finalize()
+```
+
+## ensure all files are flushed to disk at end of program
+
+If your program opens lots of HDF5 files and you're worried about being sure they're all flushed to disk, make this call near the very end of the program.
+This flushes and closes ALL HDF5 files, even those that may be invoked directly from the HDF5 library without h5fortran.
+
+```fortran
+call hdf5_close()
+```
+
+Normally, you should be calling `%finalize()` on each file to flush to disk when done using a file.
+If `%finalize()` or hdf5_close is not called, data loss can result.
+
+```fortran
+call h5f%finalize()
 ```
 
 ## create temporary "scratch" file

@@ -1,15 +1,12 @@
-program test_exist
+program exist_tests
 !! test "exist" variable
 use, intrinsic :: iso_fortran_env, only : stderr=>error_unit
-use h5fortran, only: hdf5_file, h5write, h5exist, is_hdf5
+use h5fortran, only: hdf5_file, h5write, h5exist, is_hdf5, hdf5_close
 
 implicit none (type, external)
 
-type(hdf5_file) :: h, s
-character(:), allocatable :: path
 character(256) :: argv
 integer :: i,l
-logical :: e
 
 
 call get_command_argument(1, argv, length=l, status=i)
@@ -18,23 +15,50 @@ if (i /= 0 .or. l == 0) then
   error stop 77
 endif
 
-! --- test file is / is not hdf5
-if(is_hdf5(trim(argv) // '/apidfjpj-8j9ejfpq984jfp89q39SHf.h5')) error stop 'test_exist: non-existant file declared hdf5'
-path = trim(argv) // '/not_hdf5.h5'
-open(newunit=i, file=path, action='write', status='replace')
+call test_is_hdf5(argv)
+print *, 'OK: is_hdf5'
+
+call test_exist(argv)
+print *, 'OK: exist'
+
+call test_scratch()
+print *, 'OK: scratch'
+
+call test_multifiles()
+print *, 'OK: multiple files open at once'
+
+contains
+
+subroutine test_is_hdf5(path)
+
+character(*), intent(in) :: path
+character(:), allocatable :: fn
+
+if(is_hdf5(trim(path) // '/apidfjpj-8j9ejfpq984jfp89q39SHf.h5')) error stop 'test_exist: non-existant file declared hdf5'
+fn = trim(path) // '/not_hdf5.h5'
+open(newunit=i, file=fn, action='write', status='replace')
 write(i,*) 'I am not an HDF5 file.'
 close(i)
 
-if(is_hdf5(path)) error stop 'text files are not hdf5'
+if(is_hdf5(fn)) error stop 'text files are not hdf5'
 
-! --- test variable exists
-path = trim(argv) // '/foo.h5'
+end subroutine test_is_hdf5
 
-call h5write(path, '/x', 42)
-if(.not.is_hdf5(path)) error stop 'hdf5 file does not exist'
 
-call h%initialize(path, i)
+subroutine test_exist(path)
+
+character(*), intent(in) :: path
+type(hdf5_file) :: h
+character(:), allocatable :: fn
+
+fn = trim(path) // '/foo.h5'
+
+call h5write(fn, '/x', 42)
+if(.not.is_hdf5(fn)) error stop 'hdf5 file does not exist'
+
+call h%initialize(fn, i)
 if(i/=0) error stop
+if (.not.h%is_open) error stop 'file is open'
 if (.not. h%exist('/x')) error stop 'x exists'
 
 if (h%exist('/foo')) then
@@ -44,17 +68,52 @@ endif
 
 call h%finalize()
 
-if (.not. h5exist(path, '/x')) error stop 'x exists'
-if (h5exist(path, '/foo')) error stop 'foo not exist'
+if(h%is_open) error stop 'file is closed'
 
-! scratch
-call s%initialize(filename="scratch.h5", status='scratch')
-call s%write("/foo", 42)
-call s%finalize()
+if (.not. h5exist(fn, '/x')) error stop 'x exists'
+if (h5exist(fn, '/foo')) error stop 'foo not exist'
 
-inquire(file=s%filename, exist=e)
+end subroutine test_exist
+
+
+subroutine test_scratch()
+
+logical :: e
+type(hdf5_file) :: h
+
+call h%initialize(filename="scratch.h5", status='scratch')
+call h%write("/foo", 42)
+call h%finalize()
+
+inquire(file=h%filename, exist=e)
 if(e) error stop 'scratch file not autodeleted'
 
-print *,'OK: scratch file ', s%filename
+print *,'OK: scratch file ', h%filename
+
+end subroutine test_scratch
+
+
+subroutine test_multifiles()
+
+type(hdf5_file) :: f,g,h
+integer :: ierr
+
+call f%initialize(filename='A.h5', status='scratch')
+call g%initialize(filename='B.h5', status='scratch')
+if (h%is_open) error stop 'is_open not isolated at constructor'
+call h%initialize(filename='C.h5', status='scratch')
+
+
+call f%finalize(ierr)
+if (ierr/=0) error stop 'close a.h5'
+if (.not.g%is_open .or. .not. h%is_open) error stop 'is_open not isolated at destructor'
+call g%finalize(ierr)
+if (ierr/=0) error stop 'close b.h5'
+call h%finalize(ierr)
+if (ierr/=0) error stop 'close c.h5'
+
+call hdf5_close()
+
+end subroutine test_multifiles
 
 end program

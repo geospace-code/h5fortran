@@ -19,7 +19,7 @@ use string_utils, only : toLower, strip_trailing_null, truncate_string_null
 
 implicit none (type, external)
 private
-public :: hdf5_file, toLower, h5write, h5read, h5exist, is_hdf5, &
+public :: hdf5_file, hdf5_close, toLower, h5write, h5read, h5exist, is_hdf5, &
   check, hdf_shape_check, hdf_get_slice, hdf_wrapup, hsize_t, strip_trailing_null, truncate_string_null
 
 !> Workaround for Intel 19.1 / 2020 bug with /stand:f18
@@ -473,8 +473,17 @@ self%is_open = .true.
 end subroutine hdf_initialize
 
 
-subroutine hdf_finalize(self, ierr)
+subroutine hdf_finalize(self, ierr, close_hdf5_interface)
+!! This must be called on each HDF5 file to flush buffers to disk
+!! data loss can occur if program terminates before this procedure
+!!
+!! We don't reference count because applications might also invoke HDF5
+!! directly.
+!! close_hdf5_interface is when you know you have exactly one HDF5 file in your
+!! application, if true it closes ALL files, even those invoked directly from HDF5.
+
 class(hdf5_file), intent(inout) :: self
+logical, intent(in), optional :: close_hdf5_interface
 integer, intent(out), optional :: ierr
 integer :: ier
 
@@ -491,14 +500,16 @@ if (check(ier, 'ERROR:finalize: HDF5 file close: ' // self%filename)) then
   error stop
 endif
 
-!>  Close Fortran interface.
-call h5close_f(ier)
-if (present(ierr)) ierr = ier
-if (check(ier, 'ERROR:finalize: HDF5 library close')) then
-  if (present(ierr)) return
-  error stop
+if (present(close_hdf5_interface)) then
+  if (close_hdf5_interface) then
+    call h5close_f(ier)
+    if (present(ierr)) ierr = ier
+    if (check(ier, 'ERROR: HDF5 library close')) then
+      if (present(ierr)) return
+      error stop
+    endif
+  endif
 endif
-
 !> sentinel lid
 self%lid = 0
 
@@ -509,6 +520,25 @@ endif
 self%is_open = .false.
 
 end subroutine hdf_finalize
+
+
+subroutine hdf5_close(ierr)
+!! this subroutine will close ALL existing file handles
+!! only call it at end of your program
+!! "Flushes all data to disk, closes all open identifiers, and cleans up memory."
+!! "Should be called by all HDF5 Fortran programs"
+
+integer, intent(out), optional :: ierr
+integer :: ier
+
+call h5close_f(ier)
+if (present(ierr)) ierr = ier
+if (check(ier, 'ERROR: HDF5 library close')) then
+  if (present(ierr)) return
+  error stop
+endif
+
+end subroutine hdf5_close
 
 
 logical function is_hdf5(filename)
@@ -603,7 +633,7 @@ case (6)
 case (128)
   write(stderr,*) 'ERROR:initialize ' // fn // ' could not be opened or created'
 case default
-  write(stderr,*) 'ERROR: ' // fn // ':' // dn
+  write(stderr,*) 'ERROR: ' // fn // ':' // dn // ' error code ', ierr
 end select
 
 end function check

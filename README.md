@@ -59,9 +59,7 @@ Using CMake:
 ```sh
 git clone https://github.com/geospace-code/h5fortran.git
 
-cd h5fortran
-
-ctest -S setup.cmake -V
+ctest -S h5fortran/setup.cmake -V
 ```
 
 for more details see [Install.md](./Install.md)
