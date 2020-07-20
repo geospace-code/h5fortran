@@ -45,7 +45,9 @@ To install h5fortran to a directory, to use in many programs do like:
 ```sh
 cmake -B build -DCMAKE_INSTALL_PREFIX=~/lib
 
-cmake --build build --target install
+cmake --build build
+
+cmake --install build
 ```
 
 ### [optional] create distributable archive
