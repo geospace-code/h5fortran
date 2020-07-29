@@ -9,13 +9,13 @@ integer :: ierr, p
 integer(HID_T) :: lid
 character(:), allocatable :: filename
 character(256) :: argv
-integer :: i,l
+integer :: i, l
 
-call get_command_argument(1, argv, length=l, status=i)
-if (i /= 0 .or. l == 0) call get_environment_variable("BINDIR", argv, length=l, status=i)
-if (i /= 0 .or. l == 0) argv = '.'
+call get_command_argument(1, argv, status=i)
+if (i /= 0) call get_environment_variable("BINDIR", argv, length=l, status=i)
+if (i /= 0 .or. l==0) argv = '.'
 
-filename = trim(argv) // '/junk_minimal.h5'
+filename = trim(argv) // '/test_minimal.h5'
 print *, 'test path: ', filename
 
 p = 42

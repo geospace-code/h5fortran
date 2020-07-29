@@ -17,9 +17,10 @@ if not fc.links(files('../src/tests/test_minimal.f90'), dependencies: hdf5, name
   hdf5 = disabler()
 endif
 
-if (fc.run(files('../src/tests/test_minimal.f90'), dependencies: hdf5, name: 'HDF5').returncode() != 0)
-  hdf5 = disabler()
-endif
+# spills test file into source directory. Need to PR Meson to allow working dir spec or env:
+# if (fc.run(files('../src/tests/test_minimal.f90'), dependencies: hdf5, name: 'HDF5').returncode() != 0)
+#  hdf5 = disabler()
+# endif
 
 if not meson.is_subproject()
   assert(hdf5.found(), 'hdf5 library is required for h5fortran')
