@@ -113,7 +113,7 @@ exists = h5exist("my.h5", "/foo")
 
 ## check variable shape, rank/ndims
 
-`h5f%rank == h5f%ndims` for convenience, both methods are equivalent.
+`h5f%ndims` we didn't use `%rank` to avoid confusion with intrinsic "rank()"
 
 ```fortran
 call h5f%initialize('test.h5', status='old',action='r')
@@ -121,7 +121,7 @@ call h5f%initialize('test.h5', status='old',action='r')
 integer :: drank
 integer(hsize_t), allocatable :: dims(:)
 
-drank = h5f%rank('/foo')
+drank = h5f%ndims('/foo')
 call h5f%shape('/foo',dims)
 
 if (drank /= size(dims)) error stop

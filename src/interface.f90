@@ -24,6 +24,7 @@ public :: hdf5_file, hdf5_close, toLower, h5write, h5read, h5exist, is_hdf5, &
 
 !> Workaround for Intel 19.1 / 2020 bug with /stand:f18
 !> error #6410: This name has not been declared as an array or a function.   [RANK]
+!> GCC 10.2.0 generates spurious Wsurprising from having this here.
 intrinsic :: rank
 
 !> main type
@@ -48,7 +49,7 @@ contains
 procedure, public :: initialize => hdf_initialize, finalize => hdf_finalize, &
   write_group, writeattr, &
   open => hdf_open_group, close => hdf_close_group, flush => hdf_flush, &
-  rank => hdf_get_ndims, ndims => hdf_get_ndims, &
+  ndims => hdf_get_ndims, &
   shape => hdf_get_shape, layout => hdf_get_layout, chunks => hdf_get_chunk, &
   exist => hdf_check_exist, exists => hdf_check_exist, &
   is_contig => hdf_is_contig, is_chunked => hdf_is_chunked
