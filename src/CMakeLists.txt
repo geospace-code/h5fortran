@@ -78,6 +78,36 @@ endif
 ")
 configure_file(reader_lt.in.f90 reader_lt.f90)
 
+set(writer_template "
+integer(HID_T)  :: sid, did
+integer(HSIZE_T) :: dims(rank(value))
+integer :: ier
+
+dims = shape(value)
+select type (value)
+type is (real(real64))
+  call hdf_setup_write(self,dname, H5T_NATIVE_DOUBLE, dims,sid,did, ier, chunk_size)
+  if (ier == 0) call h5dwrite_f(did, H5T_NATIVE_DOUBLE, value, dims, ier)
+type is (real(real32))
+  call hdf_setup_write(self,dname, H5T_NATIVE_REAL, dims,sid,did, ier, chunk_size)
+  if (ier == 0) call h5dwrite_f(did, H5T_NATIVE_REAL, value, dims, ier)
+type is (integer(int32))
+  call hdf_setup_write(self,dname, H5T_NATIVE_INTEGER, dims,sid,did, ier, chunk_size)
+  if (ier == 0) call h5dwrite_f(did, H5T_NATIVE_INTEGER, value, dims, ier)
+class default
+  ier = 6
+end select
+
+if(ier == 0) call hdf_wrapup(did, sid, ier)
+
+if (present(ierr)) ierr = ier
+if (check(ier, self%filename, dname)) then
+  if (present(ierr)) return
+  error stop
+endif
+")
+configure_file(writer.in.f90 writer.f90)
+
 set(writer_lt_template "
 type(hdf5_file) :: h
 integer :: ier
@@ -108,5 +138,5 @@ configure_file(writer_lt.in.f90 writer_lt.f90)
 target_sources(h5fortran PRIVATE
 interface.f90
 read.f90 ${CMAKE_CURRENT_BINARY_DIR}/reader.f90 ${CMAKE_CURRENT_BINARY_DIR}/reader_lt.f90
-write.f90 writer.f90 ${CMAKE_CURRENT_BINARY_DIR}/writer_lt.f90
+write.f90 ${CMAKE_CURRENT_BINARY_DIR}/writer.f90 ${CMAKE_CURRENT_BINARY_DIR}/writer_lt.f90
 string_utils.f90 ${CMAKE_CURRENT_BINARY_DIR}/pathlib.f90)

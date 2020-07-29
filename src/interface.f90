@@ -191,10 +191,11 @@ class(*), intent(in) :: value
 integer, intent(out), optional :: ierr
 end subroutine hdf_write_scalar
 
-module subroutine hdf_write_1d(self,dname,value, ierr)
+module subroutine hdf_write_1d(self,dname,value, ierr, chunk_size)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:)
+integer, intent(in), optional :: chunk_size(rank(value))
 integer, intent(out), optional :: ierr
 end subroutine hdf_write_1d
 
