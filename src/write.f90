@@ -16,16 +16,7 @@ module procedure writeattr
 
 integer :: ier
 
-if(.not.self%is_open) error stop 'h5fortran:write: file handle is not open'
-
-!call self%write(dname, ier)
-
-! if (ier == 0) call h5ltpath_valid_f(self%lid, dname, .true., exists, ier)
-
-! if (.not.exists) then
-!   write(stderr,*) 'ERROR: variable ' // dname // ' must be created before writing ' // attr
-!   ier = -1
-! endif
+if(.not.self%is_open) error stop 'h5fortran:writeattr: file handle is not open'
 
 call h5ltset_attribute_string_f(self%lid, dname, attr, attrval, ier)
 

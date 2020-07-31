@@ -87,10 +87,9 @@ call h5f%initialize(path//'/test_attr.h5')
 
 call h5f%write('/x', 1)
 
-call h5f%writeattr('/x','note','this is just a little number', ierr)
-if (ierr /= 0) error stop
+call h5f%writeattr('/x', 'note','this is just a little number')
 
-call h5f%writeattr('/x', 'foo', 'hi')
+call h5f%writeattr('/x', 'hello', 'hi')
 
 call h5f%finalize()
 
