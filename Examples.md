@@ -50,6 +50,40 @@ The flush request is on a per-file basis, so if multiple files are open, flush e
 call h5f%flush()
 ```
 
+## rad / write attributes to variable
+
+Note that HDF5 character attributes are scalar while int32, real32, real64 attributes are 1D vectors.
+
+Assume variable "/x" exists and then see these examples:
+
+### write attributes
+
+```fortran
+call h%writeattr('/x', 'note','this is just a little number')
+call h%writeattr('/x', 'hello', 'hi')
+call h%writeattr('/x', 'life', [42])
+call h%writeattr('/x', 'life_float', [42._real32, 84._real32])
+call h%writeattr('/x', 'life_double', [42._real64])
+```
+
+### read attributes
+
+For attributes, HDF5 character values are *space-terminated* instead of null terminated.
+
+```fortran
+character(1024) :: attr_str
+integer :: attr_int(1)
+real(real32) :: attr32(2)
+real(real64) :: attr64(1)
+
+call h%readattr('/x', 'note', attr_str)
+if (attr_str /= 'this is just a little number') error stop 'readattr value note'
+
+call h%readattr('/x', 'life', attr_int)
+call h%readattr('/x', 'life_float', attr32)
+call h%readattr('/x', 'life_double', attr64)
+```
+
 ## create temporary "scratch" file
 
 Analogous to regular Fortran `open(status='scratch')`, the file created will attempt to be deleted.

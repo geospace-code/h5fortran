@@ -32,7 +32,9 @@ Polymorphic API with read/write for types int32, real32, real64 with rank:
 * scalar (0-D)
 * 1-D .. 7-D
 
-as well as character (string) variables and attributes.
+as well as **character (string)**
+
+HDF5 **attributes** are also supported for read/write with type character, int32, real32, real64.
 
 Array slicing on read is supported, that is, reading part of a disk HDF5 array into a variable of matching shape.
 
