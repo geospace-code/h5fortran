@@ -1,11 +1,11 @@
 program test_attributes
 
 use, intrinsic:: iso_fortran_env, only: int32, real32, real64, stderr=>error_unit
-use h5fortran, only: hdf5_file
+use h5fortran, only: hdf5_file, h5write_attr
 
 implicit none (type, external)
 
-character(:), allocatable :: path
+character(:), allocatable :: path, filename
 character(256) :: argv
 integer :: i,l
 
@@ -17,11 +17,16 @@ endif
 path = trim(argv)
 print *, 'test path: ', path
 
+filename = path // '/test_attr.h5'
 
-call test_write_attributes(path//'/test_attr.h5')
+
+call test_write_attributes(filename)
 print *,'PASSED: HDF5 write attributes'
 
-call test_read_attributes(path//'/test_attr.h5')
+call h5write_attr(filename, '/x', 'str29', '29')
+call h5write_attr(filename, '/x', 'int29', [29])
+
+call test_read_attributes(filename)
 print *, 'PASSED: HDF5 read attributes'
 
 contains

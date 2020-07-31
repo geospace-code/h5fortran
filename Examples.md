@@ -66,6 +66,14 @@ call h%writeattr('/x', 'life_float', [42._real32, 84._real32])
 call h%writeattr('/x', 'life_double', [42._real64])
 ```
 
+or for the high level interface:
+
+```fortran
+call h5write_attr('myfile.h5', '/x', 'date', [2020,4,1])
+
+call h5write_attr('myfile.h5', '/x', 'units', 'Nm^-2')
+```
+
 ### read attributes
 
 For attributes, HDF5 character values are *space-terminated* instead of null terminated.
