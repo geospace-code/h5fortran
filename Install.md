@@ -83,7 +83,7 @@ include(FetchContent)
 
 FetchContent_Declare(h5fortran_proj
   GIT_REPOSITORY https://github.com/geospace-code/h5fortran.git
-  GIT_TAG master  # whatever desired version is
+  GIT_TAG v2.11.1
 )
 
 FetchContent_MakeAvailable(h5fortran_proj)
