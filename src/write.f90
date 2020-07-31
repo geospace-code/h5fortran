@@ -47,7 +47,7 @@ endif
 
 if(size(dims) >= 2) then
   if(self%debug) print *, 'DEBUG:setup_write: deflate: ' // dname
-  call hdf_set_deflate(self, dims, pid, ierr, chunk_size)
+  call set_deflate(self, dims, pid, ierr, chunk_size)
 endif
 
 if(size(dims) == 0) then
@@ -70,7 +70,7 @@ if (check(ierr, self%filename, dname)) return
 end subroutine hdf_setup_write
 
 
-subroutine hdf_set_deflate(self, dims, pid, ierr, chunk_size)
+subroutine set_deflate(self, dims, pid, ierr, chunk_size)
 class(hdf5_file), intent(inout) :: self
 integer(HSIZE_T), intent(in) :: dims(:)
 integer(HID_T), intent(out) :: pid
@@ -78,8 +78,6 @@ integer, intent(out) :: ierr
 integer, intent(in), optional :: chunk_size(:)
 
 integer(HSIZE_T) :: cs(size(dims))
-
-if(.not.self%is_open) error stop 'h5fortran:write: file handle is not open'
 
 pid = 0
 if (self%comp_lvl < 1 .or. self%comp_lvl > 9) return
@@ -112,9 +110,9 @@ if (check(ierr, self%filename)) return
 call h5pset_deflate_f(pid, self%comp_lvl, ierr)
 if (check(ierr, self%filename)) return
 
-if(self%debug) print *,'TRACE: set_deflate done'
+if(self%debug) print *,'TRACE:set_deflate done'
 
-end subroutine hdf_set_deflate
+end subroutine set_deflate
 
 
 subroutine guess_chunk_size(dims, chunk_size)
