@@ -78,20 +78,20 @@ end subroutine testGroup
 
 subroutine test_write_attributes(path)
 
-type(hdf5_file) :: h5f
+type(hdf5_file) :: h
 character(*), intent(in) :: path
 
-integer :: ierr
+call h%initialize(path//'/test_attr.h5')
 
-call h5f%initialize(path//'/test_attr.h5')
+call h%write('/x', 1)
 
-call h5f%write('/x', 1)
+call h%writeattr('/x', 'note','this is just a little number')
+call h%writeattr('/x', 'hello', 'hi')
+call h%writeattr('/x', 'life', [42])
+call h%writeattr('/x', 'life_float', [42._real32])
+call h%writeattr('/x', 'life_double', [42._real64])
 
-call h5f%writeattr('/x', 'note','this is just a little number')
-
-call h5f%writeattr('/x', 'hello', 'hi')
-
-call h5f%finalize()
+call h%finalize()
 
 end subroutine test_write_attributes
 

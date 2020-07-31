@@ -158,4 +158,5 @@ configure_file(
 hdf5_src = files('interface.f90',
   'read.f90', meson.current_build_dir() / 'reader.f90', meson.current_build_dir() / 'reader_lt.f90',
   'write.f90', meson.current_build_dir() /  'writer.f90', meson.current_build_dir() / 'writer_lt.f90',
+  'attributes.f90',
   'string_utils.f90', meson.current_build_dir() / 'pathlib.f90')

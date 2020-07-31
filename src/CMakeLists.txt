@@ -139,4 +139,5 @@ target_sources(h5fortran PRIVATE
 interface.f90
 read.f90 ${CMAKE_CURRENT_BINARY_DIR}/reader.f90 ${CMAKE_CURRENT_BINARY_DIR}/reader_lt.f90
 write.f90 ${CMAKE_CURRENT_BINARY_DIR}/writer.f90 ${CMAKE_CURRENT_BINARY_DIR}/writer_lt.f90
+attributes.f90
 string_utils.f90 ${CMAKE_CURRENT_BINARY_DIR}/pathlib.f90)

@@ -45,9 +45,9 @@ integer :: libversion(3)  !< major, minor, rel
 
 
 contains
-!> initialize HDF5 file
+!> define methods (procedures)
 procedure, public :: initialize => hdf_initialize, finalize => hdf_finalize, &
-  write_group, writeattr, &
+  write_group, &
   open => hdf_open_group, close => hdf_close_group, flush => hdf_flush, &
   ndims => hdf_get_ndims, &
   shape => hdf_get_shape, layout => hdf_get_layout, chunks => hdf_get_chunk, &
@@ -55,19 +55,24 @@ procedure, public :: initialize => hdf_initialize, finalize => hdf_finalize, &
   is_contig => hdf_is_contig, is_chunked => hdf_is_chunked
 
 !> write group or dataset integer/real
-generic, public   :: write => hdf_write_scalar, hdf_write_1d, hdf_write_2d, hdf_write_3d, &
+generic, public :: write => hdf_write_scalar, hdf_write_1d, hdf_write_2d, hdf_write_3d, &
 hdf_write_4d, hdf_write_5d, hdf_write_6d, hdf_write_7d
 
+!> write attributes
+generic, public :: writeattr => writeattr_char, writeattr_num
+
 !> read dataset integer/real
-generic, public   :: read => &
+generic, public :: read => &
 hdf_read_scalar, hdf_read_1d, hdf_read_2d, hdf_read_3d, &
   hdf_read_4d,hdf_read_5d, hdf_read_6d, hdf_read_7d
 
 !> private methods
+!! each method must be declared here, and above as a generic, public
 procedure,private :: hdf_write_scalar, hdf_write_1d, hdf_write_2d, hdf_write_3d, &
   hdf_write_4d, hdf_write_5d, hdf_write_6d, hdf_write_7d, &
 hdf_read_scalar, hdf_read_1d, hdf_read_2d, hdf_read_3d, &
-  hdf_read_4d, hdf_read_5d, hdf_read_6d, hdf_read_7d
+  hdf_read_4d, hdf_read_5d, hdf_read_6d, hdf_read_7d, &
+writeattr_char, writeattr_num
 
 end type hdf5_file
 
@@ -364,11 +369,23 @@ class(hdf5_file), intent(inout) :: self
 integer, intent(out), optional :: ierr
 end subroutine hdf_close_group
 
-module subroutine writeattr(self,dname,attr,attrval, ierr)
+end interface
+
+
+interface  !< attributes.f90
+
+module subroutine writeattr_char(self, dname, attr, attrval, ierr)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname, attr, attrval
 integer, intent(out), optional :: ierr
-end subroutine writeattr
+end subroutine writeattr_char
+
+module subroutine writeattr_num(self, dname, attr, attrval, ierr)
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: dname, attr
+class(*), intent(in) :: attrval(:)
+integer, intent(out), optional :: ierr
+end subroutine writeattr_num
 
 end interface
 

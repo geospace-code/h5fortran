@@ -6,28 +6,11 @@ h5dcreate_f, &
 h5pset_chunk_f, h5pset_deflate_f, h5pset_shuffle_f, h5pset_fletcher32_f, h5pcreate_f, H5P_DATASET_CREATE_F, h5pclose_f, &
 h5gopen_f
 
-use H5LT, only: h5ltpath_valid_f, h5ltset_attribute_string_f, h5ltmake_dataset_string_f
+use H5LT, only: h5ltpath_valid_f, h5ltmake_dataset_string_f
 
 implicit none (type, external)
 
 contains
-
-module procedure writeattr
-
-integer :: ier
-
-if(.not.self%is_open) error stop 'h5fortran:writeattr: file handle is not open'
-
-call h5ltset_attribute_string_f(self%lid, dname, attr, attrval, ier)
-
-if (present(ierr)) ierr = ier
-if (check(ier, self%filename, dname)) then
-  if (present(ierr)) return
-  error stop
-endif
-
-end procedure writeattr
-
 
 subroutine hdf_setup_write(self, dname, dtype, dims, sid, did, ierr, chunk_size)
 class(hdf5_file), intent(inout) :: self
