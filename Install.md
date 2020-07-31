@@ -50,6 +50,13 @@ cmake --build build
 cmake --install build
 ```
 
+then to link into your existing program from the command line (if not using CMake FetchContent as is suggested):
+
+```sh
+gfortran -I~/lib/h5fortran/include myprogram.f90 ~/lib/h5fortran/libh5fortran.a
+```
+
+
 ### [optional] create distributable archive
 
 If you wish to create a .zip archive that is usable on systems with compatible Fortran ABI:
