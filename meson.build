@@ -1,6 +1,6 @@
 project('h5fortran', 'fortran',
   meson_version : '>=0.52.0',
-  version : '2.11.0',
+  version : '2.11.1',
   default_options : ['default_library=static', 'buildtype=release', 'warning_level=3'])
 
 subdir('meson')

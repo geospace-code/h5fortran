@@ -92,6 +92,17 @@ call h%readattr('/x', 'life_float', attr32)
 call h%readattr('/x', 'life_double', attr64)
 ```
 
+or for the high level interface:
+
+```fortran
+integer :: idate(3)
+character(16) :: unit_str
+
+call h5read_attr('myfile.h5', '/x', 'date', idate)
+
+call h5read_attr('myfile.h5', '/x', 'units', unit_str)
+```
+
 ## create temporary "scratch" file
 
 Analogous to regular Fortran `open(status='scratch')`, the file created will attempt to be deleted.

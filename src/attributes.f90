@@ -148,6 +148,46 @@ endif
 end procedure writeattr_num_lt
 
 
+module procedure readattr_char_lt
+
+type(hdf5_file) :: h
+integer :: ier
+
+call h%initialize(filename, ier, status='old')
+
+call h%readattr_char(dname, attr, attrval, ier)
+
+if (ier == 0) call h%finalize(ier)
+
+if (present(ierr)) ierr = ier
+if (check(ier, filename, dname)) then
+  if (present(ierr)) return
+  error stop
+endif
+
+end procedure readattr_char_lt
+
+
+module procedure readattr_num_lt
+
+type(hdf5_file) :: h
+integer :: ier
+
+call h%initialize(filename, ier, status='old')
+
+call h%readattr_num(dname, attr, attrval, ier)
+
+if (ier == 0) call h%finalize(ier)
+
+if (present(ierr)) ierr = ier
+if (check(ier, filename, dname)) then
+  if (present(ierr)) return
+  error stop
+endif
+
+end procedure readattr_num_lt
+
+
 subroutine attr_shape_check(self, dname, attr, asize, ierr)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname, attr

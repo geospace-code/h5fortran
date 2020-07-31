@@ -1,7 +1,7 @@
 program test_attributes
 
 use, intrinsic:: iso_fortran_env, only: int32, real32, real64, stderr=>error_unit
-use h5fortran, only: hdf5_file, h5write_attr
+use h5fortran, only: hdf5_file, h5write_attr, h5read_attr
 
 implicit none (type, external)
 
@@ -21,12 +21,20 @@ filename = path // '/test_attr.h5'
 
 
 call test_write_attributes(filename)
-print *,'PASSED: HDF5 write attributes'
-
 call h5write_attr(filename, '/x', 'str29', '29')
 call h5write_attr(filename, '/x', 'int29', [29])
+print *,'PASSED: HDF5 write attributes'
+
 
 call test_read_attributes(filename)
+call h5read_attr(filename, '/x', 'str29', argv)
+if (argv /= '29') error stop 'readattr_lt string'
+block
+  integer :: i32(1)
+  call h5read_attr(filename, '/x', 'int29', i32)
+  if (i32(1) /= 29) error stop 'readattr_lt integer'
+end block
+
 print *, 'PASSED: HDF5 read attributes'
 
 contains

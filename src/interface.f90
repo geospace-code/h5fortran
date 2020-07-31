@@ -19,7 +19,7 @@ use string_utils, only : toLower, strip_trailing_null, truncate_string_null
 
 implicit none (type, external)
 private
-public :: hdf5_file, hdf5_close, toLower, h5write, h5read, h5exist, is_hdf5, h5write_attr, &
+public :: hdf5_file, hdf5_close, toLower, h5write, h5read, h5exist, is_hdf5, h5write_attr, h5read_attr, &
   check, hdf_shape_check, hdf_get_slice, hdf_wrapup, hsize_t, strip_trailing_null, truncate_string_null
 
 !> Workaround for Intel 19.1 / 2020 bug with /stand:f18
@@ -90,6 +90,10 @@ end interface h5read
 interface h5write_attr
 procedure writeattr_num_lt, writeattr_char_lt
 end interface h5write_attr
+
+interface h5read_attr
+procedure readattr_num_lt, readattr_char_lt
+end interface h5read_attr
 
 
 !> Submodules
@@ -424,6 +428,21 @@ character(*), intent(in) :: dname, attr
 class(*), intent(in) :: attrval(:)
 integer, intent(out), optional :: ierr
 end subroutine writeattr_num_lt
+
+module subroutine readattr_char_lt(filename, dname, attr, attrval, ierr)
+character(*), intent(in) :: filename
+character(*), intent(in) :: dname, attr
+character(*), intent(inout) :: attrval
+!! intent(inout) for character
+integer, intent(out), optional :: ierr
+end subroutine readattr_char_lt
+
+module subroutine readattr_num_lt(filename, dname, attr, attrval, ierr)
+character(*), intent(in) :: filename
+character(*), intent(in) :: dname, attr
+class(*), intent(out) :: attrval(:)
+integer, intent(out), optional :: ierr
+end subroutine readattr_num_lt
 
 end interface
 

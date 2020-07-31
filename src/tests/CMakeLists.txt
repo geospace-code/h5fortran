@@ -8,6 +8,9 @@ set_tests_properties(h5fortran:minimal PROPERTIES FIXTURES_SETUP h5lib)
 add_executable(test_attributes test_attributes.f90)
 target_link_libraries(test_attributes PRIVATE h5fortran::h5fortran)
 add_test(NAME h5fortran:attributes COMMAND $<TARGET_FILE:test_attributes> ${tmpdir})
+if(${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU)
+  target_compile_options(test_attributes PRIVATE -Wno-compare-reals)
+endif()
 set_tests_properties(h5fortran:attributes PROPERTIES
   SKIP_RETURN_CODE 77
   FIXTURES_REQUIRED h5lib)
