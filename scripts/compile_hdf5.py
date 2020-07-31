@@ -8,20 +8,18 @@ Use the full compiler path if it's not getting the right compiler.
 * FC: Fortran compiler name or path
 * CC: C compiler name or path
 """
-import subprocess
-import shutil
-import tempfile
-import logging
-from pathlib import Path
-from argparse import ArgumentParser
 import typing as T
 import sys
 import os
+import subprocess
+import shutil
+import argparse
+import tempfile
+from pathlib import Path
 
 # ========= user parameters ======================
 BUILDDIR = "build"
 HDF5_TAG = "1.12/master"
-HDF5_GIT = "https://bitbucket.hdfgroup.org/scm/hdffv/hdf5.git"
 
 
 # ========= end of user parameters ================
@@ -30,13 +28,13 @@ nice = ["nice"] if sys.platform == "linux" else []
 
 
 def cli():
-    p = ArgumentParser(description="Compile HDF library")
+    p = argparse.ArgumentParser(description="Compile HDF5 library")
     p.add_argument(
         "compiler",
         help="compiler to build libraries for",
         choices=["gcc", "intel", "ibmxl"],
     )
-    p.add_argument("-prefix", help="toplevel path to install libraries under")
+    p.add_argument("-prefix", help="top-level directory to install libraries under")
     p.add_argument(
         "-workdir",
         help="top-level directory to build under (can be deleted when done)",
@@ -57,7 +55,10 @@ def cli():
     else:
         raise ValueError(f"unknown compiler {compiler}")
 
-    hdf5({"prefix": prefix, "workdir": P.workdir}, env)
+    hdf5(
+        {"prefix": Path(prefix).expanduser(), "workdir": Path(P.workdir).expanduser()},
+        env=env,
+    )
 
 
 def hdf5(dirs: T.Dict[str, Path], env: T.Mapping[str, str]):
@@ -86,13 +87,15 @@ For Windows, use HDF5 binaries from HDF Group.
 https://www.hdfgroup.org/downloads/hdf5/
 Instead of this, it is generally best to use MSYS2 or Windows Subsystem for Linux
             """
-        raise SystemExit(msg)
+        raise NotImplementedError(msg)
 
     hdf5_name = "hdf5"
     install_dir = dirs["prefix"] / hdf5_name
     source_dir = dirs["workdir"] / hdf5_name
 
-    git_update(source_dir, HDF5_GIT, tag=HDF5_TAG)
+    git_url = "https://bitbucket.hdfgroup.org/scm/hdffv/hdf5.git"
+
+    git_download(source_dir, git_url, HDF5_TAG)
 
     cmd = [
         "./configure",
@@ -107,20 +110,32 @@ Instead of this, it is generally best to use MSYS2 or Windows Subsystem for Linu
     subprocess.check_call(nice + cmd)
 
 
-def git_update(path: Path, repo: str, tag: str = None):
+def git_download(path: Path, repo: str, tag: str):
     """
-    Use Git to update a local repo, or clone it if not already existing.
-
-    we use cwd= instead of "git -C" for very old Git versions that might be on your HPC.
+    Use Git to download code repo.
     """
     GITEXE = shutil.which("git")
 
     if not GITEXE:
-        logging.error("Git not available.")
-        return
+        raise FileNotFoundError("Git not found.")
+
+    git_version = (
+        subprocess.check_output([GITEXE, "--version"], universal_newlines=True)
+        .strip()
+        .split()[-1]
+    )
+    print("Using Git", git_version)
 
     if path.is_dir():
-        subprocess.check_call([GITEXE, "-C", str(path), "pull"])
+        # don't use "git -C" for old HPC
+        ret = subprocess.run([GITEXE, "checkout", tag], cwd=str(path))
+        if ret.returncode != 0:
+            ret = subprocess.run([GITEXE, "fetch"], cwd=str(path))
+            if ret.returncode != 0:
+                raise RuntimeError(
+                    f"could not fetch {path}  Maybe try removing this directory."
+                )
+            subprocess.check_call([GITEXE, "checkout", tag], cwd=str(path))
     else:
         # shallow clone
         if tag:
@@ -141,8 +156,15 @@ def git_update(path: Path, repo: str, tag: str = None):
             subprocess.check_call([GITEXE, "clone", repo, "--depth", "1", str(path)])
 
 
-def get_compilers(**kwargs) -> T.Mapping[str, str]:
-    """ get paths to compilers """
+def get_compilers(compiler_name: str, **kwargs) -> T.Mapping[str, str]:
+    """ get paths to compilers
+
+    Parameters
+    ----------
+
+    compiler_name: str
+        arbitrary string naming compiler--to give useful error message when compiler not found.
+    """
     env = os.environ
 
     for k, v in kwargs.items():
@@ -150,18 +172,22 @@ def get_compilers(**kwargs) -> T.Mapping[str, str]:
         if v not in c:
             c = shutil.which(v)
         if not c:
-            raise FileNotFoundError(v)
+            raise FileNotFoundError(
+                f"Compiler {compiler_name} was not found: {k}."
+                " Did you load the compiler shell environment first?"
+            )
         env.update({k: c})
 
     return env
 
 
 def gcc_compilers() -> T.Mapping[str, str]:
-    return get_compilers(FC="gfortran", CC="gcc", CXX="g++")
+    return get_compilers("GNU", FC="gfortran", CC="gcc", CXX="g++")
 
 
 def intel_compilers() -> T.Mapping[str, str]:
     return get_compilers(
+        "Intel",
         FC="ifort",
         CC="icl" if os.name == "nt" else "icc",
         CXX="icl" if os.name == "nt" else "icpc",
@@ -169,7 +195,7 @@ def intel_compilers() -> T.Mapping[str, str]:
 
 
 def ibmxl_compilers() -> T.Mapping[str, str]:
-    return get_compilers(FC="xlf", CC="xlc", CXX="xlc++")
+    return get_compilers("IBM XL", FC="xlf", CC="xlc", CXX="xlc++")
 
 
 if __name__ == "__main__":
