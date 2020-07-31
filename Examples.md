@@ -50,7 +50,7 @@ The flush request is on a per-file basis, so if multiple files are open, flush e
 call h5f%flush()
 ```
 
-## rad / write attributes to variable
+## read / write attributes to variable
 
 Note that HDF5 character attributes are scalar while int32, real32, real64 attributes are 1D vectors.
 
