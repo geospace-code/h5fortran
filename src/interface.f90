@@ -45,7 +45,7 @@ integer :: libversion(3)  !< major, minor, rel
 
 
 contains
-!> define methods (procedures)
+!> define methods (procedures) that don't need generic procedure
 procedure, public :: initialize => hdf_initialize, finalize => hdf_finalize, &
   write_group, &
   open => hdf_open_group, close => hdf_close_group, flush => hdf_flush, &
@@ -54,6 +54,8 @@ procedure, public :: initialize => hdf_initialize, finalize => hdf_finalize, &
   exist => hdf_check_exist, exists => hdf_check_exist, &
   is_contig => hdf_is_contig, is_chunked => hdf_is_chunked
 
+!> below are procedure that need generic mapping (type or rank agnostic)
+
 !> write group or dataset integer/real
 generic, public :: write => hdf_write_scalar, hdf_write_1d, hdf_write_2d, hdf_write_3d, &
 hdf_write_4d, hdf_write_5d, hdf_write_6d, hdf_write_7d
@@ -61,18 +63,19 @@ hdf_write_4d, hdf_write_5d, hdf_write_6d, hdf_write_7d
 !> write attributes
 generic, public :: writeattr => writeattr_char, writeattr_num
 
-!> read dataset integer/real
+!> read attributes
+generic, public :: readattr => readattr_char, readattr_num
+
+!> read dataset
 generic, public :: read => &
-hdf_read_scalar, hdf_read_1d, hdf_read_2d, hdf_read_3d, &
-  hdf_read_4d,hdf_read_5d, hdf_read_6d, hdf_read_7d
+hdf_read_scalar, hdf_read_1d, hdf_read_2d, hdf_read_3d, hdf_read_4d,hdf_read_5d, hdf_read_6d, hdf_read_7d
 
 !> private methods
 !! each method must be declared here, and above as a generic, public
-procedure,private :: hdf_write_scalar, hdf_write_1d, hdf_write_2d, hdf_write_3d, &
-  hdf_write_4d, hdf_write_5d, hdf_write_6d, hdf_write_7d, &
-hdf_read_scalar, hdf_read_1d, hdf_read_2d, hdf_read_3d, &
-  hdf_read_4d, hdf_read_5d, hdf_read_6d, hdf_read_7d, &
-writeattr_char, writeattr_num
+procedure,private :: &
+hdf_write_scalar, hdf_write_1d, hdf_write_2d, hdf_write_3d, hdf_write_4d, hdf_write_5d, hdf_write_6d, hdf_write_7d, &
+hdf_read_scalar, hdf_read_1d, hdf_read_2d, hdf_read_3d, hdf_read_4d, hdf_read_5d, hdf_read_6d, hdf_read_7d, &
+writeattr_char, writeattr_num, readattr_char, readattr_num
 
 end type hdf5_file
 
@@ -297,7 +300,8 @@ end function hdf_is_chunked
 module subroutine hdf_read_scalar(self, dname, value, ierr)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-class(*), intent(inout)      :: value
+class(*), intent(inout)        :: value
+!! intent(inout) for character
 integer, intent(out), optional :: ierr
 end subroutine hdf_read_scalar
 
@@ -373,6 +377,21 @@ end interface
 
 
 interface  !< attributes.f90
+
+module subroutine readattr_char(self, dname, attr, attrval, ierr)
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: dname, attr
+character(*), intent(inout) :: attrval
+!! intent(inout) for character
+integer, intent(out), optional :: ierr
+end subroutine readattr_char
+
+module subroutine readattr_num(self, dname, attr, attrval, ierr)
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: dname, attr
+class(*), intent(out) :: attrval(:)
+integer, intent(out), optional :: ierr
+end subroutine readattr_num
 
 module subroutine writeattr_char(self, dname, attr, attrval, ierr)
 class(hdf5_file), intent(in) :: self

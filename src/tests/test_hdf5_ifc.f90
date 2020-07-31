@@ -42,9 +42,6 @@ print *,'PASSED: HDF5 array write / read'
 call test_readwrite_lt(path)
 print *,'PASSED: easy read / write'
 
-call test_write_attributes(path)
-print *,'PASSED: HDF5 attributes'
-
 call test_writeExistingVariable(path)
 print *,'PASSED: write existing variable'
 
@@ -74,26 +71,6 @@ call h5f%close()
 call h5f%finalize()
 
 end subroutine testGroup
-
-
-subroutine test_write_attributes(path)
-
-type(hdf5_file) :: h
-character(*), intent(in) :: path
-
-call h%initialize(path//'/test_attr.h5')
-
-call h%write('/x', 1)
-
-call h%writeattr('/x', 'note','this is just a little number')
-call h%writeattr('/x', 'hello', 'hi')
-call h%writeattr('/x', 'life', [42])
-call h%writeattr('/x', 'life_float', [42._real32])
-call h%writeattr('/x', 'life_double', [42._real64])
-
-call h%finalize()
-
-end subroutine test_write_attributes
 
 
 subroutine test_writeExistingVariable(path)

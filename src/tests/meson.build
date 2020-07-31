@@ -6,6 +6,9 @@ test('minimal', test_minimal,
   priority: 100,
   timeout: 10)
 
+test_attr = executable('test_attributes', 'test_attributes.f90', dependencies: hdf5_interface)
+test('attributes', test_attr, args: meson.current_build_dir(), suite: 'h5basic', timeout: 10)
+
 test_error = executable('test_error', 'test_error.f90',
   dependencies: hdf5_interface)
 test('errors', test_error,

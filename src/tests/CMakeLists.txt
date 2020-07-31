@@ -5,6 +5,13 @@ target_link_libraries(test_minimal PRIVATE h5fortran::h5fortran)
 add_test(NAME h5fortran:minimal COMMAND $<TARGET_FILE:test_minimal> ${tmpdir})
 set_tests_properties(h5fortran:minimal PROPERTIES FIXTURES_SETUP h5lib)
 
+add_executable(test_attributes test_attributes.f90)
+target_link_libraries(test_attributes PRIVATE h5fortran::h5fortran)
+add_test(NAME h5fortran:attributes COMMAND $<TARGET_FILE:test_attributes> ${tmpdir})
+set_tests_properties(h5fortran:attributes PROPERTIES
+  SKIP_RETURN_CODE 77
+  FIXTURES_REQUIRED h5lib)
+
 add_executable(test_errors test_error.f90)
 target_link_libraries(test_errors PRIVATE h5fortran::h5fortran)
 add_test(NAME h5fortran:ErrorCheck COMMAND $<TARGET_FILE:test_errors> ${tmpdir})
