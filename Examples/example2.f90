@@ -1,6 +1,6 @@
 program example2
 
-use h5fortran
+use h5fortran, only : hdf5_file
 implicit none (type, external)
 
 character(:), allocatable :: filename
