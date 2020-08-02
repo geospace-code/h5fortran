@@ -1,12 +1,13 @@
 #include <stdio.h>
+#include <stdint.h>
 #include "fortran_interface.h"
 
 
 
 int main(void) {
 
-long x = 321;
-long y;
+int_least32_t x = 321;
+int_least32_t y;
 
 char filename[256] = "h5fortran_example3.h5";
 
@@ -15,7 +16,7 @@ write_int32(filename, &x);
 read_int32(filename, &y);
 
 if (x != y) {
-  fprintf(stderr, "ERROR: read/write mismatch value. Expected %ld but got %ld", x, y);
+  fprintf(stderr, "ERROR: read/write mismatch value. Expected %d but got %d", x, y);
   return 1;
 }
 

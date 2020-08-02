@@ -1,12 +1,13 @@
 #include <iostream>
+#include <cstdint>
 #include "fortran_interface.hpp"
 
 
 
 int main(void) {
 
-long x = 321;
-long y;
+int_least32_t x = 321;
+int_least32_t y;
 
 char filename[256] = "h5fortran_example4.h5";
 

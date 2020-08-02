@@ -20,3 +20,12 @@ jobs:
       env:
         FC: gfortran-9
         CC: gcc-9
+
+    - name: build examples
+      run: |
+        cmake -B Examples/build -S Examples
+        cmake --build Examples/build
+
+    - name: test examples
+      run: ctest -V
+      working-directory: Examples/build
