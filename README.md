@@ -4,6 +4,7 @@
 [![CDash](./archive/cdash.png)](https://my.cdash.org/index.php?project=h5fortran)
 ![ci_linux](https://github.com/geospace-code/h5fortran/workflows/ci_linux/badge.svg)
 ![ci_mac](https://github.com/geospace-code/h5fortran/workflows/ci_mac/badge.svg)
+![ci_windows](https://github.com/geospace-code/h5fortran/workflows/ci_windows/badge.svg)
 
 Simple, robust, thin HDF5 polymorphic read/write interface.
 Reading or writing {real64,real32,int32} from scalar to 7d is as simple as
