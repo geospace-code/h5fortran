@@ -3,10 +3,10 @@ program example1
 use h5fortran
 implicit none (type, external)
 
-character(1024) :: filename
+character(:), allocatable :: filename
 integer :: i32
 
-filename = '/tmp/h5fortran_example1.h5'
+filename = 'h5fortran_example1.h5'
 
 call h5write(filename, '/x', 123)
 

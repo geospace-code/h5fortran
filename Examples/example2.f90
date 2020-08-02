@@ -1,0 +1,23 @@
+program example2
+
+use h5fortran
+implicit none (type, external)
+
+character(:), allocatable :: filename
+integer :: i32
+
+type(hdf5_file) :: h5f
+
+filename = 'h5fortran_example2.h5'
+
+call h5f%initialize(filename, status='replace')
+call h5f%write('/x', 123)
+call h5f%finalize()
+
+call h5f%initialize(filename, status='old', action='r')
+call h5f%read('/x', i32)
+if (i32 /= 123) error stop 'incorrect value read'
+
+print *, 'OK: example 2'
+
+end program
