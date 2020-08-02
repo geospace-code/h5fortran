@@ -27,3 +27,11 @@ Example 1 shows the functional one-step interface of h5fortran
 ## Example 2
 
 Example 2 shows the object-oriented interface of h5fortran, which may offer faster performance if more than one variable is being read or written.
+
+## Example 3
+
+Example 3 is of a C main program calling a Fortran interface to h5fortran
+
+## Example 4
+
+Example 4 is of a C++ main program calling a Fortran interface to h5fortran

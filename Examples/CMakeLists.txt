@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 project(h5fortranExample
-LANGUAGES C Fortran)
+LANGUAGES C CXX Fortran)
 enable_testing()
 
 # --- h5fortran template
@@ -16,6 +16,10 @@ FetchContent_MakeAvailable(h5fortran_proj)
 # this helps linters e.g. Visual Studio Intellicode work properly
 set(CMAKE_EXPORT_COMPILE_COMMANDS on)
 
+# --- Fortran interface for examples
+add_library(fortran_interface fortran_interface.f90)
+target_link_libraries(fortran_interface PRIVATE h5fortran::h5fortran)
+
 # --- example 1
 add_executable(example1 example1.f90)
 target_link_libraries(example1 h5fortran::h5fortran)
@@ -27,8 +31,11 @@ target_link_libraries(example2 h5fortran::h5fortran)
 add_test(NAME h5fortran:Example2 COMMAND $<TARGET_FILE:example2>)
 
 # --- example 3
-add_library(fortran_interface fortran_interface.f90)
-target_link_libraries(fortran_interface PRIVATE h5fortran::h5fortran)
 add_executable(example3 example3.c)
 target_link_libraries(example3 fortran_interface)
 add_test(NAME h5fortran:Example3 COMMAND $<TARGET_FILE:example3>)
+
+# --- example 4
+add_executable(example4 example4.cxx)
+target_link_libraries(example4 fortran_interface)
+add_test(NAME h5fortran:Example4 COMMAND $<TARGET_FILE:example4>)
