@@ -32,13 +32,19 @@ end subroutine read_int32
 function cstr2fstr(c_str) result(f_str)
 
 character(kind=C_CHAR), intent(in) :: c_str(:)
-character(len=size(c_str)) :: f_str
+character(len=size(c_str)) :: buf
+character(:), allocatable :: f_str
 integer :: i
+
+buf = ""
+!! clean variable, will get extra garbled text otherwise, maybe blank but non-trimmable character
 
 do i = 1, size(c_str)
   if (c_str(i) == C_NULL_CHAR) exit
-  f_str(i:i) = c_str(i)
+  buf(i:i) = c_str(i)
 enddo
+
+f_str = trim(buf)
 
 end function cstr2fstr
 
