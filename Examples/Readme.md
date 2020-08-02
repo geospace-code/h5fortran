@@ -36,3 +36,5 @@ Example 3 is of a C main program calling a Fortran interface to h5fortran
 ## Example 4
 
 Example 4 is of a C++ main program calling a Fortran interface to h5fortran
+
+For a C++ header-only object-oriented HDF5 library, consider [HighFive](https://github.com/BlueBrain/HighFive)
