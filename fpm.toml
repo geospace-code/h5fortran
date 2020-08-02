@@ -1,0 +1,11 @@
+name = "h5fortran"
+version = "2.11.4"
+license = "BSD 3-Clause"
+author = "Michael Hirsch"
+copyright = "2020 Michael Hirsch"
+
+# this is not currently working with FPM. THe current development version (Aug 2020) of FPM
+# seems to put strict constraints on what a package contains, and doesn't seem to account for
+# Fortran submodules.
+# I suggest to FPM team that to handle packages of arbitrary complexity that FPM consider
+# invoking CMake or Meson if CMakeLists.txt or meson.build present
