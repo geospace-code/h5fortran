@@ -27,8 +27,8 @@ target_link_libraries(example2 h5fortran::h5fortran)
 add_test(NAME h5fortran:Example2 COMMAND $<TARGET_FILE:example2>)
 
 # --- example 3
-add_library(example3_f example3.f90)
-target_link_libraries(example3_f PRIVATE h5fortran::h5fortran)
+add_library(fortran_interface fortran_interface.f90)
+target_link_libraries(fortran_interface PRIVATE h5fortran::h5fortran)
 add_executable(example3 example3.c)
-target_link_libraries(example3 example3_f)
+target_link_libraries(example3 fortran_interface)
 add_test(NAME h5fortran:Example3 COMMAND $<TARGET_FILE:example3>)
