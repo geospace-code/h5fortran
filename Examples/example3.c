@@ -8,7 +8,7 @@ int main(void) {
 long x = 321;
 long y;
 
-char filename[256] = "h5fortran_example3.h5\0";
+char filename[256] = "h5fortran_example3.h5";
 
 write_int32(filename, &x);
 
