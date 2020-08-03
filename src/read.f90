@@ -19,17 +19,18 @@ drank = -1
 if (self%exist(dname)) then
   call h5ltget_dataset_ndims_f(self%lid, dname, drank, ier)
 else
-  write(stderr, *) 'ERROR:get_shape: ' // dname // ' does not exist in ' // self%filename
+  write(stderr, *) 'ERROR:get_ndims: ' // dname // ' does not exist in ' // self%filename
 endif
 
 end procedure hdf_get_ndims
+
 
 module procedure hdf_get_shape
 !! must get dims before info, as "dims" must be allocated or segfault occurs.
 integer(SIZE_T) :: dsize
 integer :: dtype, drank, ier
 
-if(.not.self%is_open) error stop 'h5fortran:read: file handle is not open'
+if(.not.self%is_open) error stop 'h5fortran:get_shape: file handle is not open'
 
 ier = -1
 
@@ -130,15 +131,7 @@ integer :: ierr
 
 exists = .false.
 
-if(.not.self%is_open) then
-  write(stderr,*) 'h5fortran:read: file handle is not open' // self%filename
-  return
-endif
-
-if (self%lid == 0) then
-  write(stderr,*) 'ERROR: must initialize file before checking existance of variable'
-  return
-endif
+if(.not.self%is_open) error stop 'h5fortran:exist: file handle is not open'
 
 call h5ltpath_valid_f(self%lid, &
   path=dname, &
