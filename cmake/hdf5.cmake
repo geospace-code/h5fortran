@@ -82,14 +82,11 @@ message(STATUS "HDF5 library: ${HDF5_LIBRARIES}")
 set(CMAKE_REQUIRED_INCLUDES ${HDF5_INCLUDE_DIRS})
 set(CMAKE_REQUIRED_LIBRARIES ${HDF5_LIBRARIES})
 
-set(ENV{BINDIR} ${CMAKE_CURRENT_BINARY_DIR})
-
 include(CheckFortranSourceCompiles)
 file(READ ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_minimal.f90 _code)
 check_fortran_source_compiles(${_code} HDF5_compiles_ok SRC_EXT f90)
 
 include(CheckFortranSourceRuns)
-file(READ ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_minimal.f90 _code)
 check_fortran_source_runs(${_code} HDF5_runs_ok SRC_EXT f90)
 
 set(HDF5OK false)

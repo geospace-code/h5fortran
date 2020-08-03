@@ -7,19 +7,7 @@ use h5fortran, only : toLower, hdf5_file, strip_trailing_null, truncate_string_n
 
 implicit none (type, external)
 
-character(:), allocatable :: path
-character(256) :: argv
-integer :: i,l
-
-call get_command_argument(1, argv, length=l, status=i)
-if (i /= 0 .or. l == 0) then
-  write(stderr,*) 'please specify test directory e.g. /tmp'
-  error stop 77
-endif
-path = trim(argv)
-print *, 'test path: ', path
-
-call test_string_rw(path)
+call test_string_rw()
 print *,'PASSED: HDF5 string write/read'
 
 call test_lowercase()
@@ -49,16 +37,17 @@ if (.not.strip_trailing_null(hello // c_null_char) == hello) error stop 'problem
 end subroutine test_strip_null
 
 
-subroutine test_string_rw(path)
+subroutine test_string_rw()
 
 type(hdf5_file) :: h
 
-character(*), intent(in) :: path
 character(2) :: value
 character(1024) :: val1k
 character(:), allocatable :: final
 
-call h%initialize(path//'/test_string.h5', status='replace', action='w')
+character(*), parameter :: path='test_string.h5'
+
+call h%initialize(path, status='replace', action='w')
 
 print *, 'test_string_rw: write'
 call h%write('/little', '42')
@@ -66,7 +55,7 @@ call h%finalize()
 
 
 print *, 'test_string_rw: read'
-call h%initialize(path//'/test_string.h5', status='old', action='r')
+call h%initialize(path, status='old', action='r')
 call h%read('/little', value)
 
 if (value /= '42') then

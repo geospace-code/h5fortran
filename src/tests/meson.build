@@ -11,18 +11,15 @@ test('attributes', test_attr, args: meson.current_build_dir(), suite: 'h5basic',
 
 test_error = executable('test_error', 'test_error.f90',
   dependencies: hdf5_interface)
-test('errors', test_error,
-  args: meson.current_build_dir(),
-  suite: 'h5basic',
-  timeout: 10)
+test('errors', test_error, suite: 'h5basic', timeout: 10)
 
 test_exist = executable('test_exist', 'test_exist.f90',
   dependencies: hdf5_interface)
-test('exist', test_exist, args: meson.current_build_dir(), suite: 'h5basic', timeout: 10)
+test('exist', test_exist, suite: 'h5basic', timeout: 10)
 
 test_str = executable('test_string', 'test_string.f90',
   dependencies: hdf5_interface)
-test('string', test_str, args: meson.current_build_dir(), suite: 'h5basic', timeout: 10)
+test('string', test_str, suite: 'h5basic', timeout: 10)
 
 
 test_deflate = executable('test_deflate', 'test_deflate.f90',
@@ -48,20 +45,17 @@ shapes = executable('shapes_hdf5', 'test_shape.f90',
 
 testfn = meson.current_build_dir()/'p5.h5'
 
-test('Shapes', shapes,
-  args: [testfn,'/group69/flux_node'],
+test('shape', shapes,
   is_parallel: false,
   suite: 'h5basic',
-  priority: -100,
+  priority: 50,
   timeout: 15)
 
-if get_option('test_shaky')
 python = find_program('python')
 
-test('CheckShapes', python,
-  args: [files('test_shape.py'), testfn, '/group69/flux_node'],
+test('check_shape', python,
+  args: [files('test_shape.py')],
   is_parallel: false,
   suite: 'h5shaky',
   priority: -100,
-  timeout: 30)
-endif
+  timeout: 90)

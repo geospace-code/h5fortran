@@ -11,8 +11,6 @@ enable_testing()
 include(CTest)
 include(FeatureSummary)
 
-option(test_shaky "run shaky tests" OFF)
-
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
 # set(HDF5_FIND_DEBUG true)
 

@@ -6,16 +6,10 @@ use, intrinsic:: iso_fortran_env, only: real64, stdout=>output_unit, stderr=>err
 implicit none (type, external)
 
 type(hdf5_file) :: h
-character(1024) :: argv
-character(:), allocatable :: path
+character(*), parameter :: path = 'test_shape.h5'
 integer(HSIZE_T), allocatable :: dims(:)
 
 integer :: d2(3,4), d7(2,1,3,4,7,6,5)
-
-if (command_argument_count() /= 1) error stop "filename dset_name"
-call get_command_argument(1, argv)
-path = trim(argv) // '/test_shape.h5'
-
 
 call h%initialize(path, status='scratch')
 call h%write('/d2', d2)

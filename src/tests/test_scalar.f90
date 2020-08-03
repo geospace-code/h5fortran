@@ -26,7 +26,7 @@ enddo
 
 r1 = i1
 
-call h5f%initialize(path//'/test.h5', status='replace')
+call h5f%initialize(path//'/test_scalar.h5', status='replace')
 !! scalar tests
 call h5f%write('/scalar_int', 42_int32)
 call h5f%write('/scalar_real', -1._real32)
@@ -36,7 +36,7 @@ call h5f%write('/real1',r1)
 call h5f%write('/ai1', i1)
 call h5f%finalize()
 
-call h5f%initialize(path//'/test.h5', status='old',action='r')
+call h5f%initialize(path//'/test_scalar.h5', status='old',action='r')
 call h5f%read('/scalar_int', it)
 call h5f%read('/scalar_real', rt)
 if (.not.(rt==it .and. it==42)) then
@@ -54,7 +54,7 @@ allocate(i1t(dims(1)))
 call h5f%read('/ai1',i1t)
 if (.not.all(i1==i1t)) error stop 'integer 1-D: read does not match write'
 
-if (.not. h5f%filename == path//'/test.h5') then
+if (.not. h5f%filename == path//'/test_scalar.h5') then
   write(stderr,*) h5f%filename // ' mismatch filename'
   error stop
 endif

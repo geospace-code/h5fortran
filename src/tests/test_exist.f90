@@ -5,23 +5,13 @@ use h5fortran, only: hdf5_file, h5write, h5exist, is_hdf5, hdf5_close
 
 implicit none (type, external)
 
-character(1024) :: argv
-integer :: i,l
-
-
-call get_command_argument(1, argv, length=l, status=i)
-if (i /= 0 .or. l == 0) then
-  write(stderr,*) 'please specify test directory e.g. /tmp'
-  error stop 77
-endif
-
-call test_is_hdf5(argv)
+call test_is_hdf5()
 print *, 'OK: is_hdf5'
 
-call test_exist(argv)
+call test_exist()
 print *, 'OK: exist'
 
-call test_scratch(argv)
+call test_scratch()
 print *, 'OK: scratch'
 
 call test_multifiles()
@@ -29,29 +19,24 @@ print *, 'OK: multiple files open at once'
 
 contains
 
-subroutine test_is_hdf5(path)
+subroutine test_is_hdf5()
+integer :: i
 
-character(*), intent(in) :: path
-character(:), allocatable :: fn
+if(is_hdf5('apidfjpj-8j9ejfpq984jfp89q39SHf.h5')) error stop 'test_exist: non-existant file declared hdf5'
 
-if(is_hdf5(trim(path) // '/apidfjpj-8j9ejfpq984jfp89q39SHf.h5')) error stop 'test_exist: non-existant file declared hdf5'
-fn = trim(path) // '/not_hdf5.h5'
-open(newunit=i, file=fn, action='write', status='replace')
+open(newunit=i, file='not_hdf5.h5', action='write', status='replace')
 write(i,*) 'I am not an HDF5 file.'
 close(i)
 
-if(is_hdf5(fn)) error stop 'text files are not hdf5'
+if(is_hdf5('not_hdf5.h5')) error stop 'text files are not hdf5'
 
 end subroutine test_is_hdf5
 
 
-subroutine test_exist(path)
-
-character(*), intent(in) :: path
+subroutine test_exist()
 type(hdf5_file) :: h
-character(:), allocatable :: fn
-
-fn = trim(path) // '/foo.h5'
+integer :: i
+character(*), parameter :: fn = 'exist.h5'
 
 call h5write(fn, '/x', 42)
 if(.not.is_hdf5(fn)) error stop 'file does not exist'
@@ -76,12 +61,11 @@ if (h5exist(fn, '/foo')) error stop 'foo not exist'
 end subroutine test_exist
 
 
-subroutine test_scratch(path)
-character(*), intent(in) :: path
+subroutine test_scratch()
 logical :: e
 type(hdf5_file) :: h
 
-call h%initialize(trim(path)//"/scratch.h5", status='scratch')
+call h%initialize("scratch.h5", status='scratch')
 call h%write("/foo", 42)
 call h%finalize()
 
