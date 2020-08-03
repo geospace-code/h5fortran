@@ -40,13 +40,22 @@ add_test(NAME h5fortran:test_exist COMMAND $<TARGET_FILE:test_exist>
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 set_tests_properties(h5fortran:test_exist PROPERTIES FIXTURES_REQUIRED h5lib)
 
+add_executable(test_scalar test_scalar.f90)
+target_link_libraries(test_scalar h5fortran::h5fortran)
+if(${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU)
+  target_compile_options(test_scalar PRIVATE -Wno-compare-reals)
+endif()
+add_test(NAME h5fortran:test_scalar COMMAND $<TARGET_FILE:test_scalar>
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+set_tests_properties(h5fortran:test_scalar PROPERTIES FIXTURES_REQUIRED h5lib)
+
 add_executable(test_string test_string.f90)
 target_link_libraries(test_string h5fortran::h5fortran)
 add_test(NAME h5fortran:test_string COMMAND $<TARGET_FILE:test_string>
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 set_tests_properties(h5fortran:test_string PROPERTIES FIXTURES_REQUIRED h5lib)
 
-add_executable(testh5 test_hdf5_ifc.f90 test_lt.f90 test_scalar.f90)
+add_executable(testh5 test_hdf5_ifc.f90 test_lt.f90)
 target_link_libraries(testh5 PRIVATE h5fortran::h5fortran)
 if(${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU)
   target_compile_options(testh5 PRIVATE -Wno-compare-reals)

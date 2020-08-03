@@ -47,14 +47,13 @@ character(:), allocatable :: final
 
 character(*), parameter :: path='test_string.h5'
 
-call h%initialize(path, status='replace', action='w')
+call h%initialize(path, status='replace')
 
-print *, 'test_string_rw: write'
 call h%write('/little', '42')
+call h%write('/MySentence', 'this is a little sentence.')
+
 call h%finalize()
 
-
-print *, 'test_string_rw: read'
 call h%initialize(path, status='old', action='r')
 call h%read('/little', value)
 

@@ -21,11 +21,14 @@ test('errors', test_error, suite: 'h5basic', timeout: 10)
 test_exist = executable('test_exist', 'test_exist.f90', dependencies: hdf5_interface)
 test('exist', test_exist, suite: 'h5basic', timeout: 10)
 
+test_scalar = executable('test_scalar', 'test_scalar.f90', dependencies: hdf5_interface)
+test('scalar', test_scalar, suite: 'h5basic', timeout: 10)
+
 test_str = executable('test_string', 'test_string.f90', dependencies: hdf5_interface)
 test('string', test_str, suite: 'h5basic', timeout: 10)
 
 testh5 = executable('test_hdf5',
-  sources: ['test_hdf5_ifc.f90', 'test_lt.f90', 'test_scalar.f90'],
+  sources: ['test_hdf5_ifc.f90', 'test_lt.f90'],
   dependencies: hdf5_interface,
   fortran_args: quiet)
 test('h5interface', testh5, suite: 'h5basic', timeout: 15)

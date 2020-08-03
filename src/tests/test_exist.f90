@@ -1,4 +1,4 @@
-program test_exists
+program exist_tests
 !! test "exist" variable
 use, intrinsic :: iso_fortran_env, only : stderr=>error_unit
 use h5fortran, only: hdf5_file, h5write, h5exist, is_hdf5, hdf5_close
@@ -35,14 +35,12 @@ end subroutine test_is_hdf5
 
 subroutine test_exist()
 type(hdf5_file) :: h
-integer :: i
 character(*), parameter :: fn = 'exist.h5'
 
 call h5write(fn, '/x', 42)
 if(.not.is_hdf5(fn)) error stop 'file does not exist'
 
-call h%initialize(fn, i)
-if(i/=0) error stop
+call h%initialize(fn)
 if (.not.h%is_open) error stop 'file is open'
 if (.not. h%exist('/x')) error stop 'x exists'
 

@@ -5,12 +5,8 @@ use, intrinsic:: iso_fortran_env, only: int32, real32, real64, stderr=>error_uni
 use h5fortran, only: hdf5_file, h5write, h5read
 
 use test_lt, only : test_readwrite_lt
-use test_scalar, only : test_scalar_rw
 
 implicit none (type, external)
-
-call test_scalar_rw()
-print *,'PASSED: HDF5 scalar real and integer'
 
 call testGroup()
 print *,'PASSED: HDF5 group'

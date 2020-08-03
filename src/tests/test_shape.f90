@@ -17,7 +17,7 @@ call h%write('/d7', d7)
 
 call h%shape('/d2', dims)
 if (h%ndims('/d2') /= size(dims)) error stop 'rank /= size(dims)'
-if (any(dims /= shape(d2))) error stop '7-D: file shape not match variable shape'
+if (any(dims /= shape(d2))) error stop '2-D: file shape not match variable shape'
 
 call h%shape('/d7', dims)
 if (h%ndims('/d7') /= size(dims)) error stop 'rank /= size(dims)'
