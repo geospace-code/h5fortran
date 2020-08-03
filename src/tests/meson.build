@@ -12,8 +12,10 @@ test('array', test_array, suite: 'h5basic', timeout: 10)
 test_attr = executable('test_attributes', 'test_attributes.f90', dependencies: hdf5_interface)
 test('attributes', test_attr, suite: 'h5basic', timeout: 10)
 
-test_error = executable('test_error', 'test_error.f90',
-  dependencies: hdf5_interface)
+test_deflate = executable('test_deflate', 'test_deflate.f90', dependencies: hdf5_interface)
+test('deflate', test_deflate, suite: 'h5basic', timeout: 10)
+
+test_error = executable('test_error', 'test_error.f90', dependencies: hdf5_interface)
 test('errors', test_error, suite: 'h5basic', timeout: 10)
 
 test_exist = executable('test_exist', 'test_exist.f90',
@@ -23,14 +25,6 @@ test('exist', test_exist, suite: 'h5basic', timeout: 10)
 test_str = executable('test_string', 'test_string.f90',
   dependencies: hdf5_interface)
 test('string', test_str, suite: 'h5basic', timeout: 10)
-
-
-test_deflate = executable('test_deflate', 'test_deflate.f90',
-  dependencies: hdf5_interface)
-test('deflate', test_deflate,
-  args: meson.current_build_dir(),
-  suite: 'h5basic',
-  timeout: 10)
 
 testh5 = executable('test_hdf5',
   sources: ['test_hdf5_ifc.f90', 'test_lt.f90', 'test_scalar.f90'],

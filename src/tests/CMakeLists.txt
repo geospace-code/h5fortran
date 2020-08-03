@@ -24,6 +24,13 @@ if(${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU)
 endif()
 set_tests_properties(h5fortran:attributes PROPERTIES FIXTURES_REQUIRED h5lib)
 
+add_executable(test_deflate test_deflate.f90)
+target_link_libraries(test_deflate PRIVATE h5fortran::h5fortran)
+add_test(NAME h5fortran:deflate COMMAND $<TARGET_FILE:test_deflate>
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+set_tests_properties(h5fortran:deflate PROPERTIES
+  FIXTURES_REQUIRED h5lib)
+
 add_executable(test_errors test_error.f90)
 target_link_libraries(test_errors h5fortran::h5fortran)
 add_test(NAME h5fortran:ErrorCheck COMMAND $<TARGET_FILE:test_errors>
@@ -58,13 +65,7 @@ set_tests_properties(h5fortran:module PROPERTIES
   FIXTURES_REQUIRED h5lib
   SKIP_RETURN_CODE 77)
 
-add_executable(test_deflate test_deflate.f90)
-target_link_libraries(test_deflate PRIVATE h5fortran::h5fortran)
-add_test(NAME h5fortran:deflate COMMAND $<TARGET_FILE:test_deflate> ${tmpdir}
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-set_tests_properties(h5fortran:deflate PROPERTIES
-  SKIP_RETURN_CODE 77
-  FIXTURES_REQUIRED h5lib)
+
 
 add_executable(test_shape test_shape.f90)
 target_link_libraries(test_shape PRIVATE h5fortran::h5fortran)

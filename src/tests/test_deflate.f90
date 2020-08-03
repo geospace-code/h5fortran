@@ -7,33 +7,20 @@ use hdf5, only: H5D_CHUNKED_F, H5D_CONTIGUOUS_F, hsize_t
 
 implicit none (type, external)
 
-character(:), allocatable :: path
-character(256) :: argv
-integer :: i,l
-
-call get_command_argument(1, argv, length=l, status=i)
-if (i /= 0 .or. l == 0) then
-  write(stderr,*) 'please specify test directory e.g. /tmp'
-  error stop 77
-endif
-path = trim(argv)
-print *, 'test path: ', path
-
-call test_hdf5_deflate(path)
+call test_hdf5_deflate()
 print *,'PASSED: HDF5 compression'
 
 contains
 
-subroutine test_hdf5_deflate(path)
+subroutine test_hdf5_deflate()
 type(hdf5_file) :: h5f
-character(*), intent(in) :: path
 integer(hsize_t), parameter :: N=1000
 integer(hsize_t) :: crat, chunks(3)
 integer ::  fsize, layout
 
 integer, allocatable :: ibig2(:,:), ibig3(:,:,:)
 real(real32), allocatable :: big2(:,:), big3(:,:,:)
-character(:), allocatable :: fn
+character(*), parameter :: fn1='deflate1.h5', fn2='deflate2.h5', fn3='deflate3.h5', fn4='deflate4.h5'
 
 allocate(ibig2(N,N), ibig3(N,N,4), big2(N,N), big3(N,N,4))
 
@@ -42,18 +29,17 @@ ibig3 = 0
 big2 = 0
 big3 = 0
 
-fn = path // '/deflate1.h5'
-call h5f%initialize(fn, status='new', action='rw', comp_lvl=1, debug=.true.)
+call h5f%initialize(fn1, status='replace', comp_lvl=1, debug=.true.)
 call h5f%write('/big2', big2, chunk_size=[100,100])
 call h5f%write('/small_contig', big2(:5,:5))
 call h5f%finalize()
 
-inquire(file=fn, size=fsize)
+inquire(file=fn1, size=fsize)
 crat = (N*N*storage_size(big2)/8) / fsize
 print '(A,F6.2,A,I6)','filesize (Mbytes): ',fsize/1e6, '   2D compression ratio:',crat
 if (h5f%comp_lvl > 0 .and. crat < 10) error stop '2D low compression'
 
-call h5f%initialize(fn, status='old', action='r', debug=.false.)
+call h5f%initialize(fn1, status='old', action='r', debug=.false.)
 
 layout = h5f%layout('/big2')
 if(layout /= H5D_CHUNKED_F) error stop '#1 not chunked layout'
@@ -70,8 +56,8 @@ if(any(chunks(:2) /= -1)) error stop '#1 get_chunk mismatch'
 call h5f%finalize()
 
 !======================================
-fn = path // '/deflate2.h5'
-call h5f%initialize(fn, status='new',action='rw',comp_lvl=1, debug=.true.)
+
+call h5f%initialize(fn2, status='new',action='rw',comp_lvl=1, debug=.true.)
 call h5f%write('/big3', big3, chunk_size=[100,100,1])
 
 call h5f%write('/big3_autochunk', big3)
@@ -80,15 +66,15 @@ if(any(chunks /= [63,125,1])) error stop '#3 auto chunk unexpected chunk size'
 
 call h5f%finalize()
 
-inquire(file=fn, size=fsize)
+inquire(file=fn2, size=fsize)
 crat = (2*N*N*storage_size(big3)/8) / fsize
 
 print '(A,F6.2,A,I6)','#2 filesize (Mbytes): ',fsize/1e6, '   3D compression ratio:',crat
 
 if (h5f%comp_lvl > 0 .and. crat < 10) error stop '#2 3D low compression'
 !======================================
-fn = path // '/deflate3.h5'
-call h5f%initialize(fn, status='new',action='rw',comp_lvl=1, debug=.true.)
+
+call h5f%initialize(fn3, status='new',action='rw',comp_lvl=1, debug=.true.)
 
 call h5f%write('/ibig3', ibig3(:N-10,:N-20,:))
 call h5f%chunks('/ibig3', chunks)
@@ -96,19 +82,19 @@ if(any(chunks /= [62,123,1])) error stop '#3 auto chunk unexpected chunk size'
 
 call h5f%finalize()
 
-inquire(file=fn, size=fsize)
+inquire(file=fn3, size=fsize)
 crat = (N*N*storage_size(ibig3)/8) / fsize
 
 print '(A,F6.2,A,I6)','#3 filesize (Mbytes): ',fsize/1e6, '   3D compression ratio:',crat
 
 if (h5f%comp_lvl > 0 .and. crat < 10) error stop '#3 3D low compression'
 !======================================
-fn = path // '/deflate4.h5'
-call h5f%initialize(fn, status='new',action='rw',comp_lvl=1, debug=.true.)
+
+call h5f%initialize(fn4, status='new',action='rw',comp_lvl=1, debug=.true.)
 call h5f%write('/ibig2', ibig2, chunk_size=[100,100])
 call h5f%finalize()
 
-inquire(file=fn, size=fsize)
+inquire(file=fn4, size=fsize)
 crat = (N*N*storage_size(ibig2)/8) / fsize
 
 print '(A,F6.2,A,I6)','#4 filesize (Mbytes): ',fsize/1e6, '   3D compression ratio:',crat
