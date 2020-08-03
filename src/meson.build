@@ -61,20 +61,7 @@ type(hdf5_file) :: h
 integer :: ier
 
 call h%initialize(filename, ier, status='old', action='r')
-
-if (ier == 0) then
-select type (value)
-type is (real(real64))
-  call h%read(dname, value, ier)
-type is (real(real32))
-  call h%read(dname, value, ier)
-type is (integer(int32))
-  call h%read(dname, value, ier)
-class default
-  ier = 6
-end select
-endif
-
+if (ier == 0) call h%read(dname, value, ier)
 if (ier == 0) call h%finalize(ier)
 
 if (present(ierr)) ierr = ier
@@ -130,18 +117,7 @@ type(hdf5_file) :: h
 integer :: ier
 
 call h%initialize(filename, ier, status='unknown')
-
-select type (value)
-type is (real(real64))
-  if (ier == 0) call h%write(dname, value, ier)
-type is (real(real32))
-  if (ier == 0) call h%write(dname, value, ier)
-type is (integer(int32))
-  if (ier == 0) call h%write(dname, value, ier)
-class default
-  ier = 6
-end select
-
+if (ier == 0) call h%write(dname, value, ier)
 if (ier == 0) call h%finalize(ier)
 
 if (present(ierr)) ierr = ier
