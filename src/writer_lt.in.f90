@@ -6,32 +6,7 @@ contains
 
 
 module procedure lt0write
-type(hdf5_file) :: h
-integer :: ier
-
-call h%initialize(filename, ier, status='unknown')
-
-select type (value)
-type is (character(*))
-  if (ier == 0) call h%write(dname, value, ier)
-type is (real(real64))
-  if (ier == 0) call h%write(dname, value, ier)
-type is (real(real32))
-  if (ier == 0) call h%write(dname, value, ier)
-type is (integer(int32))
-  if (ier == 0) call h%write(dname, value, ier)
-class default
-  ier = 6
-end select
-
-if (ier == 0) call h%finalize(ier)
-
-if (present(ierr)) ierr = ier
-if (check(ier, filename, dname)) then
-  if (present(ierr)) return
-  error stop
-endif
-
+@writer_lt_template@
 end procedure lt0write
 
 

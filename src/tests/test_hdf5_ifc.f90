@@ -7,7 +7,6 @@ use h5fortran, only: hdf5_file, h5write, h5read
 use test_lt, only : test_readwrite_lt
 use test_array, only : test_write_array, test_readwrite_array
 use test_scalar, only : test_scalar_rw
-use test_string, only : test_string_rw, test_lowercase, test_strip_null
 
 implicit none (type, external)
 
@@ -23,13 +22,6 @@ endif
 path = trim(argv)
 print *, 'test path: ', path
 
-call test_string_rw(path)
-print *,'PASSED: HDF5 string write/read'
-
-call test_lowercase()
-print *,'PASSED: HDF5 character'
-call test_strip_null()
-print *,'PASSED: null strip'
 call test_scalar_rw(path)
 print *,'PASSED: HDF5 scalar real and integer'
 call testGroup(path)

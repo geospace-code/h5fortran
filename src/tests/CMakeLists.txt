@@ -16,21 +16,28 @@ set_tests_properties(h5fortran:attributes PROPERTIES
   FIXTURES_REQUIRED h5lib)
 
 add_executable(test_errors test_error.f90)
-target_link_libraries(test_errors PRIVATE h5fortran::h5fortran)
+target_link_libraries(test_errors h5fortran::h5fortran)
 add_test(NAME h5fortran:ErrorCheck COMMAND $<TARGET_FILE:test_errors> ${tmpdir})
 set_tests_properties(h5fortran:ErrorCheck PROPERTIES
   SKIP_RETURN_CODE 77
   FIXTURES_REQUIRED h5lib)
 
 add_executable(test_exist test_exist.f90)
-target_link_libraries(test_exist PRIVATE h5fortran::h5fortran)
+target_link_libraries(test_exist h5fortran::h5fortran)
 add_test(NAME h5fortran:test_exist COMMAND $<TARGET_FILE:test_exist> ${tmpdir})
 set_tests_properties(h5fortran:test_exist PROPERTIES
   SKIP_RETURN_CODE 77
   FIXTURES_REQUIRED h5lib)
 
+add_executable(test_string test_string.f90)
+target_link_libraries(test_string h5fortran::h5fortran)
+add_test(NAME h5fortran:test_string COMMAND $<TARGET_FILE:test_string> ${tmpdir})
+set_tests_properties(h5fortran:test_string PROPERTIES
+  SKIP_RETURN_CODE 77
+  FIXTURES_REQUIRED h5lib)
+
 add_executable(testh5
-test_hdf5_ifc.f90 test_lt.f90 test_array.f90 test_scalar.f90 test_string.f90)
+test_hdf5_ifc.f90 test_lt.f90 test_array.f90 test_scalar.f90)
 target_link_libraries(testh5 PRIVATE h5fortran::h5fortran)
 if(${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU)
   target_compile_options(testh5 PRIVATE -Wno-compare-reals)
@@ -52,11 +59,9 @@ set(testfile ${tmpdir}/p5.h5)
 
 add_executable(test_shape test_shape.f90)
 target_link_libraries(test_shape PRIVATE h5fortran::h5fortran)
-add_test(NAME h5fortran:ShapeCheck COMMAND $<TARGET_FILE:test_shape> ${testfile} /group69/flux_node)
-set_tests_properties(h5fortran:ShapeCheck PROPERTIES
-  FIXTURES_REQUIRED "h5lib;h5files"
-  REQUIRED_FILES ${testfile}
-  RUN_SERIAL true
+add_test(NAME h5fortran:shape_check COMMAND $<TARGET_FILE:test_shape> ${tmpdir})
+set_tests_properties(h5fortran:shape_check PROPERTIES
+  FIXTURES_REQUIRED h5lib
   SKIP_RETURN_CODE 77)
 
 if(WIN32 AND MSVC)

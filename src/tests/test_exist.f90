@@ -1,11 +1,11 @@
-program exist_tests
+program test_exists
 !! test "exist" variable
 use, intrinsic :: iso_fortran_env, only : stderr=>error_unit
 use h5fortran, only: hdf5_file, h5write, h5exist, is_hdf5, hdf5_close
 
 implicit none (type, external)
 
-character(256) :: argv
+character(1024) :: argv
 integer :: i,l
 
 
@@ -21,7 +21,7 @@ print *, 'OK: is_hdf5'
 call test_exist(argv)
 print *, 'OK: exist'
 
-call test_scratch()
+call test_scratch(argv)
 print *, 'OK: scratch'
 
 call test_multifiles()
@@ -54,7 +54,7 @@ character(:), allocatable :: fn
 fn = trim(path) // '/foo.h5'
 
 call h5write(fn, '/x', 42)
-if(.not.is_hdf5(fn)) error stop 'hdf5 file does not exist'
+if(.not.is_hdf5(fn)) error stop 'file does not exist'
 
 call h%initialize(fn, i)
 if(i/=0) error stop
@@ -76,19 +76,17 @@ if (h5exist(fn, '/foo')) error stop 'foo not exist'
 end subroutine test_exist
 
 
-subroutine test_scratch()
-
+subroutine test_scratch(path)
+character(*), intent(in) :: path
 logical :: e
 type(hdf5_file) :: h
 
-call h%initialize(filename="scratch.h5", status='scratch')
+call h%initialize(trim(path)//"/scratch.h5", status='scratch')
 call h%write("/foo", 42)
 call h%finalize()
 
 inquire(file=h%filename, exist=e)
 if(e) error stop 'scratch file not autodeleted'
-
-print *,'OK: scratch file ', h%filename
 
 end subroutine test_scratch
 

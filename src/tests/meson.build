@@ -18,10 +18,12 @@ test('errors', test_error,
 
 test_exist = executable('test_exist', 'test_exist.f90',
   dependencies: hdf5_interface)
-test('exist', test_exist,
-  args: meson.current_build_dir(),
-  suite: 'h5basic',
-  timeout: 10)
+test('exist', test_exist, args: meson.current_build_dir(), suite: 'h5basic', timeout: 10)
+
+test_str = executable('test_string', 'test_string.f90',
+  dependencies: hdf5_interface)
+test('string', test_str, args: meson.current_build_dir(), suite: 'h5basic', timeout: 10)
+
 
 test_deflate = executable('test_deflate', 'test_deflate.f90',
   dependencies: hdf5_interface)
@@ -31,7 +33,7 @@ test('deflate', test_deflate,
   timeout: 10)
 
 testh5 = executable('test_hdf5',
-  sources: ['test_hdf5_ifc.f90', 'test_lt.f90', 'test_array.f90', 'test_scalar.f90', 'test_string.f90'],
+  sources: ['test_hdf5_ifc.f90', 'test_lt.f90', 'test_array.f90', 'test_scalar.f90'],
   dependencies: hdf5_interface,
   fortran_args: quiet)
 test('h5interface', testh5,

@@ -7,13 +7,10 @@ implicit none (type, external)
 
 character(:), allocatable :: path, filename
 character(256) :: argv
-integer :: i,l
 
-call get_command_argument(1, argv, length=l, status=i)
-if (i /= 0 .or. l == 0) then
-  write(stderr,*) 'please specify test directory e.g. /tmp'
-  error stop 77
-endif
+if(command_argument_count() /= 1) error stop 'input temporary path'
+
+call get_command_argument(1, argv)
 path = trim(argv)
 print *, 'test path: ', path
 
@@ -44,7 +41,7 @@ subroutine test_write_attributes(path)
 type(hdf5_file) :: h
 character(*), intent(in) :: path
 
-call h%initialize(path)
+call h%initialize(path, status='replace')
 
 call h%write('/x', 1)
 
@@ -70,7 +67,7 @@ real(real64) :: attr64(1)
 
 integer :: x
 
-call h%initialize(path)
+call h%initialize(path, status='old', action='r')
 
 call h%read('/x', x)
 if (x/=1) error stop 'readattr: unexpected value'

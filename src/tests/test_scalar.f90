@@ -26,10 +26,12 @@ enddo
 
 r1 = i1
 
-call h5f%initialize(path//'/test.h5', status='new',action='w')
+call h5f%initialize(path//'/test.h5', status='replace')
 !! scalar tests
 call h5f%write('/scalar_int', 42_int32)
+call h5f%write('/scalar_real', -1._real32)
 call h5f%write('/scalar_real', 42._real32)
+!! test rewrite
 call h5f%write('/real1',r1)
 call h5f%write('/ai1', i1)
 call h5f%finalize()
