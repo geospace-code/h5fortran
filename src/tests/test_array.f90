@@ -1,4 +1,4 @@
-module test_array
+program test_array
 
 use, intrinsic:: ieee_arithmetic, only: ieee_value, ieee_quiet_nan, ieee_is_nan
 use, intrinsic :: iso_fortran_env, only: real32, real64, int32, stderr=>error_unit
@@ -8,12 +8,17 @@ implicit none (type, external)
 
 real(real32) :: nan
 
+call test_write_array()
+print *,'PASSED: HDF5 array write'
+call test_readwrite_array(ng=69, nn=100, pn=5)
+print *,'PASSED: HDF5 array write / read'
+
 contains
 
-subroutine test_write_array(path)
+subroutine test_write_array()
 !! tests that compression doesn't fail for very small datasets, where it really shouldn't be used (makes file bigger)
 type(hdf5_file) :: h5f
-character(*), intent(in) :: path
+character(*), parameter :: filename = 'test_array.h5'
 
 integer(int32), dimension(4) :: i1, i1t
 integer(int32), dimension(4,4) :: i2, i2t
@@ -37,7 +42,7 @@ r1 = i1
 r2 = i2
 
 !! write test data
-call h5f%initialize(path//'/test.h5', status='old',action='rw',comp_lvl=1, verbose=.False.)
+call h5f%initialize(filename, status='old',action='rw',comp_lvl=1, verbose=.False.)
 
 call h5f%write('/int32-1d', i1)
 call h5f%write('/test/group2/int32-2d', i2)
@@ -55,7 +60,7 @@ if(ierr==0) error stop 'test_write_array: did not error for write array rank mis
 call h5f%finalize()
 
 !! Read tests
-call h5f%initialize(path//'/test.h5', status='old',action='r', verbose=.false.)
+call h5f%initialize(filename, status='old',action='r', verbose=.false.)
 !> int32
 
 call h5f%read('/int32-1d', i1t)
@@ -116,10 +121,9 @@ call h5f%finalize()
 end subroutine test_write_array
 
 
-subroutine test_readwrite_array(path,ng, nn, pn)
+subroutine test_readwrite_array(ng, nn, pn)
 !! more group
 type(hdf5_file) :: h5f
-character(*), intent(in) :: path
 integer, intent(in) :: ng, nn, pn
 
 real(real32), allocatable :: flux(:,:),fo(:)
@@ -130,7 +134,7 @@ allocate(flux(nn,ng),fo(nn))
 flux = 1.0
 write(pnc,'(I2)') pn
 
-call h5f%initialize(path//'/p'//trim(adjustl(pnc))//'.h5',  status='new')
+call h5f%initialize('test_array.h5',  status='scratch')
 
 do i = 1,ng
   write(ic,'(I2)') i
@@ -144,5 +148,4 @@ call h5f%finalize()
 
 end subroutine test_readwrite_array
 
-
-end module test_array
+end program

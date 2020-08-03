@@ -6,15 +6,23 @@ add_test(NAME h5fortran:minimal COMMAND $<TARGET_FILE:test_minimal>
 WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 set_tests_properties(h5fortran:minimal PROPERTIES FIXTURES_SETUP h5lib)
 
+add_executable(test_array test_array.f90)
+target_link_libraries(test_array PRIVATE h5fortran::h5fortran)
+add_test(NAME h5fortran:array COMMAND $<TARGET_FILE:test_array>
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+if(${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU)
+  target_compile_options(test_array PRIVATE -Wno-compare-reals)
+endif()
+set_tests_properties(h5fortran:array PROPERTIES FIXTURES_REQUIRED h5lib)
+
 add_executable(test_attributes test_attributes.f90)
 target_link_libraries(test_attributes PRIVATE h5fortran::h5fortran)
-add_test(NAME h5fortran:attributes COMMAND $<TARGET_FILE:test_attributes> ${tmpdir})
+add_test(NAME h5fortran:attributes COMMAND $<TARGET_FILE:test_attributes>
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 if(${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU)
   target_compile_options(test_attributes PRIVATE -Wno-compare-reals)
 endif()
-set_tests_properties(h5fortran:attributes PROPERTIES
-  SKIP_RETURN_CODE 77
-  FIXTURES_REQUIRED h5lib)
+set_tests_properties(h5fortran:attributes PROPERTIES FIXTURES_REQUIRED h5lib)
 
 add_executable(test_errors test_error.f90)
 target_link_libraries(test_errors h5fortran::h5fortran)
@@ -38,8 +46,7 @@ add_test(NAME h5fortran:test_string
 set_tests_properties(h5fortran:test_string PROPERTIES
   FIXTURES_REQUIRED h5lib)
 
-add_executable(testh5
-test_hdf5_ifc.f90 test_lt.f90 test_array.f90 test_scalar.f90)
+add_executable(testh5 test_hdf5_ifc.f90 test_lt.f90 test_scalar.f90)
 target_link_libraries(testh5 PRIVATE h5fortran::h5fortran)
 if(${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU)
   target_compile_options(testh5 PRIVATE -Wno-compare-reals)

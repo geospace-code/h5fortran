@@ -5,7 +5,6 @@ use, intrinsic:: iso_fortran_env, only: int32, real32, real64, stderr=>error_uni
 use h5fortran, only: hdf5_file, h5write, h5read
 
 use test_lt, only : test_readwrite_lt
-use test_array, only : test_write_array, test_readwrite_array
 use test_scalar, only : test_scalar_rw
 
 implicit none (type, external)
@@ -27,10 +26,6 @@ print *,'PASSED: HDF5 scalar real and integer'
 call testGroup(path)
 print *,'PASSED: HDF5 group'
 
-call test_write_array(path)
-print *,'PASSED: HDF5 array write'
-call test_readwrite_array(path, ng=69, nn=100, pn=5)
-print *,'PASSED: HDF5 array write / read'
 call test_readwrite_lt(path)
 print *,'PASSED: easy read / write'
 

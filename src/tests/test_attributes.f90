@@ -5,27 +5,17 @@ use h5fortran, only: hdf5_file, h5write_attr, h5read_attr
 
 implicit none (type, external)
 
-character(:), allocatable :: path, filename
-character(256) :: argv
-
-if(command_argument_count() /= 1) error stop 'input temporary path'
-
-call get_command_argument(1, argv)
-path = trim(argv)
-print *, 'test path: ', path
-
-filename = path // '/test_attr.h5'
-
+character(*), parameter :: filename = 'test_attr.h5'
+character(8) :: s32  !< arbitrary length
 
 call test_write_attributes(filename)
 call h5write_attr(filename, '/x', 'str29', '29')
 call h5write_attr(filename, '/x', 'int29', [29])
 print *,'PASSED: HDF5 write attributes'
 
-
 call test_read_attributes(filename)
-call h5read_attr(filename, '/x', 'str29', argv)
-if (argv /= '29') error stop 'readattr_lt string'
+call h5read_attr(filename, '/x', 'str29', s32)
+if (s32 /= '29') error stop 'readattr_lt string'
 block
   integer :: i32(1)
   call h5read_attr(filename, '/x', 'int29', i32)
@@ -87,7 +77,5 @@ if (attr64(1)/=42._real64) error stop 'readattr: real64'
 call h%finalize()
 
 end subroutine test_read_attributes
-
-
 
 end program
