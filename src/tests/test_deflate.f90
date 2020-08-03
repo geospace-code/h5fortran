@@ -57,7 +57,7 @@ call h5f%finalize()
 
 !======================================
 
-call h5f%initialize(fn2, status='new',action='rw',comp_lvl=1, debug=.true.)
+call h5f%initialize(fn2, status='replace',comp_lvl=1, debug=.true.)
 call h5f%write('/big3', big3, chunk_size=[100,100,1])
 
 call h5f%write('/big3_autochunk', big3)
@@ -74,7 +74,7 @@ print '(A,F6.2,A,I6)','#2 filesize (Mbytes): ',fsize/1e6, '   3D compression rat
 if (h5f%comp_lvl > 0 .and. crat < 10) error stop '#2 3D low compression'
 !======================================
 
-call h5f%initialize(fn3, status='new',action='rw',comp_lvl=1, debug=.true.)
+call h5f%initialize(fn3, status='replace',comp_lvl=1, debug=.true.)
 
 call h5f%write('/ibig3', ibig3(:N-10,:N-20,:))
 call h5f%chunks('/ibig3', chunks)
@@ -90,7 +90,7 @@ print '(A,F6.2,A,I6)','#3 filesize (Mbytes): ',fsize/1e6, '   3D compression rat
 if (h5f%comp_lvl > 0 .and. crat < 10) error stop '#3 3D low compression'
 !======================================
 
-call h5f%initialize(fn4, status='new',action='rw',comp_lvl=1, debug=.true.)
+call h5f%initialize(fn4, status='replace',comp_lvl=1, debug=.true.)
 call h5f%write('/ibig2', ibig2, chunk_size=[100,100])
 call h5f%finalize()
 

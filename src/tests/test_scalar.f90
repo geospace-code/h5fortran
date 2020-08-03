@@ -8,17 +8,16 @@ implicit none (type, external)
 
 contains
 
-subroutine test_scalar_rw(path)
+subroutine test_scalar_rw()
 !! create a new HDF5 file
 type(hdf5_file) :: h5f
-character(*), intent(in) :: path
 real(real32), allocatable :: rr1(:)
 real(real32) :: rt, r1(4)
 integer(int32) :: it, i1(4)
 integer(int32), allocatable :: i1t(:)
 integer(HSIZE_T), allocatable :: dims(:)
-
 integer :: i
+character(*), parameter :: fn = 'test_scalar.h5'
 
 do i = 1,size(i1)
   i1(i) = i
@@ -26,7 +25,7 @@ enddo
 
 r1 = i1
 
-call h5f%initialize(path//'/test_scalar.h5', status='replace')
+call h5f%initialize(fn, status='replace')
 !! scalar tests
 call h5f%write('/scalar_int', 42_int32)
 call h5f%write('/scalar_real', -1._real32)
@@ -36,7 +35,7 @@ call h5f%write('/real1',r1)
 call h5f%write('/ai1', i1)
 call h5f%finalize()
 
-call h5f%initialize(path//'/test_scalar.h5', status='old',action='r')
+call h5f%initialize(fn, status='old',action='r')
 call h5f%read('/scalar_int', it)
 call h5f%read('/scalar_real', rt)
 if (.not.(rt==it .and. it==42)) then
@@ -54,7 +53,7 @@ allocate(i1t(dims(1)))
 call h5f%read('/ai1',i1t)
 if (.not.all(i1==i1t)) error stop 'integer 1-D: read does not match write'
 
-if (.not. h5f%filename == path//'/test_scalar.h5') then
+if (.not. h5f%filename == fn) then
   write(stderr,*) h5f%filename // ' mismatch filename'
   error stop
 endif

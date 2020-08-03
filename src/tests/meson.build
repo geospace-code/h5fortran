@@ -18,41 +18,27 @@ test('deflate', test_deflate, suite: 'h5basic', timeout: 10)
 test_error = executable('test_error', 'test_error.f90', dependencies: hdf5_interface)
 test('errors', test_error, suite: 'h5basic', timeout: 10)
 
-test_exist = executable('test_exist', 'test_exist.f90',
-  dependencies: hdf5_interface)
+test_exist = executable('test_exist', 'test_exist.f90', dependencies: hdf5_interface)
 test('exist', test_exist, suite: 'h5basic', timeout: 10)
 
-test_str = executable('test_string', 'test_string.f90',
-  dependencies: hdf5_interface)
+test_str = executable('test_string', 'test_string.f90', dependencies: hdf5_interface)
 test('string', test_str, suite: 'h5basic', timeout: 10)
 
 testh5 = executable('test_hdf5',
   sources: ['test_hdf5_ifc.f90', 'test_lt.f90', 'test_scalar.f90'],
   dependencies: hdf5_interface,
   fortran_args: quiet)
-test('h5interface', testh5,
-  args: meson.current_build_dir(),
-  is_parallel: false,
-  suite: 'h5basic',
-  timeout: 15)
+test('h5interface', testh5, suite: 'h5basic', timeout: 15)
 
-shapes = executable('shapes_hdf5', 'test_shape.f90',
-  dependencies: hdf5_interface,
-  fortran_args: quiet)
-
-testfn = meson.current_build_dir()/'p5.h5'
+shapes = executable('shapes_hdf5', 'test_shape.f90', dependencies: hdf5_interface, fortran_args: quiet)
 
 test('shape', shapes,
   is_parallel: false,
-  suite: 'h5basic',
-  priority: 50,
-  timeout: 15)
+  suite: 'h5basic', priority: 50, timeout: 15)
 
 python = find_program('python')
 
 test('check_shape', python,
   args: [files('test_shape.py')],
   is_parallel: false,
-  suite: 'h5shaky',
-  priority: -100,
-  timeout: 90)
+  suite: 'h5shaky', priority: -100, timeout: 90)

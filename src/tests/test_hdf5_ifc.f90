@@ -9,41 +9,26 @@ use test_scalar, only : test_scalar_rw
 
 implicit none (type, external)
 
-character(:), allocatable :: path
-character(256) :: argv
-integer :: i,l
-
-call get_command_argument(1, argv, length=l, status=i)
-if (i /= 0 .or. l == 0) then
-  write(stderr,*) 'please specify test directory e.g. /tmp'
-  error stop 77
-endif
-path = trim(argv)
-print *, 'test path: ', path
-
-call test_scalar_rw(path)
+call test_scalar_rw()
 print *,'PASSED: HDF5 scalar real and integer'
-call testGroup(path)
+
+call testGroup()
 print *,'PASSED: HDF5 group'
 
-call test_readwrite_lt(path)
+call test_readwrite_lt()
 print *,'PASSED: easy read / write'
 
-call test_writeExistingVariable(path)
+call test_writeExistingVariable()
 print *,'PASSED: write existing variable'
-
-
-print *,'OK: HDF5 h5fortran library'
 
 contains
 
 
-subroutine testGroup(path)
+subroutine testGroup()
 
 type(hdf5_file) :: h5f
-character(*), intent(in) :: path
 
-call h5f%initialize(path//'/test_groups.h5', status='new',action='rw')
+call h5f%initialize('test_groups.h5', status='replace')
 
 call h5f%write_group('/test/')
 
@@ -60,18 +45,13 @@ call h5f%finalize()
 end subroutine testGroup
 
 
-subroutine test_writeExistingVariable(path)
+subroutine test_writeExistingVariable()
 type(hdf5_file) :: h5f
-character(*), intent(in) :: path
-character(:),allocatable :: fn
+character(*), parameter :: fn = 'overwrite.h5'
 
-fn = path//'/overwrite.h5'
-
-call h5f%initialize(fn, status='new',action='w')
-
+call h5f%initialize(fn, status='replace')
 call h5f%write('/scalar_int', 42_int32)
 call h5f%write('/int1d', [42_int32, 1_int32])
-
 call h5f%finalize()
 
 call h5f%initialize(fn, status='old',action='rw')
