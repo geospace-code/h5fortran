@@ -4,21 +4,15 @@ use, intrinsic:: iso_fortran_env, only: int32, real32, real64, stderr=>error_uni
 
 use h5fortran, only: hdf5_file, h5write, h5read
 
-use test_lt, only : test_readwrite_lt
-
 implicit none (type, external)
 
 call testGroup()
 print *,'PASSED: HDF5 group'
 
-call test_readwrite_lt()
-print *,'PASSED: easy read / write'
-
 call test_writeExistingVariable()
 print *,'PASSED: write existing variable'
 
 contains
-
 
 subroutine testGroup()
 

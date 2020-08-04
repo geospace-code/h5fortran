@@ -1,22 +1,15 @@
-module test_lt
+program test_lt
 
 use h5fortran, only : h5write, h5read
 
 implicit none (type, external)
 
-contains
-
-
-subroutine test_readwrite_lt()
-
 integer :: L, L1(8), L2(2,1), L3(1,1,1), L4(1,1,1,1), L5(1,1,1,1,1), L6(1,1,1,1,1,1), L7(1,1,1,1,1,1,1)
 
-L = 123
+L = 121242
 L2 = L; L3=L; L4=L; L5=L; L6=L; L7=L
 
 call h5write('scalar_int.h5', '/int', 42)
-
-
 call h5write('golt.h5', '/int32_0d', 121242)
 
 call h5read('golt.h5', '/int32_0d', L)
@@ -51,6 +44,4 @@ call h5read('golt.h5', '/int32_6d', L6)
 call h5write('golt.h5','/int32_7d', L7)
 call h5read('golt.h5', '/int32_7d', L7)
 
-end subroutine test_readwrite_lt
-
-end module test_lt
+end program
