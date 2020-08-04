@@ -31,8 +31,9 @@ if h5py is not None:
     print("OK: Python h5py")
 
 if shutil.which("octave-cli"):
-    cmd = f"dat=load('{fn}'); soct = size(dat.{var}); assert(all(soct == {list(f_order)}), 'expected {f_order}')"
-    subprocess.check_call(["octave-cli", cmd])
+    cmd = f"dat=load('{fn}'); soct = size(dat.{var[1:]}); assert(all(soct == {list(f_order)}), 'expected {f_order}')"
+    print(cmd)
+    subprocess.check_call(["octave-cli", "--eval", cmd])
     print("OK: GNU Octave")
 
 if shutil.which("matlab"):
