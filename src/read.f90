@@ -1,7 +1,7 @@
 submodule (h5fortran) read
 !! This submodule is for reading HDF5 via submodules
 use hdf5, only : h5dget_create_plist_f, &
-  h5pget_layout_f, h5pget_chunk_f, H5D_CONTIGUOUS_F, H5D_CHUNKED_F
+  h5pget_layout_f, h5pget_chunk_f
 use H5LT, only : h5ltpath_valid_f
 
 implicit none (type, external)
@@ -114,15 +114,6 @@ call h5dclose_f(did, ierr)
 if (check(ierr, 'ERROR:get_layout: close dataset: ' // dname //' ' // self%filename)) return
 
 end procedure hdf_get_layout
-
-
-module procedure hdf_is_contig
-hdf_is_contig = self%layout(dname) == H5D_CONTIGUOUS_F
-end procedure hdf_is_contig
-
-module procedure hdf_is_chunked
-hdf_is_chunked = self%layout(dname) == H5D_CHUNKED_F
-end procedure hdf_is_chunked
 
 
 module procedure hdf_check_exist

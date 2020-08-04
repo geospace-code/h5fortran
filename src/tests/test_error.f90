@@ -5,9 +5,6 @@ use h5fortran, only: hdf5_file
 
 implicit none (type, external)
 
-type(hdf5_file) :: h5f
-
-
 call test_nonexist_old_file()
 print *, 'OK: non-existing old file'
 call test_nonexist_unknown_file()
@@ -28,88 +25,89 @@ contains
 
 subroutine test_nonexist_old_file()
 integer :: ierr
+type(hdf5_file) :: h
 
-call h5f%initialize('not-exist.h5', ierr, status='old', action='read', verbose=.false.)
+call h%initialize('not-exist.h5', ierr, status='old', action='read', verbose=.false.)
 if (ierr==0) error stop 'should have had ierr/=0 on non-existing old file'
 end subroutine test_nonexist_old_file
 
 
 subroutine test_nonexist_unknown_file()
 integer :: ierr
+type(hdf5_file) :: h
 
-call h5f%initialize('not-exist.h5', ierr, status='unknown', action='read', verbose=.false.)
+call h%initialize('not-exist.h5', ierr, status='unknown', action='read', verbose=.false.)
 if (ierr==0) error stop 'should have had ierr/=0 on non-existing unknown read file'
 end subroutine test_nonexist_unknown_file
 
 
 subroutine test_nonhdf5_file()
 integer :: u,ierr
+type(hdf5_file) :: h
 character(*), parameter :: filename = 'bad.h5'
 
 ! create or replace zero-length file, could be any size, just not a valid HDF5 file
-open(newunit=u, file=filename, status='replace', iostat=ierr, action='write')
+open(newunit=u, file=filename, status='replace', action='write')
 close(u)
 
-call h5f%initialize(filename, ierr, status='old', action='read')
+call h%initialize(filename, ierr, status='old', action='read')
 if (ierr==0) error stop 'should have had ierr/=0 on invalid HDF5 file'
 end subroutine test_nonhdf5_file
 
 
 subroutine test_nonexist_variable()
 integer :: u,ierr
+type(hdf5_file) :: h
 character(*), parameter :: filename = 'bad.h5'
 
-call h5f%initialize(filename, status='replace', action='readwrite', verbose=.false.)
-call h5f%read('/not-exist', u, ierr)
+call h%initialize(filename, status='replace', verbose=.false.)
+call h%read('/not-exist', u, ierr)
 if(ierr==0) error stop 'test_nonexist_variable: should have ierr/=0 on non-exist variable'
-call h5f%finalize()
+call h%finalize()
 end subroutine test_nonexist_variable
 
 
 subroutine test_wrong_type()
 integer :: u
+type(hdf5_file) :: h
 character(*), parameter :: filename = 'bad.h5'
 
-print *, 'test_wrong_type: write'
+call h%initialize(filename, status='replace', verbose=.false.)
+call h%write('/real32', 42.)
+call h%finalize()
 
-call h5f%initialize(filename, status='replace', action='write', verbose=.false.)
-call h5f%write('/real32', 42.)
-call h5f%finalize()
-
-
-print *, 'test_wrong_type: read'
-
-call h5f%initialize(filename, status='old', action='read', verbose=.false.)
-call h5f%read('/real32', u)
+call h%initialize(filename, status='old', action='read', verbose=.false.)
+call h%read('/real32', u)
 if (u /= 42) error stop 'test_wrong_type: did not coerce real to integer'
-call h5f%finalize()
+call h%finalize()
 
 end subroutine test_wrong_type
 
 
 subroutine test_unknown_write()
 integer :: ierr
-character(*), parameter :: filename = 'bad.5'
+type(hdf5_file) :: h
+character(*), parameter :: filename = 'bad.h5'
 complex :: x
 
 x = (1, -1)
 
-call h5f%initialize(filename, ierr, status='replace', action='write', verbose=.false.)
-if(ierr/=0) error stop 'test_unknown_write: creating file'
-call h5f%write('/complex', x, ierr)
+call h%initialize(filename, ierr, status='replace', verbose=.false.)
+call h%write('/complex', x, ierr)
 if(ierr==0) error stop 'test_unknown_write: writing unknown type variable'
 end subroutine test_unknown_write
 
 
 subroutine test_unknown_read()
 integer :: ierr
+type(hdf5_file) :: h
 character(*), parameter :: filename = 'bad.h5'
 complex :: x
 
 x = (1, -1)
 
-call h5f%initialize(filename, status='unknown', action='readwrite', verbose=.false.)
-call h5f%read('/complex', x, ierr)
+call h%initialize(filename, status='unknown', action='readwrite', verbose=.false.)
+call h%read('/complex', x, ierr)
 if(ierr==0) error stop 'test_unknown_read: reading unknown type variable'
 end subroutine test_unknown_read
 

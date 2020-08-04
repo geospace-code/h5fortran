@@ -28,11 +28,11 @@ add_test(NAME h5fortran:deflate COMMAND $<TARGET_FILE:test_deflate>
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 set_tests_properties(h5fortran:deflate PROPERTIES FIXTURES_REQUIRED h5lib)
 
-add_executable(test_errors test_error.f90)
-target_link_libraries(test_errors h5fortran::h5fortran)
-add_test(NAME h5fortran:ErrorCheck COMMAND $<TARGET_FILE:test_errors>
+add_executable(test_error test_error.f90)
+target_link_libraries(test_error h5fortran::h5fortran)
+add_test(NAME h5fortran:error COMMAND $<TARGET_FILE:test_error>
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-set_tests_properties(h5fortran:ErrorCheck PROPERTIES FIXTURES_REQUIRED h5lib)
+set_tests_properties(h5fortran:error PROPERTIES FIXTURES_REQUIRED h5lib)
 
 add_executable(test_exist test_exist.f90)
 target_link_libraries(test_exist h5fortran::h5fortran)
@@ -74,7 +74,7 @@ set_tests_properties(h5fortran:shape PROPERTIES
   FIXTURES_SETUP h5files)
 
 if(WIN32 AND MSVC)
-  foreach(t h5fortran:minimal h5fortran:ErrorCheck h5fortran:test_exist h5fortran:module h5fortran:deflate h5fortran:ShapeCheck)
+  foreach(t h5fortran:minimal h5fortran:error h5fortran:test_exist h5fortran:module h5fortran:deflate h5fortran:ShapeCheck)
     set_tests_properties(${t} PROPERTIES ENVIRONMENT "PATH=${HDF5_ROOT}/bin;$ENV{PATH}")
   endforeach()
 endif()

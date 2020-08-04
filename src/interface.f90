@@ -4,6 +4,7 @@ use, intrinsic :: iso_c_binding, only : c_ptr, c_loc
 use, intrinsic :: iso_fortran_env, only : real32, real64, int64, int32, stderr=>error_unit
 use hdf5, only : HID_T, SIZE_T, HSIZE_T, H5F_ACC_RDONLY_F, H5F_ACC_RDWR_F, H5F_ACC_TRUNC_F, &
   H5S_ALL_F, H5S_SELECT_SET_F, &
+  H5D_CONTIGUOUS_F, H5D_CHUNKED_F, &
   H5T_NATIVE_DOUBLE, H5T_NATIVE_REAL, H5T_NATIVE_INTEGER, H5T_NATIVE_CHARACTER, H5F_SCOPE_GLOBAL_F, &
   h5open_f, h5close_f, &
   h5dopen_f, h5dclose_f, h5dget_space_f, &
@@ -293,17 +294,6 @@ module logical function hdf_check_exist(self, dname) result(exists)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
 end function hdf_check_exist
-
-module logical function hdf_is_contig(self, dname)
-class(hdf5_file), intent(in) :: self
-character(*), intent(in) :: dname
-end function hdf_is_contig
-
-module logical function hdf_is_chunked(self, dname)
-class(hdf5_file), intent(in) :: self
-character(*), intent(in) :: dname
-end function hdf_is_chunked
-
 
 module subroutine hdf_read_scalar(self, dname, value, ierr)
 class(hdf5_file), intent(in)     :: self
@@ -631,6 +621,19 @@ if (check(ier, 'ERROR: HDF5 library close')) then
 endif
 
 end subroutine hdf5_close
+
+
+logical function hdf_is_contig(self, dname)
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: dname
+hdf_is_contig = self%layout(dname) == H5D_CONTIGUOUS_F
+end function hdf_is_contig
+
+logical function hdf_is_chunked(self, dname)
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: dname
+hdf_is_chunked = self%layout(dname) == H5D_CHUNKED_F
+end function hdf_is_chunked
 
 
 logical function is_hdf5(filename)
