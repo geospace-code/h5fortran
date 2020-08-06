@@ -766,9 +766,8 @@ type is (integer(int32))
 type is (integer(hsize_t))
   istart = i0
 class default
-  ierr = -1
-  write(stderr,*) 'ERROR: wrong integer type for istart: ', dname, self%filename
-  return
+  write(stderr,*) 'ERROR:h5fortran:slice: wrong type for istart: ', dname, self%filename
+  error stop 5
 end select
 
 !! iend
@@ -779,9 +778,8 @@ type is (integer(int32))
 type is (integer(hsize_t))
   iend = i1
 class default
-  ierr = -1
-  write(stderr,*) 'ERROR: wrong integer type for iend: ', dname, self%filename
-  return
+  write(stderr,*) 'ERROR:h5fortran:slice: wrong type for iend: ', dname, self%filename
+  error stop 5
 end select
 
 !! stride
@@ -793,9 +791,8 @@ if (present(i2)) then
   type is (integer(hsize_t))
     stride = i2
   class default
-    ierr = -1
-    write(stderr,*) 'ERROR: wrong integer type for stride: ', dname, self%filename
-    return
+    write(stderr,*) 'ERROR:h5fortran:slice: wrong type for stride: ', dname, self%filename
+    error stop 5
   end select
   if(self%debug) print *,'DEBUG: user-stride:',stride
 else
