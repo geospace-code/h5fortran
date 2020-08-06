@@ -8,19 +8,23 @@ implicit none (type, external)
 
 real(real32) :: nan
 
-call test_basic_array()
+call test_basic_array('test_array.h5')
 print *,'PASSED: array write'
-call test_readwrite_array(ng=69, nn=100, pn=5)
+call test_read_slice('test_array.h5')
+print *, 'PASSED: slice read'
+
+call test_readwrite_array('test_group_array.f90', ng=69, nn=100, pn=5)
 print *,'PASSED: array write / read'
+
 
 contains
 
-subroutine test_basic_array()
+subroutine test_basic_array(filename)
 
+character(*), intent(in) :: filename
 !! tests that compression doesn't fail for very small datasets, where it really shouldn't be used (makes file bigger)
 type(hdf5_file) :: h
 integer(HSIZE_T), allocatable :: dims(:)
-character(*), parameter :: filename = 'test_array.h5'
 
 integer(int32), dimension(4) :: i1, i1t
 integer(int32), dimension(4,4) :: i2, i2t
@@ -67,32 +71,8 @@ call h%initialize(filename, status='old', action='r', verbose=.false.)
 call h%read('/int32-1d', i1t)
 if (.not.all(i1==i1t)) error stop 'read 1-d int32: does not match write'
 
-print *, 'test_write_array: read slice 1d, stride=1'
-i1t = 0
-call h%read('/int32-1d', i1t(:2), istart=[2], iend=[3], stride=[1])
-if (.not.all(i1t(:2)==[2,3])) then
-  write(stderr, *) 'read 1D slice does not match. expected [2,3] but got ',i1t(:2)
-  error stop
-endif
-
-print *, 'test_write_array: read slice 1d, no stride'
-i1t = 0
-call h%read('/int32-1d', i1t(:2), istart=[2], iend=[3])
-if (.not.all(i1t(:2)==[2,3])) then
-  write(stderr, *) 'read 1D slice does not match. expected [2,3] but got ',i1t(:2)
-  error stop
-endif
-
 call h%read('/test/group2/int32-2d',i2t)
 if (.not.all(i2==i2t)) error stop 'read 2-D: int32 does not match write'
-
-print *, 'test_write_array: read slice 2d, stride=1'
-i2t = 0
-call h%read('/test/group2/int32-2d', i2t(:2,:3), istart=[2,1], iend=[3,3], stride=[1,1])
-if (.not.all(i2t(:2,:3)==i2(2:3,1:3))) then
-  write(stderr, *) 'read 2D slice does not match. expected:',i2(2:3,1:3),' but got ',i2t(:2,:3)
-  error stop
-endif
 
 !> verify reading into larger array
 i2_8 = 0
@@ -123,9 +103,59 @@ call h%finalize()
 end subroutine test_basic_array
 
 
-subroutine test_readwrite_array(ng, nn, pn)
+subroutine test_read_slice(filename)
+
+character(*), intent(in) :: filename
+
+type(hdf5_file) :: h
+integer :: i
+integer(int32), dimension(4) :: i1, i1t
+integer(int32), dimension(4,4) :: i2, i2t
+
+do i = 1,size(i1)
+  i1(i) = i
+enddo
+
+i2(1,:) = i1
+do i = 1,size(i2,2)
+  i2(i,:) = i2(1,:) * i
+enddo
+
+call h%initialize(filename, status='old', action='r')
+
+print *, 'read slice 1d, stride=1'
+i1t = 0
+call h%read('/int32-1d', i1t(:2), istart=[2], iend=[3], stride=[1])
+if (.not.all(i1t(:2)==[2,3])) then
+  write(stderr, *) 'read 1D slice does not match. expected [2,3] but got ',i1t(:2)
+  error stop
+endif
+
+print *, 'read slice 1d, no stride'
+i1t = 0
+call h%read('/int32-1d', i1t(:2), istart=[2], iend=[3])
+if (.not.all(i1t(:2)==[2,3])) then
+  write(stderr, *) 'read 1D slice does not match. expected [2,3] but got ',i1t(:2)
+  error stop
+endif
+
+print *, 'read slice 2d, stride=1'
+i2t = 0
+call h%read('/test/group2/int32-2d', i2t(:2,:3), istart=[2,1], iend=[3,3], stride=[1,1])
+if (.not.all(i2t(:2,:3)==i2(2:3,1:3))) then
+  write(stderr, *) 'read 2D slice does not match. expected:',i2(2:3,1:3),' but got ',i2t(:2,:3)
+  error stop
+endif
+
+call h%finalize()
+
+end subroutine test_read_slice
+
+
+subroutine test_readwrite_array(filename, ng, nn, pn)
 !! more group
 type(hdf5_file) :: h
+character(*), intent(in) :: filename
 integer, intent(in) :: ng, nn, pn
 
 real(real32), allocatable :: flux(:,:),fo(:)
@@ -136,7 +166,7 @@ allocate(flux(nn,ng),fo(nn))
 flux = 1.0
 write(pnc,'(I2)') pn
 
-call h%initialize('test_array.h5',  status='scratch')
+call h%initialize(filename,  status='scratch')
 
 do i = 1,ng
   write(ic,'(I2)') i
