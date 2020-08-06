@@ -209,59 +209,66 @@ class(*), intent(in) :: value
 integer, intent(out), optional :: ierr
 end subroutine hdf_write_scalar
 
-module subroutine hdf_write_1d(self,dname,value, ierr, chunk_size)
+module subroutine hdf_write_1d(self,dname,value, ierr, chunk_size, istart, iend, stride)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:)
 integer, intent(in), optional :: chunk_size(rank(value))
+integer, intent(in), optional, dimension(:) :: istart, iend, stride
 integer, intent(out), optional :: ierr
 end subroutine hdf_write_1d
 
-module subroutine hdf_write_2d(self,dname,value, ierr, chunk_size)
+module subroutine hdf_write_2d(self,dname,value, ierr, chunk_size, istart, iend, stride)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:)
 integer, intent(in), optional :: chunk_size(rank(value))
+integer, intent(in), optional, dimension(:) :: istart, iend, stride
 integer, intent(out), optional :: ierr
 end subroutine hdf_write_2d
 
-module subroutine hdf_write_3d(self,dname,value, ierr, chunk_size)
+module subroutine hdf_write_3d(self,dname,value, ierr, chunk_size, istart, iend, stride)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:)
 integer, intent(in), optional :: chunk_size(rank(value))
+integer, intent(in), optional, dimension(:) :: istart, iend, stride
 integer, intent(out), optional :: ierr
 end subroutine hdf_write_3d
 
-module subroutine hdf_write_4d(self,dname,value, ierr, chunk_size)
+module subroutine hdf_write_4d(self,dname,value, ierr, chunk_size, istart, iend, stride)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:)
 integer, intent(in), optional :: chunk_size(rank(value))
+integer, intent(in), optional, dimension(:) :: istart, iend, stride
 integer, intent(out), optional :: ierr
 end subroutine hdf_write_4d
 
-module subroutine hdf_write_5d(self,dname,value, ierr, chunk_size)
+module subroutine hdf_write_5d(self,dname,value, ierr, chunk_size, istart, iend, stride)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:,:)
 integer, intent(in), optional :: chunk_size(rank(value))
+integer, intent(in), optional, dimension(:) :: istart, iend, stride
 integer, intent(out), optional :: ierr
 end subroutine hdf_write_5d
 
-module subroutine hdf_write_6d(self,dname,value, ierr, chunk_size)
+module subroutine hdf_write_6d(self,dname,value, ierr, chunk_size, istart, iend, stride)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:,:,:)
 integer, intent(in), optional :: chunk_size(rank(value))
+integer, intent(in), optional, dimension(:) :: istart, iend, stride
 integer, intent(out), optional :: ierr
 end subroutine hdf_write_6d
 
-module subroutine hdf_write_7d(self,dname,value, ierr, chunk_size)
+module subroutine hdf_write_7d(self,dname,value, ierr, chunk_size, istart, iend, stride)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:,:,:,:)
 integer, intent(in), optional :: chunk_size(rank(value))
+integer, intent(in), optional, dimension(:) :: istart, iend, stride
 integer, intent(out), optional :: ierr
 end subroutine hdf_write_7d
 
@@ -749,7 +756,8 @@ subroutine hdf_get_slice(self, dname, did, sid, mem_sid, ierr, i0, i1, i2)
 !! setup array slices for read and write
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
-integer(hid_t), intent(out) :: sid, did, mem_sid
+integer(HID_T), intent(inout) :: did  !< inout for sentinel value
+integer(hid_t), intent(out) :: sid, mem_sid
 integer, intent(out) :: ierr
 class(*), intent(in), dimension(:) :: i0, i1
 class(*), intent(in), optional, dimension(:) :: i2
@@ -804,7 +812,8 @@ istart = istart - 1
 
 mem_dims = iend - istart
 
-call h5dopen_f(self%lid, dname, did, ierr)
+!> some callers have already opened the dataset. 0 is a sentinel saying not opened yet.
+if (did == 0) call h5dopen_f(self%lid, dname, did, ierr)
 
 if(ierr == 0) call h5dget_space_f(did, sid, ierr)
 

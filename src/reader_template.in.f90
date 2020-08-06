@@ -2,6 +2,7 @@ integer(HSIZE_T) :: dims(rank(value))
 integer(HID_T) :: did, sid, mem_sid
 integer :: ier
 
+did = 0 !< sentinel
 sid = H5S_ALL_F
 mem_sid = H5S_ALL_F
 dims = shape(value)
