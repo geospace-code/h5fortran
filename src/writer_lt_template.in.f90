@@ -6,7 +6,4 @@ if (ier == 0) call h%write(dname, value, ier)
 if (ier == 0) call h%finalize(ier)
 
 if (present(ierr)) ierr = ier
-if (check(ier, filename, dname)) then
-  if (present(ierr)) return
-  error stop
-endif
+if (check(ier, filename, dname) .and. .not.present(ierr)) error stop

@@ -33,7 +33,4 @@ endif
 if(ier == 0) call hdf_wrapup(did, sid, ier)
 
 if (present(ierr)) ierr = ier
-if (check(ier, self%filename, dname)) then
-  if (present(ierr)) return
-  error stop
-endif
+if (check(ier, self%filename, dname) .and. .not.present(ierr)) error stop

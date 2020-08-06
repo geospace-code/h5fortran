@@ -26,7 +26,7 @@ public :: hdf5_file, hdf5_close, toLower, h5write, h5read, h5exist, is_hdf5, h5w
 !> Workaround for Intel 19.1 / 2020 bug with /stand:f18
 !> error #6410: This name has not been declared as an array or a function.   [RANK]
 !> GCC 10.2.0 generates spurious Wsurprising from having this here.
-intrinsic :: rank
+integer, intrinsic :: rank
 
 !> main type
 type :: hdf5_file
@@ -595,11 +595,9 @@ integer, intent(out), optional :: ierr
 integer :: ier
 
 call h5fflush_f(self%lid, H5F_SCOPE_GLOBAL_F, ier)
+
 if (present(ierr)) ierr = ier
-if (check(ier, 'ERROR: HDF5 flush ' // self%filename)) then
-  if (present(ierr)) return
-  error stop
-endif
+if (check(ier, 'ERROR: HDF5 flush ' // self%filename) .and. .not.present(ierr)) error stop
 
 end subroutine hdf_flush
 
@@ -614,11 +612,9 @@ integer, intent(out), optional :: ierr
 integer :: ier
 
 call h5close_f(ier)
+
 if (present(ierr)) ierr = ier
-if (check(ier, 'ERROR: HDF5 library close')) then
-  if (present(ierr)) return
-  error stop
-endif
+if (check(ier, 'ERROR: HDF5 library close') .and. .not.present(ierr)) error stop
 
 end subroutine hdf5_close
 
@@ -846,7 +842,6 @@ if(.not.self%is_open) error stop 'h5fortran:shape: file handle is not open'
 if (.not.self%exist(dname)) then
   write(stderr,*) 'ERROR: ' // dname // ' does not exist in ' // self%filename
   ierr = -1
-  return
 endif
 
 !> check for matching rank, else bad reads can occur--doesn't always crash without this check
@@ -856,7 +851,6 @@ if (check(ierr, 'ERROR: get_dataset_ndim ' // dname // ' read ' // self%filename
 if (drank /= size(dims)) then
   write(stderr,'(A,I6,A,I6)') 'ERROR: rank mismatch ' // dname // ' = ',drank,'  variable rank =', size(dims)
   ierr = -1
-  return
 endif
 
 !> check for matching size, else bad reads can occur.
@@ -867,7 +861,6 @@ if (check(ierr, 'ERROR: get_dataset_info ' // dname // ' read ' // self%filename
 if(.not. all(dims == ddims)) then
   write(stderr,*) 'ERROR: shape mismatch ' // dname // ' = ',ddims,'  variable shape =', dims
   ierr = -1
-  return
 endif
 
 end subroutine hdf_shape_check
