@@ -755,7 +755,6 @@ class(*), intent(in), dimension(:) :: i0, i1
 class(*), intent(in), optional, dimension(:) :: i2
 
 integer(hsize_t), dimension(size(i0)) :: istart, iend, stride, mem_dims
-integer :: mem_rank
 
 if(.not.self%is_open) error stop 'h5fortran:slice: file handle is not open'
 
@@ -804,8 +803,6 @@ endif
 istart = istart - 1
 
 mem_dims = iend - istart
-mem_rank = size(mem_dims)
-
 
 call h5dopen_f(self%lid, dname, did, ierr)
 
@@ -813,13 +810,9 @@ if(ierr == 0) call h5dget_space_f(did, sid, ierr)
 
 if(ierr == 0) call h5sselect_hyperslab_f(sid, H5S_SELECT_SET_F, istart, mem_dims, ierr, stride=stride)
 
-if(ierr == 0) call h5screate_simple_f(mem_rank, mem_dims, mem_sid, ierr)
+if(ierr == 0) call h5screate_simple_f(size(mem_dims), mem_dims, mem_sid, ierr)
 
-if (ierr /= 0) then
-  write(stderr,*) 'ERROR:get_slice:', dname, self%filename
-  return
-endif
-
+if (ierr /= 0) write(stderr,*) 'ERROR:get_slice:', dname, self%filename
 
 end subroutine hdf_get_slice
 

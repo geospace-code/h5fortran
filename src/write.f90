@@ -40,10 +40,13 @@ if(exists) then
   call h5dopen_f(self%lid, dname, did, ierr)
   if (check(ierr, self%filename, dname)) return
   return
-else
-  call self%write_group(dname, ierr)
-  if (check(ierr, self%filename, dname)) return
 endif
+
+!> Only new datasets go past this point
+
+call self%write_group(dname, ierr)
+if (check(ierr, self%filename, dname)) return
+
 
 if(size(dims) >= 2) then
   if(self%debug) print *, 'DEBUG:setup_write: deflate: ' // dname

@@ -1,5 +1,5 @@
 integer(HSIZE_T) :: dims(rank(value))
-integer(hid_t) :: did, sid, mem_sid
+integer(HID_T) :: did, sid, mem_sid
 integer :: ier
 
 sid = H5S_ALL_F
