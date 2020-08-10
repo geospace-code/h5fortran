@@ -12,13 +12,14 @@ implicit none (type, external)
 
 contains
 
-subroutine hdf_setup_write(self, dname, dtype, dims, sid, did, ierr, chunk_size)
+subroutine hdf_setup_write(self, dname, dtype, dims, sid, did, ierr, chunk_size, istart, iend, stride)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 integer(HID_T), intent(in) :: dtype
 integer(HSIZE_T), intent(in) :: dims(:)
 integer(HID_T), intent(out) :: sid, did
-integer, intent(in), optional :: chunk_size(:)
+integer, intent(in), optional :: chunk_size(:), istart(:), iend(:), stride(:)
+!! keep istart, iend, stride for future slice shape check
 integer, intent(out) :: ierr
 
 logical :: exists
@@ -34,12 +35,17 @@ call h5ltpath_valid_f(self%lid, dname, .true., exists, ierr)
 if (check(ierr, self%filename, dname)) return
 
 if(exists) then
-  call hdf_shape_check(self, dname, dims, ierr)
+  if (.not.present(istart)) call hdf_shape_check(self, dname, dims, ierr)
+  !! FIXME: read and write slice shape not checked; but should check in future versions
   if (ierr/=0) return
   !> open dataset
   call h5dopen_f(self%lid, dname, did, ierr)
   if (check(ierr, self%filename, dname)) return
   return
+else
+  if(present(istart) .or. present(iend) .or. present(stride)) then
+    error stop 'ERROR: setup_write: create variable before writing slice.'
+  endif
 endif
 
 !> Only new datasets go past this point

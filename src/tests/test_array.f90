@@ -12,6 +12,8 @@ call test_basic_array('test_array.h5')
 print *,'PASSED: array write'
 call test_read_slice('test_array.h5')
 print *, 'PASSED: slice read'
+call test_write_slice('test_array.h5')
+print *, 'PASSED: slice write'
 
 call test_readwrite_array('test_group_array.f90', ng=69, nn=100, pn=5)
 print *,'PASSED: array write / read'
@@ -150,6 +152,42 @@ endif
 call h%finalize()
 
 end subroutine test_read_slice
+
+
+subroutine test_write_slice(filename)
+
+character(*), intent(in) :: filename
+
+type(hdf5_file) :: h
+integer :: i
+integer(int32), dimension(4) :: i1t
+integer(int32), dimension(4,4) :: i2t
+
+
+call h%initialize(filename, status='old', action='r+')
+
+print *, 'write slice 1d, stride=1'
+call h%write('/int32-1d', [35, 70], istart=[2], iend=[3], stride=[1])
+call h%read('/int32-1d', i1t)
+if (.not.all(i1t==[1,35,70,4])) then
+  write(stderr, *) 'write 1D slice does not match. got ',i1t
+  error stop
+endif
+
+print *, 'write slice 1d, no stride'
+call h%write('/int32-1d', [23,34,45], istart=[2], iend=[4])
+call h%read('/int32-1d', i1t)
+if (.not.all(i1t==[1,23,34,45])) then
+  write(stderr, *) 'read 1D slice does not match.got ',i1t
+  error stop
+endif
+
+print *, 'create and write slice 2d, stride=1'
+call h%write('/int32-2d', reshape([76,65,54,43], [2,2]), istart=[2,1], iend=[3,2])
+call h%read('/int32-2d', i2t)
+
+
+end subroutine test_write_slice
 
 
 subroutine test_readwrite_array(filename, ng, nn, pn)

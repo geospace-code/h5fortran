@@ -5,11 +5,11 @@ integer :: ier
 dims = shape(value)
 select type (value)
 type is (real(real64))
-  call hdf_setup_write(self,dname, H5T_NATIVE_DOUBLE, dims, sid, did, ier, chunk_size)
+  call hdf_setup_write(self,dname, H5T_NATIVE_DOUBLE, dims, sid, did, ier, chunk_size, istart, iend, stride)
 type is (real(real32))
-  call hdf_setup_write(self,dname, H5T_NATIVE_REAL, dims, sid, did, ier, chunk_size)
+  call hdf_setup_write(self,dname, H5T_NATIVE_REAL, dims, sid, did, ier, chunk_size, istart, iend, stride)
 type is (integer(int32))
-  call hdf_setup_write(self,dname, H5T_NATIVE_INTEGER, dims, sid, did, ier, chunk_size)
+  call hdf_setup_write(self,dname, H5T_NATIVE_INTEGER, dims, sid, did, ier, chunk_size, istart, iend, stride)
 class default
   ier = 6
 end select
@@ -17,13 +17,9 @@ end select
 mem_sid = H5S_ALL_F !< default
 
 if (ier==0) then
-if(present(istart) .and. present(iend)) then
-  if(present(stride)) then
+  if(present(istart) .and. present(iend)) then
     call hdf_get_slice(self, dname, did, sid, mem_sid, ier, istart, iend, stride)
-  else
-    call hdf_get_slice(self, dname, did, sid, mem_sid, ier, istart, iend)
   endif
-endif
 endif
 
 if (ier==0) then

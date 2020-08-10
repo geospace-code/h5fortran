@@ -27,6 +27,7 @@ call h%initialize(fn, status='replace')
 call h%write('/scalar_int', 42_int32)
 call h%write('/scalar_real', -1._real32)
 call h%write('/scalar_real', 42._real32)
+!> vector
 call h%write('/1d_real', r1)
 call h%write('/1d_int', i1)
 !! test rewrite
@@ -44,12 +45,14 @@ if (.not.(rt==it .and. it==42)) then
   write(stderr,*) it,'/=',rt
   error stop 'scalar real / int: not equal 42'
 endif
+print *, 'PASSED: scalar read/write'
 
 !> read casting -- real to int and int to real
 call h%read('/scalar_real', it)
 if(it/=42) error stop 'scalar cast real => int'
 call h%read('/scalar_int', rt)
 if(rt/=42) error stop 'scalar cast int => real'
+print *, 'PASSED: scalar case on read'
 
 !> 1D vector read write
 call h%shape('/1d_real',dims)
@@ -61,6 +64,7 @@ call h%shape('/1d_int',dims)
 allocate(i1t(dims(1)))
 call h%read('/1d_int',i1t)
 if (.not.all(i1==i1t)) error stop 'integer 1-D: read does not match write'
+print *, 'PASSED: 1D read/write'
 
 !> 1D vector read casting -- real to int and int to real
 call h%read('/1d_real', i1t)

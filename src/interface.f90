@@ -843,7 +843,7 @@ if(.not.self%is_open) error stop 'h5fortran:shape: file handle is not open'
 
 if (.not.self%exist(dname)) then
   write(stderr,*) 'ERROR: ' // dname // ' does not exist in ' // self%filename
-  ierr = -1
+  error stop
 endif
 
 !> check for matching rank, else bad reads can occur--doesn't always crash without this check

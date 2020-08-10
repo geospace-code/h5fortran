@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE Release CACHE STRING "Debug or Release")
+  set(CMAKE_BUILD_TYPE Debug CACHE STRING "Debug or Release")
 endif()
 project(h5fortran
   LANGUAGES C Fortran
