@@ -37,7 +37,7 @@ as well as **character (string)**
 
 HDF5 **attributes** are also supported for read/write with type character, int32, real32, real64.
 
-Array slicing on read is supported, that is, reading part of a disk HDF5 array into a variable of matching shape.
+**Array slicing on read and write** is supported, that is, reading or writing part of a disk HDF5 array into a variable matching the slice shape.
 
 Mismatched datatypes are coerced as per standard Fortran rules.
 For example, reading a float HDF5 variable into an integer Fortran variable:  42.3 => 42

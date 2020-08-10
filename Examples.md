@@ -216,6 +216,30 @@ call h5f%initialize('test.h5', status='old',action='r')
 call h5f%read('/foo', A, istart=[5, 1, 2], iend=[7, 5, 8])
 ```
 
+## write slice (part of) a disk array
+
+Writing a disk HDF5 array from a variable of matching shape is done with `istart=` and `iend=` arguments, which have 1-D arguments for the start and stop index desired from each dimension.
+
+For example, support HDF5 disk variable "/foo" is shape (10,20,30) and you wish to write a slice from a variable shaped (5,7,1) with start/stop indices:
+
+* dim 1: 3-7
+* dim 2: 4-10
+* dim 3: 8
+
+then do:
+
+```fortran
+real, dimension(5,7,1) :: A
+
+call h5f%initialize('test.h5', status='unknown')
+
+call h5f%create('/foo', H5T_NATIVE_REAL, [5,7,1])
+call h5f%write('/foo', A, istart=[3, 4, 8], iend=[7, 10, 8])
+```
+
+Note the h5f%create() call to initialize the disk variable.
+This step is also needed with h5py in Python or Matlab HDF5 h5create() before h5write().
+
 ## is dataset contiguous or chunked
 
 Assumed file handle h5f was already initialized, the logical status is inspected:
