@@ -21,12 +21,14 @@ use string_utils, only : toLower, strip_trailing_null, truncate_string_null
 implicit none (type, external)
 private
 public :: hdf5_file, hdf5_close, toLower, h5write, h5read, h5exist, is_hdf5, h5write_attr, h5read_attr, &
-  check, hdf_shape_check, hdf_get_slice, hdf_wrapup, hsize_t, strip_trailing_null, truncate_string_null
+  check, hdf_shape_check, hdf_get_slice, hdf_wrapup, & !< for submodules only
+  HSIZE_T, HID_T, H5T_NATIVE_DOUBLE, H5T_NATIVE_REAL, H5T_NATIVE_INTEGER, & !< HDF5 types for end users
+  strip_trailing_null, truncate_string_null
 
 !> Workaround for Intel 19.1 / 2020 bug with /stand:f18
 !> error #6410: This name has not been declared as an array or a function.   [RANK]
 !> GCC 10.2.0 generates spurious Wsurprising from having this here.
-integer, intrinsic :: rank
+intrinsic :: rank
 
 !> main type
 type :: hdf5_file
@@ -48,7 +50,7 @@ integer :: libversion(3)  !< major, minor, rel
 contains
 !> define methods (procedures) that don't need generic procedure
 procedure, public :: initialize => hdf_initialize, finalize => hdf_finalize, &
-  write_group, &
+  write_group, create => hdf_create, &
   open => hdf_open_group, close => hdf_close_group, flush => hdf_flush, &
   ndims => hdf_get_ndims, &
   shape => hdf_get_shape, layout => hdf_get_layout, chunks => hdf_get_chunk, &
@@ -80,6 +82,7 @@ writeattr_char, writeattr_num, readattr_char, readattr_num
 
 end type hdf5_file
 
+
 interface h5write
 procedure lt0write, lt1write, lt2write, lt3write, lt4write, lt5write, lt6write, lt7write
 end interface h5write
@@ -98,8 +101,20 @@ end interface h5read_attr
 
 
 !> Submodules
-interface
 
+interface !< write.f90
+module subroutine hdf_create(self, dname, dtype, dims, sid, did, chunk_size, istart, iend, stride)
+class(hdf5_file), intent(inout) :: self
+character(*), intent(in) :: dname
+integer(HID_T), intent(in) :: dtype
+class(*), intent(in) :: dims(:) !< this can be class(*) to allow int4 or int8 in future
+integer(HID_T), intent(out), optional :: sid, did
+integer, intent(in), optional :: chunk_size(:), istart(:), iend(:), stride(:)
+!! keep istart, iend, stride for future slice shape check
+end subroutine hdf_create
+end interface
+
+interface !< writer_lt.f90
 module logical function h5exist(filename, dname)
 character(*), intent(in) :: filename, dname
 end function h5exist
@@ -152,7 +167,9 @@ character(*), intent(in) :: filename, dname
 class(*), intent(in) :: value(:,:,:,:,:,:,:)
 integer, intent(out), optional :: ierr
 end subroutine lt7write
+end interface
 
+interface !< reader_lt.f90
 module subroutine lt0read(filename, dname, value, ierr)
 character(*), intent(in) :: filename, dname
 class(*), intent(out) :: value
@@ -200,8 +217,9 @@ character(*), intent(in) :: filename, dname
 class(*), intent(out) :: value(:,:,:,:,:,:,:)
 integer, intent(out), optional :: ierr
 end subroutine lt7read
+end interface
 
-
+interface !< writer.f90
 module subroutine hdf_write_scalar(self,dname,value, ierr)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
@@ -271,8 +289,9 @@ integer, intent(in), optional :: chunk_size(rank(value))
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
 integer, intent(out), optional :: ierr
 end subroutine hdf_write_7d
+end interface
 
-
+interface !< read.f90
 module integer function hdf_get_ndims(self, dname) result (drank)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
@@ -301,7 +320,9 @@ module logical function hdf_check_exist(self, dname) result(exists)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
 end function hdf_check_exist
+end interface
 
+interface !< reader.f90
 module subroutine hdf_read_scalar(self, dname, value, ierr)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
@@ -365,8 +386,9 @@ class(*), intent(out) :: value(:,:,:,:,:,:,:)
 integer, intent(out), optional :: ierr
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
 end subroutine hdf_read_7d
+end interface
 
-
+interface
 module subroutine hdf_open_group(self, gname, ierr)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in)        :: gname
@@ -377,7 +399,6 @@ module subroutine hdf_close_group(self, ierr)
 class(hdf5_file), intent(inout) :: self
 integer, intent(out), optional :: ierr
 end subroutine hdf_close_group
-
 end interface
 
 
@@ -746,25 +767,25 @@ if(sid /= 0) then
   if (check(ierr, 'ERROR:h5sclose dataspace')) return
 endif
 
-call h5dclose_f(did, ierr)
-if (check(ierr, 'ERROR:h5dclose dataset')) return
+if(did /= 0) then
+  call h5dclose_f(did, ierr)
+  if (check(ierr, 'ERROR:h5dclose dataset')) return
+endif
 
 end subroutine hdf_wrapup
 
 
-subroutine hdf_get_slice(self, dname, did, sid, mem_sid, ierr, i0, i1, i2)
+subroutine hdf_get_slice(self, dname, did, sid, mem_sid, i0, i1, i2)
 !! setup array slices for read and write
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
 integer(HID_T), intent(inout) :: did  !< inout for sentinel value
 integer(hid_t), intent(out) :: sid, mem_sid
-integer, intent(out) :: ierr
 class(*), intent(in), dimension(:) :: i0, i1
 class(*), intent(in), optional, dimension(:) :: i2
 
 integer(hsize_t), dimension(size(i0)) :: istart, iend, stride, mem_dims
-
-ierr = 0
+integer :: ierr
 
 if(.not.self%is_open) error stop 'h5fortran:slice: file handle is not open'
 
@@ -815,28 +836,31 @@ istart = istart - 1
 mem_dims = iend - istart
 
 !> some callers have already opened the dataset. 0 is a sentinel saying not opened yet.
-if (did == 0) call h5dopen_f(self%lid, dname, did, ierr)
-if(ierr /= 0) then
-  write(stderr,*) 'ERROR:get_slice:H5Dopen: ' // dname // ' ' // self%filename
-  return
+if (did == 0) then
+  call h5dopen_f(self%lid, dname, did, ierr)
+  if(ierr /= 0) then
+    write(stderr,*) 'h5fortran:get_slice:H5Dopen: ' // dname // ' ' // self%filename
+    error stop
+  endif
 endif
 call h5dget_space_f(did, sid, ierr)
-if(ierr /= 0) return
+if(ierr /= 0) error stop 'h5fortran:get_slice could not get dataset'
 call h5sselect_hyperslab_f(sid, H5S_SELECT_SET_F, istart, mem_dims, ierr, stride=stride)
-if(ierr /= 0) return
+if(ierr /= 0) error stop 'h5fortran:get_slice could not assign hyperslab'
 call h5screate_simple_f(size(mem_dims), mem_dims, mem_sid, ierr)
+if(ierr /= 0) error stop 'h5fortran:get_slice could not create dataspace'
 
 end subroutine hdf_get_slice
 
 
-subroutine hdf_shape_check(self, dname, dims, ierr)
+subroutine hdf_shape_check(self, dname, dims)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
-integer(HSIZE_T), intent(in) :: dims(:)
-integer, intent(out) :: ierr
+class(*), intent(in) :: dims(:)
 
+integer :: ierr
 integer(SIZE_T) :: dsize
-integer(HSIZE_T) :: ddims(size(dims))
+integer(HSIZE_T), dimension(size(dims)):: ddims, vdims
 integer :: dtype, drank
 
 if(.not.self%is_open) error stop 'h5fortran:shape: file handle is not open'
@@ -846,23 +870,40 @@ if (.not.self%exist(dname)) then
   error stop
 endif
 
+!> allow user to specify int4 or int8 dims
+select type (dims)
+type is (integer(int32))
+  vdims = int(dims, int64)
+type is (integer(hsize_t))
+  vdims = dims
+class default
+  write(stderr,*) 'ERROR:h5fortran:shape_check: wrong type for dims: ', dname, self%filename
+  error stop 5
+end select
+
 !> check for matching rank, else bad reads can occur--doesn't always crash without this check
 call h5ltget_dataset_ndims_f(self%lid, dname, drank, ierr)
-if (check(ierr, 'ERROR: get_dataset_ndim ' // dname // ' read ' // self%filename)) return
+if (ierr/=0) then
+  write(stderr,*) 'ERROR:h5fortran:shape_check: get_dataset_ndim ' // dname // ' read ' // self%filename
+  error stop
+endif
 
-if (drank /= size(dims)) then
-  write(stderr,'(A,I6,A,I6)') 'ERROR: rank mismatch ' // dname // ' = ',drank,'  variable rank =', size(dims)
-  ierr = -1
+if (drank /= size(vdims)) then
+  write(stderr,'(A,I6,A,I6)') 'ERROR:h5fortran:shape_check: rank mismatch ' // dname // ' = ',drank,'  variable rank =', size(vdims)
+  error stop
 endif
 
 !> check for matching size, else bad reads can occur.
 
 call h5ltget_dataset_info_f(self%lid, dname, ddims, dtype, dsize, ierr)
-if (check(ierr, 'ERROR: get_dataset_info ' // dname // ' read ' // self%filename)) return
+if (ierr/=0) then
+  write(stderr,*) 'ERROR:h5fortran:shape_check: get_dataset_info ' // dname // ' read ' // self%filename
+  error stop
+endif
 
-if(.not. all(dims == ddims)) then
-  write(stderr,*) 'ERROR: shape mismatch ' // dname // ' = ',ddims,'  variable shape =', dims
-  ierr = -1
+if(.not. all(vdims == ddims)) then
+  write(stderr,*) 'ERROR:h5fortran:shape_check: shape mismatch ' // dname // ' = ',ddims,'  variable shape =', vdims
+  error stop
 endif
 
 end subroutine hdf_shape_check

@@ -2,7 +2,7 @@ program array_test
 
 use, intrinsic:: ieee_arithmetic, only: ieee_value, ieee_quiet_nan, ieee_is_nan
 use, intrinsic :: iso_fortran_env, only: real32, real64, int32, stderr=>error_unit
-use h5fortran, only : hdf5_file, hsize_t
+use h5fortran, only : hdf5_file, HSIZE_T, H5T_NATIVE_INTEGER
 
 implicit none (type, external)
 
@@ -32,7 +32,7 @@ integer(int32), dimension(4) :: i1, i1t
 integer(int32), dimension(4,4) :: i2, i2t
 real(real32), allocatable :: rr2(:,:)
 real(real32)  ::  nant, r1(4), r2(4,4), B(6,6)
-integer :: i, ierr
+integer :: i
 integer(int32) :: i2_8(8,8)
 
 nan = ieee_value(1.0, ieee_quiet_nan)
@@ -56,14 +56,6 @@ call h%write('/test/group2/int32-2d', i2)
 call h%write('/real32-2d', r2)
 call h%write('/nan', nan)
 
-!> test writing wrong size
-call h%write('/int32-1d', [-1], ierr=ierr)
-if(ierr==0) error stop 'test_write_array: did not error for write array shape mismatch'
-
-!> test writing wrong rank
-call h%write('/int32-1d', i2, ierr=ierr)
-if(ierr==0) error stop 'test_write_array: did not error for write array rank mismatch'
-
 call h%finalize()
 
 !! read
@@ -80,12 +72,6 @@ if (.not.all(i2==i2t)) error stop 'read 2-D: int32 does not match write'
 i2_8 = 0
 call h%read('/test/group2/int32-2d', i2_8(2:5,3:6))
 if (.not.all(i2_8(2:5,3:6) == i2)) error stop 'read into larger array fail'
-
-!> check error for reading array dimension mismatch
-
-!> check that 1D disk into 2D raises error
-call h%read('/int32-1d', i2, ierr)
-if (ierr==0) error stop 'failed to error on read rank mismatch'
 
 !> real
 call h%shape('/real32-2d',dims)
@@ -125,7 +111,6 @@ enddo
 
 call h%initialize(filename, status='old', action='r')
 
-print *, 'read slice 1d, stride=1'
 i1t = 0
 call h%read('/int32-1d', i1t(:2), istart=[2], iend=[3], stride=[1])
 if (.not.all(i1t(:2)==[2,3])) then
@@ -133,7 +118,6 @@ if (.not.all(i1t(:2)==[2,3])) then
   error stop
 endif
 
-print *, 'read slice 1d, no stride'
 i1t = 0
 call h%read('/int32-1d', i1t(:2), istart=[2], iend=[3])
 if (.not.all(i1t(:2)==[2,3])) then
@@ -141,7 +125,6 @@ if (.not.all(i1t(:2)==[2,3])) then
   error stop
 endif
 
-print *, 'read slice 2d, stride=1'
 i2t = 0
 call h%read('/test/group2/int32-2d', i2t(:2,:3), istart=[2,1], iend=[3,3], stride=[1,1])
 if (.not.all(i2t(:2,:3)==i2(2:3,1:3))) then
@@ -159,32 +142,39 @@ subroutine test_write_slice(filename)
 character(*), intent(in) :: filename
 
 type(hdf5_file) :: h
-integer :: i
 integer(int32), dimension(4) :: i1t
 integer(int32), dimension(4,4) :: i2t
 
 
-call h%initialize(filename, status='old', action='r+')
+call h%initialize(filename, status='old', action='r+', verbose=.true., debug=.true.)
 
-print *, 'write slice 1d, stride=1'
+call h%create('/int32a-1d', dtype=H5T_NATIVE_INTEGER, dims=[3])
+call h%write('/int32a-1d', [1,3], istart=[1], iend=[2])
+print *, 'PASSED: create dataset and write slice 1D'
+
 call h%write('/int32-1d', [35, 70], istart=[2], iend=[3], stride=[1])
 call h%read('/int32-1d', i1t)
 if (.not.all(i1t==[1,35,70,4])) then
   write(stderr, *) 'write 1D slice does not match. got ',i1t
   error stop
 endif
+print *, 'PASSED: overwrite slice 1d, stride=1'
 
-print *, 'write slice 1d, no stride'
 call h%write('/int32-1d', [23,34,45], istart=[2], iend=[4])
 call h%read('/int32-1d', i1t)
 if (.not.all(i1t==[1,23,34,45])) then
   write(stderr, *) 'read 1D slice does not match.got ',i1t
   error stop
 endif
+print *, 'PASSED: overwrite slice 1d, no stride'
 
+
+call h%create('/int32a-2d', dtype=H5T_NATIVE_INTEGER, dims=[4,4])
 print *, 'create and write slice 2d, stride=1'
-call h%write('/int32-2d', reshape([76,65,54,43], [2,2]), istart=[2,1], iend=[3,2])
-call h%read('/int32-2d', i2t)
+call h%write('/int32a-2d', reshape([76,65,54,43], [2,2]), istart=[2,1], iend=[3,2])
+call h%read('/int32a-2d', i2t)
+
+call h%finalize()
 
 
 end subroutine test_write_slice

@@ -1,8 +1,8 @@
 program scalar_test
 
 use, intrinsic :: iso_fortran_env, only: real32, real64, int32, stderr=>error_unit
-use hdf5, only: HSIZE_T
-use h5fortran, only: hdf5_file
+
+use h5fortran, only: hdf5_file, HSIZE_T, H5T_NATIVE_INTEGER
 
 implicit none (type, external)
 
@@ -23,14 +23,17 @@ r1 = i1
 
 !> write
 call h%initialize(fn, status='replace')
-!! scalar tests
+!> scalar tests
 call h%write('/scalar_int', 42_int32)
 call h%write('/scalar_real', -1._real32)
-call h%write('/scalar_real', 42._real32)
 !> vector
 call h%write('/1d_real', r1)
+
+!> create then write
+call h%create('/1d_int', H5T_NATIVE_INTEGER, shape(i1))
 call h%write('/1d_int', i1)
-!! test rewrite
+print *, 'PASSED: vector write'
+!> test rewrite
 call h%write('scalar_real', 42.)
 call h%write('scalar_int', 42)
 call h%finalize()

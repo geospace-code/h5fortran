@@ -6,7 +6,8 @@ test('minimal', test_minimal,
   priority: 100,
   timeout: 10)
 
-foreach t : ['array', 'attributes', 'deflate', 'error', 'exist', 'module', 'lt', 'scalar', 'shape', 'string']
+foreach t : ['array', 'attributes', 'deflate', 'error', 'exist', 'module', 'lt', 'scalar', 'shape', 'string',
+'fail_read_size_mismatch', 'fail_read_rank_mismatch', 'fail_nonexist_variable', 'fail_unknown_read', 'fail_unknown_write']
 
   e = executable('test_'+t, 'test_' + t + '.f90', dependencies: hdf5_interface, fortran_args: quiet)
   if t == 'shape'
@@ -16,7 +17,8 @@ foreach t : ['array', 'attributes', 'deflate', 'error', 'exist', 'module', 'lt',
     par = true
     pri = 0
   endif
-  test(t, e, suite: 'h5basic', timeout: 10, is_parallel: par, priority: pri)
+  test(t, e, suite: 'h5basic', timeout: 10, is_parallel: par, priority: pri,
+       should_fail : t.contains('fail'))
 endforeach
 
 python = find_program('python')

@@ -11,14 +11,8 @@ call test_nonexist_unknown_file()
 print *, 'OK: non-existing unknown file'
 call test_nonhdf5_file()
 print *, 'OK: non-HDF5 file'
-call test_nonexist_variable()
-print *, 'OK: non-existing variable'
 call test_wrong_type()
 print *, "OK: wrong type read"
-call test_unknown_write()
-print *, 'OK: unknown write'
-call test_unknown_read()
-print *, 'OK: unknown read'
 
 contains
 
@@ -55,18 +49,6 @@ if (ierr==0) error stop 'should have had ierr/=0 on invalid HDF5 file'
 end subroutine test_nonhdf5_file
 
 
-subroutine test_nonexist_variable()
-integer :: u,ierr
-type(hdf5_file) :: h
-character(*), parameter :: filename = 'bad.h5'
-
-call h%initialize(filename, status='replace', verbose=.false.)
-call h%read('/not-exist', u, ierr)
-if(ierr==0) error stop 'test_nonexist_variable: should have ierr/=0 on non-exist variable'
-call h%finalize()
-end subroutine test_nonexist_variable
-
-
 subroutine test_wrong_type()
 integer :: u
 type(hdf5_file) :: h
@@ -82,33 +64,5 @@ if (u /= 42) error stop 'test_wrong_type: did not coerce real to integer'
 call h%finalize()
 
 end subroutine test_wrong_type
-
-
-subroutine test_unknown_write()
-integer :: ierr
-type(hdf5_file) :: h
-character(*), parameter :: filename = 'bad.h5'
-complex :: x
-
-x = (1, -1)
-
-call h%initialize(filename, ierr, status='replace', verbose=.false.)
-call h%write('/complex', x, ierr)
-if(ierr==0) error stop 'test_unknown_write: writing unknown type variable'
-end subroutine test_unknown_write
-
-
-subroutine test_unknown_read()
-integer :: ierr
-type(hdf5_file) :: h
-character(*), parameter :: filename = 'bad.h5'
-complex :: x
-
-x = (1, -1)
-
-call h%initialize(filename, status='unknown', action='readwrite', verbose=.false.)
-call h%read('/complex', x, ierr)
-if(ierr==0) error stop 'test_unknown_read: reading unknown type variable'
-end subroutine test_unknown_read
 
 end program

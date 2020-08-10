@@ -17,30 +17,32 @@ if(.not.self%is_open) error stop 'h5fortran:writer: file handle is not open'
 
 allocate(dims(0))
 
+did = 0
+sid = 0
+!! sentinel
+
 select type (value)
 type is (character(*))
   call h5ltmake_dataset_string_f(self%lid, dname, value, ier)
-  if (present(ierr)) ierr = ier
-  if (check(ier, self%filename, dname)) then
-    if (present(ierr)) return
-    error stop
-  endif
-  return
 type is (real(real64))
   !! NOTE: 0d does not use chunk_size
-  call hdf_setup_write(self,dname, H5T_NATIVE_DOUBLE, dims,sid,did, ier)
-  if (ier == 0) call h5dwrite_f(did, H5T_NATIVE_DOUBLE, value, dims, ier)
+  call hdf_create(self,dname, H5T_NATIVE_DOUBLE, dims,sid,did)
+  call h5dwrite_f(did, H5T_NATIVE_DOUBLE, value, dims, ier)
 type is (real(real32))
-  call hdf_setup_write(self,dname, H5T_NATIVE_REAL, dims,sid,did, ier)
-  if (ier == 0) call h5dwrite_f(did, H5T_NATIVE_REAL, value, dims, ier)
+  call hdf_create(self,dname, H5T_NATIVE_REAL, dims,sid,did)
+  call h5dwrite_f(did, H5T_NATIVE_REAL, value, dims, ier)
 type is (integer(int32))
-  call hdf_setup_write(self,dname, H5T_NATIVE_INTEGER, dims,sid,did, ier)
-  if (ier == 0) call h5dwrite_f(did, H5T_NATIVE_INTEGER, value, dims, ier)
+  call hdf_create(self,dname, H5T_NATIVE_INTEGER, dims,sid,did)
+  call h5dwrite_f(did, H5T_NATIVE_INTEGER, value, dims, ier)
 class default
-  ier = 6
+  error stop 'h5fortran: invalid data type'
 end select
+if (ier/=0) then
+  write(stderr,*) 'h5fortran:ERROR: could not write ',dname, ' to ', self%filename
+  error stop
+endif
 
-if(ier == 0) call hdf_wrapup(did, sid, ier)
+call hdf_wrapup(did, sid, ier)
 
 if (present(ierr)) ierr = ier
 if (check(ier, self%filename, dname) .and. .not.present(ierr)) error stop

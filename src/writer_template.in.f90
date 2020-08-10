@@ -5,24 +5,26 @@ integer :: ier
 dims = shape(value)
 select type (value)
 type is (real(real64))
-  call hdf_setup_write(self,dname, H5T_NATIVE_DOUBLE, dims, sid, did, ier, chunk_size, istart, iend, stride)
+  call hdf_create(self,dname, H5T_NATIVE_DOUBLE, dims, sid, did, chunk_size, istart, iend, stride)
 type is (real(real32))
-  call hdf_setup_write(self,dname, H5T_NATIVE_REAL, dims, sid, did, ier, chunk_size, istart, iend, stride)
+  call hdf_create(self,dname, H5T_NATIVE_REAL, dims, sid, did, chunk_size, istart, iend, stride)
 type is (integer(int32))
-  call hdf_setup_write(self,dname, H5T_NATIVE_INTEGER, dims, sid, did, ier, chunk_size, istart, iend, stride)
+  call hdf_create(self,dname, H5T_NATIVE_INTEGER, dims, sid, did, chunk_size, istart, iend, stride)
 class default
-  ier = 6
+  error stop 'h5fortran:write:invalid data type'
 end select
 
 mem_sid = H5S_ALL_F !< default
 
-if (ier==0) then
-  if(present(istart) .and. present(iend)) then
-    call hdf_get_slice(self, dname, did, sid, mem_sid, ier, istart, iend, stride)
+if(present(istart) .and. present(iend)) then
+  if(present(stride)) then
+    call hdf_get_slice(self, dname, did, sid, mem_sid, istart, iend, stride)
+  else
+    !! this shouldn't be necessary, but workaround bug with GCC 9.3.0
+    call hdf_get_slice(self, dname, did, sid, mem_sid, istart, iend)
   endif
 endif
 
-if (ier==0) then
 select type (value)
 type is (real(real64))
   call h5dwrite_f(did, H5T_NATIVE_DOUBLE, value, dims, ier, mem_sid, sid)
@@ -31,9 +33,12 @@ type is (real(real32))
 type is (integer(int32))
   call h5dwrite_f(did, H5T_NATIVE_INTEGER, value, dims, ier, mem_sid, sid)
 end select
+if (ier/=0) then
+  write(stderr,*) 'h5fortran:ERROR: could not write ',dname, ' to ', self%filename
+  error stop
 endif
 
-if(ier == 0) call hdf_wrapup(did, sid, ier)
+call hdf_wrapup(did, sid, ier)
 
 if (present(ierr)) ierr = ier
 if (check(ier, self%filename, dname) .and. .not.present(ierr)) error stop

@@ -4,7 +4,8 @@ add_test(NAME h5fortran:minimal COMMAND $<TARGET_FILE:test_minimal>
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 set_tests_properties(h5fortran:minimal PROPERTIES FIXTURES_SETUP h5lib)
 
-foreach(t array attributes deflate error exist module lt scalar shape string)
+foreach(t array attributes deflate error exist module lt scalar shape string
+          fail_read_size_mismatch fail_read_rank_mismatch fail_nonexist_variable fail_unknown_read fail_unknown_write)
   add_executable(test_${t} test_${t}.f90)
   target_link_libraries(test_${t} PRIVATE h5fortran::h5fortran)
   if(${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU)
@@ -17,6 +18,11 @@ foreach(t array attributes deflate error exist module lt scalar shape string)
     set_tests_properties(h5fortran:${t} PROPERTIES ENVIRONMENT "PATH=${HDF5_ROOT}/bin;$ENV{PATH}")
   endif()
 endforeach()
+
+foreach(t fail_read_size_mismatch fail_read_rank_mismatch fail_nonexist_variable fail_unknown_read fail_unknown_write)
+  set_tests_properties(h5fortran:${t} PROPERTIES WILL_FAIL true)
+endforeach()
+
 
 
 find_package(Python3 COMPONENTS Interpreter)

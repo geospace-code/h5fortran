@@ -17,18 +17,19 @@ integer :: ier
 
 if(.not.self%is_open) error stop 'h5fortran:reader: file handle is not open'
 
-ier = 0
 sid = 0
 
 if (.not.self%exist(dname)) then
-  write(stderr,*) 'ERROR: ' // dname // ' does not exist in ' // self%filename
-  ier = -1
+  write(stderr,*) 'h5fortran:ERROR: ' // dname // ' does not exist in ' // self%filename
+  error stop
 endif
 
-if(ier == 0) then
 call h5dopen_f(self%lid, dname, did, ier)
+if(ier/=0)  then
+  write(stderr,*) 'h5fortran:ERROR: ' // dname // ' could not be opened in ' // self%filename
+  error stop
+endif
 
-if (ier == 0) then
 select type (value)
 type is (character(*))
   call hdf_wrapup(did, sid, ier)  !< FIXME: till character is treated same as other types
@@ -45,12 +46,11 @@ type is (real(real32))
 type is (integer(int32))
   call h5dread_f(did, H5T_NATIVE_INTEGER, value, dims, ier)
 class default
-  ier = 6
+  error stop 'h5fortran:reader: incorrect data type'
 end select
-endif
 
-if(ier == 0) call hdf_wrapup(did, sid, ier)
-endif
+call hdf_wrapup(did, sid, ier)
+
 
 if (present(ierr)) ierr = ier
 if (check(ier, self%filename, dname) .and. .not.present(ierr)) error stop

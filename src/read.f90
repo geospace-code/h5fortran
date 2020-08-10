@@ -124,14 +124,11 @@ exists = .false.
 
 if(.not.self%is_open) error stop 'h5fortran:exist: file handle is not open'
 
-call h5ltpath_valid_f(self%lid, &
-  path=dname, &
-  check_object_valid=.true., &
-  path_valid=exists, &
-  errcode=ierr)
+call h5ltpath_valid_f(self%lid, dname, .true., exists, ierr)
+!! h5lexists_f can false error with groups--just use h5ltpath_valid
 
 if (ierr/=0) then
-  write(stderr,*) 'ERROR: could not determine status of ' // dname // ' in ' // self%filename
+  write(stderr,*) 'ERROR:h5fortran:check_exist: could not determine status of ' // dname // ' in ' // self%filename
   return
 endif
 
