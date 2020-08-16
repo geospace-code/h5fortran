@@ -24,18 +24,18 @@ endif()
 find_path(HDF5_MODULE_DIR NAMES hdf5.mod HINTS ${HDF5_INCLUDE_DIRS} PATH_SUFFIXES static)
 if(HDF5_MODULE_DIR)
   list(APPEND HDF5_INCLUDE_DIRS ${HDF5_MODULE_DIR})
-  set(SZIP_ROOT "${HDF5_MODULE_DIR}/..;${HDF5_MODULE_DIR}/../..")
-  set(ZLIB_ROOT ${SZIP_ROOT})
+  # set(SZIP_ROOT "${HDF5_MODULE_DIR}/..;${HDF5_MODULE_DIR}/../..")
+  set(ZLIB_ROOT "${HDF5_MODULE_DIR}/..;${HDF5_MODULE_DIR}/../..")
 endif()
 list(REMOVE_DUPLICATES HDF5_INCLUDE_DIRS)
 
 # in case the compiler wrapper didn't work
 set(HDF5_LIBRARIES ${HDF5_Fortran_HL_LIBRARIES} ${HDF5_Fortran_LIBRARIES} ${HDF5_LIBRARIES})
 
-find_package(SZIP)
-if(SZIP_FOUND)
-  list(APPEND HDF5_LIBRARIES SZIP::SZIP)
-endif()
+# find_package(SZIP)
+# if(SZIP_FOUND)
+#   list(APPEND HDF5_LIBRARIES SZIP::SZIP)
+# endif()
 
 find_package(ZLIB)
 if(ZLIB_FOUND)
@@ -83,7 +83,16 @@ set(CMAKE_REQUIRED_INCLUDES ${HDF5_INCLUDE_DIRS})
 set(CMAKE_REQUIRED_LIBRARIES ${HDF5_LIBRARIES})
 
 include(CheckFortranSourceCompiles)
-file(READ ${CMAKE_CURRENT_SOURCE_DIR}/src/tests/test_minimal.f90 _code)
+set(_code "program test_minimal
+use hdf5, only : h5open_f, h5close_f
+use h5lt, only : h5ltmake_dataset_f
+implicit none (type, external)
+integer :: i
+call h5open_f(i)
+if (i /= 0) error stop 'could not open hdf5 library'
+call h5close_f(i)
+if (i /= 0) error stop
+end")
 check_fortran_source_compiles(${_code} HDF5_compiles_ok SRC_EXT f90)
 
 include(CheckFortranSourceRuns)
