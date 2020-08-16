@@ -53,7 +53,7 @@ Compilers known to work include:
 * Gfortran &ge; 6
 * Intel compiler &ge; 19.1 / 2020
 
-## Install
+## Build
 
 Using CMake:
 

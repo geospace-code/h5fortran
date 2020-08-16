@@ -50,10 +50,34 @@ cmake --build build
 cmake --install build
 ```
 
-then to link into your existing program from the command line (if not using CMake FetchContent as is suggested):
+then to link into your existing program from the command line
+
+using CMake from your project
 
 ```sh
-gfortran -I~/lib/h5fortran/include myprogram.f90 ~/lib/h5fortran/libh5fortran.a
+cmake -B build -Dh5fortran_DIR=~/lib/h5fortran/lib/cmake/h5fortran
+```
+
+and in your CMakeLists.txt
+
+```cmake
+find_package(h5fortran CONFIG)
+
+if(h5fortran_FOUND)
+  include(${h5fortran_DIR}/h5fortranTargets.cmake)
+else()
+  include(FetchContent)
+  FetchContent_Declare(h5fortran_proj
+    GIT_REPOSITORY https://github.com/geospace-code/h5fortran.git
+    GIT_TAG v3.0.1)
+  FetchContent_MakeAvailable(h5fortran_proj)
+endif()
+```
+
+if not using CMake FetchContent as is suggested:
+
+```sh
+gfortran -I~/lib/h5fortran/include myprogram.f90 ~/lib/h5fortran/lib/libh5fortran.a
 ```
 
 ### [optional] create distributable archive
