@@ -3,44 +3,12 @@ program test_string
 use, intrinsic:: iso_fortran_env, only:  stderr=>error_unit
 use, intrinsic:: iso_c_binding, only: c_null_char
 
-use h5fortran, only : toLower, hdf5_file, strip_trailing_null, truncate_string_null
+use h5fortran, only : hdf5_file
 
 implicit none (type, external)
 
-call test_string_rw()
-print *,'PASSED: HDF5 string write/read'
-
-call test_lowercase()
-print *,'PASSED: HDF5 character'
-call test_strip_null()
-print *,'PASSED: null strip'
-
-contains
-
-subroutine test_lowercase()
-
-character(*), parameter :: hello = 'HeLl0 Th3rE !>? '
-  !! Fortran 2003 allocatable string
-
-if (.not.(toLower(hello)=='hell0 th3re !>? ')) error stop 'error: lowercase conversion'
-
-if (.not.(trim(toLower(hello))=='hell0 th3re !>?')) error stop 'Allocatable lowercase conversion error'
-
-end subroutine test_lowercase
-
-
-subroutine test_strip_null()
-character(*), parameter :: hello = 'HeLl0 Th3rE !>? '
-
-if (.not.strip_trailing_null(hello // c_null_char) == hello) error stop 'problem stripping trailing null'
-
-end subroutine test_strip_null
-
-
-subroutine test_string_rw()
-
 type(hdf5_file) :: h
-
+integer :: i
 character(2) :: value
 character(1024) :: val1k
 character(:), allocatable :: final
@@ -65,7 +33,8 @@ endif
 print *,'test_string_rw: reading too much data'
 !! try reading too much data, then truncating to first C_NULL
 call h%read('/little', val1k)
-final = truncate_string_null(val1k)
+i = index(val1k, c_null_char)
+final = val1k(:i-1)
 
 if (len(final) /= 2) then
   write(stderr, *) 'trimming str to c_null did not work, got len() = ', len(final)
@@ -75,6 +44,6 @@ endif
 
 call h%finalize()
 
-end subroutine test_string_rw
+print *,'PASSED: HDF5 string write/read'
 
 end program

@@ -15,14 +15,11 @@ use hdf5, only : HID_T, SIZE_T, HSIZE_T, H5F_ACC_RDONLY_F, H5F_ACC_RDWR_F, H5F_A
   h5get_libversion_f, h5eset_auto_f, h5fflush_f
 use h5lt, only : h5ltget_dataset_ndims_f, h5ltget_dataset_info_f
 
-use string_utils, only : toLower, strip_trailing_null, truncate_string_null
-
 implicit none (type, external)
 private
-public :: hdf5_file, hdf5_close, toLower, h5write, h5read, h5exist, is_hdf5, h5write_attr, h5read_attr, &
+public :: hdf5_file, hdf5_close, h5write, h5read, h5exist, is_hdf5, h5write_attr, h5read_attr, &
   check, hdf_shape_check, hdf_get_slice, hdf_wrapup, & !< for submodules only
-  HSIZE_T, HID_T, H5T_NATIVE_DOUBLE, H5T_NATIVE_REAL, H5T_NATIVE_INTEGER, & !< HDF5 types for end users
-  strip_trailing_null, truncate_string_null
+  HSIZE_T, HID_T, H5T_NATIVE_DOUBLE, H5T_NATIVE_REAL, H5T_NATIVE_INTEGER !< HDF5 types for end users
 
 !> Workaround for Intel 19.1 / 2020 bug with /stand:f18
 !> error #6410: This name has not been declared as an array or a function.   [RANK]
@@ -535,10 +532,10 @@ if (check(ier, 'ERROR: HDF5 library set traceback')) then
 endif
 
 lstatus = 'unknown'
-if(present(status)) lstatus = toLower(status)
+if(present(status)) lstatus = status
 
 laction = 'rw'
-if(present(action)) laction = toLower(action)
+if(present(action)) laction = action
 
 select case(lstatus)
 case ('old', 'unknown')
