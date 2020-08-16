@@ -15,7 +15,6 @@ use hdf5, only : HID_T, SIZE_T, HSIZE_T, H5F_ACC_RDONLY_F, H5F_ACC_RDWR_F, H5F_A
   h5get_libversion_f, h5eset_auto_f, h5fflush_f
 use h5lt, only : h5ltget_dataset_ndims_f, h5ltget_dataset_info_f
 
-use pathlib, only : unlink, get_tempdir, is_absolute_path
 use string_utils, only : toLower, strip_trailing_null, truncate_string_null
 
 implicit none (type, external)
@@ -101,6 +100,21 @@ end interface h5read_attr
 
 
 !> Submodules
+
+interface !< pathlib.f90
+module logical function unlink(filename)
+character(*), intent(in) :: filename
+end function unlink
+
+module logical function is_absolute_path(path)
+character(*), intent(in) :: path
+end function is_absolute_path
+
+module function get_tempdir()
+character(:), allocatable :: get_tempdir
+end function
+
+end interface
 
 interface !< write.f90
 module subroutine hdf_create(self, dname, dtype, dims, sid, did, chunk_size, istart, iend, stride)
