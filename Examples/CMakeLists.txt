@@ -3,15 +3,22 @@ project(h5fortranExample
 LANGUAGES C CXX Fortran)
 enable_testing()
 
-# --- h5fortran template
-include(FetchContent)
+# see if h5fortran is installed; build h5fortran if not found
+find_package(h5fortran CONFIG)
 
-FetchContent_Declare(h5fortran_proj
-  GIT_REPOSITORY https://github.com/geospace-code/h5fortran.git
-  GIT_TAG v2.11.3
-)
+if(h5fortran_FOUND)
+  include(${h5fortran_DIR}/h5fortranTargets.cmake)
+else()
+  include(FetchContent)
+  FetchContent_Declare(h5fortran_proj
+    GIT_REPOSITORY https://github.com/geospace-code/h5fortran.git
+    GIT_TAG v3.0.1)
+  FetchContent_MakeAvailable(h5fortran_proj)
+endif()
 
-FetchContent_MakeAvailable(h5fortran_proj)
+if(NOT HDF5OK)
+  message(FATAL_ERROR "HDF5 is not working on your system, so h5fortran cannot work.")
+endif()
 
 # this helps linters e.g. Visual Studio Intellicode work properly
 set(CMAKE_EXPORT_COMPILE_COMMANDS on)

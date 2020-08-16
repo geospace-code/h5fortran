@@ -1,9 +1,15 @@
-# --- install / packaging
+# --- package specific
+
+install(FILES ${CMAKE_CURRENT_LIST_DIR}/hdf5.cmake
+  DESTINATION lib/cmake/${PROJECT_NAME})
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/h5fortran.mod
+  DESTINATION include)
+
+# --- BOILERPLATE: install / packaging
 
 install(TARGETS ${PROJECT_NAME}
   EXPORT ${PROJECT_NAME}Targets)
-install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/ DESTINATION include)
-
 
 include(CMakePackageConfigHelpers)
 
@@ -13,7 +19,7 @@ configure_package_config_file(${CMAKE_CURRENT_LIST_DIR}/${PROJECT_NAME}Config.cm
 
 write_basic_package_version_file(
   "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
-  VERSION $${PROJECT_NAME}_VERSION}
+  VERSION ${${PROJECT_NAME}_VERSION}
   COMPATIBILITY SameMinorVersion
 )
 

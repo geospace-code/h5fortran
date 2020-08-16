@@ -6,7 +6,7 @@
 ![ci_mac](https://github.com/geospace-code/h5fortran/workflows/ci_mac/badge.svg)
 ![ci_windows](https://github.com/geospace-code/h5fortran/workflows/ci_windows/badge.svg)
 
-Simple, robust, thin HDF5 polymorphic read/write interface.
+Simple, robust, thin HDF5 polymorphic Fortran read/write interface.
 Reading or writing {real64,real32,int32} from scalar to 7d is as simple as
 
 ```fortran
@@ -33,14 +33,12 @@ Polymorphic API with read/write for types int32, real32, real64 with rank:
 * scalar (0-D)
 * 1-D .. 7-D
 
-as well as **character (string)**
+as well as **character (string)**.
 
-HDF5 **attributes** are also supported for read/write with type character, int32, real32, real64.
-
-**Array slicing on read and write** is supported, that is, reading or writing part of a disk HDF5 array into a variable matching the slice shape.
-
-Mismatched datatypes are coerced as per standard Fortran rules.
-For example, reading a float HDF5 variable into an integer Fortran variable:  42.3 => 42
+* HDF5 **attributes** are also supported for read/write with type character, int32, real32, real64.
+* **Array slicing on read and write** is supported, that is, reading or writing part of a disk HDF5 array into a variable matching the slice shape.
+* Mismatched datatypes are coerced as per standard Fortran rules. For example, reading a float HDF5 variable into an integer Fortran variable:  42.3 => 42
+* Zlib (deflate) compression / decompression
 
 Tested on systems with HDF5 1.8, 1.10 and 1.12 including:
 
