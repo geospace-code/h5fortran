@@ -24,7 +24,7 @@ endif()
 find_path(HDF5_MODULE_DIR NAMES hdf5.mod HINTS ${HDF5_INCLUDE_DIRS} PATH_SUFFIXES static)
 if(HDF5_MODULE_DIR)
   list(APPEND HDF5_INCLUDE_DIRS ${HDF5_MODULE_DIR})
-  # set(SZIP_ROOT "${HDF5_MODULE_DIR}/..;${HDF5_MODULE_DIR}/../..")
+  set(SZIP_ROOT "${HDF5_MODULE_DIR}/..;${HDF5_MODULE_DIR}/../..")
   set(ZLIB_ROOT "${HDF5_MODULE_DIR}/..;${HDF5_MODULE_DIR}/../..")
 endif()
 list(REMOVE_DUPLICATES HDF5_INCLUDE_DIRS)
@@ -32,10 +32,12 @@ list(REMOVE_DUPLICATES HDF5_INCLUDE_DIRS)
 # in case the compiler wrapper didn't work
 set(HDF5_LIBRARIES ${HDF5_Fortran_HL_LIBRARIES} ${HDF5_Fortran_LIBRARIES} ${HDF5_LIBRARIES})
 
-# find_package(SZIP)
-# if(SZIP_FOUND)
-#   list(APPEND HDF5_LIBRARIES SZIP::SZIP)
-# endif()
+# Szip even though not directly used because if system static links libhdf5 with szip,
+# our builds will fail if we don't also link szip.
+find_package(SZIP)
+if(SZIP_FOUND)
+  list(APPEND HDF5_LIBRARIES SZIP::SZIP)
+endif()
 
 find_package(ZLIB)
 if(ZLIB_FOUND)
@@ -54,8 +56,9 @@ if(UNIX)
   list(APPEND HDF5_LIBRARIES m)
 endif()
 
-if(WIN32 AND MSVC)
+if(MSVC)
   # this stanza must be BEFORE if(DEFINED HDF5OK)
+  # this is specifically for Intel compiler with HDF5 1.10 or 1.12 binary install.
   if(NOT DEFINED HDF5_ROOT AND DEFINED ENV{HDF5_ROOT})
     file(TO_CMAKE_PATH "$ENV{HDF5_ROOT}" HDF5_ROOT)
   endif()
