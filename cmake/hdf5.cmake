@@ -29,20 +29,30 @@ if(HDF5_MODULE_DIR)
 endif()
 list(REMOVE_DUPLICATES HDF5_INCLUDE_DIRS)
 
-# in case the compiler wrapper didn't work
 set(HDF5_LIBRARIES ${HDF5_Fortran_HL_LIBRARIES} ${HDF5_Fortran_LIBRARIES} ${HDF5_LIBRARIES})
+
+set(CMAKE_REQUIRED_INCLUDES ${HDF5_INCLUDE_DIRS})
+set(CMAKE_REQUIRED_LIBRARIES ${HDF5_LIBRARIES})
+
+include(CheckSymbolExists)
+check_symbol_exists(H5_HAVE_FILTER_SZIP H5pubconf.h use_szip)
+check_symbol_exists(H5_HAVE_FILTER_DEFLATE H5pubconf.h use_zlib)
 
 # Szip even though not directly used because if system static links libhdf5 with szip,
 # our builds will fail if we don't also link szip.
-find_package(SZIP)
-if(SZIP_FOUND)
-  list(APPEND HDF5_LIBRARIES SZIP::SZIP)
-endif()
+if(use_szip)
+  find_package(SZIP)
+  if(SZIP_FOUND)
+    list(APPEND HDF5_LIBRARIES SZIP::SZIP)
+  endif()
+endif(use_szip)
 
-find_package(ZLIB)
-if(ZLIB_FOUND)
-  list(APPEND HDF5_LIBRARIES ZLIB::ZLIB)
-endif()
+if(use_zlib)
+  find_package(ZLIB)
+  if(ZLIB_FOUND)
+    list(APPEND HDF5_LIBRARIES ZLIB::ZLIB)
+  endif()
+endif(use_zlib)
 
 set(THREADS_PREFER_PTHREAD_FLAG true)
 find_package(Threads)
@@ -79,8 +89,6 @@ if(MSVC)
 endif(MSVC)
 endif()
 
-set(CMAKE_REQUIRED_INCLUDES ${HDF5_INCLUDE_DIRS})
-set(CMAKE_REQUIRED_LIBRARIES ${HDF5_LIBRARIES})
 
 include(CheckFortranSourceCompiles)
 set(_code "program test_minimal
