@@ -27,14 +27,13 @@ foreach(t fail_read_size_mismatch fail_read_rank_mismatch fail_nonexist_variable
 endforeach()
 
 
-
 find_package(Python3 COMPONENTS Interpreter)
 if(Python3_FOUND)
   add_test(NAME h5fortran:check_shape
-    COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test_shape.py
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+    COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test_shape.py ${PROJECT_BINARY_DIR}/test_shape.h5)
   set_tests_properties(h5fortran:check_shape PROPERTIES
     DEPENDS h5fortran:shape
+    REQUIRED_FILES ${PROJECT_BINARY_DIR}/test_shape.h5
     FIXTURES_REQUIRED h5lib
     TIMEOUT 90)
 endif(Python3_FOUND)

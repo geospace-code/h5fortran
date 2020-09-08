@@ -1,4 +1,10 @@
 #!/usr/bin/env python3
+"""
+read output of test_shape.f90 and see if it's the right shape
+in a few coding langauges
+"""
+
+import argparse
 import shutil
 import subprocess
 from pathlib import Path
@@ -8,7 +14,12 @@ try:
 except ImportError:
     h5py = None
 
-fn = Path("test_shape.h5")
+p = argparse.ArgumentParser(description="analyze output of test_shape.f90")
+p.add_argument("file", help="hDF5 file to analyze")
+P = p.parse_args()
+
+fn = Path(P.file).expanduser()
+
 var = "/d7"
 f_order = (2, 1, 3, 4, 7, 6, 5)
 c_order = f_order[::-1]
