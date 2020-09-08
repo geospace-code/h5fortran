@@ -1,22 +1,20 @@
 add_executable(test_minimal test_minimal.f90)
 target_link_libraries(test_minimal PRIVATE h5fortran::h5fortran)
-add_test(NAME h5fortran:minimal COMMAND $<TARGET_FILE:test_minimal>
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+add_test(NAME h5fortran:minimal COMMAND $<TARGET_FILE:test_minimal>)
 set_tests_properties(h5fortran:minimal PROPERTIES FIXTURES_SETUP h5lib)
 
 foreach(t array attributes deflate error exist module lt scalar shape string
           fail_read_size_mismatch fail_read_rank_mismatch fail_nonexist_variable fail_unknown_read fail_unknown_write)
+
   add_executable(test_${t} test_${t}.f90)
   target_link_libraries(test_${t} PRIVATE h5fortran::h5fortran)
   if(${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU)
     target_compile_options(test_${t} PRIVATE -Wno-compare-reals)
   endif()
 
-  add_test(NAME h5fortran:${t} COMMAND $<TARGET_FILE:test_${t}> WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+  add_test(NAME h5fortran:${t} COMMAND $<TARGET_FILE:test_${t}>)
   set_tests_properties(h5fortran:${t} PROPERTIES FIXTURES_REQUIRED h5lib)
-  if(WIN32 AND MSVC)
-    set_tests_properties(h5fortran:${t} PROPERTIES ENVIRONMENT "PATH=${HDF5_ROOT}/bin;$ENV{PATH}")
-  endif()
+
 endforeach()
 
 foreach(t fail_read_size_mismatch fail_read_rank_mismatch fail_nonexist_variable fail_unknown_read fail_unknown_write)

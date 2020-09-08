@@ -51,7 +51,7 @@ Tested on systems with HDF5 1.8, 1.10 and 1.12 including:
 Compilers known to work include:
 
 * Gfortran &ge; 6
-* Intel compiler &ge; 19.1 / 2020
+* Intel oneAPI HPC compiler
 
 ## Build
 
@@ -98,8 +98,19 @@ For detailed [examples](./Examples/) see [Examples.md](./Examples.md).
 ## Notes
 
 * The first character of the filename should be a character, NOT whitespace to avoid file open/creation errors.
-* [PGI](https://www.fluidnumerics.com/resources/building-hdf5-with-pgi) or Flang compilers require first compiling the HDF5 library yourself.
 * Polymorphic array rank is implemented.
+
+### Getting HDF5 library
+
+On many platforms, you must first compile the HDF5 library yourself like:
+```sh
+python3 scripts/compile_hdf5.py
+```
+
+For Windows with Intel oneAPI,
+[download and install](https://www.hdfgroup.org/downloads/hdf5/)
+the file named like "hdf5-1.12.0-Std-win10_64-vs14-Intel.zip".
+Note this will put the HDF5 /bin directory on PATH--leave it there so that the DLL's work properly at runtime--Windows does not have Rpath or LD_LIBRARY_PATH, just PATH.
 
 ### Missing datatypes
 
