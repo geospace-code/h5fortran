@@ -1,8 +1,11 @@
 add_executable(test_minimal test_minimal.f90)
 target_link_libraries(test_minimal PRIVATE h5fortran::h5fortran)
-add_test(NAME h5fortran:minimal COMMAND $<TARGET_FILE:test_minimal>)
+add_test(NAME h5fortran:minimal
+  COMMAND $<TARGET_FILE:test_minimal>
+  WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
 set_tests_properties(h5fortran:minimal PROPERTIES FIXTURES_SETUP h5lib)
 
+# --- all other tests
 foreach(t array attributes deflate error exist module lt scalar shape string
           fail_read_size_mismatch fail_read_rank_mismatch fail_nonexist_variable fail_unknown_read fail_unknown_write)
 
@@ -12,7 +15,9 @@ foreach(t array attributes deflate error exist module lt scalar shape string
     target_compile_options(test_${t} PRIVATE -Wno-compare-reals)
   endif()
 
-  add_test(NAME h5fortran:${t} COMMAND $<TARGET_FILE:test_${t}>)
+  add_test(NAME h5fortran:${t}
+    COMMAND $<TARGET_FILE:test_${t}>
+    WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
   set_tests_properties(h5fortran:${t} PROPERTIES FIXTURES_REQUIRED h5lib)
 
 endforeach()

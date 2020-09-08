@@ -2,7 +2,7 @@
 
 set(HDF5_USE_STATIC_LIBRARIES true)
 # Intel HDF5 for Windows has some real issues from the factory, this makes it work:
-if(WIN32 AND CMAKE_Fortran_COMPILER_ID STREQUAL Intel)
+if(MSVC)
   set(HDF5_NO_FIND_PACKAGE_CONFIG_FILE true)
   set(HDF5_USE_STATIC_LIBRARIES false)
 endif()
@@ -56,31 +56,28 @@ if(UNIX)
   list(APPEND HDF5_LIBRARIES m)
 endif()
 
-if(MSVC)
-  # this stanza must be BEFORE if(DEFINED HDF5OK)
-  # this is specifically for Intel compiler with HDF5 1.10 or 1.12 binary install.
-  if(NOT DEFINED HDF5_ROOT AND DEFINED ENV{HDF5_ROOT})
-    file(TO_CMAKE_PATH "$ENV{HDF5_ROOT}" HDF5_ROOT)
-  endif()
+# if(MSVC)
+# didn't work, just copy .dll files
+#   # this stanza must be BEFORE if(DEFINED HDF5OK)
+#   # this is specifically for Intel compiler with HDF5 1.10 or 1.12 binary install.
+#   if(NOT DEFINED HDF5_ROOT AND DEFINED ENV{HDF5_ROOT})
+#     file(TO_CMAKE_PATH "$ENV{HDF5_ROOT}" HDF5_ROOT)
+#   endif()
 
-  if(DEFINED HDF5_ROOT)
-    set(ENV{PATH} "${HDF5_ROOT}/bin;$ENV{PATH}")
-  endif()
-endif()
+#   if(DEFINED HDF5_ROOT)
+#     set(ENV{PATH} "${HDF5_ROOT}/bin;$ENV{PATH}")
+#   endif()
+# endif()
 
-if(DEFINED HDF5OK)
-  return()
-endif()
-
+if(NOT DEFINED HDF5OK)
 message(STATUS "HDF5 include: ${HDF5_INCLUDE_DIRS}")
 message(STATUS "HDF5 library: ${HDF5_LIBRARIES}")
-# we don't use these because they may come from a broken compiler wrapper
-# if(HDF5_Fortran_COMPILER_EXECUTABLE)
-#   message(STATUS "HDF5 Fortran compiler: ${HDF5_Fortran_COMPILER_EXECUTABLE}")
-# endif()
-# if(HDF5_Fortran_DEFINITIONS)
-#   message(STATUS "HDF5 compiler defs: ${HDF5_Fortran_DEFINITIONS}")
-# endif()
+# we don't use broken compiler wrapper
+if(MSVC)
+  include(${CMAKE_CURRENT_LIST_DIR}/win32_hdf5.cmake)
+  win32_hdf5_env()
+endif(MSVC)
+endif()
 
 set(CMAKE_REQUIRED_INCLUDES ${HDF5_INCLUDE_DIRS})
 set(CMAKE_REQUIRED_LIBRARIES ${HDF5_LIBRARIES})
@@ -101,7 +98,12 @@ check_fortran_source_compiles(${_code} HDF5_compiles_ok SRC_EXT f90)
 include(CheckFortranSourceRuns)
 check_fortran_source_runs(${_code} HDF5_runs_ok SRC_EXT f90)
 
-set(HDF5OK false)
-if(HDF5_compiles_ok AND HDF5_runs_ok)
-  set(HDF5OK true CACHE BOOL "HDF5 library compiles and run OK" FORCE)
+if(HDF5_compiles_ok)
+  if(MSVC OR HDF5_runs_ok)
+    # FIXME: MSVC check_fortran_source_runs needs to be set to PROJECT_BINARY_DIR.
+    # may require vendoring, so we just do this workaround for now for MSVC.
+    set(HDF5OK true CACHE BOOL "HDF5 library compiles and run OK" FORCE)
+  endif()
+else()
+  set(HDF5OK false)
 endif()

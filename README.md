@@ -110,7 +110,15 @@ python3 scripts/compile_hdf5.py
 For Windows with Intel oneAPI,
 [download and install](https://www.hdfgroup.org/downloads/hdf5/)
 the file named like "hdf5-1.12.0-Std-win10_64-vs14-Intel.zip".
-Note this will put the HDF5 /bin directory on PATH--leave it there so that the DLL's work properly at runtime--Windows does not have Rpath or LD_LIBRARY_PATH, just PATH.
+Note this will put the HDF5 /bin directory on PATH.
+If not using Python with HDF5, leave it there so that the DLL's work properly at runtime--Windows does not have Rpath or LD_LIBRARY_PATH, just PATH.
+
+If you also use HDF5 with Python in the same project, there will be conflicts between Python HDF on PATH and the HDF Group HDF5 library on Path.
+What works in that case is taking HDF GRoup HDF5 out of PATH and configuring like:
+
+```sh
+cmake -B build -DHDF5_ROOT="C:/Program Files/HDF_Group/HDF5/1.12.0/"
+```
 
 ### Missing datatypes
 
