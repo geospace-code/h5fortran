@@ -24,6 +24,6 @@ endforeach
 python = find_program('python')
 
 test('check_shape', python,
-  args: [files('test_shape.py')],
+  args: [files('test_shape.py'), meson.build_root() / 'test_shape.h5'],
   is_parallel: false,
   suite: 'h5shaky', priority: -100, timeout: 90)

@@ -4,7 +4,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 project(h5fortran
   LANGUAGES C Fortran
-  VERSION 3.0.4
+  VERSION 3.1.0
   DESCRIPTION "thin, light object-oriented HDF5 Fortran interface"
   HOMEPAGE_URL https://github.com/geospace-code/h5fortran)
 enable_testing()
@@ -33,12 +33,11 @@ endif()
 
 add_library(h5fortran)
 target_include_directories(h5fortran
-  PUBLIC ${HDF5_INCLUDE_DIRS}
   PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/include  # for IBM XL
   INTERFACE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
   $<INSTALL_INTERFACE:include>)
-target_link_libraries(h5fortran PRIVATE ${HDF5_LIBRARIES})
+target_link_libraries(h5fortran PUBLIC HDF5::HDF5)
 set_target_properties(h5fortran PROPERTIES Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include)
 add_library(h5fortran::h5fortran ALIAS h5fortran)
 

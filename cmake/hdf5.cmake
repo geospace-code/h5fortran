@@ -31,8 +31,15 @@ list(REMOVE_DUPLICATES HDF5_INCLUDE_DIRS)
 
 set(HDF5_LIBRARIES ${HDF5_Fortran_HL_LIBRARIES} ${HDF5_Fortran_LIBRARIES} ${HDF5_LIBRARIES})
 
-set(CMAKE_REQUIRED_INCLUDES ${HDF5_INCLUDE_DIRS})
-set(CMAKE_REQUIRED_LIBRARIES ${HDF5_LIBRARIES})
+# --- make imported target
+# NOTE: this is coming to CMake 3.19 FindHDF5, but the alpha didn't work for Intel Windows.
+add_library(HDF5::HDF5 INTERFACE IMPORTED)
+target_include_directories(HDF5::HDF5 INTERFACE "${HDF5_INCLUDE_DIRS}")
+target_link_libraries(HDF5::HDF5 INTERFACE "${HDF5_LIBRARIES}")
+target_compile_definitions(HDF5::HDF5 INTERFACE "${HDF5_DEFINITIONS}")
+
+set(CMAKE_REQUIRED_INCLUDES)
+set(CMAKE_REQUIRED_LIBRARIES HDF5::HDF5)
 
 include(CheckSymbolExists)
 check_symbol_exists(H5_HAVE_FILTER_SZIP H5pubconf.h use_szip)
@@ -89,6 +96,8 @@ if(MSVC)
 endif(MSVC)
 endif()
 
+# --- configure time checks
+# these checks avoid messy, confusing errors at build time
 
 include(CheckFortranSourceCompiles)
 set(_code "program test_minimal
