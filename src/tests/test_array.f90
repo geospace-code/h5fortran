@@ -113,21 +113,21 @@ call h%initialize(filename, status='old', action='r')
 
 i1t = 0
 call h%read('/int32-1d', i1t(:2), istart=[2], iend=[3], stride=[1])
-if (.not.all(i1t(:2)==[2,3])) then
+if (any(i1t(:2) /= [2,3])) then
   write(stderr, *) 'read 1D slice does not match. expected [2,3] but got ',i1t(:2)
   error stop
 endif
 
 i1t = 0
 call h%read('/int32-1d', i1t(:2), istart=[2], iend=[3])
-if (.not.all(i1t(:2)==[2,3])) then
+if (any(i1t(:2) /= [2,3])) then
   write(stderr, *) 'read 1D slice does not match. expected [2,3] but got ',i1t(:2)
   error stop
 endif
 
 i2t = 0
 call h%read('/test/group2/int32-2d', i2t(:2,:3), istart=[2,1], iend=[3,3], stride=[1,1])
-if (.not.all(i2t(:2,:3)==i2(2:3,1:3))) then
+if (any(i2t(:2,:3) /= i2(2:3,1:3))) then
   write(stderr, *) 'read 2D slice does not match. expected:',i2(2:3,1:3),' but got ',i2t(:2,:3)
   error stop
 endif

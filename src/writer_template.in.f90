@@ -18,9 +18,9 @@ mem_sid = H5S_ALL_F !< default
 
 if(present(istart) .and. present(iend)) then
   if(present(stride)) then
+    !! necessary to use this present check for Intel and GCC
     call hdf_get_slice(self, dname, did, sid, mem_sid, istart, iend, stride)
   else
-    !! this shouldn't be necessary, but workaround bug with GCC 9.3.0
     call hdf_get_slice(self, dname, did, sid, mem_sid, istart, iend)
   endif
 endif

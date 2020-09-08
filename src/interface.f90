@@ -21,7 +21,7 @@ public :: hdf5_file, hdf5_close, h5write, h5read, h5exist, is_hdf5, h5write_attr
   check, hdf_shape_check, hdf_get_slice, hdf_wrapup, & !< for submodules only
   HSIZE_T, HID_T, H5T_NATIVE_DOUBLE, H5T_NATIVE_REAL, H5T_NATIVE_INTEGER !< HDF5 types for end users
 
-!> Workaround for Intel 19.1 / 2020 bug with /stand:f18
+!> Workaround for Intel 19.1 / 2020 / oneAPI bug with /stand:f18
 !> error #6410: This name has not been declared as an array or a function.   [RANK]
 !> GCC 10.2.0 generates spurious Wsurprising from having this here.
 intrinsic :: rank
@@ -797,6 +797,11 @@ class(*), intent(in), optional, dimension(:) :: i2
 
 integer(hsize_t), dimension(size(i0)) :: istart, iend, stride, mem_dims
 integer :: ierr
+
+if (size(i0) /= size(i1)) error stop "istart and iend must have equal length"
+if (present(i2)) then
+  if (size(i0) /= size(i2)) error stop "istride must be same length as istart and iend"
+endif
 
 if(.not.self%is_open) error stop 'h5fortran:slice: file handle is not open'
 

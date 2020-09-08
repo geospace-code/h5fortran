@@ -8,7 +8,12 @@ mem_sid = H5S_ALL_F
 dims = shape(value)
 
 if(present(istart) .and. present(iend)) then
-  call hdf_get_slice(self, dname, did, sid, mem_sid, istart, iend, stride)
+  if (present(stride)) then
+    !! necessary to use this present check for Intel and GCC
+    call hdf_get_slice(self, dname, did, sid, mem_sid, istart, iend, stride)
+  else
+    call hdf_get_slice(self, dname, did, sid, mem_sid, istart, iend)
+  endif
 else
   call hdf_shape_check(self, dname, dims)
   call h5dopen_f(self%lid, dname, did, ier)
