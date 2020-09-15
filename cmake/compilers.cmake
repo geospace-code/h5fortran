@@ -21,8 +21,11 @@ elseif(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
   endif()
 
   if(CMAKE_Fortran_COMPILER_VERSION VERSION_EQUAL 9.3.0)
-    # makes a lot of spurious warnngs on alloctable scalar character
+    # makes a lot of spurious warnings on alloctable scalar character
     string(APPEND CMAKE_Fortran_FLAGS " -Wno-maybe-uninitialized")
+  elseif(CMAKE_Fortran_COMPILER_VERSION VERSION_EQUAL 10.2.0)
+    # avoid spurious warning on intrinsic :: rank
+    string(APPEND CMAKE_Fortran_FLAGS " -Wno-surprising")
   endif()
 elseif(CMAKE_Fortran_COMPILER_ID STREQUAL PGI)
   string(APPEND CMAKE_Fortran_FLAGS " -C -Mdclchk")

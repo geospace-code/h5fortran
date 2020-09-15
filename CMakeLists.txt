@@ -7,14 +7,12 @@ project(h5fortran
   VERSION 3.1.0
   DESCRIPTION "thin, light object-oriented HDF5 Fortran interface"
   HOMEPAGE_URL https://github.com/geospace-code/h5fortran)
-enable_testing()
+
 include(CTest)
-include(FeatureSummary)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
 # set(HDF5_FIND_DEBUG true)
 
-# this helps linters e.g. Visual Studio Intellicode work properly
 set(CMAKE_EXPORT_COMPILE_COMMANDS on)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/compilers.cmake)
@@ -48,6 +46,7 @@ if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 
   include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/install.cmake)
 
+  include(FeatureSummary)
   set_package_properties(Threads PROPERTIES DESCRIPTION "the system threads library")
   set_package_properties(HDF5 PROPERTIES URL "https://hdfgroup.org/" DESCRIPTION "fast, versatile file I/O format" TYPE REQUIRED)
   set_package_properties(ZLIB PROPERTIES URL "https://www.zlib.net/" DESCRIPTION "patent-free compression library")
