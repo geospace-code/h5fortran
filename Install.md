@@ -4,7 +4,7 @@ h5fortran is typically built and installed with CMake or Meson.
 
 ## Requirements
 
-* modern Fortran compiler (this project uses `submodule` and `error stop`). For example, Gfortran &ge; 6 or Intel oneAPI.
+* Fortran 2018 compiler (this project uses `submodule` and `error stop`). For example, Gfortran or Intel oneAPI.
 * HDF5 Fortran library (>= 1.8.7, including 1.10.x and 1.12.x)
   * MacOS / Homebrew: `brew install gcc hdf5`
   * Linux / Windows Subsystem for Linux: `apt install gfortran libhdf5-dev` or `python scripts/compile_hdf5.py`

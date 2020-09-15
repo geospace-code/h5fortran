@@ -12,14 +12,25 @@ if(MSVC)
   set(HDF5_USE_STATIC_LIBRARIES false)
 endif()
 
-if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
-  find_package(HDF5 COMPONENTS Fortran HL REQUIRED)
-else()
-  find_package(HDF5 COMPONENTS Fortran HL)
-endif()
+find_package(HDF5 COMPONENTS Fortran HL)
 
 if(NOT HDF5_FOUND)
+  # build HDF5 library automatically, if possible
+  if(WIN32)
+    if(MSVC)
+      message(STATUS "For Windows with Intel compiler, use HDF5 binaries from HDF Group. https://www.hdfgroup.org/downloads/hdf5/ look for filename like hdf5-1.12.0-Std-win10_64-vs14-Intel.zip")
+    else()
+      message(STATUS "For MSYS2 on Windows, just use MSYS2 HDF5. Install from the MSYS2 terminal:  pacman -S mingw-w64-x86_64-hdf5      reference: https://packages.msys2.org/package/mingw-w64-x86_64-hdf5")
+    endif()
+
+    set(HDF5OK false)
+    return()
+  endif(WIN32)
+
+  include(${CMAKE_CURRENT_LIST_DIR}/build_hdf5.cmake)
+  set(HDF5OK true)
   return()
+  # have to return because library isn't built yet
 endif()
 
 if(HDF5_Fortran_INCLUDE_DIRS)

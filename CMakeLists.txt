@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.15)
 
 if(PROJECT_SOURCE_DIR STREQUAL PROJECT_BINARY_DIR)
   message(FATAL_ERROR "use cmake -B build or similar to avoid building in-source")
@@ -10,7 +10,7 @@ endif()
 
 project(h5fortran
   LANGUAGES C Fortran
-  VERSION 3.1.1
+  VERSION 3.2.0
   DESCRIPTION "thin, light object-oriented HDF5 Fortran interface"
   HOMEPAGE_URL https://github.com/geospace-code/h5fortran)
 
@@ -22,6 +22,9 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
 set(CMAKE_EXPORT_COMPILE_COMMANDS on)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/compilers.cmake)
+
+add_library(h5fortran)  # declare here so dependencies may be setup
+
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/hdf5.cmake)
 
 if(NOT HDF5OK)
@@ -34,8 +37,6 @@ if(NOT HDF5OK)
 endif()
 
 # --- build
-
-add_library(h5fortran)
 target_include_directories(h5fortran
   PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/include  # for IBM XL
   INTERFACE
