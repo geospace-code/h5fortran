@@ -1,5 +1,10 @@
 # don't enclose this all in "if(NOT DEFINED HDF5OK)" because CMake intermittantly doesn't cache needed HDF5 variables.
 
+if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.19)
+  # make missing imported targets fail immediately
+  cmake_policy(SET CMP0111 NEW)
+endif()
+
 set(HDF5_USE_STATIC_LIBRARIES true)
 # Intel HDF5 for Windows has some real issues from the factory, this makes it work:
 if(MSVC)
@@ -72,6 +77,9 @@ list(APPEND HDF5_LIBRARIES ${CMAKE_DL_LIBS})
 if(UNIX)
   list(APPEND HDF5_LIBRARIES m)
 endif()
+
+# finish up the HDF5::HDF5 target
+target_link_libraries(HDF5::HDF5 INTERFACE "${HDF5_LIBRARIES}")
 
 # if(MSVC)
 # didn't work, just copy .dll files
