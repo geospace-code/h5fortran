@@ -34,6 +34,14 @@ Build and self-test via:
 ctest -S setup.cmake -V
 ```
 
+---
+
+To build h5fortran faster by omitting the self-tests:
+
+```sh
+cmake -B build -DBUILD_TESTING=off
+```
+
 ### [optional] install
 
 To install h5fortran to a directory, to use in many programs do like:
@@ -65,7 +73,7 @@ else()
   include(FetchContent)
   FetchContent_Declare(h5fortran_proj
     GIT_REPOSITORY https://github.com/geospace-code/h5fortran.git
-    GIT_TAG v3.0.1)
+    GIT_TAG v3.1.1)
   FetchContent_MakeAvailable(h5fortran_proj)
 endif()
 ```
@@ -103,7 +111,7 @@ include(FetchContent)
 
 FetchContent_Declare(h5fortran_proj
   GIT_REPOSITORY https://github.com/geospace-code/h5fortran.git
-  GIT_TAG v2.11.4
+  GIT_TAG v3.1.1
 )
 
 FetchContent_MakeAvailable(h5fortran_proj)
