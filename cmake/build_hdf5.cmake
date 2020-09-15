@@ -3,8 +3,6 @@
 
 if(NOT IS_DIRECTORY ${hdf5_bindir}/lib)
 
-  set(hdf5_bindir ${PROJECT_BINARY_DIR}/hdf5 CACHE PATH "HDF5 library install location")
-
   include(ExternalProject)
   ExternalProject_Add(HDF5_proj
   GIT_REPOSITORY https://bitbucket.hdfgroup.org/scm/hdffv/hdf5.git

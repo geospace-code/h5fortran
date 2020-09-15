@@ -14,6 +14,9 @@ project(h5fortran
   DESCRIPTION "thin, light object-oriented HDF5 Fortran interface"
   HOMEPAGE_URL https://github.com/geospace-code/h5fortran)
 
+# this is optional, if HDF5 is not found, we will autobuild in this directory
+set(hdf5_bindir ${PROJECT_BINARY_DIR}/hdf5)
+
 include(CTest)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
