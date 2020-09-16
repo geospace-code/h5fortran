@@ -8,6 +8,7 @@ if(IS_DIRECTORY ${HDF5_ROOT})
   set(_cmd1 "")
   set(_cmd2 "")
 else()
+  message(STATUS "installing HDF5 library in ${HDF5_ROOT}")
   set(_cmd0 ${CMAKE_CURRENT_BINARY_DIR}/HDF5_proj-prefix/src/HDF5_proj/configure --prefix=${HDF5_ROOT} --enable-fortran --enable-build-mode=production --disable-tests --disable-tools --disable-shared)
   set(_cmd1 make -j)
   set(_cmd2 make -j install)
@@ -30,13 +31,9 @@ BUILD_BYPRODUCTS "${HDF5_LIBRARIES}"
 INSTALL_COMMAND "${_cmd2}"
 )
 
-message(STATUS "installing HDF5 library in ${HDF5_ROOT}")
-
 file(MAKE_DIRECTORY ${HDF5_ROOT}/include)  # avoid race condition
 
 add_dependencies(h5fortran HDF5_proj)  # ensure HDF5 builds first
-
-
 
 find_package(ZLIB REQUIRED)
 list(APPEND HDF5_LIBRARIES ZLIB::ZLIB)
