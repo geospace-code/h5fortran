@@ -2,7 +2,14 @@
 
 set(HDF5_ROOT ${PROJECT_BINARY_DIR}/hdf5 CACHE PATH "HDF5 library install location")
 
-if(IS_DIRECTORY ${HDF5_ROOT})
+include(ProcessorCount)
+ProcessorCount(Ncpu)
+if(Ncpu LESS 1)
+  set(Ncpu)
+endif()
+# make -j is too aggressive
+
+if(EXISTS ${HDF5_ROOT}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}hdf5_hl_fortran${CMAKE_STATIC_LIBRARY_SUFFIX})
   # already installed, disable long configure step and verbose build, install steps
   set(_cmd0 "")
   set(_cmd1 "")
@@ -10,8 +17,8 @@ if(IS_DIRECTORY ${HDF5_ROOT})
 else()
   message(STATUS "installing HDF5 library in ${HDF5_ROOT}")
   set(_cmd0 ${CMAKE_CURRENT_BINARY_DIR}/HDF5_proj-prefix/src/HDF5_proj/configure --prefix=${HDF5_ROOT} --enable-fortran --enable-build-mode=production --disable-tests --disable-tools --disable-shared)
-  set(_cmd1 make -j)
-  set(_cmd2 make -j install)
+  set(_cmd1 make -j${Ncpu})
+  set(_cmd2 make -j${Ncpu} install)
 endif()
 
 set(HDF5_LIBRARIES)
