@@ -16,6 +16,8 @@ project(h5fortran
 
 include(CTest)
 
+option(autobuild "autobuild HDF5 if missing or broken" on)
+
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
 # set(HDF5_FIND_DEBUG true)
 

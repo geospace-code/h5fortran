@@ -19,7 +19,7 @@ endif()
 # --- autobuild HDF5
 if(HDF5_FOUND)
   set(hdf5_external false CACHE BOOL "HDF5 external build")
-else()
+elseif(autobuild)
   set(hdf5_external true CACHE BOOL "HDF5 external build")
   # build HDF5 library automatically, if possible
   if(WIN32)
@@ -34,9 +34,12 @@ else()
   endif(WIN32)
 
   include(${CMAKE_CURRENT_LIST_DIR}/build_hdf5.cmake)
-  set(HDF5OK true)
+  set(HDF5OK true CACHE BOOL "HDF5 external build: assumed OK")
   return()
   # have to return because library isn't built yet
+else()
+  set(HDF5OK false CACHE BOOL "HDF5 External autobuild disabled and HDF5 not found")
+  return()
 endif(HDF5_FOUND)
 
 # --- library patch
@@ -160,8 +163,10 @@ if(HDF5_compiles_ok)
   if(MSVC OR HDF5_runs_ok)
     # FIXME: MSVC check_fortran_source_runs needs to be set to PROJECT_BINARY_DIR.
     # may require vendoring, so we just do this workaround for now for MSVC.
-    set(HDF5OK true CACHE BOOL "HDF5 library compiles and run OK" FORCE)
+    set(HDF5OK true CACHE BOOL "HDF5 library compiles and run OK")
+    set(hdf5_external false CACHE BOOL "HDF5 external build")
   endif()
 else()
+  set(hdf5_external true CACHE BOOL "HDF5 external build")
   set(HDF5OK false)
 endif()
