@@ -10,13 +10,17 @@ endif()
 
 project(h5fortran
   LANGUAGES C Fortran
-  VERSION 3.2.1
+  VERSION 3.2.2
   DESCRIPTION "thin, light object-oriented HDF5 Fortran interface"
   HOMEPAGE_URL https://github.com/geospace-code/h5fortran)
 
 include(CTest)
 
 option(autobuild "autobuild HDF5 if missing or broken" on)
+
+if(NOT DEFINED ${PROJECT_NAME}_BUILD_TESTING)
+  set(${PROJECT_NAME}_BUILD_TESTING ${BUILD_TESTING})
+endif()
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
 # set(HDF5_FIND_DEBUG true)
@@ -50,7 +54,7 @@ add_library(h5fortran::h5fortran ALIAS h5fortran)
 
 add_subdirectory(src)
 
-if(BUILD_TESTING)
+if(${PROJECT_NAME}_BUILD_TESTING)
   add_subdirectory(src/tests)
 endif()
 
