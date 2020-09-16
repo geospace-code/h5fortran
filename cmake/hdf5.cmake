@@ -7,13 +7,14 @@ endif()
 
 set(HDF5_USE_STATIC_LIBRARIES true)
 # Intel HDF5 for Windows has some real issues from the factory, this makes it work:
-if(MSVC)
+if(WIN32 AND CMAKE_Fortran_COMPILER_ID STREQUAL Intel)
   set(HDF5_NO_FIND_PACKAGE_CONFIG_FILE true)
   set(HDF5_USE_STATIC_LIBRARIES false)
 endif()
 
 find_package(HDF5 COMPONENTS Fortran HL)
 
+# --- autobuild HDF5
 if(NOT HDF5_FOUND)
   # build HDF5 library automatically, if possible
   if(WIN32)
@@ -33,6 +34,22 @@ if(NOT HDF5_FOUND)
   # have to return because library isn't built yet
 endif()
 
+# --- library patch
+set(HDF5_LIBRARIES ${HDF5_Fortran_HL_LIBRARIES} ${HDF5_Fortran_LIBRARIES} ${HDF5_LIBRARIES})
+
+# hdf5hl_fortran <=> hdf5_hl_fortran patch
+list(GET HDF5_LIBRARIES 0 _hlf)
+if(NOT _hlf)
+  list(REMOVE_AT HDF5_LIBRARIES 0)
+  find_library(_hlf NAMES hdf5_hl_fortran REQUIRED)
+  if(_hlf)
+    list(PREPEND HDF5_LIBRARIES ${_hlf})
+  else()
+    message(FATAL_ERROR "hdf5_hl_fortran patch failed")
+  endif()
+endif()
+
+# --- include patch
 if(HDF5_Fortran_INCLUDE_DIRS)
   list(APPEND HDF5_INCLUDE_DIRS ${HDF5_Fortran_INCLUDE_DIRS})
 endif()
@@ -45,15 +62,14 @@ if(HDF5_MODULE_DIR)
 endif()
 list(REMOVE_DUPLICATES HDF5_INCLUDE_DIRS)
 
-set(HDF5_LIBRARIES ${HDF5_Fortran_HL_LIBRARIES} ${HDF5_Fortran_LIBRARIES} ${HDF5_LIBRARIES})
-
-# --- make imported target
-# NOTE: this is coming to CMake 3.19 FindHDF5, but the alpha didn't work for Intel Windows.
+# --- imported target
+# NOTE: this is coming to CMake 3.19 FindHDF5, but their alpha didn't work for Intel Windows.
 add_library(HDF5::HDF5 INTERFACE IMPORTED)
 target_include_directories(HDF5::HDF5 INTERFACE "${HDF5_INCLUDE_DIRS}")
 target_link_libraries(HDF5::HDF5 INTERFACE "${HDF5_LIBRARIES}")
 target_compile_definitions(HDF5::HDF5 INTERFACE "${HDF5_DEFINITIONS}")
 
+# --- add SZIP and/or ZLIB
 set(CMAKE_REQUIRED_INCLUDES)
 set(CMAKE_REQUIRED_LIBRARIES HDF5::HDF5)
 
@@ -92,6 +108,7 @@ endif()
 # finish up the HDF5::HDF5 target
 target_link_libraries(HDF5::HDF5 INTERFACE "${HDF5_LIBRARIES}")
 
+# --- Intel Windows patch
 # if(MSVC)
 # didn't work, just copy .dll files
 #   # this stanza must be BEFORE if(DEFINED HDF5OK)
