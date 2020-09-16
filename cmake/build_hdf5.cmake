@@ -1,32 +1,42 @@
 # builds HDF5 library from scratch
-# the if(NOT IS_DIRECTORY ..) statement is because otherwise CMake configures HDF5 each and every build cycle, which takes a minute or so.
 
-if(NOT IS_DIRECTORY ${HDF5_ROOT}/lib)
+set(HDF5_ROOT ${PROJECT_BINARY_DIR}/hdf5 CACHE PATH "HDF5 library install location")
 
-  set(HDF5_ROOT ${PROJECT_BINARY_DIR}/hdf5 CACHE PATH "HDF5 library install location")
-
-  include(ExternalProject)
-  ExternalProject_Add(HDF5_proj
-  GIT_REPOSITORY https://bitbucket.hdfgroup.org/scm/hdffv/hdf5.git
-  GIT_TAG 1.12/master
-  GIT_SHALLOW true
-  UPDATE_DISCONNECTED true
-  CONFIGURE_COMMAND ${CMAKE_CURRENT_BINARY_DIR}/HDF5_proj-prefix/src/HDF5_proj/configure --prefix=${HDF5_ROOT} --enable-fortran --enable-build-mode=production --disable-tests --disable-tools --disable-shared
-  BUILD_COMMAND make -j
-  INSTALL_COMMAND make -j install
-  )
-
-  message(STATUS "installing HDF5 library in ${HDF5_ROOT}")
-
-  file(MAKE_DIRECTORY ${HDF5_ROOT}/include)  # avoid race condition
-
-  add_dependencies(h5fortran HDF5_proj)  # ensure HDF5 builds first
+if(IS_DIRECTORY ${HDF5_ROOT})
+  # already installed, disable long configure step and verbose build, install steps
+  set(_cmd0 "")
+  set(_cmd1 "")
+  set(_cmd2 "")
+else()
+  set(_cmd0 ${CMAKE_CURRENT_BINARY_DIR}/HDF5_proj-prefix/src/HDF5_proj/configure --prefix=${HDF5_ROOT} --enable-fortran --enable-build-mode=production --disable-tests --disable-tools --disable-shared)
+  set(_cmd1 make -j)
+  set(_cmd2 make -j install)
 endif()
 
 set(HDF5_LIBRARIES)
 foreach(_l hdf5_hl_fortran hdf5_fortran hdf5_hl hdf5)
   list(APPEND HDF5_LIBRARIES ${HDF5_ROOT}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}${_l}${CMAKE_STATIC_LIBRARY_SUFFIX})
 endforeach()
+
+include(ExternalProject)
+ExternalProject_Add(HDF5_proj
+GIT_REPOSITORY https://bitbucket.hdfgroup.org/scm/hdffv/hdf5.git
+GIT_TAG 1.12/master
+GIT_SHALLOW true
+UPDATE_DISCONNECTED true
+CONFIGURE_COMMAND "${_cmd0}"
+BUILD_COMMAND "${_cmd1}"
+BUILD_BYPRODUCTS "${HDF5_LIBRARIES}"
+INSTALL_COMMAND "${_cmd2}"
+)
+
+message(STATUS "installing HDF5 library in ${HDF5_ROOT}")
+
+file(MAKE_DIRECTORY ${HDF5_ROOT}/include)  # avoid race condition
+
+add_dependencies(h5fortran HDF5_proj)  # ensure HDF5 builds first
+
+
 
 find_package(ZLIB REQUIRED)
 list(APPEND HDF5_LIBRARIES ZLIB::ZLIB)

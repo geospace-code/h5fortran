@@ -29,7 +29,7 @@ elseif(autobuild)
       message(STATUS "For MSYS2 on Windows, just use MSYS2 HDF5. Install from the MSYS2 terminal:  pacman -S mingw-w64-x86_64-hdf5      reference: https://packages.msys2.org/package/mingw-w64-x86_64-hdf5")
     endif()
 
-    set(HDF5OK false)
+    set(HDF5OK false CACHE BOOL "HDF5 External autobuild disabled and HDF5 not found")
     return()
   endif(WIN32)
 
