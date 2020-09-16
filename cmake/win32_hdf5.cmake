@@ -7,16 +7,11 @@ function(win32_hdf5_env)
 # * 'cmake -DHDF5_ROOT=' variable
 # * environment variable HDF5_ROOT
 
-if(NOT MSVC) # for Windows ifort dll
-  return()
-endif()
-
 if(NOT DEFINED HDF5_ROOT)
   if(DEFINED ENV{HDF5_ROOT})
     file(TO_CMAKE_PATH "$ENV{HDF5_ROOT}" HDF5_ROOT)
   else()
-    message(VERBOSE " HDF5 workaround for Windows Intel compiler not applied because HDF5_ROOT environment variable not set.
-    It would be something like C:/Program Files/HDF_Group/HDF5/1.12.0")
+    message(STATUS "HDF5 workaround for Windows Intel compiler not applied because HDF5_ROOT environment variable not set. It would be something like C:/Program Files/HDF_Group/HDF5/1.12.0")
     return()
   endif()
 endif()

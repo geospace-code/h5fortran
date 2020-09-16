@@ -6,16 +6,21 @@ if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.19)
 endif()
 
 set(HDF5_USE_STATIC_LIBRARIES true)
-# Intel HDF5 for Windows has some real issues from the factory, this makes it work:
-if(WIN32 AND CMAKE_Fortran_COMPILER_ID STREQUAL Intel)
+if(MSVC)
+# Intel HDF5 for Windows needs this.
   set(HDF5_NO_FIND_PACKAGE_CONFIG_FILE true)
   set(HDF5_USE_STATIC_LIBRARIES false)
 endif()
 
-find_package(HDF5 COMPONENTS Fortran HL)
+if(NOT hdf5_external)
+  find_package(HDF5 COMPONENTS Fortran HL)
+endif()
 
 # --- autobuild HDF5
-if(NOT HDF5_FOUND)
+if(HDF5_FOUND)
+  set(hdf5_external false CACHE BOOL "HDF5 external build")
+else()
+  set(hdf5_external true CACHE BOOL "HDF5 external build")
   # build HDF5 library automatically, if possible
   if(WIN32)
     if(MSVC)
@@ -32,7 +37,7 @@ if(NOT HDF5_FOUND)
   set(HDF5OK true)
   return()
   # have to return because library isn't built yet
-endif()
+endif(HDF5_FOUND)
 
 # --- library patch
 set(HDF5_LIBRARIES ${HDF5_Fortran_HL_LIBRARIES} ${HDF5_Fortran_LIBRARIES} ${HDF5_LIBRARIES})
