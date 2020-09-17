@@ -1,3 +1,26 @@
+function(hdf5_builder autobuild)
+
+if(NOT autobuild)
+  set(HDF5OK false CACHE BOOL "HDF5 External autobuild disabled and HDF5 not found")
+  return()
+endif()
+
+if(MSVC)
+  message(STATUS "For Windows with Intel compiler, use HDF5 binaries from HDF Group. https://www.hdfgroup.org/downloads/hdf5/ look for filename like hdf5-1.12.0-Std-win10_64-vs14-Intel.zip")
+  set(HDF5OK false CACHE BOOL "HDF5 External autobuild disabled and HDF5 not found")
+  return()
+endif(MSVC)
+
+set(hdf5_external true CACHE BOOL "HDF5 external build")
+# build HDF5 library automatically, if possible
+
+include(${CMAKE_CURRENT_LIST_DIR}/build_hdf5.cmake)
+set(HDF5OK true CACHE BOOL "HDF5 external build: assumed OK")
+
+endfunction(hdf5_builder)
+
+# --- script
+
 # don't enclose this all in "if(NOT DEFINED HDF5OK)" because CMake intermittantly doesn't cache needed HDF5 variables.
 
 if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.19)
@@ -19,27 +42,10 @@ endif()
 # --- autobuild HDF5
 if(HDF5_FOUND)
   set(hdf5_external false CACHE BOOL "HDF5 external build")
-elseif(autobuild)
-  set(hdf5_external true CACHE BOOL "HDF5 external build")
-  # build HDF5 library automatically, if possible
-  if(WIN32)
-    if(MSVC)
-      message(STATUS "For Windows with Intel compiler, use HDF5 binaries from HDF Group. https://www.hdfgroup.org/downloads/hdf5/ look for filename like hdf5-1.12.0-Std-win10_64-vs14-Intel.zip")
-    else()
-      message(STATUS "For MSYS2 on Windows, just use MSYS2 HDF5. Install from the MSYS2 terminal:  pacman -S mingw-w64-x86_64-hdf5      reference: https://packages.msys2.org/package/mingw-w64-x86_64-hdf5")
-    endif()
-
-    set(HDF5OK false CACHE BOOL "HDF5 External autobuild disabled and HDF5 not found")
-    return()
-  endif(WIN32)
-
-  include(${CMAKE_CURRENT_LIST_DIR}/build_hdf5.cmake)
-  set(HDF5OK true CACHE BOOL "HDF5 external build: assumed OK")
-  return()
-  # have to return because library isn't built yet
 else()
-  set(HDF5OK false CACHE BOOL "HDF5 External autobuild disabled and HDF5 not found")
+  hdf5_builder(autobuild)
   return()
+# have to return because HDF5 isn't built until build time
 endif(HDF5_FOUND)
 
 # --- library patch
@@ -72,7 +78,7 @@ list(REMOVE_DUPLICATES HDF5_INCLUDE_DIRS)
 
 # --- imported target
 # NOTE: this is coming to CMake 3.19 FindHDF5, but their alpha didn't work for Intel Windows.
-add_library(HDF5::HDF5 INTERFACE IMPORTED)
+add_library(HDF5::HDF5 INTERFACE IMPORTED GLOBAL)
 target_include_directories(HDF5::HDF5 INTERFACE "${HDF5_INCLUDE_DIRS}")
 target_link_libraries(HDF5::HDF5 INTERFACE "${HDF5_LIBRARIES}")
 target_compile_definitions(HDF5::HDF5 INTERFACE "${HDF5_DEFINITIONS}")
@@ -116,28 +122,14 @@ endif()
 # finish up the HDF5::HDF5 target
 target_link_libraries(HDF5::HDF5 INTERFACE "${HDF5_LIBRARIES}")
 
-# --- Intel Windows patch
-# if(MSVC)
-# didn't work, just copy .dll files
-#   # this stanza must be BEFORE if(DEFINED HDF5OK)
-#   # this is specifically for Intel compiler with HDF5 1.10 or 1.12 binary install.
-#   if(NOT DEFINED HDF5_ROOT AND DEFINED ENV{HDF5_ROOT})
-#     file(TO_CMAKE_PATH "$ENV{HDF5_ROOT}" HDF5_ROOT)
-#   endif()
-
-#   if(DEFINED HDF5_ROOT)
-#     set(ENV{PATH} "${HDF5_ROOT}/bin;$ENV{PATH}")
-#   endif()
-# endif()
-
 if(NOT DEFINED HDF5OK)
-message(STATUS "HDF5 include: ${HDF5_INCLUDE_DIRS}")
-message(STATUS "HDF5 library: ${HDF5_LIBRARIES}")
-# we don't use broken compiler wrapper
-if(MSVC)
-  include(${CMAKE_CURRENT_LIST_DIR}/win32_hdf5.cmake)
-  win32_hdf5_env()
-endif(MSVC)
+  message(STATUS "HDF5 include: ${HDF5_INCLUDE_DIRS}")
+  message(STATUS "HDF5 library: ${HDF5_LIBRARIES}")
+
+  if(MSVC)
+    include(${CMAKE_CURRENT_LIST_DIR}/win32_hdf5.cmake)
+    win32_hdf5_env()
+  endif(MSVC)
 endif()
 
 # --- configure time checks
@@ -167,6 +159,5 @@ if(HDF5_compiles_ok)
     set(hdf5_external false CACHE BOOL "HDF5 external build")
   endif()
 else()
-  set(hdf5_external true CACHE BOOL "HDF5 external build")
-  set(HDF5OK false)
+  hdf5_builder(autobuild)
 endif()

@@ -1,4 +1,6 @@
 add_executable(test_minimal test_minimal.f90)
+# even though we're not using h5fortran, we're testing that HDF5 was linked
+# as part of h5fortran
 target_link_libraries(test_minimal PRIVATE h5fortran::h5fortran)
 add_test(NAME h5fortran:minimal
   COMMAND $<TARGET_FILE:test_minimal>
