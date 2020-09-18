@@ -65,24 +65,17 @@ ctest -S h5fortran/setup.cmake -V
 
 for more details see [Install.md](./Install.md)
 
-### Auto-build HDF5
+### build HDF5
 
-CMake for H5fortran is set to automatically build HDF5 on non-Windows platforms.
-To disable this behavior use `cmake -Dautobuild=off` option.
-HDF5 will be "installed" under "build/hdf5/" directory.
-To permanently install the HDF5 library consider:
+If you would like to build HDF5 yourself instead of installing it via your package manager, this can be done via CMake.
 
 ```sh
-cd h5fortran/scripts
-
-cmake -DCMAKE_INSTALL_PREFIX=~/lib -B build
-
-cmake --build build
-
-cmake --install build
+cmake -S scripts/build_hdf5.cmake
 ```
 
-or
+That will install HDF5 under ~/lib/
+
+Or, use Python:
 
 ```sh
 python scripts/build_hdf5.py

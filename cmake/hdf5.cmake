@@ -1,26 +1,3 @@
-function(hdf5_builder autobuild)
-
-if(NOT autobuild)
-  set(HDF5OK false CACHE BOOL "HDF5 External autobuild disabled and HDF5 not found")
-  return()
-endif()
-
-if(MSVC)
-  message(STATUS "For Windows with Intel compiler, use HDF5 binaries from HDF Group. https://www.hdfgroup.org/downloads/hdf5/ look for filename like hdf5-1.12.0-Std-win10_64-vs14-Intel.zip")
-  set(HDF5OK false CACHE BOOL "HDF5 External autobuild disabled and HDF5 not found")
-  return()
-endif(MSVC)
-
-set(hdf5_external true CACHE BOOL "HDF5 external build")
-# build HDF5 library automatically, if possible
-
-include(${CMAKE_CURRENT_LIST_DIR}/build_hdf5.cmake)
-set(HDF5OK true CACHE BOOL "HDF5 external build: assumed OK")
-
-endfunction(hdf5_builder)
-
-# --- script
-
 # don't enclose this all in "if(NOT DEFINED HDF5OK)" because CMake intermittantly doesn't cache needed HDF5 variables.
 
 if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.19)
@@ -35,18 +12,7 @@ if(MSVC)
   set(HDF5_USE_STATIC_LIBRARIES false)
 endif()
 
-if(NOT hdf5_external)
-  find_package(HDF5 COMPONENTS Fortran HL)
-endif()
-
-# --- autobuild HDF5
-if(HDF5_FOUND)
-  set(hdf5_external false CACHE BOOL "HDF5 external build")
-else()
-  hdf5_builder(autobuild)
-  return()
-# have to return because HDF5 isn't built until build time
-endif(HDF5_FOUND)
+find_package(HDF5 COMPONENTS Fortran HL REQUIRED)
 
 # --- library patch
 set(HDF5_LIBRARIES ${HDF5_Fortran_HL_LIBRARIES} ${HDF5_Fortran_LIBRARIES} ${HDF5_LIBRARIES})
@@ -151,13 +117,8 @@ check_fortran_source_compiles(${_code} HDF5_compiles_ok SRC_EXT f90)
 include(CheckFortranSourceRuns)
 check_fortran_source_runs(${_code} HDF5_runs_ok SRC_EXT f90)
 
-if(HDF5_compiles_ok)
-  if(MSVC OR HDF5_runs_ok)
-    # FIXME: MSVC check_fortran_source_runs needs to be set to PROJECT_BINARY_DIR.
-    # may require vendoring, so we just do this workaround for now for MSVC.
-    set(HDF5OK true CACHE BOOL "HDF5 library compiles and run OK")
-    set(hdf5_external false CACHE BOOL "HDF5 external build")
-  endif()
-else()
-  hdf5_builder(autobuild)
+if(HDF5_compiles_ok AND (MSVC OR HDF5_runs_ok))
+  # MSVC check_fortran_source_runs needs to be set to PROJECT_BINARY_DIR.
+  # may require vendoring, so we just do this workaround for now for MSVC.
+  set(HDF5OK true CACHE BOOL "HDF5 library compiles and run OK")
 endif()

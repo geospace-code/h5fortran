@@ -16,8 +16,6 @@ project(h5fortran
 
 include(CTest)
 
-option(autobuild "autobuild HDF5 if missing or broken" on)
-
 if(NOT DEFINED ${PROJECT_NAME}_BUILD_TESTING)
   set(${PROJECT_NAME}_BUILD_TESTING ${BUILD_TESTING})
 endif()

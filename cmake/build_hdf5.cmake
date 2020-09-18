@@ -1,76 +1,33 @@
 # builds HDF5 library from scratch
+# Keeps rebuilding -- not working
 
-function(find_self_hdf5 bindir)
+if(NOT _hdf5_bindir)
+  set(_hdf5_bindir ${PROJECT_BINARY_DIR}/hdf5-${PROJECT_VERSION})
+endif()
 
 set(HDF5_LIBRARIES)
 foreach(_name hdf5_hl_fortran hdf5_hl_f90cstub hdf5_fortran hdf5_f90cstub hdf5_hl hdf5)
-  find_library(_lib_${_name}
-    NAMES ${_name}
-    PATHS ${_hdf5_bindir}
-    PATH_SUFFIXES lib
-    NO_DEFAULT_PATH)
-
-  if(NOT _lib_${_name})
-    message(STATUS "did not find ${_lib_${_name}}")
-    unset(_lib_${_name} CACHE)
-    return()
-  endif()
-
-  list(APPEND HDF5_LIBRARIES ${_lib_${_name}})
+  list(APPEND HDF5_LIBRARIES ${_hdf5_bindir}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}${_name}${CMAKE_STATIC_LIBRARY_SUFFIX})
 endforeach()
 
-message(STATUS "using HDF5 ${HDF5_LIBRARIES}")
+set(HDF5_INCLUDE_DIRS ${_hdf5_bindir}/include ${_hdf5_bindir}/include/static)
 
-find_path(HDF5_MODULE_DIR
-  NAMES hdf5.mod
-  HINTS ${HDF5_INCLUDE_DIRS}
-  PATH_SUFFIXES static
-  NO_DEFAULT_PATH)
-if(HDF5_MODULE_DIR)
-  message(STATUS "Found ${HDF5_MODULE_DIR}")
-  list(APPEND HDF5_INCLUDE_DIRS ${HDF5_MODULE_DIR})
-  set(HDF5_INCLUDE_DIRS ${HDF5_INCLUDE_DIRS} PARENT_SCOPE)
-else()
-  unset(HDF5_MODULE_DIR CACHE)
+if(EXISTS ${_hdf5_bindir}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}hdf5_hl_fortran${CMAKE_STATIC_LIBRARY_SUFFIX})
+  set(HDF5_FOUND true CACHE BOOL "self-built HDF5")
 endif()
-
-message(STATUS "include HDF5 ${HDF5_INCLUDE_DIRS}")
-
-set(HDF5_LIBRARIES ${HDF5_LIBRARIES} PARENT_SCOPE)
-set(HDF5_FOUND true CACHE BOOL "HDF5 library found" FORCE)
-
-endfunction(find_self_hdf5)
-
-# --- script
-if(NOT _hdf5_bindir)
-  set(_hdf5_bindir ${PROJECT_BINARY_DIR}/hdf5)
-endif()
-
-set(HDF5_INCLUDE_DIRS ${_hdf5_bindir}/include)
-# HDF5_INCLUDE_DIRS before this!
-find_self_hdf5(${_hdf5_bindir})
-
-if(NOT HDF5_FOUND)
 
 include(ExternalProject)
-# keep include(ExternalProject) inside if(NOT HDF5_FOUND) or it will fail randomly
-
-ExternalProject_Add(HDF5_proj
+ExternalProject_Add(HDF5proj
 GIT_REPOSITORY https://bitbucket.hdfgroup.org/scm/hdffv/hdf5.git
 GIT_TAG 1.12/master
 GIT_SHALLOW true
 UPDATE_DISCONNECTED true
 CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${_hdf5_bindir} -DBUILD_SHARED_LIBS:BOOL=false -DCMAKE_BUILD_TYPE=Release -DHDF5_BUILD_FORTRAN:BOOL=true -DHDF5_BUILD_CPP_LIB:BOOL=false -DHDF5_BUILD_TOOLS:BOOL=false -DBUILD_TESTING:BOOL=false -DHDF5_BUILD_EXAMPLES:BOOL=false
-INSTALL_COMMAND cmake --install ${PROJECT_BINARY_DIR}/HDF5_proj-prefix/src/HDF5_proj-build
+INSTALL_COMMAND cmake --install ${PROJECT_BINARY_DIR}/HDF5proj-prefix/src/HDF5proj-build
+BUILD_BYPRODUCTS ${HDF5_LIBRARIES}
 )
 
-file(MAKE_DIRECTORY ${HDF5_INCLUDE_DIRS})  # avoid race condition
-
-add_dependencies(h5fortran HDF5_proj)  # ensure HDF5 builds first
-
-find_self_hdf5(${_hdf5_bindir})
-
-endif()
+file(MAKE_DIRECTORY ${_hdf5_bindir}/include/static)  # avoid race condition
 
 find_package(ZLIB REQUIRED)
 list(APPEND HDF5_LIBRARIES ZLIB::ZLIB)
