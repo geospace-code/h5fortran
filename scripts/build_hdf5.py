@@ -19,7 +19,7 @@ from pathlib import Path
 
 # ========= user parameters ======================
 BUILDDIR = "build"
-HDF5_TAG = "1.12/master"
+HDF5_TAG = "hdf5-1_10_6"
 
 
 # ========= end of user parameters ================
@@ -161,8 +161,6 @@ def git_download(path: Path, repo: str, tag: str):
                     GITEXE,
                     "clone",
                     repo,
-                    "--depth",
-                    "1",
                     "--branch",
                     tag,
                     "--single-branch",
