@@ -119,8 +119,9 @@ Instead of this, it is generally best to use MSYS2 or Windows Subsystem for Linu
     # ]
     subprocess.check_call(nice + cmd, cwd=source_dir, env=env)
 
+    cmd = ["make", "-j"]
     # cmd = ["cmake", "--build", BUILDDIR, "--parallel"]
-    # subprocess.check_call(nice + cmd, cwd=source_dir)
+    subprocess.check_call(nice + cmd, cwd=source_dir)
 
     cmd = ["make", "-j", "install"]
     # cmd = ["cmake", "--install", BUILDDIR, "--parallel"]
