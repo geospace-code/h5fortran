@@ -19,7 +19,7 @@ from pathlib import Path
 
 # ========= user parameters ======================
 BUILDDIR = "build"
-HDF5_TAG = "hdf5-1_10_6"
+HDF5_TAG = "hdf5-1_12_0"
 
 
 # ========= end of user parameters ================
