@@ -104,12 +104,20 @@ Instead of this, it is generally best to use MSYS2 or Windows Subsystem for Linu
     #     "--enable-build-mode=production",
     # ]
 
-    cmd = ["cmake", "-B", BUILDDIR, f"-DCMAKE_INSTALL_PREFIX={install_dir}",
-           "-DBUILD_SHARED_LIBS:BOOL=false",
-           "-DCMAKE_BUILD_TYPE=Release", "-DHDF5_BUILD_FORTRAN:BOOL=true",
-           "-DHDF5_BUILD_CPP_LIB:BOOL=false", "-DHDF5_BUILD_TOOLS:BOOL=false",
-           "-DBUILD_TESTING:BOOL=false", "-DHDF5_BUILD_EXAMPLES:BOOL=false"]
-    subprocess.check_call(nice + cmd, cwd=source_dir, env=env)
+    cmd = [
+        "cmake",
+        f"-S{source_dir}",
+        f"-B{source_dir/BUILDDIR}",
+        f"-DCMAKE_INSTALL_PREFIX={install_dir}",
+        "-DBUILD_SHARED_LIBS:BOOL=false",
+        "-DCMAKE_BUILD_TYPE=Release",
+        "-DHDF5_BUILD_FORTRAN:BOOL=true",
+        "-DHDF5_BUILD_CPP_LIB:BOOL=false",
+        "-DHDF5_BUILD_TOOLS:BOOL=false",
+        "-DBUILD_TESTING:BOOL=false",
+        "-DHDF5_BUILD_EXAMPLES:BOOL=false",
+    ]
+    subprocess.check_call(nice + cmd, env=env)
 
     cmd = ["cmake", "--build", BUILDDIR, "--parallel"]
     subprocess.check_call(nice + cmd, cwd=source_dir)
