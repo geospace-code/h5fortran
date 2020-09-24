@@ -67,23 +67,22 @@ def hdf5(dirs: T.Dict[str, Path], env: T.Mapping[str, str]):
     To avoid this, we git clone the release instead.
     """
 
+    use_cmake = False
     name = "hdf5"
     install_dir = dirs["prefix"] / name
     source_dir = dirs["workdir"] / name
+    build_dir = source_dir / BUILDDIR
+    git_url = "https://bitbucket.hdfgroup.org/scm/hdffv/hdf5.git"
 
-    if os.name == "nt":
-        if "ifort" in env["FC"]:
-            msg = """
-For Windows with Intel compiler, use HDF5 binaries from HDF Group.
-https://www.hdfgroup.org/downloads/hdf5/
-look for filename like hdf5-1.12.0-Std-win10_64-vs14-Intel.zip
-            """
-            raise NotImplementedError(msg)
+    git_download(source_dir, git_url, HDF5_TAG)
 
+    if use_cmake or os.name == "nt":
+        # this also works for Intel oneAPI with Ninja on Windows
+        # NOTE: CMake Parallel builds fail for Make and Ninja
+        # NOTE: Make and Ninja will both build repeatedly on each build command
         cmd0 = [
             "cmake",
             f"-S{source_dir}",
-            f"-B{source_dir/BUILDDIR}",
             f"-DCMAKE_INSTALL_PREFIX={install_dir}",
             "-DBUILD_SHARED_LIBS:BOOL=false",
             "-DCMAKE_BUILD_TYPE=Release",
@@ -93,8 +92,15 @@ look for filename like hdf5-1.12.0-Std-win10_64-vs14-Intel.zip
             "-DBUILD_TESTING:BOOL=false",
             "-DHDF5_BUILD_EXAMPLES:BOOL=false",
         ]
-        cmd1 = ["cmake", "--build", BUILDDIR, "--parallel"]
-        cmd2 = ["cmake", "--install", BUILDDIR, "--parallel"]
+
+        cmd1 = ["cmake", "--build", str(build_dir), "--", "-j1"]
+        # disable parallel due to HDF5 CMakeLists bugs
+
+        cmd2 = ["cmake", "--install", str(build_dir)]
+
+        # this unusual configure command is necessary due to bugs with HDF5 CMakeLists.
+        build_dir.mkdir(exist_ok=True)
+        subprocess.check_call(nice + cmd0, cwd=build_dir, env=env)
     else:
         cmd0 = [
             "./configure",
@@ -104,12 +110,8 @@ look for filename like hdf5-1.12.0-Std-win10_64-vs14-Intel.zip
         ]
         cmd1 = ["make", "-j"]
         cmd2 = ["make", "-j", "install"]
+        subprocess.check_call(nice + cmd0, cwd=source_dir, env=env)
 
-    git_url = "https://bitbucket.hdfgroup.org/scm/hdffv/hdf5.git"
-
-    git_download(source_dir, git_url, HDF5_TAG)
-
-    subprocess.check_call(nice + cmd0, cwd=source_dir, env=env)
     subprocess.check_call(nice + cmd1, cwd=source_dir)
     subprocess.check_call(nice + cmd2, cwd=source_dir)
 

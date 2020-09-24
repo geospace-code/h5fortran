@@ -5,7 +5,7 @@
 # these will be used if the project isn't already configured.
 
 # where to install HDF5
-set(_opts "-DCMAKE_INSTALL_PREFIX=~/lib/")
+set(_opts "-DCMAKE_INSTALL_PREFIX=~/lib/hdf5/")
 
 # --- boilerplate follows
 message(STATUS "CMake ${CMAKE_VERSION}")

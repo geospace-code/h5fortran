@@ -7,7 +7,7 @@ project(HDF5_builder
   HOMEPAGE_URL https://github.com/geospace-code/h5fortran)
 
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-  message(FATAL_ERROR "please set cmake -DCMAKE_INSTALL_PREFIX=~/lib or desired install location")
+  message(FATAL_ERROR "please set cmake -DCMAKE_INSTALL_PREFIX=~/lib/hdf5/ or desired install location")
 endif()
 
 set(_hdf5_bindir ${CMAKE_INSTALL_PREFIX})
