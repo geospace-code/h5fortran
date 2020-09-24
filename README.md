@@ -112,12 +112,19 @@ For detailed [examples](./Examples/) see [Examples.md](./Examples.md).
 
 ### Getting HDF5 library
 
-On many platforms, you must first compile the HDF5 library yourself like:
+One may compile the HDF5 library by either (choose one):
+
 ```sh
 python3 scripts/compile_hdf5.py
 ```
 
-For Windows with Intel oneAPI,
+or
+
+```sh
+ctest -S scripts/build_hdf5.cmake -VV
+```
+
+For Windows with Intel oneAPI it's alternatively possible to
 [download and install](https://www.hdfgroup.org/downloads/hdf5/)
 the file named like "hdf5-1.12.0-Std-win10_64-vs14-Intel.zip".
 Note this will put the HDF5 /bin directory on PATH.
