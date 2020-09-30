@@ -32,12 +32,8 @@ add_library(h5fortran)  # declare here so dependencies may be setup
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/hdf5.cmake)
 
 if(NOT HDF5OK)
-  message(STATUS "h5fortran: HDF5 not working")
-  if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
-    add_dependencies(h5fortran HDF5proj)
-  else()
-    return()
-  endif()
+  message(STATUS "h5fortran: HDF5 autobuild")
+  add_dependencies(h5fortran HDF5proj)
 endif()
 
 # --- build

@@ -1,19 +1,52 @@
 # builds HDF5 library from scratch
 
+include(ExternalProject)
+
 set(HDF5_LIBRARIES)
 foreach(_name hdf5_hl_fortran hdf5_hl_f90cstub hdf5_fortran hdf5_f90cstub hdf5_hl hdf5)
-  list(APPEND HDF5_LIBRARIES ${PROJECT_BINARY_DIR}/HDF5proj-prefix/src/HDF5proj-build/bin/${CMAKE_STATIC_LIBRARY_PREFIX}${_name}${CMAKE_STATIC_LIBRARY_SUFFIX})
+  list(APPEND HDF5_LIBRARIES ${PROJECT_BINARY_DIR}/HDF5proj-prefix/src/HDF5proj-build/bin/lib${_name}${CMAKE_STATIC_LIBRARY_SUFFIX})
 endforeach()
 
 set(HDF5_INCLUDE_DIRS
  ${PROJECT_BINARY_DIR}/HDF5proj-prefix/src/HDF5proj-build/bin/static)
 
-if(EXISTS ${PROJECT_BINARY_DIR}/HDF5proj-prefix/src/HDF5proj-build/lib/${CMAKE_STATIC_LIBRARY_PREFIX}hdf5_hl_fortran${CMAKE_STATIC_LIBRARY_SUFFIX})
-  set(HDF5_FOUND true CACHE BOOL "self-built HDF5")
+if(EXISTS ${PROJECT_BINARY_DIR}/HDF5proj-prefix/src/HDF5proj-build/bin/libhdf5_hl_fortran${CMAKE_STATIC_LIBRARY_SUFFIX})
   set(HDF5OK true CACHE BOOL "HDF5 OK")
 endif()
 
-include(ExternalProject)
+file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/HDF5proj-prefix/src/HDF5proj-build/bin/static)  # avoid race condition
+
+# --- Zlib
+# always build Zlib to ensure compatibility. This is a common practice for HDF5.
+
+set(_zlib_file ${PROJECT_BINARY_DIR}/ZLIBproj-prefix/src/ZLIBproj-build/zlibstatic${CMAKE_STATIC_LIBRARY_SUFFIX})
+set(_zlib_build ${PROJECT_BINARY_DIR}/ZLIBproj-prefix/src/ZLIBproj-build)
+set(_zlib_h ${PROJECT_BINARY_DIR}/ZLIBproj-prefix/src/ZLIBproj/zlib.h)
+
+ExternalProject_Add(ZLIBproj
+URL https://zlib.net/zlib1211.zip
+URL_HASH SHA1=bccd93ad3cee39c3d08eee68d45b3e11910299f2
+UPDATE_DISCONNECTED true
+CMAKE_ARGS -DCMAKE_BUILD_TYPE=Release
+BUILD_BYPRODUCTS ${_zlib_file}
+INSTALL_COMMAND ""
+)
+
+if(NOT IS_DIRECTORY ${_zlib_build})
+  file(MAKE_DIRECTORY ${_zlib_build})  # avoid race condition
+endif()
+if(NOT EXISTS ${_zlib_build}/zlib.h)
+  file(CREATE_LINK ${_zlib_h} ${_zlib_build}/zlib.h SYMBOLIC)
+endif()
+
+add_library(ZLIB::ZLIB INTERFACE IMPORTED GLOBAL)
+target_link_libraries(ZLIB::ZLIB INTERFACE ${_zlib_file})
+target_include_directories(ZLIB::ZLIB INTERFACE ${_zlib_build})
+
+set(_zlib_root -DHDF5_ENABLE_Z_LIB_SUPPORT:BOOL=ON -DZLIB_ROOT:PATH=${_zlib_build} -DZLIB_LIBRARY:FILEPATH=${_zlib_file} -DZLIB_INCLUDE_DIR:PATH=${_zlib_build} -DZLIB_USE_EXTERNAL:BOOL=OFF)
+
+# --- HDF5
+
 ExternalProject_Add(HDF5proj
 GIT_REPOSITORY https://bitbucket.hdfgroup.org/scm/hdffv/hdf5.git
 GIT_TAG 1.12/master
@@ -21,14 +54,15 @@ GIT_SHALLOW true
 # URL https://hdf-wordpress-1.s3.amazonaws.com/wp-content/uploads/manual/HDF5/HDF5_1_12_0/source/CMake-hdf5-1.12.0.tar.gz
 # URL_HASH MD5=33ab3d5b9019ca468364d226e0ccdea6
 UPDATE_DISCONNECTED true
-CMAKE_ARGS -DBUILD_SHARED_LIBS:BOOL=false -DCMAKE_BUILD_TYPE=Release -DHDF5_BUILD_FORTRAN:BOOL=true -DHDF5_BUILD_CPP_LIB:BOOL=false -DHDF5_BUILD_TOOLS:BOOL=false -DBUILD_TESTING:BOOL=false -DHDF5_BUILD_EXAMPLES:BOOL=false
+CMAKE_ARGS ${_zlib_root} -DBUILD_SHARED_LIBS:BOOL=false -DCMAKE_BUILD_TYPE=Release -DHDF5_BUILD_FORTRAN:BOOL=true -DHDF5_BUILD_CPP_LIB:BOOL=false -DHDF5_BUILD_TOOLS:BOOL=false -DBUILD_TESTING:BOOL=false -DHDF5_BUILD_EXAMPLES:BOOL=false
 BUILD_BYPRODUCTS ${HDF5_LIBRARIES}
 INSTALL_COMMAND ""
 )
 
-file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/HDF5proj-prefix/src/HDF5proj-build/bin/static)  # avoid race condition
+add_dependencies(HDF5proj ZLIBproj)
 
-find_package(ZLIB REQUIRED)
+# --- external deps
+
 list(APPEND HDF5_LIBRARIES ZLIB::ZLIB)
 
 set(THREADS_PREFER_PTHREAD_FLAG true)
