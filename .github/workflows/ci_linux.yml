@@ -11,7 +11,7 @@ on:
 jobs:
 
   cmake:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
 
@@ -29,3 +29,13 @@ jobs:
     - name: test examples
       run: ctest -V
       working-directory: Examples/build
+
+  build_hdf5:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - run: ctest -S setup.cmake -VV
+      env:
+        FC: gfortran-9
+        CC: gcc-9
