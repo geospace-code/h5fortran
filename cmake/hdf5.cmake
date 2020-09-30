@@ -12,7 +12,7 @@ if(MSVC)
   set(HDF5_USE_STATIC_LIBRARIES false)
 endif()
 
-# find_package(HDF5 COMPONENTS Fortran HL)
+find_package(HDF5 COMPONENTS Fortran HL)
 if(NOT HDF5_FOUND)
   include(${CMAKE_CURRENT_LIST_DIR}/build_hdf5.cmake)
   return()
