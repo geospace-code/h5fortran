@@ -60,25 +60,23 @@ Using CMake:
 ```sh
 git clone https://github.com/geospace-code/h5fortran.git
 
-ctest -S h5fortran/setup.cmake -V
+ctest -S h5fortran/setup.cmake -VV
 ```
 
 for more details see [Install.md](./Install.md)
 
-### build HDF5
+### Autobuild HDF5
 
-If you would like to build HDF5 yourself instead of installing it via your package manager, this can be done via CMake.
-
-```sh
-cmake -S scripts/build_hdf5.cmake
-```
-
-That will install HDF5 under ~/lib/
-
-Or, use Python:
+h5fortran will automatically build the HDF5 library if needed. This takes a minute or two on a typical laptop.
+Note: Due to an HDFGroup-acknowleged build bug, to rebuild your project, you need to configure CMake one more time after the first build when using autobuilt HDF5.
 
 ```sh
-python scripts/build_hdf5.py
+# usual dev configuration and build
+cmake -B build
+cmake --build build  # also builds HDF5 library and Zlib if needed
+
+cmake -B build  # workaround
+# then build as often as you like.
 ```
 
 ## Usage
