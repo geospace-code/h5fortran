@@ -1,4 +1,6 @@
 # builds HDF5 library from scratch
+# note: the use of "lib" vs. CMAKE_STATIC_LIBRARY_PREFIX is deliberate based on the particulars of these libraries
+# across Intel Fortran on Windows vs. Gfortran on Windows vs. Linux.
 
 include(ExternalProject)
 
@@ -19,7 +21,7 @@ file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/HDF5proj-prefix/src/HDF5proj-build/bin
 # --- Zlib
 # always build Zlib to ensure compatibility. This is a common practice for HDF5.
 
-set(_zlib_file ${PROJECT_BINARY_DIR}/ZLIBproj-prefix/src/ZLIBproj-build/zlibstatic${CMAKE_STATIC_LIBRARY_SUFFIX})
+set(_zlib_file ${PROJECT_BINARY_DIR}/ZLIBproj-prefix/src/ZLIBproj-build/${CMAKE_STATIC_LIBRARY_PREFIX}zlibstatic${CMAKE_STATIC_LIBRARY_SUFFIX})
 set(_zlib_build ${PROJECT_BINARY_DIR}/ZLIBproj-prefix/src/ZLIBproj-build)
 set(_zlib_h ${PROJECT_BINARY_DIR}/ZLIBproj-prefix/src/ZLIBproj/zlib.h)
 
