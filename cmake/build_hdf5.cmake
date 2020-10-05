@@ -9,8 +9,8 @@ foreach(_name hdf5_hl_fortran hdf5_hl_f90cstub hdf5_fortran hdf5_f90cstub hdf5_h
   list(APPEND HDF5_LIBRARIES ${PROJECT_BINARY_DIR}/HDF5proj-prefix/src/HDF5proj-build/bin/lib${_name}${CMAKE_STATIC_LIBRARY_SUFFIX})
 endforeach()
 
-set(HDF5_INCLUDE_DIRS
- ${PROJECT_BINARY_DIR}/HDF5proj-prefix/src/HDF5proj-build/bin/static)
+# NOTE: if the HDF5 CMake is allowed to rebuild, it will fail and this directory disappears (HDF5 1.12.0)
+set(HDF5_INCLUDE_DIRS ${PROJECT_BINARY_DIR}/HDF5proj-prefix/src/HDF5proj-build/bin/static)
 
 if(EXISTS ${PROJECT_BINARY_DIR}/HDF5proj-prefix/src/HDF5proj-build/bin/libhdf5_hl_fortran${CMAKE_STATIC_LIBRARY_SUFFIX})
   set(HDF5OK true CACHE BOOL "HDF5 OK")
@@ -62,7 +62,7 @@ if(HDF5OK)
 else()
   ExternalProject_Add(HDF5proj
   GIT_REPOSITORY https://bitbucket.hdfgroup.org/scm/hdffv/hdf5.git
-  GIT_TAG 1.12/master
+  GIT_TAG hdf5_1_10_7
   GIT_SHALLOW true
   # URL https://hdf-wordpress-1.s3.amazonaws.com/wp-content/uploads/manual/HDF5/HDF5_1_12_0/source/CMake-hdf5-1.12.0.tar.gz
   # URL_HASH MD5=33ab3d5b9019ca468364d226e0ccdea6

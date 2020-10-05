@@ -12,7 +12,10 @@ if(MSVC)
   set(HDF5_USE_STATIC_LIBRARIES false)
 endif()
 
-find_package(HDF5 COMPONENTS Fortran HL)
+if(NOT hdf5_external)
+  find_package(HDF5 COMPONENTS Fortran HL)
+endif()
+
 if(NOT HDF5_FOUND)
   include(${CMAKE_CURRENT_LIST_DIR}/build_hdf5.cmake)
   return()
@@ -125,4 +128,11 @@ if(HDF5_compiles_ok AND (MSVC OR HDF5_runs_ok))
   # MSVC check_fortran_source_runs needs to be set to PROJECT_BINARY_DIR.
   # may require vendoring, so we just do this workaround for now for MSVC.
   set(HDF5OK true CACHE BOOL "HDF5 library compiles and run OK")
+else()
+  unset(HDF5_FOUND)
+  unset(HDF5::HDF5)
+  unset(ZLIB::ZLIB)
+  unset(SZIP::SZIP)
+  set(hdf5_external true CACHE BOOL "autobuild HDF5")
+  include(${CMAKE_CURRENT_LIST_DIR}/build_hdf5.cmake)
 endif()

@@ -33,7 +33,7 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/hdf5.cmake)
 
 if(NOT HDF5OK)
   message(STATUS "h5fortran: HDF5 autobuild")
-  add_dependencies(h5fortran HDF5proj)
+  add_dependencies(HDF5::HDF5 HDF5proj)
 endif()
 
 # --- build
