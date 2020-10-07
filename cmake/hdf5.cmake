@@ -122,7 +122,9 @@ end")
 check_fortran_source_compiles(${_code} HDF5_compiles_ok SRC_EXT f90)
 
 include(CheckFortranSourceRuns)
+if(HDF5_compiles_ok)
 check_fortran_source_runs(${_code} HDF5_runs_ok SRC_EXT f90)
+endif(HDF5_compiles_ok)
 
 if(HDF5_compiles_ok AND (MSVC OR HDF5_runs_ok))
   # MSVC check_fortran_source_runs needs to be set to PROJECT_BINARY_DIR.
