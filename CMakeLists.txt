@@ -10,7 +10,7 @@ endif()
 
 project(h5fortran
   LANGUAGES C Fortran
-  VERSION 3.3.1
+  VERSION 3.3.2
   DESCRIPTION "thin, light object-oriented HDF5 Fortran interface"
   HOMEPAGE_URL https://github.com/geospace-code/h5fortran)
 

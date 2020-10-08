@@ -17,6 +17,7 @@ if(NOT hdf5_external)
 endif()
 
 if(NOT HDF5_FOUND)
+  set(hdf5_external true CACHE BOOL "autobuild HDF5")
   include(${CMAKE_CURRENT_LIST_DIR}/build_hdf5.cmake)
   return()
 endif()
