@@ -1,6 +1,9 @@
 name: ci_windows
+
 env:
-  CMAKE_GENERATOR: Ninja
+  FC: gfortran
+  CC: gcc
+  CXX: g++
 
 on:
   push:
@@ -11,30 +14,38 @@ on:
 
 jobs:
 
-  cmake:
+  default:
     runs-on: windows-latest
-    defaults:
-      run:
-        shell: msys2 {0}
     steps:
-    - uses: msys2/setup-msys2@v2
-      with:
-        update: true
-        install: 'git mingw-w64-x86_64-cmake mingw-w64-x86_64-ninja mingw-w64-x86_64-gcc-fortran mingw-w64-x86_64-hdf5'
-
     - uses: actions/checkout@v2
 
-    # - run: ctest -S setup.cmake -VV # avoids missing environment variable weird bugs
-    - run: cmake -B build
-    - run: cmake --build build
-    - run: ctest -V
-      working-directory: build
+    - run: ctest -S setup.cmake -VV
 
-    - name: build examples
-      run: |
-        cmake -B Examples/build -S Examples
-        cmake --build Examples/build
+  # examples:
+    # works but saving CI time
+    # runs-on: windows-latest
+    # steps:
+    # - uses: actions/checkout@v2
 
-    - name: test examples
-      run: ctest -V
-      working-directory: Examples/build
+    # - run: pip install ninja
+
+    # - run: cmake -BExamples/build -SExamples -GNinja
+    # - run: cmake --build Examples/build
+
+    # - run: ctest -V
+    #   working-directory: Examples/build
+
+  # msys2:
+  # works but saving CI time
+  #   runs-on: windows-latest
+  #   defaults:
+  #     run:
+  #       shell: msys2 {0}
+  #   steps:
+  #   - uses: msys2/setup-msys2@v2
+  #     with:
+  #       update: true
+  #       install: 'git mingw-w64-x86_64-cmake mingw-w64-x86_64-ninja mingw-w64-x86_64-gcc-fortran mingw-w64-x86_64-hdf5'
+    # - uses: actions/checkout@v2
+
+    # - run: ctest -S setup.cmake -VV

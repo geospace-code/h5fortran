@@ -12,12 +12,8 @@ else()
   include(FetchContent)
   FetchContent_Declare(h5fortran_proj
     GIT_REPOSITORY https://github.com/geospace-code/h5fortran.git
-    GIT_TAG v3.2.3)
+    GIT_TAG master)
   FetchContent_MakeAvailable(h5fortran_proj)
-endif()
-
-if(NOT HDF5OK)
-  message(FATAL_ERROR "HDF5 is not working on your system, so h5fortran cannot work.")
 endif()
 
 # this helps linters e.g. Visual Studio Intellicode work properly

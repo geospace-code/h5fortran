@@ -1,5 +1,10 @@
 name: ci_mac
 
+env:
+  FC: gfortran-9
+  CC: gcc-9
+  CXX: g++-9
+
 on:
   push:
     paths:
@@ -9,23 +14,22 @@ on:
 
 jobs:
 
-  cmake:
+  default:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
 
-    - run: brew install pkg-config hdf5 ninja
+    - run: ctest -S setup.cmake -VV
 
-    - run: ctest -S setup.cmake -V
-      env:
-        FC: gfortran-9
-        CC: gcc-9
+  # examples:
+  # works but saving CI time
+  #   runs-on: macos-latest
+  #   steps:
+  #   - uses: actions/checkout@v2
 
-    - name: build examples
-      run: |
-        cmake -B Examples/build -S Examples
-        cmake --build Examples/build
+  #   - run: cmake -B Examples/build -S Examples
+  #   - run: cmake --build Examples/build
 
-    - name: test examples
-      run: ctest -V
-      working-directory: Examples/build
+  #   - name: test examples
+  #     run: ctest -V
+  #     working-directory: Examples/build
