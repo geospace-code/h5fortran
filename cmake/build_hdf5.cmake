@@ -57,6 +57,7 @@ set(_zlib_root -DHDF5_ENABLE_Z_LIB_SUPPORT:BOOL=ON -DZLIB_ROOT:PATH=${_zlib_buil
 # https://forum.hdfgroup.org/t/issues-when-using-hdf5-as-a-git-submodule-and-using-cmake-with-add-subdirectory/7189/2
 
 if(HDF5OK)
+  # this if() statement is to avoid bugs in HDF5 from constantly rebuilding HDF5 on Linux (1.10.7 and 1.12.0 at least)
   add_custom_target(HDF5proj DEPENDS ${HDF5_LIBRARIES})
   add_custom_command(OUTPUT ${HDF5_LIBRARIES})
 else()
