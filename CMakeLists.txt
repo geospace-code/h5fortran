@@ -1,9 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
 
-if(PROJECT_SOURCE_DIR STREQUAL PROJECT_BINARY_DIR)
-  message(FATAL_ERROR "use cmake -B build or similar to avoid building in-source")
-endif()
-
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING "Debug or Release")
 endif()
@@ -13,6 +9,10 @@ project(h5fortran
   VERSION 3.3.2
   DESCRIPTION "thin, light object-oriented HDF5 Fortran interface"
   HOMEPAGE_URL https://github.com/geospace-code/h5fortran)
+
+if(PROJECT_SOURCE_DIR STREQUAL PROJECT_BINARY_DIR)
+  message(FATAL_ERROR "use 'cmake -B build' or similar to avoid building in-source")
+endif()
 
 include(CTest)
 
