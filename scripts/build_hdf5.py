@@ -72,7 +72,7 @@ def hdf5(dirs: T.Dict[str, Path], env: T.Mapping[str, str]):
     install_dir = dirs["prefix"] / name
     source_dir = dirs["workdir"] / name
     build_dir = source_dir / BUILDDIR
-    git_url = "https://bitbucket.hdfgroup.org/scm/hdffv/hdf5.git"
+    git_url = "https://github.com/HDFGroup/hdf5.git"
 
     git_download(source_dir, git_url, HDF5_TAG)
 
