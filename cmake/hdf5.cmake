@@ -55,42 +55,6 @@ if(HDF5_MODULE_DIR)
 endif()
 list(REMOVE_DUPLICATES HDF5_INCLUDE_DIRS)
 
-# --- add SZIP and/or ZLIB
-set(CMAKE_REQUIRED_INCLUDES ${HDF5_INCLUDE_DIRS})
-set(CMAKE_REQUIRED_LIBRARIES ${HDF5_LIBRARIES})
-
-include(CheckSymbolExists)
-check_symbol_exists(H5_HAVE_FILTER_SZIP H5pubconf.h use_szip)
-check_symbol_exists(H5_HAVE_FILTER_DEFLATE H5pubconf.h use_zlib)
-
-# Szip even though not directly used because if system static links libhdf5 with szip,
-# our builds will fail if we don't also link szip.
-if(use_szip)
-  find_package(SZIP)
-  if(SZIP_FOUND)
-    list(APPEND HDF5_LIBRARIES SZIP::SZIP)
-  endif()
-endif(use_szip)
-
-if(use_zlib)
-  find_package(ZLIB)
-  if(ZLIB_FOUND)
-    list(APPEND HDF5_LIBRARIES ZLIB::ZLIB)
-  endif()
-endif(use_zlib)
-
-set(THREADS_PREFER_PTHREAD_FLAG true)
-find_package(Threads)
-if(Threads_FOUND)
-  list(APPEND HDF5_LIBRARIES Threads::Threads)
-endif()
-
-list(APPEND HDF5_LIBRARIES ${CMAKE_DL_LIBS})
-
-if(UNIX)
-  list(APPEND HDF5_LIBRARIES m)
-endif()
-
 if(NOT DEFINED HDF5OK)
   message(STATUS "HDF5 include: ${HDF5_INCLUDE_DIRS}")
   message(STATUS "HDF5 library: ${HDF5_LIBRARIES}")
@@ -103,6 +67,27 @@ endif()
 
 # --- configure time checks
 # these checks avoid messy, confusing errors at build time
+# cmake_required_* set again here to include zlib etc.
+
+# this is here for check_symbol
+set(CMAKE_REQUIRED_INCLUDES ${HDF5_INCLUDE_DIRS})
+
+include(CheckSymbolExists)
+check_symbol_exists(H5_HAVE_FILTER_SZIP H5pubconf.h use_szip)
+check_symbol_exists(H5_HAVE_FILTER_DEFLATE H5pubconf.h use_zlib)
+
+if(use_zlib)
+  find_package(ZLIB REQUIRED)
+
+  if(use_szip)
+    # Szip even though not directly used because if system static links libhdf5 with szip,
+    # our builds will fail if we don't also link szip.
+    find_package(SZIP REQUIRED)
+    set(CMAKE_REQUIRED_LIBRARIES ${HDF5_LIBRARIES} SZIP::SZIP ZLIB::ZLIB ${CMAKE_DL_LIBS})
+  else()
+    set(CMAKE_REQUIRED_LIBRARIES ${HDF5_LIBRARIES} ZLIB::ZLIB ${CMAKE_DL_LIBS})
+  endif()
+endif()
 
 include(CheckFortranSourceCompiles)
 set(_code "program test_minimal
@@ -132,6 +117,25 @@ if(HDF5_compiles_ok AND (MSVC OR HDF5_runs_ok))
   target_include_directories(HDF5::HDF5 INTERFACE "${HDF5_INCLUDE_DIRS}")
   target_link_libraries(HDF5::HDF5 INTERFACE "${HDF5_LIBRARIES}")
   target_compile_definitions(HDF5::HDF5 INTERFACE "${HDF5_DEFINITIONS}")
+
+  if(use_zlib)
+    target_link_libraries(HDF5::HDF5 INTERFACE ZLIB::ZLIB)
+  endif()
+  if(use_szlp)
+    target_link_libraries(HDF5::HDF5 INTERFACE SZIP::SZIP)
+  endif()
+
+  set(THREADS_PREFER_PTHREAD_FLAG true)
+  find_package(Threads)
+  if(Threads_FOUND)
+    target_link_libraries(HDF5::HDF5 INTERFACE Threads::Threads)
+  endif()
+
+  target_link_libraries(HDF5::HDF5 INTERFACE ${CMAKE_DL_LIBS})
+
+  if(UNIX)
+    target_link_libraries(HDF5::HDF5 INTERFACE m)
+  endif()
 else()
   unset(HDF5_FOUND)
   unset(HDF5_INCLUDE_DIRS)
