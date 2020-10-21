@@ -41,12 +41,6 @@ if h5py is not None:
             raise ValueError(f"h5py: expected {c_order} but got {f[var].shape}")
     print("OK: Python h5py")
 
-if shutil.which("octave-cli"):
-    cmd = f"dat=load('{fn}'); soct = size(dat.{var[1:]}); assert(all(soct == {list(f_order)}), 'expected {f_order}')"
-    print(cmd)
-    subprocess.check_call(["octave-cli", "--eval", cmd])
-    print("OK: GNU Octave")
-
 if shutil.which("matlab"):
     cmd = f"i=h5info('{fn}', '{var}'); smat = i.Dataspace.Size; assert(all(smat == {list(f_order)}), 'expected {f_order}')"
     subprocess.check_call(["matlab", "-batch", cmd])
