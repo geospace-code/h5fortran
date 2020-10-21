@@ -5,6 +5,10 @@ if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.19)
   cmake_policy(SET CMP0111 NEW)
 endif()
 
+if(hdf5_external)
+  return()
+endif()
+
 set(HDF5_USE_STATIC_LIBRARIES true)
 if(MSVC)
 # Intel HDF5 for Windows needs this.
