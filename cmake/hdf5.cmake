@@ -6,6 +6,7 @@ if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.19)
 endif()
 
 if(hdf5_external)
+  include(${CMAKE_CURRENT_LIST_DIR}/build_hdf5.cmake)
   return()
 endif()
 
@@ -54,16 +55,9 @@ if(HDF5_MODULE_DIR)
 endif()
 list(REMOVE_DUPLICATES HDF5_INCLUDE_DIRS)
 
-# --- imported target
-# NOTE: this is coming to CMake 3.19 FindHDF5, but their alpha didn't work for Intel Windows.
-add_library(HDF5::HDF5 INTERFACE IMPORTED GLOBAL)
-target_include_directories(HDF5::HDF5 INTERFACE "${HDF5_INCLUDE_DIRS}")
-target_link_libraries(HDF5::HDF5 INTERFACE "${HDF5_LIBRARIES}")
-target_compile_definitions(HDF5::HDF5 INTERFACE "${HDF5_DEFINITIONS}")
-
 # --- add SZIP and/or ZLIB
-set(CMAKE_REQUIRED_INCLUDES)
-set(CMAKE_REQUIRED_LIBRARIES HDF5::HDF5)
+set(CMAKE_REQUIRED_INCLUDES ${HDF5_INCLUDE_DIRS})
+set(CMAKE_REQUIRED_LIBRARIES ${HDF5_LIBRARIES})
 
 include(CheckSymbolExists)
 check_symbol_exists(H5_HAVE_FILTER_SZIP H5pubconf.h use_szip)
@@ -96,9 +90,6 @@ list(APPEND HDF5_LIBRARIES ${CMAKE_DL_LIBS})
 if(UNIX)
   list(APPEND HDF5_LIBRARIES m)
 endif()
-
-# finish up the HDF5::HDF5 target
-target_link_libraries(HDF5::HDF5 INTERFACE "${HDF5_LIBRARIES}")
 
 if(NOT DEFINED HDF5OK)
   message(STATUS "HDF5 include: ${HDF5_INCLUDE_DIRS}")
@@ -135,9 +126,17 @@ if(HDF5_compiles_ok AND (MSVC OR HDF5_runs_ok))
   # MSVC check_fortran_source_runs needs to be set to PROJECT_BINARY_DIR.
   # may require vendoring, so we just do this workaround for now for MSVC.
   set(HDF5OK true CACHE BOOL "HDF5 library compiles and run OK")
+  # --- imported target
+  # NOTE: this is coming to CMake 3.19 FindHDF5, but their alpha didn't work for Intel Windows.
+  add_library(HDF5::HDF5 INTERFACE IMPORTED GLOBAL)
+  target_include_directories(HDF5::HDF5 INTERFACE "${HDF5_INCLUDE_DIRS}")
+  target_link_libraries(HDF5::HDF5 INTERFACE "${HDF5_LIBRARIES}")
+  target_compile_definitions(HDF5::HDF5 INTERFACE "${HDF5_DEFINITIONS}")
 else()
   unset(HDF5_FOUND)
-  unset(HDF5::HDF5)
+  unset(HDF5_INCLUDE_DIRS)
+  unset(HDF5_LIBRARIES)
+  unset(HDF5_DEFINITIONS)
   unset(ZLIB::ZLIB)
   unset(SZIP::SZIP)
   set(hdf5_external true CACHE BOOL "autobuild HDF5")
