@@ -6,7 +6,7 @@ endif()
 
 project(h5fortran
   LANGUAGES C Fortran
-  VERSION 3.3.4
+  VERSION 3.3.5
   DESCRIPTION "thin, light object-oriented HDF5 Fortran interface"
   HOMEPAGE_URL https://github.com/geospace-code/h5fortran)
 
@@ -61,6 +61,8 @@ if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
   set_package_properties(HDF5 PROPERTIES URL "https://hdfgroup.org/" DESCRIPTION "fast, versatile file I/O format" TYPE REQUIRED)
   set_package_properties(ZLIB PROPERTIES URL "https://www.zlib.net/" DESCRIPTION "patent-free compression library")
   set_package_properties(SZIP PROPERTIES URL "http://www.compressconsult.com/szip/" DESCRIPTION "compression library")
+
+  add_feature_info(AutoHDF5 hdf5_external "auto-build HDF5")
 
   feature_summary(WHAT ALL)
 endif()

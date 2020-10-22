@@ -89,6 +89,12 @@ if(use_zlib)
   endif()
 endif()
 
+set(THREADS_PREFER_PTHREAD_FLAG true)
+find_package(Threads)
+if(Threads_FOUND)
+  list(APPEND CMAKE_REQUIRED_LIBRARIES Threads::Threads)
+endif()
+
 include(CheckFortranSourceCompiles)
 set(_code "program test_minimal
 use hdf5, only : h5open_f, h5close_f
@@ -121,12 +127,10 @@ if(HDF5_compiles_ok AND (MSVC OR HDF5_runs_ok))
   if(use_zlib)
     target_link_libraries(HDF5::HDF5 INTERFACE ZLIB::ZLIB)
   endif()
-  if(use_szlp)
+  if(use_szip)
     target_link_libraries(HDF5::HDF5 INTERFACE SZIP::SZIP)
   endif()
 
-  set(THREADS_PREFER_PTHREAD_FLAG true)
-  find_package(Threads)
   if(Threads_FOUND)
     target_link_libraries(HDF5::HDF5 INTERFACE Threads::Threads)
   endif()
