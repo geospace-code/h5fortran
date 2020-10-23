@@ -48,23 +48,24 @@ else()
     add_dependencies(HDF5proj ZLIBproj)
   endif()
 endif(HDF5OK)
+
+# this GLOBAL is required to be visible via FetchContent
+add_library(HDF5::HDF5 INTERFACE IMPORTED GLOBAL)
+target_include_directories(HDF5::HDF5 INTERFACE "${HDF5_INCLUDE_DIRS}")
+target_link_libraries(HDF5::HDF5 INTERFACE "${HDF5_LIBRARIES}")
+
 # --- external deps
 
-list(APPEND HDF5_LIBRARIES ZLIB::ZLIB)
+target_link_libraries(HDF5::HDF5 INTERFACE ZLIB::ZLIB)
 
 set(THREADS_PREFER_PTHREAD_FLAG true)
 find_package(Threads)
 if(Threads_FOUND)
-list(APPEND HDF5_LIBRARIES Threads::Threads)
+  target_link_libraries(HDF5::HDF5 INTERFACE Threads::Threads)
 endif(Threads_FOUND)
 
-list(APPEND HDF5_LIBRARIES ${CMAKE_DL_LIBS})
+target_link_libraries(HDF5::HDF5 INTERFACE ${CMAKE_DL_LIBS})
 
 if(UNIX)
-list(APPEND HDF5_LIBRARIES m)
+  target_link_libraries(HDF5::HDF5 INTERFACE m)
 endif(UNIX)
-
-# this GLOBAL is required to be visible via FetchContent
-add_library(HDF5::HDF5 INTERFACE IMPORTED GLOBAL)
-target_link_libraries(HDF5::HDF5 INTERFACE ${HDF5_LIBRARIES})
-target_include_directories(HDF5::HDF5 INTERFACE ${HDF5_INCLUDE_DIRS})
