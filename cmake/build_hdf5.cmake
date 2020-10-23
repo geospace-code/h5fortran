@@ -20,7 +20,9 @@ file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/HDF5proj-prefix/src/HDF5proj-build/bin
 
 # --- Zlib
 set(zlib_root -DHDF5_ENABLE_Z_LIB_SUPPORT:BOOL=ON -DZLIB_USE_EXTERNAL:BOOL=OFF)
-if(NOT TARGET ZLIB::ZLIB)
+if(TARGET ZLIB::ZLIB)
+  add_custom_target(ZLIBproj)
+else()
   include(${CMAKE_CURRENT_LIST_DIR}/zlib_setup.cmake)
 endif()
 
@@ -44,9 +46,7 @@ else()
   INSTALL_COMMAND ""
   )
 
-  if(NOT TARGET ZLIB::ZLIB)
-    add_dependencies(HDF5proj ZLIBproj)
-  endif()
+  add_dependencies(HDF5proj ZLIBproj)
 endif(HDF5OK)
 
 # this GLOBAL is required to be visible via FetchContent
