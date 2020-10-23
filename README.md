@@ -1,4 +1,4 @@
-# Object-oriented Fortran 2008 HDF5 interface
+# Object-oriented Fortran HDF5 interface
 
 [![DOI](https://zenodo.org/badge/128736984.svg)](https://zenodo.org/badge/latestdoi/128736984)
 [![CDash](./archive/cdash.png)](https://my.cdash.org/index.php?project=h5fortran)
@@ -24,7 +24,7 @@ call h5read('bar.h5', '/y', y)
   * CMake + Git submodule
   * Meson subproject
 
-Uses Fortran 2008 `submodule` for clean template structure.
+Uses Fortran `submodule` for clean template structure.
 This easy-to-use, thin object-oriented modern Fortran library abstracts away the messy parts of HDF5 so that you can read / write various types/ranks of data with a single command.
 In distinction from other high-level HDF5 interfaces, h5fortran works to deduplicate code, using polymorphism wherever feasible and extensive test suite.
 
@@ -40,10 +40,10 @@ as well as **character (string)**.
 * Mismatched datatypes are coerced as per standard Fortran rules. For example, reading a float HDF5 variable into an integer Fortran variable:  42.3 => 42
 * Zlib (deflate) compression / decompression
 
-Tested on systems with HDF5 1.8, 1.10 and 1.12 including:
+Tested on systems with HDF5 1.10 and 1.12 including:
 
 * MacOS (homebrew)
-* Linux
+* Linux (Ubuntu, CentOS)
 * Windows Subsystem for Linux
 * Windows MSYS2
 * IBM Power with Gfortran
