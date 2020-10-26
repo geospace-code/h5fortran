@@ -23,7 +23,13 @@ if(NOT IS_DIRECTORY ${_zlib_build})
   file(MAKE_DIRECTORY ${_zlib_build})  # avoid race condition
 endif()
 if(NOT EXISTS ${_zlib_build}/zlib.h)
-  file(CREATE_LINK ${_zlib_h} ${_zlib_build}/zlib.h SYMBOLIC)
+  # by default, Windows does not allow symbolic links, even in user directories.
+  # so to be safe, let's just copy the zlib.h on Windows since it's a small file.
+  if(WIN32)
+    file(COPY ${_zlib_h} DESTINATION ${_zlib_build})
+  else(WIN32)
+    file(CREATE_LINK ${_zlib_h} ${_zlib_build}/zlib.h SYMBOLIC)
+  endif(WIN32)
 endif()
 
 add_library(ZLIB::ZLIB INTERFACE IMPORTED GLOBAL)
