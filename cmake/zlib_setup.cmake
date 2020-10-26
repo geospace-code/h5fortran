@@ -19,20 +19,15 @@ BUILD_BYPRODUCTS ${_zlib_file}
 INSTALL_COMMAND ""
 )
 
-if(NOT IS_DIRECTORY ${_zlib_build})
-  file(MAKE_DIRECTORY ${_zlib_build})  # avoid race condition
-endif()
-if(NOT EXISTS ${_zlib_build}/zlib.h)
-  # by default, Windows does not allow symbolic links, even in user directories.
-  # so to be safe, let's just copy the zlib.h on Windows since it's a small file.
-  if(WIN32)
-    file(COPY ${_zlib_h} DESTINATION ${_zlib_build})
-  else(WIN32)
-    file(CREATE_LINK ${_zlib_h} ${_zlib_build}/zlib.h SYMBOLIC)
-  endif(WIN32)
-endif()
+# by default, Windows does not allow symbolic links, even in user directories.
+# to be safe, let's just copy the zlib.h since it's a small file.
+ExternalProject_Add_Step(ZLIBproj post-build
+COMMAND ${CMAKE_COMMAND} -E copy ${_zlib_h} ${_zlib_build}
+DEPENDEES build
+BYPRODUCTS ${_zlib_build}/zlib.h)
 
 add_library(ZLIB::ZLIB INTERFACE IMPORTED GLOBAL)
+add_dependencies(ZLIB::ZLIB ZLIBproj)  # to avoid include directory race condition
 target_link_libraries(ZLIB::ZLIB INTERFACE ${_zlib_file})
 target_include_directories(ZLIB::ZLIB INTERFACE ${_zlib_build})
 
