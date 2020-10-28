@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 
-if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING "Debug or Release")
-endif()
+include(cmake/compiler_find.cmake)
 
 project(h5fortran
   LANGUAGES C Fortran
