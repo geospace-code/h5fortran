@@ -11,6 +11,10 @@ if(CMAKE_VERSION VERSION_LESS 3.15)
   message(FATAL_ERROR "Please update CMake >= 3.15")
 endif()
 
+# CTEST_CMAKE_GENERATOR must always be defined
+include(cmake/compiler_find.cmake)
+set(CTEST_CMAKE_GENERATOR $ENV{CMAKE_GENERATOR})
+
 # site is OS name
 if(NOT DEFINED CTEST_SITE)
   set(CTEST_SITE ${CMAKE_SYSTEM_NAME})
