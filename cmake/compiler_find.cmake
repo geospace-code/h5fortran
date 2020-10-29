@@ -41,27 +41,3 @@ if(DEFINED ENV{FC})
     endif()
   endif()
 endif()
-
-# CMAKE_GENERATOR auto-selection
-
-if(NOT DEFINED ENV{CMAKE_GENERATOR} AND CMAKE_VERSION VERSION_GREATER_EQUAL 3.17)
-  find_program(_gen NAMES ninja ninja-build samu)
-  if(_gen)
-    execute_process(COMMAND ${_gen} --version
-      OUTPUT_VARIABLE _ninja_version
-      OUTPUT_STRIP_TRAILING_WHITESPACE
-      RESULT_VARIABLE _gen_ok
-      TIMEOUT 10)
-    if(_gen_ok EQUAL 0 AND _ninja_version VERSION_GREATER_EQUAL 1.10)
-      set(ENV{CMAKE_GENERATOR} "Ninja")
-    endif()
-  endif(_gen)
-endif()
-
-if(NOT DEFINED ENV{CMAKE_GENERATOR})
-  if(WIN32)
-    set(ENV{CMAKE_GENERATOR} "MinGW Makefiles")
-  else()
-    set(ENV{CMAKE_GENERATOR} "Unix Makefiles")
-  endif()
-endif()

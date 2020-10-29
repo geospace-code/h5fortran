@@ -12,8 +12,28 @@ if(CMAKE_VERSION VERSION_LESS 3.15)
 endif()
 
 # CTEST_CMAKE_GENERATOR must always be defined
-include(cmake/compiler_find.cmake)
-set(CTEST_CMAKE_GENERATOR $ENV{CMAKE_GENERATOR})
+if(NOT DEFINED CTEST_CMAKE_GENERATOR AND CMAKE_VERSION VERSION_GREATER_EQUAL 3.17)
+  find_program(_gen NAMES ninja ninja-build samu)
+  if(_gen)
+    execute_process(COMMAND ${_gen} --version
+      OUTPUT_VARIABLE _ninja_version
+      OUTPUT_STRIP_TRAILING_WHITESPACE
+      RESULT_VARIABLE _gen_ok
+      TIMEOUT 10)
+    if(_gen_ok EQUAL 0 AND _ninja_version VERSION_GREATER_EQUAL 1.10)
+      set(CTEST_CMAKE_GENERATOR "Ninja")
+    endif()
+  endif(_gen)
+endif()
+if(NOT DEFINED CTEST_CMAKE_GENERATOR)
+  if(WIN32)
+    set(CTEST_CMAKE_GENERATOR "MinGW Makefiles")
+    set(CTEST_BUILD_FLAGS -j)  # not --parallel as this goes to generator directly
+  else()
+    set(CTEST_CMAKE_GENERATOR "Unix Makefiles")
+    set(CTEST_BUILD_FLAGS -j)  # not --parallel as this goes to generator directly
+  endif()
+endif()
 
 # site is OS name
 if(NOT DEFINED CTEST_SITE)
