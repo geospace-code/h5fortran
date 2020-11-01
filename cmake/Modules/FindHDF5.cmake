@@ -209,7 +209,10 @@ endif(HDF5_Fortran_links)
 
 set(HDF5_links ${HDF5_Fortran_links})
 
-elseif(HDF5_C_FOUND)
+endif(HDF5_Fortran_FOUND)
+
+
+if(HDF5_C_FOUND)
 
 set(CMAKE_REQUIRED_INCLUDES ${HDF5_INCLUDE_DIR})
 
@@ -219,14 +222,14 @@ set(_code "
 
 int main(void){
 hid_t f = H5Fcreate (\"junk.h5\", H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
-status = H5Fclose (f);
+herr_t status = H5Fclose (f);
 return 0;
 }")
-check_c_source_compiles(${_code} HDF5_C_links)
+check_c_source_compiles("${_code}" HDF5_C_links)
 
-set(HDF5_link ${HDF5_C_links})
+set(HDF5_links ${HDF5_C_links})
 
-endif(HDF5_Fortran_FOUND)
+endif(HDF5_C_FOUND)
 
 set(CMAKE_REQUIRED_INCLUDES)
 set(CMAKE_REQUIRED_LIBRARIES)
