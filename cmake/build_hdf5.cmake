@@ -14,9 +14,9 @@ endforeach()
 # NOTE: if the HDF5 CMake is allowed to rebuild, it will fail and this directory disappears (HDF5 1.12.0)
 set(HDF5_INCLUDE_DIRS ${PROJECT_BINARY_DIR}/HDF5proj-prefix/src/HDF5proj-build/bin/static)
 
-if(EXISTS ${PROJECT_BINARY_DIR}/HDF5proj-prefix/src/HDF5proj-build/bin/libhdf5_hl_fortran${CMAKE_STATIC_LIBRARY_SUFFIX})
-  set(HDF5OK true CACHE BOOL "HDF5 OK")
-endif()
+# if(EXISTS ${PROJECT_BINARY_DIR}/HDF5proj-prefix/src/HDF5proj-build/bin/libhdf5_hl_fortran${CMAKE_STATIC_LIBRARY_SUFFIX})
+#   set(HDF5_FOUND true)
+# endif()
 
 file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/HDF5proj-prefix/src/HDF5proj-build/bin/static)  # avoid race condition
 
@@ -31,7 +31,7 @@ endif()
 # --- HDF5
 # https://forum.hdfgroup.org/t/issues-when-using-hdf5-as-a-git-submodule-and-using-cmake-with-add-subdirectory/7189/2
 
-if(HDF5OK)
+if(TARGET HDF5::HDF5)
   # this if() statement is to avoid bugs in HDF5 from constantly rebuilding HDF5 on Linux (1.10.7 and 1.12.0 at least)
   add_custom_target(HDF5proj DEPENDS ${HDF5_LIBRARIES})
   add_custom_command(OUTPUT ${HDF5_LIBRARIES})
@@ -49,7 +49,7 @@ else()
   )
 
   add_dependencies(HDF5proj ZLIBproj)
-endif(HDF5OK)
+endif()
 
 # this GLOBAL is required to be visible via FetchContent
 add_library(HDF5::HDF5 INTERFACE IMPORTED GLOBAL)

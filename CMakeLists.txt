@@ -4,7 +4,7 @@ include(cmake/compiler_find.cmake)
 
 project(h5fortran
   LANGUAGES C Fortran
-  VERSION 3.3.9
+  VERSION 3.4.0
   DESCRIPTION "thin, light object-oriented HDF5 Fortran interface"
   HOMEPAGE_URL https://github.com/geospace-code/h5fortran)
 
@@ -28,12 +28,6 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/compilers.cmake)
 add_library(h5fortran)  # declare here so dependencies may be setup
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/hdf5.cmake)
-
-if(NOT HDF5OK)
-  # this if() statement is to avoid bugs in HDF5 from constantly rebuilding HDF5 on Linux (1.10.7 and 1.12.0 at least)
-  message(STATUS "h5fortran: HDF5 autobuild")
-  add_dependencies(HDF5::HDF5 HDF5proj)
-endif()
 
 # --- build
 target_include_directories(h5fortran
