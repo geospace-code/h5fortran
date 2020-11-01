@@ -200,16 +200,18 @@ if (i /= 0) error stop 'could not open hdf5 library'
 call h5close_f(i)
 if (i /= 0) error stop
 end")
-check_fortran_source_compiles(${_code} HDF5_links_ok SRC_EXT f90)
+check_fortran_source_compiles(${_code} HDF5_Fortran_links SRC_EXT f90)
 
-if(HDF5_links_ok)
+if(HDF5_Fortran_links)
   include(CheckFortranSourceRuns)
-  check_fortran_source_runs(${_code} HDF5_runs_ok SRC_EXT f90)
-endif(HDF5_links_ok)
+  check_fortran_source_runs(${_code} HDF5_runs SRC_EXT f90)
+endif(HDF5_Fortran_links)
+
+set(HDF5_links ${HDF5_Fortran_links})
 
 elseif(HDF5_C_FOUND)
 
-set(CMAKE_REQUIRED_INCLUDES ${HDF5_Fortran_INCLUDE_DIR} ${HDF5_INCLUDE_DIR})
+set(CMAKE_REQUIRED_INCLUDES ${HDF5_INCLUDE_DIR})
 
 include(CheckCSourceCompiles)
 set(_code "
@@ -220,7 +222,9 @@ hid_t f = H5Fcreate (\"junk.h5\", H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
 status = H5Fclose (f);
 return 0;
 }")
-check_c_source_compiles(${_code} HDF5_links_ok)
+check_c_source_compiles(${_code} HDF5_C_links)
+
+set(HDF5_link ${HDF5_C_links})
 
 endif(HDF5_Fortran_FOUND)
 
@@ -229,7 +233,7 @@ set(CMAKE_REQUIRED_LIBRARIES)
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(HDF5
-  REQUIRED_VARS _req HDF5_links_ok
+  REQUIRED_VARS _req HDF5_links
   VERSION_VAR HDF5_VERSION
   HANDLE_COMPONENTS)
 
