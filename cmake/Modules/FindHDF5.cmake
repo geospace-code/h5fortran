@@ -127,13 +127,22 @@ if(HDF5_C_FOUND)
 
 set(CMAKE_REQUIRED_INCLUDES ${HDF5_INCLUDE_DIR})
 
+set(_conf)
+foreach(f H5pubconf.h H5pubconf-64.h)
+  if(EXISTS ${HDF5_INCLUDE_DIR}/${f})
+    set(_conf ${HDF5_INCLUDE_DIR}/${f})
+    break()
+  endif()
+endforeach()
+
 include(CheckSymbolExists)
-check_symbol_exists(H5_HAVE_FILTER_SZIP H5pubconf.h _szip)
-check_symbol_exists(H5_HAVE_FILTER_DEFLATE H5pubconf.h _zlib)
+check_symbol_exists(H5_HAVE_FILTER_SZIP ${_conf} _szip)
+check_symbol_exists(H5_HAVE_FILTER_DEFLATE ${_conf} _zlib)
 
 # get version
 # from CMake/Modules/FindHDF5.cmake
-file(STRINGS ${HDF5_INCLUDE_DIR}/H5pubconf.h _def
+if(_conf)
+file(STRINGS ${_conf} _def
 REGEX "^[ \t]*#[ \t]*define[ \t]+H5_VERSION[ \t]+" )
 if( "${_def}" MATCHES
 "H5_VERSION[ \t]+\"([0-9]+\\.[0-9]+\\.[0-9]+)(-patch([0-9]+))?\"" )
@@ -142,7 +151,7 @@ if( "${_def}" MATCHES
     set(HDF5_VERSION ${HDF5_VERSION}.${CMAKE_MATCH_3})
   endif()
 endif()
-
+endif(_conf)
 # otherwise can pickup miniconda zlib
 get_filename_component(_hint ${HDF5_C_LIBRARY} DIRECTORY)
 if(NOT ZLIB_ROOT)
