@@ -4,7 +4,7 @@ include(cmake/compiler_find.cmake)
 
 project(h5fortran
   LANGUAGES C Fortran
-  VERSION 3.3.8
+  VERSION 3.3.9
   DESCRIPTION "thin, light object-oriented HDF5 Fortran interface"
   HOMEPAGE_URL https://github.com/geospace-code/h5fortran)
 
