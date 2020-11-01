@@ -123,9 +123,10 @@ if(HDF5_C_HL_LIBRARY AND HDF5_C_LIBRARY AND HDF5_INCLUDE_DIR)
 endif()
 
 # required libraries
-set(CMAKE_REQUIRED_INCLUDES ${HDF5_Fortran_INCLUDE_DIR} ${HDF5_INCLUDE_DIR})
+if(HDF5_C_FOUND)
 
-if(HDF5_INCLUDE_DIR AND HDF5_C_FOUND)
+set(CMAKE_REQUIRED_INCLUDES ${HDF5_INCLUDE_DIR})
+
 include(CheckSymbolExists)
 check_symbol_exists(H5_HAVE_FILTER_SZIP H5pubconf.h _szip)
 check_symbol_exists(H5_HAVE_FILTER_DEFLATE H5pubconf.h _zlib)
@@ -170,10 +171,14 @@ if(Threads_FOUND)
   list(APPEND CMAKE_REQUIRED_LIBRARIES Threads::Threads)
 endif()
 
+endif(HDF5_C_FOUND)
+
 # --- configure time checks
 # these checks avoid messy, confusing errors at build time
 
 if(HDF5_Fortran_FOUND)
+
+set(CMAKE_REQUIRED_INCLUDES ${HDF5_Fortran_INCLUDE_DIR} ${HDF5_INCLUDE_DIR})
 
 include(CheckFortranSourceCompiles)
 set(_code "program test_minimal
@@ -195,6 +200,8 @@ endif(HDF5_links_ok)
 
 elseif(HDF5_C_FOUND)
 
+set(CMAKE_REQUIRED_INCLUDES ${HDF5_Fortran_INCLUDE_DIR} ${HDF5_INCLUDE_DIR})
+
 include(CheckCSourceCompiles)
 set(_code "
 #include \"hdf5.h\"
@@ -205,9 +212,8 @@ status = H5Fclose (f);
 return 0;
 }")
 check_c_source_compiles(${_code} HDF5_links_ok)
-endif()
 
-endif(HDF5_INCLUDE_DIR AND HDF5_C_FOUND)
+endif(HDF5_Fortran_FOUND)
 
 set(CMAKE_REQUIRED_INCLUDES)
 set(CMAKE_REQUIRED_LIBRARIES)
