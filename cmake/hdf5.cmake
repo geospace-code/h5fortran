@@ -11,6 +11,5 @@ endif()
 find_package(HDF5 COMPONENTS Fortran HL)
 
 if(NOT HDF5_FOUND)
-  add_dependencies(HDF5::HDF5 HDF5proj)
   include(${CMAKE_CURRENT_LIST_DIR}/build_hdf5.cmake)
 endif()

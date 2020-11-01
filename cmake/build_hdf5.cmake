@@ -2,8 +2,6 @@
 # note: the use of "lib" vs. CMAKE_STATIC_LIBRARY_PREFIX is deliberate based on the particulars of these libraries
 # across Intel Fortran on Windows vs. Gfortran on Windows vs. Linux.
 
-set(hdf5_external true CACHE BOOL "autobuild HDF5")
-
 include(ExternalProject)
 
 set(HDF5_LIBRARIES)
@@ -14,9 +12,9 @@ endforeach()
 # NOTE: if the HDF5 CMake is allowed to rebuild, it will fail and this directory disappears (HDF5 1.12.0)
 set(HDF5_INCLUDE_DIRS ${PROJECT_BINARY_DIR}/HDF5proj-prefix/src/HDF5proj-build/bin/static)
 
-# if(EXISTS ${PROJECT_BINARY_DIR}/HDF5proj-prefix/src/HDF5proj-build/bin/libhdf5_hl_fortran${CMAKE_STATIC_LIBRARY_SUFFIX})
-#   set(HDF5_FOUND true)
-# endif()
+if(EXISTS ${PROJECT_BINARY_DIR}/HDF5proj-prefix/src/HDF5proj-build/bin/libhdf5_hl_fortran${CMAKE_STATIC_LIBRARY_SUFFIX})
+  set(HDF5_FOUND true)
+endif()
 
 file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/HDF5proj-prefix/src/HDF5proj-build/bin/static)  # avoid race condition
 
@@ -31,11 +29,8 @@ endif()
 # --- HDF5
 # https://forum.hdfgroup.org/t/issues-when-using-hdf5-as-a-git-submodule-and-using-cmake-with-add-subdirectory/7189/2
 
-if(TARGET HDF5::HDF5)
-  # this if() statement is to avoid bugs in HDF5 from constantly rebuilding HDF5 on Linux (1.10.7 and 1.12.0 at least)
-  add_custom_target(HDF5proj DEPENDS ${HDF5_LIBRARIES})
-  add_custom_command(OUTPUT ${HDF5_LIBRARIES})
-else()
+
+if(NOT HDF5_FOUND)
   ExternalProject_Add(HDF5proj
   GIT_REPOSITORY https://github.com/HDFGroup/hdf5.git
   GIT_TAG hdf5_1_10_7
@@ -56,6 +51,10 @@ add_library(HDF5::HDF5 INTERFACE IMPORTED GLOBAL)
 target_include_directories(HDF5::HDF5 INTERFACE "${HDF5_INCLUDE_DIRS}")
 target_link_libraries(HDF5::HDF5 INTERFACE "${HDF5_LIBRARIES}")
 
+if(NOT HDF5_FOUND)
+  add_dependencies(HDF5::HDF5 HDF5proj)
+endif()
+
 # --- external deps
 
 target_link_libraries(HDF5::HDF5 INTERFACE ZLIB::ZLIB)
@@ -71,3 +70,5 @@ target_link_libraries(HDF5::HDF5 INTERFACE ${CMAKE_DL_LIBS})
 if(UNIX)
   target_link_libraries(HDF5::HDF5 INTERFACE m)
 endif(UNIX)
+
+set(hdf5_external true CACHE BOOL "autobuild HDF5")
