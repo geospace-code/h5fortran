@@ -33,7 +33,7 @@ endif()
 if(NOT HDF5_FOUND)
   ExternalProject_Add(HDF5proj
   GIT_REPOSITORY https://github.com/HDFGroup/hdf5.git
-  GIT_TAG hdf5_1_10_7
+  GIT_TAG 1.10/master
   GIT_SHALLOW true
   # URL https://hdf-wordpress-1.s3.amazonaws.com/wp-content/uploads/manual/HDF5/HDF5_1_12_0/source/CMake-hdf5-1.12.0.tar.gz
   # URL_HASH MD5=33ab3d5b9019ca468364d226e0ccdea6
