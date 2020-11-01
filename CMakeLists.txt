@@ -8,28 +8,23 @@ project(h5fortran
   DESCRIPTION "thin, light object-oriented HDF5 Fortran interface"
   HOMEPAGE_URL https://github.com/geospace-code/h5fortran)
 
-if(PROJECT_SOURCE_DIR STREQUAL PROJECT_BINARY_DIR)
-  message(FATAL_ERROR "use 'cmake -B build' or similar to avoid building in-source")
-endif()
-
 include(CTest)
 
-if(NOT DEFINED ${PROJECT_NAME}_BUILD_TESTING)
-  set(${PROJECT_NAME}_BUILD_TESTING ${BUILD_TESTING})
-endif()
-
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
-# set(HDF5_FIND_DEBUG true)
-
-set(CMAKE_EXPORT_COMPILE_COMMANDS on)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/compilers.cmake)
 
-add_library(h5fortran)  # declare here so dependencies may be setup
+# --- find or build HDF5 library
 
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/hdf5.cmake)
+find_package(HDF5 COMPONENTS Fortran HL)
 
-# --- build
+if(NOT HDF5_FOUND)
+  include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_hdf5.cmake)
+endif()
+
+# --- h5fortran library
+
+add_library(h5fortran)
 target_include_directories(h5fortran
   PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/include  # for IBM XL
   INTERFACE
@@ -47,14 +42,14 @@ endif()
 
 if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
   include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/install.cmake)
-
-  include(FeatureSummary)
-  set_package_properties(Threads PROPERTIES DESCRIPTION "the system threads library")
-  set_package_properties(HDF5 PROPERTIES URL "https://hdfgroup.org/" DESCRIPTION "fast, versatile file I/O format" TYPE REQUIRED)
-  set_package_properties(ZLIB PROPERTIES URL "https://www.zlib.net/" DESCRIPTION "patent-free compression library")
-  set_package_properties(SZIP PROPERTIES URL "http://www.compressconsult.com/szip/" DESCRIPTION "compression library")
-
-  add_feature_info(AutoHDF5 hdf5_external "auto-build HDF5")
-
-  feature_summary(WHAT ALL)
 endif()
+
+include(FeatureSummary)
+set_package_properties(Threads PROPERTIES DESCRIPTION "the system threads library")
+set_package_properties(HDF5 PROPERTIES URL "https://hdfgroup.org/" DESCRIPTION "fast, versatile file I/O format" TYPE REQUIRED)
+set_package_properties(ZLIB PROPERTIES URL "https://www.zlib.net/" DESCRIPTION "patent-free compression library")
+set_package_properties(SZIP PROPERTIES URL "http://www.compressconsult.com/szip/" DESCRIPTION "compression library")
+
+add_feature_info(AutoHDF5 hdf5_external "auto-build HDF5")
+
+feature_summary(WHAT ALL)
