@@ -207,8 +207,6 @@ if(HDF5_Fortran_links)
   check_fortran_source_runs(${_code} HDF5_runs SRC_EXT f90)
 endif(HDF5_Fortran_links)
 
-set(HDF5_links ${HDF5_Fortran_links})
-
 endif(HDF5_Fortran_FOUND)
 
 
@@ -230,6 +228,10 @@ check_c_source_compiles("${_code}" HDF5_C_links)
 set(HDF5_links ${HDF5_C_links})
 
 endif(HDF5_C_FOUND)
+
+if(HDF5_Fortran_FOUND AND NOT HDF5_Fortran_links)
+  set(HDF5_links false)
+endif()
 
 set(CMAKE_REQUIRED_INCLUDES)
 set(CMAKE_REQUIRED_LIBRARIES)
