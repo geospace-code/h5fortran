@@ -1,5 +1,9 @@
 name: ci_linux
 
+env:
+  FC: gfortran-9
+  CC: gcc-9
+
 on:
   push:
     paths:
@@ -16,9 +20,6 @@ jobs:
     - uses: actions/checkout@v2
 
     - run: ctest -S setup.cmake -VV
-      env:
-        FC: gfortran-9
-        CC: gcc-9
 
   examples:
     runs-on: ubuntu-latest

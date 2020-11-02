@@ -1,5 +1,9 @@
 name: ci_mac_meson
 
+env:
+  FC: gfortran-9
+  CC: gcc-9
+
 on:
   push:
     paths:
@@ -20,9 +24,7 @@ jobs:
     - run: brew install pkg-config hdf5 ninja
 
     - run: meson setup build
-      env:
-        FC: gfortran-9
-        CC: gcc-9
+
     - run: meson compile -C build
     - uses: actions/upload-artifact@v1
       if: failure()

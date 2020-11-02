@@ -1,7 +1,6 @@
 *.h5
 *.pdf
 build*/
-bin/
 .cache
 
 *.pyd
