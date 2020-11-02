@@ -1,8 +1,5 @@
 # --- package specific
 
-install(FILES ${CMAKE_CURRENT_LIST_DIR}/hdf5.cmake
-  DESTINATION lib/cmake/${PROJECT_NAME})
-
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/h5fortran.mod
   DESTINATION include)
 

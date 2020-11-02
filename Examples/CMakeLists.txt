@@ -20,9 +20,6 @@ else()
   FetchContent_MakeAvailable(h5fortran_proj)
 endif()
 
-# this helps linters e.g. Visual Studio Intellicode work properly
-set(CMAKE_EXPORT_COMPILE_COMMANDS on)
-
 # --- Fortran interface for examples
 add_library(fortran_interface fortran_interface.f90)
 target_link_libraries(fortran_interface PRIVATE h5fortran::h5fortran)
