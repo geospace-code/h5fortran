@@ -40,7 +40,7 @@ as well as **character (string)**.
 * Mismatched datatypes are coerced as per standard Fortran rules. For example, reading a float HDF5 variable into an integer Fortran variable:  42.3 => 42
 * Zlib (deflate) compression / decompression
 
-Tested on systems with HDF5 1.10 and 1.12 including:
+Tested on systems with HDF5 1.8, 1.10 and 1.12 including:
 
 * MacOS (homebrew)
 * Linux (Ubuntu, CentOS)

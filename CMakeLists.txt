@@ -23,6 +23,10 @@ if(NOT HDF5_FOUND)
   include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_hdf5.cmake)
 endif()
 
+if(HDF5_VERSION VERSION_LESS 1.8.7)
+  message(STATUS "H5Fortran requires HDF5 >= 1.8.7")
+endif()
+
 # --- h5fortran library
 
 add_library(h5fortran)

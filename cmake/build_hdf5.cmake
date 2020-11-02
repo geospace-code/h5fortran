@@ -31,12 +31,14 @@ endif()
 
 
 if(NOT HDF5_FOUND)
+  set(HDF5_VERSION 1.10.7)
+  # for user information, not used by ExternalProject itself
+
   ExternalProject_Add(HDF5proj
   GIT_REPOSITORY https://github.com/HDFGroup/hdf5.git
   GIT_TAG 1.10/master
   GIT_SHALLOW true
-  # URL https://hdf-wordpress-1.s3.amazonaws.com/wp-content/uploads/manual/HDF5/HDF5_1_12_0/source/CMake-hdf5-1.12.0.tar.gz
-  # URL_HASH MD5=33ab3d5b9019ca468364d226e0ccdea6
+  # URL https://github.com/HDFGroup/hdf5/archive/hdf5-1_10_7.tar.gz
   UPDATE_DISCONNECTED true
   CMAKE_ARGS ${zlib_root} -DHDF5_GENERATE_HEADERS:BOOL=false -DHDF5_DISABLE_COMPILER_WARNINGS:BOOL=true -DBUILD_SHARED_LIBS:BOOL=false -DCMAKE_BUILD_TYPE=Release -DHDF5_BUILD_FORTRAN:BOOL=true -DHDF5_BUILD_CPP_LIB:BOOL=false -DHDF5_BUILD_TOOLS:BOOL=false -DBUILD_TESTING:BOOL=false -DHDF5_BUILD_EXAMPLES:BOOL=false
   BUILD_BYPRODUCTS ${HDF5_LIBRARIES}
