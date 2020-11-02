@@ -1,7 +1,8 @@
 name: ci_mac
 
 env:
-  FC: gfortran
+  FC: gfortran-9
+  CC: gcc-9
 
 on:
   push:

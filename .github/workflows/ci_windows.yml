@@ -27,9 +27,7 @@ jobs:
     # steps:
     # - uses: actions/checkout@v2
 
-    # - run: pip install ninja
-
-    # - run: cmake -BExamples/build -SExamples -GNinja
+    # - run: cmake -BExamples/build -SExamples
     # - run: cmake --build Examples/build
 
     # - run: ctest -V
