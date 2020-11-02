@@ -1,23 +1,26 @@
 cmake_minimum_required(VERSION 3.15)
 
+include(cmake/policy.cmake)
 include(cmake/compiler_find.cmake)
 
 project(h5fortran
   LANGUAGES C Fortran
-  VERSION 3.4.0
+  VERSION 3.4.1
   DESCRIPTION "thin, light object-oriented HDF5 Fortran interface"
   HOMEPAGE_URL https://github.com/geospace-code/h5fortran)
 
 include(CTest)
+if(NOT DEFINED ${PROJECT_NAME}_BUILD_TESTING)
+  set(${PROJECT_NAME}_BUILD_TESTING ${BUILD_TESTING})
+endif()
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
 
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/policy.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/compilers.cmake)
 
 # --- find or build HDF5 library
 
-find_package(HDF5 COMPONENTS Fortran HL)
+find_package(HDF5 COMPONENTS Fortran)
 
 if(NOT HDF5_FOUND)
   include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_hdf5.cmake)

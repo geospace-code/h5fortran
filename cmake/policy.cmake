@@ -1,9 +1,5 @@
 set(CMAKE_EXPORT_COMPILE_COMMANDS on)
 
-if(NOT DEFINED ${PROJECT_NAME}_BUILD_TESTING)
-  set(${PROJECT_NAME}_BUILD_TESTING ${BUILD_TESTING})
-endif()
-
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
   message(FATAL_ERROR "use cmake -B build or similar to avoid building in-source, which is messy")
 endif()

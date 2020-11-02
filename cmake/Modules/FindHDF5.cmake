@@ -38,9 +38,10 @@ Targets
   HDF5 Imported Target
 #]=======================================================================]
 
+
 set(_req)
 set(_lsuf hdf5 hdf5/serial)
-set(_psuf include include/static ${_lsuf})
+set(_psuf static ${_lsuf})
 
 # we don't use pkg-config directly because some distros pkg-config for HDF5 is broken
 # however so far at least we've see the paths are often correct
@@ -52,18 +53,38 @@ if(PkgConfig_FOUND)
 endif()
 
 if(Fortran IN_LIST HDF5_FIND_COMPONENTS)
+# NOTE: the "lib*" are for Windows Intel compiler, even for self-built HDF5.
+# CMake won't look for lib prefix automatically.
   find_library(HDF5_Fortran_LIBRARY
-    NAMES hdf5_fortran
+    NAMES hdf5_fortran libhdf5_fortran
     HINTS ${pc_hdf5_LIBRARY_DIRS} ${pc_hdf5_LIBDIR}
     PATH_SUFFIXES ${_lsuf}
-    NAMES_PER_DIR)
+    NAMES_PER_DIR
+    DOC "HDF5 Fortran API")
   find_library(HDF5_Fortran_HL_LIBRARY
-    NAMES hdf5_hl_fortran hdf5hl_fortran
+    NAMES hdf5_hl_fortran hdf5hl_fortran libhdf5_hl_fortran libhdf5hl_fortran
     HINTS ${pc_hdf5_LIBRARY_DIRS} ${pc_hdf5_LIBDIR}
     PATH_SUFFIXES ${_lsuf}
-    NAMES_PER_DIR)
+    NAMES_PER_DIR
+    DOC "HDF5 Fortran HL high-level API")
+
+  find_library(HDF5_Fortran_HL_stub
+    NAMES hdf5_hl_f90cstub libhdf5_hl_f90cstub
+    HINTS ${pc_hdf5_LIBRARY_DIRS} ${pc_hdf5_LIBDIR}
+    PATH_SUFFIXES ${_lsuf}
+    NAMES_PER_DIR
+    DOC "Fortran C HL interface, not all HDF5 implementations have/need this")
+  find_library(HDF5_Fortran_stub
+    NAMES hdf5_f90cstub libhdf5_f90cstub
+    HINTS ${pc_hdf5_LIBRARY_DIRS} ${pc_hdf5_LIBDIR}
+    PATH_SUFFIXES ${_lsuf}
+    NAMES_PER_DIR
+    DOC "Fortran C interface, not all HDF5 implementations have/need this")
 
   set(HDF5_Fortran_LIBRARIES ${HDF5_Fortran_HL_LIBRARY} ${HDF5_Fortran_LIBRARY})
+  if(HDF5_Fortran_HL_stub AND HDF5_Fortran_stub)
+    list(APPEND HDF5_Fortran_LIBRARIES ${HDF5_Fortran_HL_stub} ${HDF5_Fortran_stub})
+  endif()
 
   find_path(HDF5_Fortran_INCLUDE_DIR
     NAMES hdf5.mod
@@ -80,12 +101,12 @@ endif()
 
 if(CXX IN_LIST HDF5_FIND_COMPONENTS)
   find_library(HDF5_CXX_LIBRARY
-    NAMES hdf5_cpp
+    NAMES hdf5_cpp libhdf5_cpp
     HINTS ${pc_hdf5_LIBRARY_DIRS} ${pc_hdf5_LIBDIR}
     PATH_SUFFIXES ${_lsuf}
     NAMES_PER_DIR)
   find_library(HDF5_CXX_HL_LIBRARY
-    NAMES hdf5_hl_cpp
+    NAMES hdf5_hl_cpp libhdf5_hl_cpp
     HINTS ${pc_hdf5_LIBRARY_DIRS} ${pc_hdf5_LIBDIR}
     PATH_SUFFIXES ${_lsuf}
     NAMES_PER_DIR)
@@ -100,12 +121,12 @@ endif()
 
 # C is always needed
 find_library(HDF5_C_LIBRARY
-  NAMES hdf5
+  NAMES hdf5 libhdf5
   HINTS ${pc_hdf5_LIBRARY_DIRS} ${pc_hdf5_LIBDIR}
   PATH_SUFFIXES ${_lsuf}
   NAMES_PER_DIR)
 find_library(HDF5_C_HL_LIBRARY
-  NAMES hdf5_hl
+  NAMES hdf5_hl libhdf5_hl
   HINTS ${pc_hdf5_LIBRARY_DIRS} ${pc_hdf5_LIBDIR}
   PATH_SUFFIXES ${_lsuf}
   NAMES_PER_DIR)
@@ -172,6 +193,8 @@ if(_zlib)
   else()
     set(CMAKE_REQUIRED_LIBRARIES ${HDF5_Fortran_LIBRARIES} ${HDF5_C_LIBRARIES} ZLIB::ZLIB ${CMAKE_DL_LIBS})
   endif()
+else()
+  set(CMAKE_REQUIRED_LIBRARIES ${HDF5_Fortran_LIBRARIES} ${HDF5_C_LIBRARIES} ${CMAKE_DL_LIBS})
 endif()
 
 set(THREADS_PREFER_PTHREAD_FLAG true)
