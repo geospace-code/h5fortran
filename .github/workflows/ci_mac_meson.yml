@@ -1,9 +1,5 @@
 name: ci_mac_meson
 
-env:
-  FC: gfortran-9
-  CC: gcc-9
-
 on:
   push:
     paths:
@@ -21,7 +17,7 @@ jobs:
         python-version: '3.x'
 
     - run: pip install meson
-    - run: brew install pkg-config hdf5 ninja
+    - run: brew install gcc hdf5 ninja
 
     - run: meson setup build
 
