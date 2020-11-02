@@ -12,6 +12,7 @@ include(CTest)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
 
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/policy.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/compilers.cmake)
 
 # --- find or build HDF5 library
