@@ -1,4 +1,8 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.15)
+
+include(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/policy.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/compiler_find.cmake)
+
 project(h5fortranExample
 LANGUAGES C CXX Fortran)
 enable_testing()
