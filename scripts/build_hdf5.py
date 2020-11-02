@@ -19,7 +19,7 @@ from pathlib import Path
 
 # ========= user parameters ======================
 BUILDDIR = "build"
-HDF5_TAG = "1.12/master"
+HDF5_TAG = "1.10/master"
 
 
 # ========= end of user parameters ================
@@ -67,7 +67,7 @@ def hdf5(dirs: T.Dict[str, Path], env: T.Mapping[str, str]):
     To avoid this, we git clone the release instead.
     """
 
-    use_cmake = False
+    use_cmake = True
     name = "hdf5"
     install_dir = dirs["prefix"] / name
     source_dir = dirs["workdir"] / name
@@ -77,13 +77,14 @@ def hdf5(dirs: T.Dict[str, Path], env: T.Mapping[str, str]):
     git_download(source_dir, git_url, HDF5_TAG)
 
     if use_cmake or os.name == "nt":
-        # this also works for Intel oneAPI with Ninja on Windows
-        # NOTE: CMake Parallel builds fail for Make and Ninja
-        # NOTE: Make and Ninja will both build repeatedly on each build command
+        # works for Intel oneAPI on Windows and many other systems/compilers.
+        # works for Make or Ninja in general.
         cmd0 = [
             "cmake",
             f"-S{source_dir}",
             f"-DCMAKE_INSTALL_PREFIX={install_dir}",
+            "-DHDF5_GENERATE_HEADERS:BOOL=false",
+            "-DHDF5_DISABLE_COMPILER_WARNINGS:BOOL=true",
             "-DBUILD_SHARED_LIBS:BOOL=false",
             "-DCMAKE_BUILD_TYPE=Release",
             "-DHDF5_BUILD_FORTRAN:BOOL=true",
@@ -93,12 +94,15 @@ def hdf5(dirs: T.Dict[str, Path], env: T.Mapping[str, str]):
             "-DHDF5_BUILD_EXAMPLES:BOOL=false",
         ]
 
-        cmd1 = ["cmake", "--build", str(build_dir), "--", "-j1"]
-        # disable parallel due to HDF5 CMakeLists bugs
+        cmd1 = ["cmake", "--build", str(build_dir), "--parallel"]
 
         cmd2 = ["cmake", "--install", str(build_dir)]
 
-        # this unusual configure command is necessary due to bugs with HDF5 CMakeLists.
+        # this old "cmake .." style command is necessary due to bugs with
+        # HDF5 (including 1.10.7) CMakeLists:
+        #   CMake Error at config/cmake/HDF5UseFortran.cmake:205 (file):
+        #   file failed to open for reading (No such file or directory):
+        #   C:/Users/micha/AppData/Local/Temp/hdf5/build/pac_fconftest.out.
         build_dir.mkdir(exist_ok=True)
         subprocess.check_call(nice + cmd0, cwd=build_dir, env=env)
     else:
@@ -124,13 +128,6 @@ def git_download(path: Path, repo: str, tag: str):
 
     if not GITEXE:
         raise FileNotFoundError("Git not found.")
-
-    git_version = (
-        subprocess.check_output([GITEXE, "--version"], universal_newlines=True)
-        .strip()
-        .split()[-1]
-    )
-    print("Using Git", git_version)
 
     if path.is_dir():
         # don't use "git -C" for old HPC

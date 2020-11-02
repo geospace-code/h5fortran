@@ -110,29 +110,10 @@ For detailed [examples](./Examples/) see [Examples.md](./Examples.md).
 
 ### Getting HDF5 library
 
-One may compile the HDF5 library by either (choose one):
+Instead of auto-building HDF5 via H5Fortran, one may build and install the HDF5 library by:
 
 ```sh
-python3 scripts/compile_hdf5.py
-```
-
-or
-
-```sh
-ctest -S scripts/build_hdf5.cmake -VV
-```
-
-For Windows with Intel oneAPI it's alternatively possible to
-[download and install](https://www.hdfgroup.org/downloads/hdf5/)
-the file named like "hdf5-1.12.0-Std-win10_64-vs14-Intel.zip".
-Note this will put the HDF5 /bin directory on PATH.
-If not using Python with HDF5, leave it there so that the DLL's work properly at runtime--Windows does not have Rpath or LD_LIBRARY_PATH, just PATH.
-
-If you also use HDF5 with Python in the same project, there will be conflicts between Python HDF on PATH and the HDF Group HDF5 library on Path.
-What works in that case is taking HDF GRoup HDF5 out of PATH and configuring like:
-
-```sh
-cmake -B build -DHDF5_ROOT="C:/Program Files/HDF_Group/HDF5/1.12.0/"
+python3 scripts/build_hdf5.py
 ```
 
 ### Missing datatypes
