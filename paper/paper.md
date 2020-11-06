@@ -8,31 +8,27 @@ authors:
 affiliations:
  - name: Boston University
    index: 1
-date: 30 March 2020
+date: 6 Nov 2020
 bibliography: paper.bib
 ---
 
 # Summary
 
-Fortran has only raw file input-output (IO) built in to the language.
-To support reproducibility of work done in any programming language and long-term usefulness of the data generated or processed, it is beneficial to use self-describing data file formats like HDF5 [@2011hdf5].
-Many popular languages and libraries used for simulation and data science use the HDF5 [@hdf5] file IO library.
-Most programs and libraries intended for use by practitioners such as modelers and data scientists themselves use an object-oriented HDF5 interface like h5py [@h5py] [@h5pybook].
-
-h5fortran [@h5fortran] is a Fortran 2008 interface to HDF5 that abstracts away most details of a frequently-used subset of HDF5 operations.
-h5fortran makes HDF5 use from Fortran as easy as in high-level scripting languages.
+h5fortran [@h5fortran] is a Fortran interface to HDF5 that abstracts away most details of a frequently-used subset of HDF5 operations.
+h5fortran has object-oriented and functional interfaces that makes HDF5 use from Fortran as easy as in high-level languages.
 h5fortran adheres to Fortran 2008 standard, working on Gfortran and Intel compilers for Linux, MacOS, Windows on Intel / AMD, ARM and IBM POWER systems.
-CMake is used to build h5fortran, and CPack can be used to generate distributable binary archives.
-Conan package manager may be used to obtain prereqs and install h5fortran.
+CMake is used to build h5fortran, detecting if the HDF5 library is present and working and building HDF5 from source if necessary.
+CPack can be used to generate distributable binary archives.
+Conan package manager may also be used to automatically install the HDF5 library and then install h5fortran.
 Meson build system is also supported by h5fortran.
 
 h5fortran has general applicability to projects needing to do any of:
 
 * writing variables to HDF5: scalar to 7-D, of type real32, real64 or integer
 * reading variables from HDF5: scalar to 7-D, of type real32, real64 or integer
-* reading or writing character variables to / from HDF5 file
-* writing variable attributes to disk
-* getting the shape of a disk variable, for example to allocate a memory variable to read that variable
+* read / write character variables to / from HDF5 file
+* read / write variable attributes to / from HDF5 file
+* get the shape of a disk variable to allocate a memory variable for reading that data
 
 In addition to the object-oriented interface, h5fortran provides single-command read / write procedures.
 Array slicing on read allows reading a portion of a large disk variable into memory.
@@ -42,7 +38,14 @@ h5fortran was designed for use by individual users on their laptops or embedded 
 
 h5fortran was originally developed for the GEMINI [@gemini3d] [@zettergren] ionospheric model, funded in part by NASA ROSES \#19-HDEE19_2-0007.
 
-## Other programs
+# Statement of need
+
+Fortran has only raw file input-output (IO) built in to the language.
+To support reproducibility of work done in any programming language and long-term usefulness of the data generated or processed, it is beneficial to use self-describing data file formats like HDF5 [@2011hdf5].
+Many popular languages and libraries used for simulation and data science use the HDF5 [@hdf5] file IO library.
+Most programs and libraries intended for use by practitioners such as modelers and data scientists themselves use an object-oriented HDF5 interface like h5py [@h5py] [@h5pybook].
+
+# Other programs
 
 While other HDF5 interfaces exist, h5fortran presents a broad set of commonly used features, comprehensive test coverage and robustness across compilers and computing systems.
 We have written a companion library for NetCDF4 called nc4fortran [@nc4fortran], which by design has a nearly identical user-facing API.

@@ -3,10 +3,10 @@ from conans import ConanFile, CMake
 
 class H5fortranConan(ConanFile):
     name = "h5fortran"
-    version = "2.9.0"
+    version = "3.4.1"
     license = "MIT"  # noqa: A003
     url = "https://github.com/geospace-code/h5fortran"
-    requires = "hdf5/[>=1.10]"
+    requires = "hdf5/[>=1.8.7]"
     build_policy = "missing"
     description = "Easy, thin, robust polymorphic Fortran HDF5 interface"
     settings = "os", "compiler", "build_type", "arch"
