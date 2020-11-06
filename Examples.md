@@ -19,7 +19,7 @@ If `ierr` is omitted, then h5fortran will raise `error stop` if an error occurs.
 ## Create new HDF5 file, with variable "value1"
 
 ```fortran
-call h5f%initialize('test.h5', status='new',action='w')
+call h5f%initialize('test.h5', status='new')
 
 call h5f%write('/value1', 123.)
 

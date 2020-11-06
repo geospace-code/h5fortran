@@ -67,17 +67,8 @@ for more details see [Install.md](./Install.md)
 
 ### Autobuild HDF5
 
-h5fortran will automatically build the HDF5 library if needed. This takes a minute or two on a typical laptop.
-Note: Due to an HDFGroup-acknowleged build bug, to rebuild your project, you need to configure CMake one more time after the first build when using autobuilt HDF5.
-
-```sh
-# usual dev configuration and build
-cmake -B build
-cmake --build build  # also builds HDF5 library and Zlib if needed
-
-cmake -B build  # workaround
-# then build as often as you like.
-```
+h5fortran will automatically build the HDF5 library if needed.
+This takes a minute or two on a typical laptop.
 
 ## Usage
 
