@@ -21,18 +21,6 @@ jobs:
 
     - run: ctest -S setup.cmake -VV
 
-  # examples:
-    # works but saving CI time
-    # runs-on: windows-latest
-    # steps:
-    # - uses: actions/checkout@v2
-
-    # - run: cmake -BExamples/build -SExamples
-    # - run: cmake --build Examples/build
-
-    # - run: ctest -V
-    #   working-directory: Examples/build
-
   # msys2:
   # works but saving CI time
   #   runs-on: windows-latest

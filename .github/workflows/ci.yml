@@ -1,0 +1,43 @@
+name: ci
+
+on:
+  push:
+    paths:
+      - "**/CMakeLists.txt"
+      - "**.cmake"
+      - "**.f90"
+      - ".github/workflows/ci_linux.yml"
+
+jobs:
+
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: install hdf5
+      run: |
+        sudo apt update -yq
+        sudo apt install -yq --no-install-recommends gfortran libhdf5-dev
+
+    - name: build and test h5fortran
+      run: ctest -S setup.cmake -VV
+
+    - name: build Examples
+      run: |
+        cmake -B Examples/build -S Examples
+        cmake --build Examples/build
+
+    - name: test examples
+      run: ctest -V
+      working-directory: Examples/build
+
+  mac:
+    needs: linux
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - run: brew install gcc hdf5 ninja
+
+    - run: ctest -S setup.cmake -VV
