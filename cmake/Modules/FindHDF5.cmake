@@ -38,8 +38,6 @@ Targets
   HDF5 Imported Target
 #]=======================================================================]
 
-
-set(_req)
 set(_lsuf hdf5 hdf5/serial)
 set(_psuf static ${_lsuf})
 
@@ -89,9 +87,9 @@ if(Fortran IN_LIST HDF5_FIND_COMPONENTS)
   find_path(HDF5_Fortran_INCLUDE_DIR
     NAMES hdf5.mod
     HINTS ${pc_hdf5_INCLUDE_DIRS}
-    PATH_SUFFIXES ${_psuf})
+    PATH_SUFFIXES ${_psuf}
+    DOC "HDF5 Fortran modules")
 
-  list(APPEND _req ${HDF5_Fortran_LIBRARIES} ${HDF5_Fortran_INCLUDE_DIR})
   if(HDF5_Fortran_HL_LIBRARY AND HDF5_Fortran_LIBRARY AND HDF5_Fortran_INCLUDE_DIR)
     set(HDF5_Fortran_FOUND true)
     set(HDF5_HL_FOUND true)
@@ -104,15 +102,17 @@ if(CXX IN_LIST HDF5_FIND_COMPONENTS)
     NAMES hdf5_cpp libhdf5_cpp
     HINTS ${pc_hdf5_LIBRARY_DIRS} ${pc_hdf5_LIBDIR}
     PATH_SUFFIXES ${_lsuf}
-    NAMES_PER_DIR)
+    NAMES_PER_DIR
+    DOC "HDF5 C++ API")
   find_library(HDF5_CXX_HL_LIBRARY
     NAMES hdf5_hl_cpp libhdf5_hl_cpp
     HINTS ${pc_hdf5_LIBRARY_DIRS} ${pc_hdf5_LIBDIR}
     PATH_SUFFIXES ${_lsuf}
-    NAMES_PER_DIR)
+    NAMES_PER_DIR
+    DOC "HDF5 C++ high-level API")
 
   set(HDF5_CXX_LIBRARIES ${HDF5_CXX_HL_LIBRARY} ${HDF5_CXX_LIBRARY})
-  list(APPEND _req ${HDF5_CXX_LIBRARIES})
+
   if(HDF5_CXX_HL_LIBRARY AND HDF5_CXX_LIBRARY)
     set(HDF5_CXX_FOUND true)
     set(HDF5_HL_FOUND true)
@@ -124,20 +124,22 @@ find_library(HDF5_C_LIBRARY
   NAMES hdf5 libhdf5
   HINTS ${pc_hdf5_LIBRARY_DIRS} ${pc_hdf5_LIBDIR}
   PATH_SUFFIXES ${_lsuf}
-  NAMES_PER_DIR)
+  NAMES_PER_DIR
+  DOC "HDF5 C library (necessary for all languages)")
 find_library(HDF5_C_HL_LIBRARY
   NAMES hdf5_hl libhdf5_hl
   HINTS ${pc_hdf5_LIBRARY_DIRS} ${pc_hdf5_LIBDIR}
   PATH_SUFFIXES ${_lsuf}
-  NAMES_PER_DIR)
+  NAMES_PER_DIR
+  DOC "HDF5 C high level interface")
 set(HDF5_C_LIBRARIES ${HDF5_C_HL_LIBRARY} ${HDF5_C_LIBRARY})
 
 find_path(HDF5_INCLUDE_DIR
   NAMES hdf5.h
   HINTS ${pc_hdf5_INCLUDE_DIRS}
-  PATH_SUFFIXES ${_psuf})
+  PATH_SUFFIXES ${_psuf}
+  DOC "HDF5 C header")
 
-list(APPEND _req ${HDF5_C_LIBRARIES} ${HDF5_INCLUDE_DIR})
 if(HDF5_C_HL_LIBRARY AND HDF5_C_LIBRARY AND HDF5_INCLUDE_DIR)
   set(HDF5_C_FOUND true)
   set(HDF5_HL_FOUND true)
@@ -261,7 +263,7 @@ set(CMAKE_REQUIRED_LIBRARIES)
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(HDF5
-  REQUIRED_VARS _req HDF5_links
+  REQUIRED_VARS HDF5_links
   VERSION_VAR HDF5_VERSION
   HANDLE_COMPONENTS)
 
