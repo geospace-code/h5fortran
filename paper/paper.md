@@ -36,7 +36,7 @@ If the user has HDF5 with SZIP or ZLIB compression enabled, h5fortran is capable
 Data shuffling and Fletcher32 checksums provide better compression and a check of file integrity respectively.
 h5fortran was designed for use by individual users on their laptops or embedded devices, as well as for use in HPC applications where parallel tasks need read only part of a milestone or shared HDF5 variable.
 
-h5fortran was originally developed for the GEMINI [@gemini3d] [@zettergren] ionospheric model, funded in part by NASA ROSES \#19-HDEE19_2-0007.
+h5fortran was originally developed for the GEMINI [@gemini3d] [@zettergren] ionospheric model, funded in part by NASA ROSES \#80NSSC20K0176.
 
 # Statement of need
 
