@@ -4,10 +4,6 @@ if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
   message(FATAL_ERROR "use cmake -B build or similar to avoid building in-source, which is messy")
 endif()
 
-if(CMAKE_VERSION VERSION_EQUAL 3.19.0-rc1)
-  message(FATAL_ERROR "CMake 3.19.0-rc1 has breaking bugs for any project. Please use a different CMake version.")
-endif()
-
 if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.20)
   # explicit source file extensions
   cmake_policy(SET CMP0115 NEW)
