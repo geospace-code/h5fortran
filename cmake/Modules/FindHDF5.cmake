@@ -38,6 +38,78 @@ Targets
   HDF5 Imported Target
 #]=======================================================================]
 
+function(detect_config)
+
+set(CMAKE_REQUIRED_INCLUDES ${HDF5_INCLUDE_DIR})
+
+foreach(f H5pubconf.h H5pubconf-64.h)
+  if(EXISTS ${HDF5_INCLUDE_DIR}/${f})
+    set(_conf ${HDF5_INCLUDE_DIR}/${f})
+    break()
+  endif()
+endforeach()
+
+if(NOT _conf)
+  message(WARNING "Could not find HDF5 config header H5pubconf.h, therefore cannot detect HDF5 configuration.")
+  set(HDF5_C_FOUND false PARENT_SCOPE)
+  return()
+endif()
+
+# get version
+# from CMake/Modules/FindHDF5.cmake
+include(CheckSymbolExists)
+check_symbol_exists(H5_HAVE_FILTER_SZIP ${_conf} _szip)
+check_symbol_exists(H5_HAVE_FILTER_DEFLATE ${_conf} _zlib)
+
+file(STRINGS ${_conf} _def
+REGEX "^[ \t]*#[ \t]*define[ \t]+H5_VERSION[ \t]+" )
+if( "${_def}" MATCHES
+"H5_VERSION[ \t]+\"([0-9]+\\.[0-9]+\\.[0-9]+)(-patch([0-9]+))?\"" )
+  set(HDF5_VERSION "${CMAKE_MATCH_1}" )
+  if( CMAKE_MATCH_3 )
+    set(HDF5_VERSION ${HDF5_VERSION}.${CMAKE_MATCH_3})
+  endif()
+
+  set(HDF5_VERSION ${HDF5_VERSION} PARENT_SCOPE)
+endif()
+
+# otherwise can pickup miniconda zlib
+get_filename_component(_hint ${HDF5_C_LIBRARY} DIRECTORY)
+if(NOT ZLIB_ROOT)
+  set(ZLIB_ROOT "${_hint}/..;${_hint}/../..;${pc_zlib_LIBRARY_DIRS};${pc_zlib_LIBDIR}")
+endif()
+if(NOT SZIP_ROOT)
+  set(SZIP_ROOT "${ZLIB_ROOT}")
+endif()
+
+if(_zlib)
+  find_package(ZLIB REQUIRED)
+
+  if(_szip)
+    # Szip even though not directly used because if system static links libhdf5 with szip,
+    # our builds will fail if we don't also link szip.
+    find_package(SZIP REQUIRED)
+    set(CMAKE_REQUIRED_LIBRARIES ${HDF5_Fortran_LIBRARIES} ${HDF5_C_LIBRARIES} SZIP::SZIP ZLIB::ZLIB ${CMAKE_DL_LIBS})
+  else()
+    set(CMAKE_REQUIRED_LIBRARIES ${HDF5_Fortran_LIBRARIES} ${HDF5_C_LIBRARIES} ZLIB::ZLIB ${CMAKE_DL_LIBS})
+  endif()
+else()
+  set(CMAKE_REQUIRED_LIBRARIES ${HDF5_Fortran_LIBRARIES} ${HDF5_C_LIBRARIES} ${CMAKE_DL_LIBS})
+endif()
+
+set(THREADS_PREFER_PTHREAD_FLAG true)
+find_package(Threads)
+if(Threads_FOUND)
+  list(APPEND CMAKE_REQUIRED_LIBRARIES Threads::Threads)
+endif()
+
+set(CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} PARENT_SCOPE)
+
+endfunction(detect_config)
+
+
+# === main program
+
 set(_lsuf hdf5 hdf5/serial)
 set(_psuf static ${_lsuf})
 
@@ -147,64 +219,7 @@ endif()
 
 # required libraries
 if(HDF5_C_FOUND)
-
-set(CMAKE_REQUIRED_INCLUDES ${HDF5_INCLUDE_DIR})
-
-set(_conf)
-foreach(f H5pubconf.h H5pubconf-64.h)
-  if(EXISTS ${HDF5_INCLUDE_DIR}/${f})
-    set(_conf ${HDF5_INCLUDE_DIR}/${f})
-    break()
-  endif()
-endforeach()
-
-include(CheckSymbolExists)
-check_symbol_exists(H5_HAVE_FILTER_SZIP ${_conf} _szip)
-check_symbol_exists(H5_HAVE_FILTER_DEFLATE ${_conf} _zlib)
-
-# get version
-# from CMake/Modules/FindHDF5.cmake
-if(_conf)
-file(STRINGS ${_conf} _def
-REGEX "^[ \t]*#[ \t]*define[ \t]+H5_VERSION[ \t]+" )
-if( "${_def}" MATCHES
-"H5_VERSION[ \t]+\"([0-9]+\\.[0-9]+\\.[0-9]+)(-patch([0-9]+))?\"" )
-  set(HDF5_VERSION "${CMAKE_MATCH_1}" )
-  if( CMAKE_MATCH_3 )
-    set(HDF5_VERSION ${HDF5_VERSION}.${CMAKE_MATCH_3})
-  endif()
-endif()
-endif(_conf)
-# otherwise can pickup miniconda zlib
-get_filename_component(_hint ${HDF5_C_LIBRARY} DIRECTORY)
-if(NOT ZLIB_ROOT)
-  set(ZLIB_ROOT "${_hint}/..;${_hint}/../..;${pc_zlib_LIBRARY_DIRS};${pc_zlib_LIBDIR}")
-endif()
-if(NOT SZIP_ROOT)
-  set(SZIP_ROOT "${ZLIB_ROOT}")
-endif()
-
-if(_zlib)
-  find_package(ZLIB REQUIRED)
-
-  if(_szip)
-    # Szip even though not directly used because if system static links libhdf5 with szip,
-    # our builds will fail if we don't also link szip.
-    find_package(SZIP REQUIRED)
-    set(CMAKE_REQUIRED_LIBRARIES ${HDF5_Fortran_LIBRARIES} ${HDF5_C_LIBRARIES} SZIP::SZIP ZLIB::ZLIB ${CMAKE_DL_LIBS})
-  else()
-    set(CMAKE_REQUIRED_LIBRARIES ${HDF5_Fortran_LIBRARIES} ${HDF5_C_LIBRARIES} ZLIB::ZLIB ${CMAKE_DL_LIBS})
-  endif()
-else()
-  set(CMAKE_REQUIRED_LIBRARIES ${HDF5_Fortran_LIBRARIES} ${HDF5_C_LIBRARIES} ${CMAKE_DL_LIBS})
-endif()
-
-set(THREADS_PREFER_PTHREAD_FLAG true)
-find_package(Threads)
-if(Threads_FOUND)
-  list(APPEND CMAKE_REQUIRED_LIBRARIES Threads::Threads)
-endif()
-
+  detect_config()
 endif(HDF5_C_FOUND)
 
 # --- configure time checks

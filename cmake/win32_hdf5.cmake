@@ -1,3 +1,5 @@
+# NOTE: this isn't used anymore. I may delete in the future. I think it's better to just build your own HDF5 rather than use the shaky download for Windows.
+
 function(win32_hdf5_env)
 # Windows with HDF5 needs this interesting workaround of
 # copying HDF5 dlls to the CMAKE_BINARY_DIR.

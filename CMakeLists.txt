@@ -27,7 +27,7 @@ if(NOT HDF5_FOUND)
 endif()
 
 if(HDF5_VERSION VERSION_LESS 1.8.7)
-  message(STATUS "H5Fortran requires HDF5 >= 1.8.7")
+  message(WARNING "H5Fortran requires HDF5 >= 1.8.7")
 endif()
 
 # --- h5fortran library
@@ -54,7 +54,7 @@ endif()
 
 include(FeatureSummary)
 set_package_properties(Threads PROPERTIES DESCRIPTION "the system threads library")
-set_package_properties(HDF5 PROPERTIES URL "https://hdfgroup.org/" DESCRIPTION "fast, versatile file I/O format" TYPE REQUIRED)
+set_package_properties(HDF5 PROPERTIES URL "https://hdfgroup.org/" DESCRIPTION "versatile file format" TYPE REQUIRED)
 set_package_properties(ZLIB PROPERTIES URL "https://www.zlib.net/" DESCRIPTION "patent-free compression library")
 set_package_properties(SZIP PROPERTIES URL "http://www.compressconsult.com/szip/" DESCRIPTION "compression library")
 
