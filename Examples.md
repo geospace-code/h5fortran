@@ -26,6 +26,18 @@ call h5f%write('/value1', 123.)
 call h5f%finalize()
 ```
 
+## create soft links to actual variable
+
+HDF5 soft link variables: arbitrarily many soft-linked variable names can point to an actual variable, which need not yet exist.
+
+```fortran
+call h5f%write("/x", 42)
+call h5f%softlink("/x", "/y")
+call h5f%softlink("/x", "/z")
+```
+
+/z and /y are soft links to /x, which need not yet exist.
+
 ## ensure all files are flushed to disk at end of program
 
 If your program opens lots of HDF5 files and you're worried about being sure they're all flushed to disk, make this call near the very end of the program.

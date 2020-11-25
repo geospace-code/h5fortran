@@ -11,6 +11,9 @@ print *, 'OK: is_hdf5'
 call test_exist()
 print *, 'OK: exist'
 
+call test_softlink()
+print *, "OK: softlink"
+
 call test_scratch()
 print *, 'OK: scratch'
 
@@ -57,6 +60,35 @@ if (.not. h5exist(fn, '/x')) error stop 'x exists'
 if (h5exist(fn, '/foo')) error stop 'foo not exist'
 
 end subroutine test_exist
+
+
+subroutine test_softlink()
+type(hdf5_file) :: h
+character(*), parameter :: fn = 'soft.h5'
+integer :: y
+
+call h%initialize(fn, status="new")
+
+call h%write("/actual", 142)
+call h%softlink("/actual", "/additional")
+call h%read("/additional", y)
+
+if (.not.h%exist("/additional")) error stop "softlink not present"
+
+if (y /= 142) error stop "did not read softlink correctly"
+
+!> test dangling link
+
+call h%softlink("/not_here", "/not_yet")
+if (h%exist("/not_yet")) error stop "dangling softlink"
+
+call h%write("/not_here", 36)
+call h%read("/not_yet", y)
+if (y /= 36)  error stop "finalizing dangling link failed"
+
+call h%finalize()
+
+end subroutine test_softlink
 
 
 subroutine test_scratch()

@@ -51,7 +51,8 @@ procedure, public :: initialize => hdf_initialize, finalize => hdf_finalize, &
   ndims => hdf_get_ndims, &
   shape => hdf_get_shape, layout => hdf_get_layout, chunks => hdf_get_chunk, &
   exist => hdf_check_exist, exists => hdf_check_exist, &
-  is_contig => hdf_is_contig, is_chunked => hdf_is_chunked
+  is_contig => hdf_is_contig, is_chunked => hdf_is_chunked, &
+  softlink => create_softlink
 
 !> below are procedure that need generic mapping (type or rank agnostic)
 
@@ -123,6 +124,24 @@ integer(HID_T), intent(out), optional :: sid, did
 integer, intent(in), optional :: chunk_size(:), istart(:), iend(:), stride(:)
 !! keep istart, iend, stride for future slice shape check
 end subroutine hdf_create
+
+module subroutine hdf_open_group(self, gname, ierr)
+class(hdf5_file), intent(inout) :: self
+character(*), intent(in)        :: gname
+integer, intent(out), optional :: ierr
+end subroutine hdf_open_group
+
+module subroutine hdf_close_group(self, ierr)
+class(hdf5_file), intent(inout) :: self
+integer, intent(out), optional :: ierr
+end subroutine hdf_close_group
+
+module subroutine create_softlink(self, target, link)
+class(hdf5_file), intent(inout) :: self
+character(*), intent(in) :: target, &  !< target path to link
+                            link  !< soft link path to create
+end subroutine create_softlink
+
 end interface
 
 interface !< writer_lt.f90
@@ -397,19 +416,6 @@ class(*), intent(out) :: value(:,:,:,:,:,:,:)
 integer, intent(out), optional :: ierr
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
 end subroutine hdf_read_7d
-end interface
-
-interface
-module subroutine hdf_open_group(self, gname, ierr)
-class(hdf5_file), intent(inout) :: self
-character(*), intent(in)        :: gname
-integer, intent(out), optional :: ierr
-end subroutine hdf_open_group
-
-module subroutine hdf_close_group(self, ierr)
-class(hdf5_file), intent(inout) :: self
-integer, intent(out), optional :: ierr
-end subroutine hdf_close_group
 end interface
 
 

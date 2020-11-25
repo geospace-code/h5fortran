@@ -40,6 +40,7 @@ as well as **character (string)**.
 * **Array slicing on read and write** is supported, that is, reading or writing part of a disk HDF5 array into a variable matching the slice shape.
 * Mismatched datatypes are coerced as per standard Fortran rules. For example, reading a float HDF5 variable into an integer Fortran variable:  42.3 => 42
 * Zlib (deflate) compression / decompression -- h5fortran will work without Zlib, but will save/load uncompressed data only.
+* create HDF5 soft link variables--arbitrarily many soft-linked variable names can point to an actual variable, which need not yet exist.
 
 Tested on systems with HDF5 1.8, 1.10 and 1.12 including:
 

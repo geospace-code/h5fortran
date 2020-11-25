@@ -4,7 +4,8 @@ use hdf5, only: &
 h5screate_f, H5S_SCALAR_F, &
 h5dcreate_f, &
 h5pset_chunk_f, h5pset_deflate_f, h5pset_shuffle_f, h5pset_fletcher32_f, h5pcreate_f, H5P_DATASET_CREATE_F, h5pclose_f, &
-h5gopen_f
+h5gopen_f, &
+H5Lcreate_soft_f
 
 use H5LT, only: h5ltmake_dataset_string_f, h5ltpath_valid_f
 
@@ -107,6 +108,19 @@ if(present(sid)) sid = space_id
 if(present(did)) did = ds_id
 
 end procedure hdf_create
+
+
+module procedure create_softlink
+!! HDF5 soft link -- to variables in same file
+!! target need not exist (dangling link)
+!! linking to external files requires an external link (different function required)
+
+integer :: ierr
+
+call H5Lcreate_soft_f(target, self%lid, link, ierr)
+if (check(ierr, self%filename)) return
+
+end procedure create_softlink
 
 
 subroutine set_deflate(self, dims, pid, ierr, chunk_size)
