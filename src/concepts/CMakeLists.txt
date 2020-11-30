@@ -1,3 +1,10 @@
+add_executable(int64_write_read int64.f90)
+target_include_directories(int64_write_read
+  PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/include)  # for IBM XL
+target_link_libraries(int64_write_read PRIVATE HDF5::HDF5)
+set_target_properties(int64_write_read PROPERTIES Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include)
+add_test(NAME proto:int64_write_read COMMAND $<TARGET_FILE:int64_write_read>)
+
 
 add_executable(proto_file_image file_image.f90)
 target_include_directories(proto_file_image

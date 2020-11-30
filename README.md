@@ -35,6 +35,7 @@ Polymorphic API with read/write for types int32, real32, real64 with rank:
 * 1-D .. 7-D
 
 as well as **character (string)**.
+If you need int64, we have a working example for that: src/concepts/int64.f90 that can easily be put into the h5fortran API--just make a GitHub Issue.
 
 * HDF5 **attributes** are also supported for read/write with type character, int32, real32, real64.
 * **Array slicing on read and write** is supported, that is, reading or writing part of a disk HDF5 array into a variable matching the slice shape.

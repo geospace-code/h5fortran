@@ -1,3 +1,5 @@
+# add_subdirectory(concepts)
+
 
 if(WIN32)
   set(is_windows .true.)
