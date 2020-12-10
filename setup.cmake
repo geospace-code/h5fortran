@@ -8,7 +8,8 @@ set(_opts)
 # --- boilerplate follows
 message(STATUS "CMake ${CMAKE_VERSION}")
 if(CMAKE_VERSION VERSION_LESS 3.15)
-  message(FATAL_ERROR "Please update CMake >= 3.15")
+  message(FATAL_ERROR "Please update CMake >= 3.15.
+    Try 'pip install -U cmake' or https://cmake.org/download/")
 endif()
 
 # CTEST_CMAKE_GENERATOR must always be defined
@@ -98,7 +99,7 @@ else()
   message(STATUS "SKIP: ctest_test(): returncode: ${return_code}; CMake error code: ${cmake_err}")
 endif()
 
-ctest_submit()
+# ctest_submit()
 
 if(NOT (return_code EQUAL 0 AND Nerror EQUAL 0 AND cmake_err EQUAL 0 AND ctest_err EQUAL 0))
   message(FATAL_ERROR "Build and test failed.")
