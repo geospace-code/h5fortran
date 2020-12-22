@@ -41,8 +41,7 @@ if(NOT DEFINED CTEST_SITE)
 endif()
 
 # parallel test--use ctest_test(PARALLEL_LEVEL ${Ncpu} as setting CTEST_PARALLEL_LEVEL has no effect
-include(ProcessorCount)
-ProcessorCount(Ncpu)
+cmake_host_system_information(RESULT Ncpu QUERY NUMBER_OF_PHYSICAL_CORES)
 message(STATUS "${Ncpu} CPU cores detected")
 
 if(NOT DEFINED CTEST_BUILD_CONFIGURATION)
