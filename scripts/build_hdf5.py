@@ -18,12 +18,19 @@ import argparse
 import tempfile
 from pathlib import Path
 import urllib.request
-import tarfile
+import hashlib
+import urllib.error
+import socket
+import zipfile
+import json
+import sys
+
+if sys.version_info < (3, 6, 2):
+    raise RuntimeError("Python >= 3.6.2 required")
 
 # ========= user parameters ======================
 BUILDDIR = "build"
-HDF5_TAG = "1.10/master"
-
+JSON_FILE = Path(__file__).parents[1] / "cmake/h5fortran_libraries.json"
 # ========= end of user parameters ================
 
 
@@ -60,34 +67,34 @@ def cli():
         "workdir": Path(P.workdir).expanduser(),
     }
 
-    dirs["zlib"] = zlib(dirs, env=env)
+    urls = json.loads(JSON_FILE.read_text())
 
-    hdf5(dirs, env=env)
+    dirs["zlib"] = zlib(dirs, urls["zlib"], env=env)
+
+    hdf5(dirs, urls["hdf5"], env=env)
 
 
-def zlib(dirs: T.Dict[str, Path], env: T.Mapping[str, str]) -> Path:
-    zlib_name = "zlib-1.2.11"
-    zlib_ext = ".tar.gz"
-    zlib_url = "https://zlib.net/" + zlib_name + zlib_ext
-
-    name = "zlib"
+def zlib(
+    dirs: T.Dict[str, Path], urls: T.Dict[str, str], env: T.Mapping[str, str]
+) -> Path:
+    name = "zlib-1.2.11"
+    zlib_filename = urls["url"].split("/")[-1]
 
     install_dir = dirs["prefix"] / name
     source_dir = dirs["workdir"] / name
     build_dir = source_dir / BUILDDIR
 
-    zlib_archive = source_dir / (zlib_name + zlib_ext)
+    zlib_archive = dirs["workdir"] / zlib_filename
 
-    source_dir.mkdir(exist_ok=True)
-    if not zlib_archive.is_file():
-        urllib.request.urlretrieve(zlib_url, zlib_archive)
+    url_retrieve(urls["url"], zlib_archive, filehash=["sha1", urls["sha1"]])
 
-    with tarfile.open(zlib_archive) as z:
-        z.extractall(source_dir)
+    if not (source_dir / "CMakeLists.txt").is_file():
+        with zipfile.ZipFile(zlib_archive) as z:
+            z.extractall(dirs["workdir"])
 
     cmd0 = [
         "cmake",
-        f"-S{source_dir / zlib_name}",
+        f"-S{source_dir}",
         f"-B{build_dir}",
         f"-DCMAKE_INSTALL_PREFIX={install_dir}",
         "-DCMAKE_BUILD_TYPE=Release",
@@ -104,21 +111,37 @@ def zlib(dirs: T.Dict[str, Path], env: T.Mapping[str, str]) -> Path:
     return install_dir
 
 
-def hdf5(dirs: T.Dict[str, Path], env: T.Dict[str, str]):
+def hdf5(dirs: T.Dict[str, Path], urls: T.Dict[str, str], env: T.Dict[str, str]):
     """build and install HDF5
-    some systems have broken libz and so have trouble extracting tar.bz2 from Python.
-    To avoid this, we git clone the release instead.
+
+    Git works, but we use release for stability/download speed
     """
 
+    download_git = False
     use_cmake = True
+
     name = "hdf5"
-    install_dir = dirs["prefix"] / name
     source_dir = dirs["workdir"] / name
+
+    zlib_filename = "libzlibstatic.a" if os.name == "nt" else "libz.a"
+
+    if download_git:
+        git_download(source_dir, urls["url"], urls["tag"])
+    else:
+        url = urls["url"]
+        name += "-" + url.split("/")[-1].split(".")[0]
+
+        source_dir = source_dir.with_name(name)
+
+        archive = dirs["workdir"] / url.split("/")[-1]
+        url_retrieve(url, archive, filehash=["sha1", urls["sha1"]])
+
+        if not (source_dir / "CMakeLists.txt").is_file():
+            with zipfile.ZipFile(archive) as z:
+                z.extractall(dirs["workdir"])
+
+    install_dir = dirs["prefix"] / name
     build_dir = source_dir / BUILDDIR
-
-    hdf5_url = "https://github.com/HDFGroup/hdf5.git"
-    git_download(source_dir, hdf5_url, HDF5_TAG)
-
     env["ZLIB_ROOT"] = str(dirs["zlib"])
 
     if use_cmake or os.name == "nt":
@@ -137,7 +160,7 @@ def hdf5(dirs: T.Dict[str, Path], env: T.Dict[str, str]):
             "-DHDF5_BUILD_TOOLS:BOOL=false",
             "-DBUILD_TESTING:BOOL=false",
             "-DHDF5_BUILD_EXAMPLES:BOOL=false",
-            f"-DZLIB_LIBRARY:FILEPATH={dirs['zlib']}/lib/zlib.lib",
+            f"-DZLIB_LIBRARY:FILEPATH={dirs['zlib']}/lib/{zlib_filename}",
             f"-DZLIB_INCLUDE_DIR:PATH={dirs['zlib']}/include",
             "-DHDF5_ENABLE_Z_LIB_SUPPORT:BOOL=true",
             "-DZLIB_USE_EXTERNAL:BOOL=false",
@@ -201,6 +224,45 @@ def git_download(path: Path, repo: str, tag: str):
             )
         else:
             subprocess.check_call([GITEXE, "clone", repo, "--depth", "1", str(path)])
+
+
+def url_retrieve(
+    url: str, outfile: Path, filehash: T.Sequence[str] = None, overwrite: bool = False
+):
+    """
+    Parameters
+    ----------
+    url: str
+        URL to download from
+    outfile: pathlib.Path
+        output filepath (including name)
+    filehash: tuple of str, str
+        hash type (md5, sha1, etc.) and hash
+    overwrite: bool
+        overwrite if file exists
+    """
+
+    outfile = Path(outfile).expanduser().resolve()
+    if outfile.is_dir():
+        raise ValueError("Please specify full filepath, including filename")
+    # need .resolve() in case intermediate relative dir doesn't exist
+    if overwrite or not outfile.is_file():
+        outfile.parent.mkdir(parents=True, exist_ok=True)
+        print(f"{url} => {outfile}")
+        try:
+            urllib.request.urlretrieve(url, str(outfile))
+        except (socket.gaierror, urllib.error.URLError) as err:
+            raise ConnectionError(f"could not download {url} due to {err}")
+
+    if filehash and filehash[1]:
+        if not file_checksum(outfile, filehash[0], filehash[1]):
+            raise ValueError(f"Hash mismatch: {outfile}")
+
+
+def file_checksum(fn: Path, mode: str, filehash: str) -> bool:
+    h = hashlib.new(mode)
+    h.update(fn.read_bytes())
+    return h.hexdigest() == filehash
 
 
 def get_compilers(compiler_name: str, **kwargs) -> T.Mapping[str, str]:

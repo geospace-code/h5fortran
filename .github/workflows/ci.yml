@@ -38,6 +38,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - run: brew install gcc hdf5 ninja
+    - run: brew install gcc hdf5
 
     - run: ctest -S setup.cmake -VV

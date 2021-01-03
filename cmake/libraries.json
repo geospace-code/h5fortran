@@ -1,0 +1,4 @@
+{
+"zlib": {"url": "https://zlib.net/zlib1211.zip", "sha1": "bccd93ad3cee39c3d08eee68d45b3e11910299f2"},
+"hdf5": {"url": "https://github.com/HDFGroup/hdf5/archive/hdf5-1_10_7.zip", "sha1": "caae5aa9d5ef2a2c3f4c05830a8ccf4d0ac9ce88"}
+}

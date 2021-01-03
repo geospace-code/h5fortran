@@ -1,10 +1,5 @@
 name: ci_windows
 
-env:
-  FC: gfortran
-  CC: gcc
-  CXX: g++
-
 on:
   push:
     paths:
@@ -15,6 +10,7 @@ on:
 jobs:
 
   default:
+    # auto-builds HDF5 from source
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2

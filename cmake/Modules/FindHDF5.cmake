@@ -38,6 +38,12 @@ Targets
   HDF5 Imported Target
 #]=======================================================================]
 
+include(FeatureSummary)
+set_package_properties(HDF5 PROPERTIES
+URL "https://hdfgroup.org/"
+DESCRIPTION "versatile file format"
+PURPOSE "h5fortran is an object-oriented HDF5 API")
+
 function(detect_config)
 
 set(CMAKE_REQUIRED_INCLUDES ${HDF5_INCLUDE_DIR})

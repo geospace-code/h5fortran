@@ -11,8 +11,8 @@ set(_zlib_build ${PROJECT_BINARY_DIR}/ZLIBproj-prefix/src/ZLIBproj-build)
 set(_zlib_h ${PROJECT_BINARY_DIR}/ZLIBproj-prefix/src/ZLIBproj/zlib.h)
 
 ExternalProject_Add(ZLIBproj
-URL https://zlib.net/zlib1211.zip
-URL_HASH SHA1=bccd93ad3cee39c3d08eee68d45b3e11910299f2
+URL ${zlib_url}
+URL_HASH SHA1=${zlib_sha1}
 UPDATE_DISCONNECTED true
 CMAKE_ARGS -DCMAKE_BUILD_TYPE=Release
 BUILD_BYPRODUCTS ${_zlib_file}

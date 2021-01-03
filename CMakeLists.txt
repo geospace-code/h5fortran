@@ -6,7 +6,7 @@ find_c_fortran()
 
 project(h5fortran
   LANGUAGES C Fortran
-  VERSION 3.4.3
+  VERSION 3.4.4
   DESCRIPTION "thin, light object-oriented HDF5 Fortran interface"
   HOMEPAGE_URL https://github.com/geospace-code/h5fortran)
 
@@ -15,16 +15,21 @@ if(NOT DEFINED ${PROJECT_NAME}_BUILD_TESTING)
   set(${PROJECT_NAME}_BUILD_TESTING ${BUILD_TESTING})
 endif()
 
+option(hdf5_external "Build HDF5 library")
+
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
 
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/compilers.cmake)
+include(cmake/compilers.cmake)
+include(cmake/libraries.cmake)
 
 # --- find or build HDF5 library
 
-find_package(HDF5 COMPONENTS Fortran)
+if(NOT hdf5_external)
+  find_package(HDF5 COMPONENTS Fortran)
+endif()
 
-if(NOT HDF5_FOUND)
-  include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_hdf5.cmake)
+if(NOT HDF5_FOUND OR hdf5_external)
+  include(cmake/build_hdf5.cmake)
 endif()
 
 if(HDF5_VERSION VERSION_LESS 1.8.7)
@@ -49,16 +54,6 @@ if(${PROJECT_NAME}_BUILD_TESTING)
   add_subdirectory(src/tests)
 endif()
 
-if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
-  include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/install.cmake)
-endif()
+include(cmake/install.cmake)
 
-include(FeatureSummary)
-set_package_properties(Threads PROPERTIES DESCRIPTION "the system threads library")
-set_package_properties(HDF5 PROPERTIES URL "https://hdfgroup.org/" DESCRIPTION "versatile file format" TYPE REQUIRED)
-set_package_properties(ZLIB PROPERTIES URL "https://www.zlib.net/" DESCRIPTION "patent-free compression library")
-set_package_properties(SZIP PROPERTIES URL "http://www.compressconsult.com/szip/" DESCRIPTION "compression library")
-
-add_feature_info(AutoHDF5 hdf5_external "auto-build HDF5")
-
-feature_summary(WHAT ALL)
+include(cmake/summary.cmake)

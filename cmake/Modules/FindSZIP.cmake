@@ -29,6 +29,12 @@ Targets
   SZIP Imported Target
 #]=======================================================================]
 
+include(FeatureSummary)
+set_package_properties(SZIP PROPERTIES
+URL "http://www.compressconsult.com/szip/"
+DESCRIPTION "compression library"
+PURPOSE "Some system HDF5 libraries have dynamic links to SZIP")
+
 find_library(SZIP_LIBRARY NAMES szip sz)
 
 find_path(SZIP_INCLUDE_DIR NAMES szlib.h)

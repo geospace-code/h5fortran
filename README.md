@@ -72,6 +72,13 @@ for more details see [Install.md](./Install.md)
 
 h5fortran will automatically build the HDF5 library if needed.
 This takes a minute or two on a typical laptop.
+If you wish to force building the HDF5 library:
+
+```sh
+cmake -B build -Dhdf5_external=true
+
+cmake --build build --parallel
+```
 
 ## Usage
 

@@ -2,6 +2,9 @@
 # note: the use of "lib" vs. CMAKE_STATIC_LIBRARY_PREFIX is deliberate based on the particulars of these libraries
 # across Intel Fortran on Windows vs. Gfortran on Windows vs. Linux.
 
+set(HDF5_VERSION 1.10.7)
+# for user information, not used by ExternalProject itself
+
 include(ExternalProject)
 
 set(HDF5_LIBRARIES)
@@ -22,6 +25,7 @@ file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/HDF5proj-prefix/src/HDF5proj-build/bin
 set(zlib_root -DHDF5_ENABLE_Z_LIB_SUPPORT:BOOL=ON -DZLIB_USE_EXTERNAL:BOOL=OFF)
 if(TARGET ZLIB::ZLIB)
   add_custom_target(ZLIBproj)
+  # dummy target
 else()
   include(${CMAKE_CURRENT_LIST_DIR}/zlib_setup.cmake)
 endif()
@@ -31,24 +35,21 @@ endif()
 
 
 if(NOT HDF5_FOUND)
-  set(HDF5_VERSION 1.10.7)
-  # for user information, not used by ExternalProject itself
-
   ExternalProject_Add(HDF5proj
-  GIT_REPOSITORY https://github.com/HDFGroup/hdf5.git
-  GIT_TAG 1.10/master
-  GIT_SHALLOW true
-  # URL https://github.com/HDFGroup/hdf5/archive/hdf5-1_10_7.tar.gz
+  # GIT_REPOSITORY ${hdf5_url}
+  # GIT_TAG ${hdf5_tag}
+  # GIT_SHALLOW true
+  URL ${hdf5_url}
+  URL_HASH SHA1=${hdf5_sha1}
   UPDATE_DISCONNECTED true
   CMAKE_ARGS ${zlib_root} -DHDF5_GENERATE_HEADERS:BOOL=false -DHDF5_DISABLE_COMPILER_WARNINGS:BOOL=true -DBUILD_SHARED_LIBS:BOOL=false -DCMAKE_BUILD_TYPE=Release -DHDF5_BUILD_FORTRAN:BOOL=true -DHDF5_BUILD_CPP_LIB:BOOL=false -DHDF5_BUILD_TOOLS:BOOL=false -DBUILD_TESTING:BOOL=false -DHDF5_BUILD_EXAMPLES:BOOL=false
   BUILD_BYPRODUCTS ${HDF5_LIBRARIES}
   INSTALL_COMMAND ""
+  DEPENDS ZLIBproj
   )
-
-  add_dependencies(HDF5proj ZLIBproj)
 endif()
 
-# this GLOBAL is required to be visible via FetchContent
+# this GLOBAL is required to be visible via other project's FetchContent of h5fortran
 add_library(HDF5::HDF5 INTERFACE IMPORTED GLOBAL)
 target_include_directories(HDF5::HDF5 INTERFACE "${HDF5_INCLUDE_DIRS}")
 target_link_libraries(HDF5::HDF5 INTERFACE "${HDF5_LIBRARIES}")
