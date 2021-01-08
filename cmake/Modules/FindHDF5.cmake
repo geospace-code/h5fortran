@@ -92,16 +92,21 @@ if(_zlib)
   find_package(ZLIB REQUIRED)
 
   if(_szip)
-    # Szip even though not directly used because if system static links libhdf5 with szip,
+    # Szip even though not used by h5fortran.
+    # If system HDF5 dynamically links libhdf5 with szip,
     # our builds will fail if we don't also link szip.
-    find_package(SZIP REQUIRED)
-    set(CMAKE_REQUIRED_LIBRARIES ${HDF5_Fortran_LIBRARIES} ${HDF5_C_LIBRARIES} SZIP::SZIP ZLIB::ZLIB ${CMAKE_DL_LIBS})
-  else()
-    set(CMAKE_REQUIRED_LIBRARIES ${HDF5_Fortran_LIBRARIES} ${HDF5_C_LIBRARIES} ZLIB::ZLIB ${CMAKE_DL_LIBS})
+    # however, we don't require SZIP for this case as other HDF5 libraries may statically
+    # link SZIP.
+    find_package(SZIP)
+    if(SZIP_FOUND)
+      list(APPEND CMAKE_REQUIRED_LIBRARIES SZIP::SZIP)
+    endif()
   endif()
-else()
-  set(CMAKE_REQUIRED_LIBRARIES ${HDF5_Fortran_LIBRARIES} ${HDF5_C_LIBRARIES} ${CMAKE_DL_LIBS})
+
+  list(APPEND CMAKE_REQUIRED_LIBRARIES ZLIB::ZLIB)
 endif()
+
+list(APPEND CMAKE_REQUIRED_LIBRARIES ${CMAKE_DL_LIBS})
 
 set(THREADS_PREFER_PTHREAD_FLAG true)
 find_package(Threads)
@@ -116,11 +121,12 @@ endfunction(detect_config)
 
 # === main program
 
+set(CMAKE_REQUIRED_LIBRARIES)
 set(_lsuf hdf5 hdf5/serial)
 set(_psuf static ${_lsuf})
 
 # we don't use pkg-config directly because some distros pkg-config for HDF5 is broken
-# however so far at least we've see the paths are often correct
+# however at least the paths are often correct
 
 find_package(PkgConfig)
 if(PkgConfig_FOUND)
@@ -169,6 +175,7 @@ if(Fortran IN_LIST HDF5_FIND_COMPONENTS)
     DOC "HDF5 Fortran modules")
 
   if(HDF5_Fortran_HL_LIBRARY AND HDF5_Fortran_LIBRARY AND HDF5_Fortran_INCLUDE_DIR)
+    list(APPEND CMAKE_REQUIRED_LIBRARIES ${HDF5_Fortran_LIBRARIES})
     set(HDF5_Fortran_FOUND true)
     set(HDF5_HL_FOUND true)
   endif()
@@ -219,6 +226,7 @@ find_path(HDF5_INCLUDE_DIR
   DOC "HDF5 C header")
 
 if(HDF5_C_HL_LIBRARY AND HDF5_C_LIBRARY AND HDF5_INCLUDE_DIR)
+  list(APPEND CMAKE_REQUIRED_LIBRARIES ${HDF5_C_LIBRARIES})
   set(HDF5_C_FOUND true)
   set(HDF5_HL_FOUND true)
 endif()
@@ -279,12 +287,9 @@ if(HDF5_Fortran_FOUND AND NOT HDF5_Fortran_links)
   set(HDF5_links false)
 endif()
 
-set(CMAKE_REQUIRED_INCLUDES)
-set(CMAKE_REQUIRED_LIBRARIES)
-
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(HDF5
-  REQUIRED_VARS HDF5_links
+  REQUIRED_VARS HDF5_C_LIBRARIES HDF5_links
   VERSION_VAR HDF5_VERSION
   HANDLE_COMPONENTS)
 
