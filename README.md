@@ -80,6 +80,16 @@ cmake -B build -Dhdf5_external=true
 cmake --build build --parallel
 ```
 
+NOTE: If using Intel oneAPI on Windows, ensure that environment variable CC=icl as set manually in the command prompt:
+
+```posh
+set CC=icl
+set FC=ifort
+```
+
+This is necessary to workaround techniques used by HDF5 CMake files that don't pickup the CMake `set(ENV{CC})`.
+Otherwise, HDF5 build failures may result due to defaulting to icl-clang.
+
 ## Usage
 
 The simplest [example](./Examples/) h5fortran usage is like:
