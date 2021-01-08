@@ -30,7 +30,7 @@ if sys.version_info < (3, 6, 2):
 
 # ========= user parameters ======================
 BUILDDIR = "build"
-JSON_FILE = Path(__file__).parents[1] / "cmake/h5fortran_libraries.json"
+JSON_FILE = Path(__file__).parents[1] / "cmake/libraries.json"
 # ========= end of user parameters ================
 
 
@@ -123,7 +123,13 @@ def hdf5(dirs: T.Dict[str, Path], urls: T.Dict[str, str], env: T.Dict[str, str])
     name = "hdf5"
     source_dir = dirs["workdir"] / name
 
-    zlib_filename = "libzlibstatic.a" if os.name == "nt" else "libz.a"
+    if os.name == "nt":
+        if Path(env["CC"]).stem == "icl":
+            zlib_filename = "zlibstatic.lib"
+        else:
+            zlib_filename = "libzlibstatic.a"
+    else:
+        zlib_filename = "libz.a"
 
     if download_git:
         git_download(source_dir, urls["url"], urls["tag"])
