@@ -20,8 +20,10 @@ jobs:
         sudo apt update -yq
         sudo apt install -yq --no-install-recommends gfortran libhdf5-dev
 
-    - name: build and test h5fortran
-      run: ctest -S setup.cmake -VV
+    - run: cmake -B build
+    - run: cmake --build build
+    - run: ctest --output-on-failure
+      working-directory: build
 
     - name: build Examples
       run: |
@@ -38,6 +40,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - run: brew install gcc hdf5
+    - run: brew install hdf5
 
-    - run: ctest -S setup.cmake -VV
+    - run: cmake -B build
+    - run: cmake --build build
+    - run: ctest -V
+      working-directory: build
