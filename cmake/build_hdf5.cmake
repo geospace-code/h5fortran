@@ -9,22 +9,22 @@ include(ExternalProject)
 
 set(HDF5_LIBRARIES)
 foreach(_name hdf5_hl_fortran hdf5_hl_f90cstub hdf5_fortran hdf5_f90cstub hdf5_hl hdf5)
-  list(APPEND HDF5_LIBRARIES ${PROJECT_BINARY_DIR}/HDF5proj-prefix/src/HDF5proj-build/bin/lib${_name}${CMAKE_STATIC_LIBRARY_SUFFIX})
+  list(APPEND HDF5_LIBRARIES ${PROJECT_BINARY_DIR}/HDF5-prefix/src/HDF5-build/bin/lib${_name}${CMAKE_STATIC_LIBRARY_SUFFIX})
 endforeach()
 
 # NOTE: if the HDF5 CMake is allowed to rebuild, it will fail and this directory disappears (HDF5 1.12.0)
-set(HDF5_INCLUDE_DIRS ${PROJECT_BINARY_DIR}/HDF5proj-prefix/src/HDF5proj-build/bin/static)
+set(HDF5_INCLUDE_DIRS ${PROJECT_BINARY_DIR}/HDF5-prefix/src/HDF5-build/bin/static)
 
-if(EXISTS ${PROJECT_BINARY_DIR}/HDF5proj-prefix/src/HDF5proj-build/bin/libhdf5_hl_fortran${CMAKE_STATIC_LIBRARY_SUFFIX})
+if(EXISTS ${PROJECT_BINARY_DIR}/HDF5-prefix/src/HDF5-build/bin/libhdf5_hl_fortran${CMAKE_STATIC_LIBRARY_SUFFIX})
   set(HDF5_FOUND true)
 endif()
 
-file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/HDF5proj-prefix/src/HDF5proj-build/bin/static)  # avoid race condition
+file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/HDF5-prefix/src/HDF5-build/bin/static)  # avoid race condition
 
 # --- Zlib
 set(zlib_root -DHDF5_ENABLE_Z_LIB_SUPPORT:BOOL=ON -DZLIB_USE_EXTERNAL:BOOL=OFF)
 if(TARGET ZLIB::ZLIB)
-  add_custom_target(ZLIBproj)
+  add_custom_target(ZLIB)
   # dummy target
 else()
   include(${CMAKE_CURRENT_LIST_DIR}/zlib_setup.cmake)
@@ -35,17 +35,14 @@ endif()
 
 
 if(NOT HDF5_FOUND)
-  ExternalProject_Add(HDF5proj
-  # GIT_REPOSITORY ${hdf5_url}
-  # GIT_TAG ${hdf5_tag}
-  # GIT_SHALLOW true
+  ExternalProject_Add(HDF5
   URL ${hdf5_url}
   URL_HASH SHA1=${hdf5_sha1}
   UPDATE_DISCONNECTED true
   CMAKE_ARGS ${zlib_root} -DHDF5_GENERATE_HEADERS:BOOL=false -DHDF5_DISABLE_COMPILER_WARNINGS:BOOL=true -DBUILD_SHARED_LIBS:BOOL=false -DCMAKE_BUILD_TYPE=Release -DHDF5_BUILD_FORTRAN:BOOL=true -DHDF5_BUILD_CPP_LIB:BOOL=false -DHDF5_BUILD_TOOLS:BOOL=false -DBUILD_TESTING:BOOL=false -DHDF5_BUILD_EXAMPLES:BOOL=false
   BUILD_BYPRODUCTS ${HDF5_LIBRARIES}
   INSTALL_COMMAND ""
-  DEPENDS ZLIBproj
+  DEPENDS ZLIB
   )
 endif()
 
@@ -55,7 +52,7 @@ target_include_directories(HDF5::HDF5 INTERFACE "${HDF5_INCLUDE_DIRS}")
 target_link_libraries(HDF5::HDF5 INTERFACE "${HDF5_LIBRARIES}")
 
 if(NOT HDF5_FOUND)
-  add_dependencies(HDF5::HDF5 HDF5proj)
+  add_dependencies(HDF5::HDF5 HDF5)
 endif()
 
 # --- external deps
