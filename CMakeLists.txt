@@ -6,7 +6,7 @@ find_c_fortran()
 
 project(h5fortran
   LANGUAGES C Fortran
-  VERSION 3.4.5
+  VERSION 3.4.6
   DESCRIPTION "thin, light object-oriented HDF5 Fortran interface"
   HOMEPAGE_URL https://github.com/geospace-code/h5fortran)
 
@@ -15,10 +15,9 @@ if(NOT DEFINED ${PROJECT_NAME}_BUILD_TESTING)
   set(${PROJECT_NAME}_BUILD_TESTING ${BUILD_TESTING})
 endif()
 
-option(hdf5_external "Build HDF5 library")
-
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
 
+include(cmake/options.cmake)
 include(cmake/compilers.cmake)
 include(cmake/libraries.cmake)
 
