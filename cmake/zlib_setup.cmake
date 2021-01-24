@@ -1,5 +1,7 @@
 # build Zlib to ensure compatibility. This is a common practice for HDF5.
 
+include(ExternalProject)
+
 if(WIN32)
   set(ZLIB_name ${CMAKE_STATIC_LIBRARY_PREFIX}zlibstatic${CMAKE_STATIC_LIBRARY_SUFFIX})
 else()
