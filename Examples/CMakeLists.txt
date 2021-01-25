@@ -17,7 +17,7 @@ else()
   include(FetchContent)
   FetchContent_Declare(h5fortran_proj
     GIT_REPOSITORY https://github.com/geospace-code/h5fortran.git
-    GIT_TAG main)
+    GIT_TAG v3.4.6)
   FetchContent_MakeAvailable(h5fortran_proj)
 endif()
 
