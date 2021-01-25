@@ -18,29 +18,27 @@ endif()
 
 function(find_fortran)
 
-set(_fc)
-if(DEFINED FC)
-  set(_fc ${FC})
-elseif(DEFINED ENV{FC})
-  set(_fc $ENV{FC})
+if(NOT DEFINED FC AND DEFINED ENV{FC})
+  set(FC $ENV{FC})
 endif()
 
-if(_fc)
-  get_filename_component(_dir ${_fc} DIRECTORY)
+if(FC)
+  get_filename_component(_dir ${FC} DIRECTORY)
 endif()
 # determine if the user is intending to use Intel oneAPI or default Gfortran
 # Need to check ifort because MKLROOT may be defined for
 # use of oneMKL with Gfortran on MacOS and Linux.
-if(DEFINED ENV{MKLROOT} OR _fc MATCHES ".*ifort")
+if(DEFINED ENV{MKLROOT} OR FC MATCHES ".*ifort")
   find_program(FC
     NAMES ifort
-    PATHS ${_dir})
+    HINTS ${_dir})
 endif()
 
 find_program(FC
   NAMES gfortran gfortran-12 gfortran-11 gfortran-10 gfortran-9 gfortran-8 gfortran-7
   NAMES_PER_DIR
-  PATHS ${_dir} ${_paths})
+  HINTS ${_dir}
+  PATHS ${_paths})
 
 if(FC)
   set(ENV{FC} ${FC})
@@ -52,17 +50,18 @@ endfunction(find_fortran)
 
 function(find_c)
 
-set(_cc)
-if(DEFINED CC)
-  set(_cc ${CC})
-elseif(DEFINED ENV{CC})
-  set(_cc $ENV{CC})
+if(NOT DEFINED CC)
+  if(DEFINED ENV{CC})
+    set(CC $ENV{CC})
+  elseif(NOT DEFINED FC AND DEFINED ENV{FC})
+    set(FC $ENV{FC})
+  endif()
 endif()
 
-if(NOT _cc)
+if(NOT DEFINED CC)
   # remember, Apple has "/usr/bin/gcc" which is really clang
   # the technique below is NECESSARY to work on Mac and not find the wrong GCC
-  if(FC)
+  if(DEFINED FC)
     get_filename_component(_dir ${FC} DIRECTORY)
   endif()
   # use same compiler for C and Fortran, which CMake might not do itself
@@ -73,15 +72,25 @@ if(NOT _cc)
       set(_cc icc)
     endif()
   elseif(FC MATCHES ".*gfortran")
-    set(_cc gcc-12 gcc-11 gcc-10 gcc-9 gcc-8 gcc-7 gcc)  # generic last to avoid AppleClang
+    # get same GCC version as Gfortran
+    execute_process(COMMAND ${FC} -dumpversion
+      OUTPUT_VARIABLE _v
+      RESULT_VARIABLE _err)
+    if(NOT _err EQUAL 0)
+      return()
+    endif()
+    string(REGEX MATCH "^([0-9]+)" _v ${_v})
+    if(_v)
+      set(_cc gcc-${_v})
+    else()
+      set(_cc gcc-12 gcc-11 gcc-10 gcc-9 gcc-8 gcc-7 gcc)  # generic last to avoid AppleClang
+    endif()
   endif()
 endif()
 
 if(NOT _cc)
   return()
 endif()
-
-# FIXME: search for gcc- with same suffix as gfortran-
 
 find_program(CC
   NAMES ${_cc}
