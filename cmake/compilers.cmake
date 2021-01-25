@@ -1,5 +1,5 @@
-if(NOT CMAKE_Fortran_COMPILER_ID STREQUAL ${CMAKE_C_COMPILER_ID})
-message(FATAL_ERROR "C compiler ${CMAKE_C_COMPILER_ID} does not match Fortran compiler ${CMAKE_Fortran_COMPILER_ID}.
+if(NOT (CMAKE_Fortran_COMPILER_ID STREQUAL ${CMAKE_C_COMPILER_ID} AND CMAKE_Fortran_COMPILER_VERSION VERSION_EQUAL ${CMAKE_C_COMPILER_VERSION}))
+message(FATAL_ERROR "C compiler ${CMAKE_C_COMPILER_ID} ${CMAKE_C_COMPILER_VERSION} != Fortran compiler ${CMAKE_Fortran_COMPILER_ID} ${CMAKE_Fortran_COMPILER_VERSION}.
 Set environment variables CC and FC to control compiler selection in general.")
 endif()
 
