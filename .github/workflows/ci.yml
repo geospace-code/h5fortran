@@ -6,7 +6,7 @@ on:
       - "**/CMakeLists.txt"
       - "**.cmake"
       - "**.f90"
-      - ".github/workflows/ci_linux.yml"
+      - ".github/workflows/ci.yml"
 
 jobs:
 
