@@ -136,7 +136,7 @@ Meson &ge; 0.53.0 has enhanced HDF5 dependency finding and is recommended.
 
 ### h5fortran Meson subproject
 
-To include h5fortran as a Meson subproject, in the master project meson.build (that uses h5fortran) have like:
+To include h5fortran as a Meson subproject, in the main project meson.build (that uses h5fortran) have like:
 
 ```meson
 hdf5_proj = subproject('h5fortran')
@@ -145,7 +145,7 @@ hdf5_interface = hdf5_proj.get_variable('hdf5_interface')
 my_exe = executable('myexe', 'main.f90', dependencies: hdf5_interface)
 ```
 
-and have a file in the master project `subprojects/h5fortran.wrap` containing:
+and have a file in the main project `subprojects/h5fortran.wrap` containing:
 
 ```ini
 [wrap-git]
