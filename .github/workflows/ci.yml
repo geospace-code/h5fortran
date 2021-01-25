@@ -21,17 +21,17 @@ jobs:
         sudo apt install -yq --no-install-recommends gfortran libhdf5-dev
 
     - run: cmake -B build
-    - run: cmake --build build
-    - run: ctest --output-on-failure
+    - run: cmake --build build --parallel
+    - run: ctest --parallel 2 --output-on-failure
       working-directory: build
 
     - name: build Examples
       run: |
         cmake -B Examples/build -S Examples
-        cmake --build Examples/build
+        cmake --build Examples/build --parallel
 
     - name: test examples
-      run: ctest -V
+      run: ctest --parallel 2 --output-on-failure
       working-directory: Examples/build
 
   mac:
@@ -43,6 +43,7 @@ jobs:
     - run: brew install hdf5
 
     - run: cmake -B build
-    - run: cmake --build build
-    - run: ctest -V
+    - run: cmake --build build --parallel
+
+    - run: ctest --parallel 2 --output-on-failure
       working-directory: build
