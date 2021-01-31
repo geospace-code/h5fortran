@@ -256,10 +256,10 @@ if (i /= 0) error stop
 end")
 check_fortran_source_compiles(${_code} HDF5_Fortran_links SRC_EXT f90)
 
-if(HDF5_Fortran_links)
+if(HDF5_Fortran_links AND CMAKE_VERSION VERSION_GREATER_EQUAL 3.14)
   include(CheckFortranSourceRuns)
   check_fortran_source_runs(${_code} HDF5_runs SRC_EXT f90)
-endif(HDF5_Fortran_links)
+endif()
 
 endif(HDF5_Fortran_FOUND)
 

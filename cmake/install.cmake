@@ -6,7 +6,8 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/h5fortran.mod
 # --- BOILERPLATE: install / packaging
 
 install(TARGETS ${PROJECT_NAME}
-  EXPORT ${PROJECT_NAME}Targets)
+  EXPORT ${PROJECT_NAME}Targets
+  ARCHIVE DESTINATION lib)
 
 include(CMakePackageConfigHelpers)
 
