@@ -1,0 +1,97 @@
+{
+  "version": 1,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 19,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "default",
+      "hidden": true,
+      "binaryDir": "${sourceDir}/build",
+      "generator": "Ninja"
+    },
+    {
+      "name": "build",
+      "inherits": "default",
+      "displayName": "build HDF5 library",
+      "description": "Build HDF5 libraries without searching for existing libraries.",
+      "cacheVariables": {
+        "hdf5_external": "on"
+      }
+    },
+    {
+      "name": "mac",
+      "inherits": "default",
+      "displayName": "MacOS GCC",
+      "description": "MacOS: specify GCC version to avoid Clang /usr/bin/gcc",
+      "environment": {
+        "CC": "gcc-10",
+        "FC": "gfortran-10",
+        "CXX": "g++-10"
+      }
+    },
+    {
+      "name": "buildmac",
+      "inherits": ["mac", "build"],
+      "displayName": "build HDF5 library: MacOS",
+      "description": "build HDF5 library with MacOS, specifying GCC version to avoid Clang /usr/bin/gcc"
+    },
+    {
+      "name": "make",
+      "inherits": "build",
+      "displayName": "build HDF5 library: Linux/MacOS",
+      "description": "build HDF5 library with GNU Make on Linux/MacOS",
+      "generator": "Unix Makefiles"
+    },
+    {
+      "name": "makemac",
+      "inherits": ["mac", "build"],
+      "displayName": "build HDF5 library: MacOS",
+      "description": "build HDF5 library with GNU Make on MacOS",
+      "generator": "Unix Makefiles"
+    },
+    {
+      "name": "makewin",
+      "inherits": "build",
+      "displayName": "build HDF5 library: Windows",
+      "description": "build HDF5 library with GNU Make on Windows",
+      "generator": "MinGW Makefiles"
+    },
+    {
+      "name": "intel",
+      "inherits": "build",
+      "displayName": "Intel oneAPI compiler: Linux/MacOS",
+      "description": "build with Intel oneAPI on Linux/MacOS",
+      "environment": {
+        "CC": "icc",
+        "FC": "ifort",
+        "CXX": "icpc",
+        "LAPACK_ROOT": "$env{MKLROOT}",
+        "SCLAPACK_ROOT": "$env{MKLROOT}"
+      }
+    },
+    {
+      "name": "intelwin",
+      "inherits": ["intel", "build"],
+      "displayName": "Intel oneAPI compiler: Windows",
+      "description": "build with Intel oneAPI on Windows",
+      "environment": {
+        "CC": "icl",
+        "CXX": "icl"
+      }
+    },
+    {
+      "name": "intelnext",
+      "inherits": ["intel", "build"],
+      "displayName": "FUTURE: Intel oneAPI LLVM",
+      "description": "FUTURE: build with Intel oneAPI NextGen LLVM (waiting on Intel official release)",
+      "environment": {
+        "CC": "icx",
+        "FC": "ifx",
+        "CXX": "icx"
+      }
+    }
+  ]
+}
