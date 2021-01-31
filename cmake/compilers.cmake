@@ -1,5 +1,5 @@
 if(NOT (CMAKE_Fortran_COMPILER_ID STREQUAL ${CMAKE_C_COMPILER_ID} AND CMAKE_Fortran_COMPILER_VERSION VERSION_EQUAL ${CMAKE_C_COMPILER_VERSION}))
-message(FATAL_ERROR "C compiler ${CMAKE_C_COMPILER_ID} ${CMAKE_C_COMPILER_VERSION} != Fortran compiler ${CMAKE_Fortran_COMPILER_ID} ${CMAKE_Fortran_COMPILER_VERSION}.
+message(WARNING "C compiler ${CMAKE_C_COMPILER_ID} ${CMAKE_C_COMPILER_VERSION} != Fortran compiler ${CMAKE_Fortran_COMPILER_ID} ${CMAKE_Fortran_COMPILER_VERSION}.
 Set environment variables CC and FC to control compiler selection in general.")
 endif()
 
@@ -7,11 +7,11 @@ include(CheckFortranCompilerFlag)
 
 if(CMAKE_Fortran_COMPILER_ID STREQUAL Intel)
   if(WIN32)
-    add_compile_options(/arch:native /Qdiag-error-limit:3)
+    add_compile_options(/Qdiag-error-limit:3)
     string(APPEND CMAKE_Fortran_FLAGS " /stand:f18 /traceback /warn /heap-arrays")
     string(APPEND CMAKE_Fortran_FLAGS_DEBUG " /check:bounds /debug:all")
   else()
-    add_compile_options(-march=native -diag-error-limit=3)
+    add_compile_options(-diag-error-limit=3)
     string(APPEND CMAKE_Fortran_FLAGS " -stand f18 -traceback -warn -heap-arrays")
     string(APPEND CMAKE_Fortran_FLAGS_DEBUG " -check all -debug extended")
   endif()
@@ -20,8 +20,8 @@ elseif(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
   string(APPEND CMAKE_Fortran_FLAGS " -fimplicit-none")
   string(APPEND CMAKE_Fortran_FLAGS_DEBUG " -fcheck=all -Werror=array-bounds")
 
-  check_fortran_compiler_flag(-std=f2018 f18flag)
-  if(f18flag)
+  check_fortran_compiler_flag(-std=f2018 f2018flag)
+  if(f2018flag)
     string(APPEND CMAKE_Fortran_FLAGS " -std=f2018")
   endif()
 
@@ -32,10 +32,6 @@ elseif(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
     # avoid spurious warning on intrinsic :: rank
     string(APPEND CMAKE_Fortran_FLAGS " -Wno-surprising")
   endif()
-elseif(CMAKE_Fortran_COMPILER_ID STREQUAL PGI)
-  string(APPEND CMAKE_Fortran_FLAGS " -C -Mdclchk")
-elseif(CMAKE_Fortran_COMPILER_ID STREQUAL Flang)
-  string(APPEND CMAKE_Fortran_FLAGS " -W")
 elseif(CMAKE_Fortran_COMPILER_ID STREQUAL NAG)
   string(APPEND CMAKE_Fortran_FLAGS " -f2018 -u -C=all")
 endif()
