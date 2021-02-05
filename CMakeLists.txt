@@ -6,7 +6,7 @@ find_c_fortran()
 
 project(h5fortran
   LANGUAGES C Fortran
-  VERSION 3.4.8.1
+  VERSION 3.4.9
   DESCRIPTION "thin, light object-oriented HDF5 Fortran interface"
   HOMEPAGE_URL https://github.com/geospace-code/h5fortran)
 
