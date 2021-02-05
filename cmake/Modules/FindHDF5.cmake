@@ -44,7 +44,16 @@ URL "https://hdfgroup.org/"
 DESCRIPTION "versatile file format"
 PURPOSE "h5fortran is an object-oriented HDF5 API")
 
+
 function(detect_config)
+
+if(Fortran IN_LIST HDF5_FIND_COMPONENTS AND NOT HDF5_Fortran_FOUND)
+  return()
+endif()
+
+if(CXX IN_LIST HDF5_FIND_COMPONENTS AND NOT HDF5_CXX_FOUND)
+  return()
+endif()
 
 set(CMAKE_REQUIRED_INCLUDES ${HDF5_INCLUDE_DIR})
 
@@ -77,6 +86,10 @@ if( "${_def}" MATCHES
   endif()
 
   set(HDF5_VERSION ${HDF5_VERSION} PARENT_SCOPE)
+endif()
+
+if(PkgConfig_FOUND)
+  pkg_search_module(pc_zlib zlib)
 endif()
 
 # otherwise can pickup miniconda zlib
@@ -127,11 +140,9 @@ set(_psuf static ${_lsuf})
 
 # we don't use pkg-config directly because some distros pkg-config for HDF5 is broken
 # however at least the paths are often correct
-
 find_package(PkgConfig)
 if(PkgConfig_FOUND)
   pkg_search_module(pc_hdf5 hdf5 hdf5-serial)
-  pkg_search_module(pc_zlib zlib)
 endif()
 
 if(Fortran IN_LIST HDF5_FIND_COMPONENTS)

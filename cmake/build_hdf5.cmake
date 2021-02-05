@@ -21,13 +21,8 @@ set(HDF5_INCLUDE_DIRS ${HDF5_ROOT}/include)
 # --- Zlib
 set(zlib_root -DHDF5_ENABLE_Z_LIB_SUPPORT:BOOL=ON -DZLIB_USE_EXTERNAL:BOOL=OFF)
 
-if(TARGET ZLIB::ZLIB)
-  get_property(ZLIB_ROOT TARGET ZLIB::ZLIB PROPERTY INTERFACE_INCLUDE_DIRECTORIES)
-  list(APPEND zlib_root -DZLIB_ROOT:PATH=${ZLIB_ROOT} -DZLIB_LIBRARY:FILEPATH=${ZLIB_LIBRARIES} -DZLIB_INCLUDE_DIR:PATH=${ZLIB_INCLUDE_DIRS})
-  add_custom_target(ZLIB)  # dummy
-else()
-  include(${CMAKE_CURRENT_LIST_DIR}/zlib_setup.cmake)
-endif()
+include(${CMAKE_CURRENT_LIST_DIR}/zlib_setup.cmake)
+
 # --- HDF5
 # https://forum.hdfgroup.org/t/issues-when-using-hdf5-as-a-git-submodule-and-using-cmake-with-add-subdirectory/7189/2
 
