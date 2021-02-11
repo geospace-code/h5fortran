@@ -8,6 +8,9 @@ on:
       - "**/CMakeLists.txt"
       - "**.cmake"
       - ".github/workflows/ci_windows.yml"
+  release:
+    types: [published]
+
 
 jobs:
 
@@ -52,3 +55,27 @@ jobs:
     - run: cmake --build Examples/build --parallel
     - run: ctest --parallel 2 --output-on-failure
       working-directory: Examples/build
+
+    - name: create package
+      run: cpack --config build/CPackConfig.cmake
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1
+      with:
+        name: binary-archive
+        path: build/package
+
+    - name: get version
+      id: get_version
+      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\/v/}
+
+    - name: Upload release asset
+      if: github.event.action == 'published'
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: build/package/h5fortran-${{ steps.get_version.outputs.VERSION }}-win64.zip
+        asset_name:  h5fortran-${{ steps.get_version.outputs.VERSION }}-win64.zip
+        asset_content_type: application/zip
