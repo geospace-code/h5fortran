@@ -6,20 +6,21 @@ find_c_fortran()
 
 project(h5fortranExample
 LANGUAGES C CXX Fortran)
-enable_testing()
+
+include(CTest)
+
+list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/../cmake/Modules)
 
 # see if h5fortran is installed; build h5fortran if not found
 find_package(h5fortran CONFIG)
 
-if(h5fortran_FOUND)
-  include(${h5fortran_DIR}/h5fortranTargets.cmake)
-else()
-  include(FetchContent)
-  FetchContent_Declare(h5fortran_proj
-    GIT_REPOSITORY https://github.com/geospace-code/h5fortran.git
-    GIT_TAG v3.4.7)
-  FetchContent_MakeAvailable(h5fortran_proj)
+if(NOT h5fortran_FOUND)
+  message(FATAL_ERROR "could not find h5fortran")
 endif()
+
+include(${h5fortran_DIR}/h5fortranTargets.cmake)
+
+find_package(HDF5 COMPONENTS Fortran REQUIRED)
 
 # --- Fortran interface for examples
 add_library(fortran_interface fortran_interface.f90)

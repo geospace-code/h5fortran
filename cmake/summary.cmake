@@ -14,9 +14,4 @@ PURPOSE "(optional) Python used for testing of h5fortran")
 
 add_feature_info(BuildHDF5 hdf5_external "build HDF5 library")
 
-
-if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
-  feature_summary(WHAT ENABLED_FEATURES PACKAGES_FOUND)
-else()
-  feature_summary(WHAT ENABLED_FEATURES)
-endif()
+feature_summary(WHAT ENABLED_FEATURES)

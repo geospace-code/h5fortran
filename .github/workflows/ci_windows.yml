@@ -1,4 +1,6 @@
 name: ci_windows
+env:
+  CMAKE_GENERATOR: Ninja
 
 on:
   push:
@@ -9,29 +11,44 @@ on:
 
 jobs:
 
-  default:
-    # auto-builds HDF5 from source
+  # default:
+  #   # auto-builds HDF5 from source
+  #   runs-on: windows-latest
+  #   steps:
+  #   - uses: actions/checkout@v2
+
+  #   - run: cmake --preset=makewin
+  #   - run: cmake --build build --parallel
+
+  #   - run: ctest --parallel 2 --output-on-failure
+  #     working-directory: build
+
+  msys2:
+    timeout-minutes: 15
     runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
     steps:
+    - uses: msys2/setup-msys2@v2
+      with:
+        update: true
+        install: >-
+          git
+          mingw-w64-x86_64-cmake
+          mingw-w64-x86_64-ninja
+          mingw-w64-x86_64-gcc-fortran
+          mingw-w64-x86_64-hdf5
+
     - uses: actions/checkout@v2
 
-    - run: cmake --preset=makewin
+    - run: cmake -B build -DCMAKE_INSTALL_PREFIX=~/hdf5
     - run: cmake --build build --parallel
-
+    - run: cmake --install build
     - run: ctest --parallel 2 --output-on-failure
       working-directory: build
 
-  # msys2:
-  # works but saving CI time
-  #   runs-on: windows-latest
-  #   defaults:
-  #     run:
-  #       shell: msys2 {0}
-  #   steps:
-  #   - uses: msys2/setup-msys2@v2
-  #     with:
-  #       update: true
-  #       install: 'git mingw-w64-x86_64-cmake mingw-w64-x86_64-ninja mingw-w64-x86_64-gcc-fortran mingw-w64-x86_64-hdf5'
-    # - uses: actions/checkout@v2
-
-    # - run: ctest -S setup.cmake -VV
+    - run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=~/hdf5
+    - run: cmake --build Examples/build --parallel
+    - run: ctest --parallel 2 --output-on-failure
+      working-directory: Examples/build
