@@ -45,9 +45,18 @@ target_include_directories(h5fortran
   $<INSTALL_INTERFACE:include>)
 target_link_libraries(h5fortran PUBLIC HDF5::HDF5)
 set_target_properties(h5fortran PROPERTIES Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include)
-add_library(h5fortran::h5fortran ALIAS h5fortran)
+
+add_library(h5fortran::h5fortran INTERFACE IMPORTED)
+target_link_libraries(h5fortran::h5fortran INTERFACE h5fortran)
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/h5fortran.mod DESTINATION include)
+install(TARGETS h5fortran
+  EXPORT ${PROJECT_NAME}Targets
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib)
 
 add_subdirectory(src)
+
 
 if(${PROJECT_NAME}_BUILD_TESTING)
   add_subdirectory(src/tests)

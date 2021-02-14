@@ -29,3 +29,21 @@ if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.17)
   # transitive link properties
   cmake_policy(SET CMP0099 NEW)
 endif()
+if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.16)
+  # ExtProj submodule
+  cmake_policy(SET CMP0097 NEW)
+endif()
+if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.15)
+  # better Python find
+  cmake_policy(SET CMP0094 NEW)
+  # MSVC warning control
+  cmake_policy(SET CMP0092 NEW)
+endif()
+if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.14)
+  # fix IN_LIST
+  cmake_policy(SET CMP0085 NEW)
+  # fix PIE
+  cmake_policy(SET CMP0083 NEW)
+  # fix add_subdirectory
+  cmake_policy(SET CMP0082 NEW)
+endif()
