@@ -32,9 +32,12 @@ jobs:
     - run: ctest --parallel 2 --output-on-failure
       working-directory: build
 
-    - run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=~/hdf5
-    - run: cmake --build Examples/build --parallel
-    - run: ctest --parallel 2 --output-on-failure
+    - name: configure examples
+      run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=~/hdf5
+    - name: build exmaples
+      run: cmake --build Examples/build --parallel
+    - name: Test examples
+      run: ctest --parallel 2 --output-on-failure
       working-directory: Examples/build
 
     - name: create package

@@ -1,19 +1,13 @@
-# h5fortran Example project
+# h5fortran Examples
 
-It's easiest to use CMake with h5fortran, since HDF5 consists of many library files and headers.
-From the h5fortran/ directory, build the examples (or change to the Examples/ directory):
-
-```sh
-cmake -B Examples/build -S Examples
-cmake --build Examples/build
-```
-
-which creates examples under the Examples/build direcotry
-
-If you installed h5fortran previously, you can use that version by:
+From the h5fortran/ directory, specify the h5fortran install like:
 
 ```sh
-cmake -B Examples/build -S Examples -Dh5fortran_DIR=~/libs/h5fortran/lib/cmake/h5fortran
+cmake -B build -DCMAKE_INSTALL_PREFIX=~/h5fortran
+cmake --build build
+cmake --install build
+
+cmake -B Examples/build -S Examples -Dh5fortran_ROOT=~/h5fortran
 ```
 
 ## Example 1

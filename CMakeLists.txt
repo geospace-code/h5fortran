@@ -50,13 +50,14 @@ add_library(h5fortran::h5fortran INTERFACE IMPORTED)
 target_link_libraries(h5fortran::h5fortran INTERFACE h5fortran)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/h5fortran.mod DESTINATION include)
+
 install(TARGETS h5fortran
   EXPORT ${PROJECT_NAME}Targets
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib)
 
-add_subdirectory(src)
 
+add_subdirectory(src)
 
 if(${PROJECT_NAME}_BUILD_TESTING)
   add_subdirectory(src/tests)

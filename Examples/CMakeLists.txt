@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.13)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/policy.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/compiler_find.cmake)
@@ -11,7 +11,6 @@ include(CTest)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/../cmake/Modules)
 
-# see if h5fortran is installed; build h5fortran if not found
 find_package(h5fortran CONFIG)
 
 if(NOT h5fortran_FOUND)
@@ -19,6 +18,10 @@ if(NOT h5fortran_FOUND)
 endif()
 
 include(${h5fortran_DIR}/h5fortranTargets.cmake)
+
+if(NOT TARGET h5fortran::h5fortran)
+  message(FATAL_ERROR "h5fortran not found.")
+endif()
 
 find_package(HDF5 COMPONENTS Fortran REQUIRED)
 
