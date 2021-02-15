@@ -53,7 +53,7 @@ Tested on systems with HDF5 1.8, 1.10 and 1.12 including:
 
 Compilers known to work include:
 
-* Gfortran &ge; 6
+* Gfortran &ge; 7
 * Intel oneAPI HPC compiler
 
 ## Build
