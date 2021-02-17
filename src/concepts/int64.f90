@@ -6,7 +6,6 @@ use, intrinsic :: iso_fortran_env, only : int64
 implicit none (type, external)
 
 integer :: ierr
-integer(hid_t) :: fid
 
 character(:), allocatable :: filename
 
@@ -31,8 +30,6 @@ character(*), intent(in) :: filename
 
 integer(hid_t) :: fid
 integer :: ierr
-
-integer(int64) :: i
 
 call h5fopen_f(filename, h5f_acc_rdonly_f, fid, ierr)
 
