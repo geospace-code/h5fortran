@@ -4,6 +4,7 @@ option(dev "developer mode")
 
 option(concepts "conceptual testing, for devs only" off)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS on)
 
 if(NOT dev)
   set(FETCHCONTENT_UPDATES_DISCONNECTED_ZLIB true)

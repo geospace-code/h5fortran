@@ -1,7 +1,4 @@
 name: ci
-env:
-   HOMEBREW_NO_INSTALL_CLEANUP: 1
-   CMAKE_GENERATOR: Ninja
 
 on:
   push:
@@ -26,7 +23,7 @@ jobs:
         sudo apt update -yq
         sudo apt install -yq --no-install-recommends ninja-build gfortran libhdf5-dev
 
-    - run: cmake -B build -DCMAKE_INSTALL_PREFIX=~/hdf5
+    - run: cmake --preset=ninja -DCMAKE_INSTALL_PREFIX=~/hdf5
     - run: cmake --build build --parallel
     - run: cmake --install build
     - run: ctest --parallel 2 --output-on-failure
@@ -69,21 +66,24 @@ jobs:
   mac:
     needs: linux
     runs-on: macos-latest
+    env:
+      HOMEBREW_NO_INSTALL_CLEANUP: 1
+
     steps:
     - uses: actions/checkout@v2
 
     - run: brew install hdf5 ninja
 
-    - run: cmake -B build -DCMAKE_INSTALL_PREFIX=~/hdf5
+    - run: cmake --preset=gcc10 -DCMAKE_INSTALL_PREFIX=~/hdf5
     - run: cmake --build build --parallel
     - run: cmake --install build
     - run: ctest --parallel 2 --output-on-failure
       working-directory: build
 
-    - run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=~/hdf5
-    - run: cmake --build Examples/build --parallel
-    - run: ctest --parallel 2 --output-on-failure
-      working-directory: Examples/build
+    # - run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=~/hdf5
+    # - run: cmake --build Examples/build --parallel
+    # - run: ctest --parallel 2 --output-on-failure
+    #   working-directory: Examples/build
 
     - name: create package
       run: cpack --config build/CPackConfig.cmake

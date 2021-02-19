@@ -8,6 +8,7 @@ on:
       - "**/CMakeLists.txt"
       - "**.cmake"
       - ".github/workflows/ci_windows.yml"
+  pull_request:
   release:
     types: [published]
 
@@ -45,16 +46,16 @@ jobs:
 
     - uses: actions/checkout@v2
 
-    - run: cmake -B build -DCMAKE_INSTALL_PREFIX=~/hdf5
+    - run: cmake --preset=ninja -DCMAKE_INSTALL_PREFIX=~/hdf5
     - run: cmake --build build --parallel
     - run: cmake --install build
     - run: ctest --parallel 2 --output-on-failure
       working-directory: build
 
-    - run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=~/hdf5
-    - run: cmake --build Examples/build --parallel
-    - run: ctest --parallel 2 --output-on-failure
-      working-directory: Examples/build
+    # - run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=~/hdf5
+    # - run: cmake --build Examples/build --parallel
+    # - run: ctest --parallel 2 --output-on-failure
+    #   working-directory: Examples/build
 
     - name: create package
       run: cpack --config build/CPackConfig.cmake
