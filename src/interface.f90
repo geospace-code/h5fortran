@@ -21,11 +21,6 @@ public :: hdf5_file, hdf5_close, h5write, h5read, h5exist, is_hdf5, h5write_attr
   check, hdf_shape_check, hdf_get_slice, hdf_wrapup, & !< for submodules only
   HSIZE_T, HID_T, H5T_NATIVE_DOUBLE, H5T_NATIVE_REAL, H5T_NATIVE_INTEGER !< HDF5 types for end users
 
-!> Workaround for Intel 19.1 / 2020 / oneAPI bug with /stand:f18
-!> error #6410: This name has not been declared as an array or a function.   [RANK]
-!> GCC 10.2.0 generates spurious Wsurprising from having this here.
-intrinsic :: rank
-
 !> main type
 type :: hdf5_file
 
@@ -261,7 +256,7 @@ module subroutine hdf_write_1d(self,dname,value, ierr, chunk_size, istart, iend,
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:)
-integer, intent(in), optional :: chunk_size(rank(value))
+integer, intent(in), optional :: chunk_size(1)
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
 integer, intent(out), optional :: ierr
 end subroutine hdf_write_1d
@@ -270,7 +265,7 @@ module subroutine hdf_write_2d(self,dname,value, ierr, chunk_size, istart, iend,
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:)
-integer, intent(in), optional :: chunk_size(rank(value))
+integer, intent(in), optional :: chunk_size(2)
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
 integer, intent(out), optional :: ierr
 end subroutine hdf_write_2d
@@ -279,7 +274,7 @@ module subroutine hdf_write_3d(self,dname,value, ierr, chunk_size, istart, iend,
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:)
-integer, intent(in), optional :: chunk_size(rank(value))
+integer, intent(in), optional :: chunk_size(3)
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
 integer, intent(out), optional :: ierr
 end subroutine hdf_write_3d
@@ -288,7 +283,7 @@ module subroutine hdf_write_4d(self,dname,value, ierr, chunk_size, istart, iend,
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:)
-integer, intent(in), optional :: chunk_size(rank(value))
+integer, intent(in), optional :: chunk_size(4)
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
 integer, intent(out), optional :: ierr
 end subroutine hdf_write_4d
@@ -297,7 +292,7 @@ module subroutine hdf_write_5d(self,dname,value, ierr, chunk_size, istart, iend,
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:,:)
-integer, intent(in), optional :: chunk_size(rank(value))
+integer, intent(in), optional :: chunk_size(5)
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
 integer, intent(out), optional :: ierr
 end subroutine hdf_write_5d
@@ -306,7 +301,7 @@ module subroutine hdf_write_6d(self,dname,value, ierr, chunk_size, istart, iend,
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:,:,:)
-integer, intent(in), optional :: chunk_size(rank(value))
+integer, intent(in), optional :: chunk_size(6)
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
 integer, intent(out), optional :: ierr
 end subroutine hdf_write_6d
@@ -315,7 +310,7 @@ module subroutine hdf_write_7d(self,dname,value, ierr, chunk_size, istart, iend,
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:,:,:,:)
-integer, intent(in), optional :: chunk_size(rank(value))
+integer, intent(in), optional :: chunk_size(7)
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
 integer, intent(out), optional :: ierr
 end subroutine hdf_write_7d

@@ -62,8 +62,11 @@ Using CMake:
 
 ```sh
 git clone https://github.com/geospace-code/h5fortran.git
+cd h5fortran
 
-ctest -S h5fortran/setup.cmake -VV
+cmake --preset=ninja
+
+cmake --build build
 ```
 
 for more details see [Install.md](./Install.md)
@@ -75,9 +78,9 @@ This takes a minute or two on a typical laptop.
 If you wish to force building the HDF5 library:
 
 ```sh
-cmake -B build -Dhdf5_external=true
+cmake --preset=build
 
-cmake --build build --parallel
+cmake --build build
 ```
 
 NOTE: If using Intel oneAPI on Windows, ensure that environment variable CC=icl as set manually in the command prompt:

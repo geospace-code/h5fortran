@@ -31,7 +31,10 @@ conan build . -bf build
 Build and self-test via:
 
 ```sh
-ctest -S setup.cmake -V
+cmake --preset=ninja
+cmake --build build
+cd build
+ctest
 ```
 
 ---
@@ -39,7 +42,7 @@ ctest -S setup.cmake -V
 To build h5fortran faster by omitting the self-tests:
 
 ```sh
-cmake -B build -DBUILD_TESTING=off
+cmake --preset=notest
 ```
 
 ### [optional] install

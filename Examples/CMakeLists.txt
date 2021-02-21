@@ -1,8 +1,4 @@
-cmake_minimum_required(VERSION 3.13)
-
-include(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/policy.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/compiler_find.cmake)
-find_c_fortran()
+cmake_minimum_required(VERSION 3.13...3.20)
 
 project(h5fortranExample
 LANGUAGES C CXX Fortran)

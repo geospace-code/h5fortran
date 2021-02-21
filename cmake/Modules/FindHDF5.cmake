@@ -38,13 +38,6 @@ Targets
   HDF5 Imported Target
 #]=======================================================================]
 
-include(FeatureSummary)
-set_package_properties(HDF5 PROPERTIES
-URL "https://hdfgroup.org/"
-DESCRIPTION "versatile file format"
-PURPOSE "h5fortran is an object-oriented HDF5 API")
-
-
 function(detect_config)
 
 if(Fortran IN_LIST HDF5_FIND_COMPONENTS AND NOT HDF5_Fortran_FOUND)
@@ -88,14 +81,10 @@ if( "${_def}" MATCHES
   set(HDF5_VERSION ${HDF5_VERSION} PARENT_SCOPE)
 endif()
 
-if(PkgConfig_FOUND)
-  pkg_search_module(pc_zlib zlib)
-endif()
-
-# otherwise can pickup miniconda zlib
+# this help avoid picking up miniconda zlib over the desired zlib
 get_filename_component(_hint ${HDF5_C_LIBRARY} DIRECTORY)
 if(NOT ZLIB_ROOT)
-  set(ZLIB_ROOT "${_hint}/..;${_hint}/../..;${pc_zlib_LIBRARY_DIRS};${pc_zlib_LIBDIR}")
+  set(ZLIB_ROOT "${_hint}/..;${_hint}/../..")
 endif()
 if(NOT SZIP_ROOT)
   set(SZIP_ROOT "${ZLIB_ROOT}")
@@ -141,7 +130,7 @@ set(_psuf static ${_lsuf})
 # we don't use pkg-config directly because some distros pkg-config for HDF5 is broken
 # however at least the paths are often correct
 find_package(PkgConfig)
-if(PkgConfig_FOUND)
+if(PkgConfig_FOUND AND NOT HDF5_C_LIBRARY)
   pkg_search_module(pc_hdf5 hdf5 hdf5-serial)
 endif()
 

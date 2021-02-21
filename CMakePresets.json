@@ -19,6 +19,11 @@
   "generator": "Ninja"
 },
 {
+  "name": "notest", "inherits": "ninja",
+  "displayName": "build with Ninja, omitting self-tests",
+  "cacheVariables": {"BUILD_TESTING": false}
+},
+{
   "name": "build", "inherits": "ninja",
   "displayName": "build all libraries",
   "description": "Build all external libraries without searching for existing libraries.",
