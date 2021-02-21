@@ -160,7 +160,7 @@ chunk_size may optionally be set in the `%write()` method for 2-d to 7-d arrays.
 compression and chunking are disabled if any element of chunk_size is less than 1
 chunk_size may be manually specified in write() otherwise it will be set automatically.
 
-Currently, data is written contiguous if not compressed and is only chunked if compression is used.
+Currently, data is written contiguous or compact if not compressed and is only chunked if compression is used.
 
 ## check if a variable exists
 
@@ -252,11 +252,13 @@ call h5f%write('/foo', A, istart=[3, 4, 8], iend=[7, 10, 8])
 Note the h5f%create() call to initialize the disk variable.
 This step is also needed with h5py in Python or Matlab HDF5 h5create() before h5write().
 
-## is dataset contiguous or chunked
+## is dataset compact, contiguous, or chunked
 
-Assumed file handle h5f was already initialized, the logical status is inspected:
+Assume file handle h5f was already initialized, the logical status is inspected:
 
 ```fortran
+is_compact = h5f%is_compact("/foo")
+
 is_contig = h5f%is_contig('/foo')
 
 is_chunked = h5f%is_chunked('/foo')
