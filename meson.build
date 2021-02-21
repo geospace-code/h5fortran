@@ -1,6 +1,6 @@
 project('h5fortran', 'fortran',
   meson_version : '>=0.52.0',
-  version : '3.5.0',
+  version : '3.5.1',
   default_options : ['default_library=static', 'buildtype=release', 'warning_level=3'])
 
 fc = meson.get_compiler('fortran')
