@@ -42,7 +42,8 @@ target_include_directories(h5fortran
 target_link_libraries(h5fortran PUBLIC HDF5::HDF5)
 set_target_properties(h5fortran PROPERTIES Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include)
 
-add_library(h5fortran::h5fortran INTERFACE IMPORTED)
+# GLOBAL needed for use by FetchContent
+add_library(h5fortran::h5fortran INTERFACE IMPORTED GLOBAL)
 target_link_libraries(h5fortran::h5fortran INTERFACE h5fortran)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/h5fortran.mod DESTINATION include)
