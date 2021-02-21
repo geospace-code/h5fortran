@@ -3,7 +3,8 @@ submodule (h5fortran) write
 use hdf5, only: &
 h5screate_f, H5S_SCALAR_F, &
 h5dcreate_f, &
-h5pset_chunk_f, h5pset_deflate_f, h5pset_shuffle_f, h5pset_fletcher32_f, h5pcreate_f, H5P_DATASET_CREATE_F, h5pclose_f, &
+h5pset_chunk_f, h5pset_layout_f, h5pset_deflate_f, h5pset_shuffle_f, h5pset_fletcher32_f, h5pcreate_f, h5pclose_f, &
+H5P_DATASET_CREATE_F, &
 h5gopen_f, &
 H5Lcreate_soft_f
 
@@ -73,14 +74,29 @@ if (ierr /= 0) then
   error stop
 endif
 
+!> create properties
+pid = 0 !< sentinel
+
 if(size(vdims) >= 2) then
   if(self%debug) print *, 'h5fortran:TRACE:create: deflate: ' // dname
   call set_deflate(self, vdims, pid, ierr, chunk_size)
   if (ierr/=0) error stop 'ERROR:h5fortran:create: problem setting deflate on'
-else
-  pid = 0
 endif
 
+if(present(compact)) then
+! print *, "TRACE1: COMPACT", compact
+!! don't set COMPACT after CHUNKED, will fail. And it's either or anyway.
+if(compact .and. pid == 0 .and. product(vdims) * 8 < 60000)  then
+!! 64000 byte limit, here we assumed 8 bytes / element
+  call h5pcreate_f(H5P_DATASET_CREATE_F, pid, ierr)
+  if (check(ierr, self%filename)) error stop
+
+  call h5pset_layout_f(pid, H5D_COMPACT_F, ierr)
+  if (check(ierr, self%filename)) error stop
+endif
+endif
+
+!> create dataspace
 if(size(vdims) == 0) then
   call h5screate_f(H5S_SCALAR_F, space_id, ierr)
 else
@@ -88,6 +104,7 @@ else
 endif
 if (check(ierr, self%filename, dname)) error stop
 
+!> create dataset
 if(pid == 0) then
   call h5dcreate_f(self%lid, dname, dtype, space_id, ds_id, ierr)
 else

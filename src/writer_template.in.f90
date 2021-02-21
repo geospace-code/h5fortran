@@ -5,11 +5,11 @@ integer :: ier
 dims = shape(value)
 select type (value)
 type is (real(real64))
-  call hdf_create(self,dname, H5T_NATIVE_DOUBLE, dims, sid, did, chunk_size, istart, iend, stride)
+  call hdf_create(self,dname, H5T_NATIVE_DOUBLE, dims, sid, did, chunk_size, istart, iend, stride, compact)
 type is (real(real32))
-  call hdf_create(self,dname, H5T_NATIVE_REAL, dims, sid, did, chunk_size, istart, iend, stride)
+  call hdf_create(self,dname, H5T_NATIVE_REAL, dims, sid, did, chunk_size, istart, iend, stride, compact)
 type is (integer(int32))
-  call hdf_create(self,dname, H5T_NATIVE_INTEGER, dims, sid, did, chunk_size, istart, iend, stride)
+  call hdf_create(self,dname, H5T_NATIVE_INTEGER, dims, sid, did, chunk_size, istart, iend, stride, compact)
 class default
   error stop 'h5fortran:write:invalid data type'
 end select

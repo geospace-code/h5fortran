@@ -79,7 +79,7 @@ if (ierr /= 0) error stop "problem creating dataspace"
 call h5pcreate_f(H5P_DATASET_CREATE_F, prp_id, ierr)
 if (ierr /= 0) error stop "problem creating property list"
 
-!> config for dataset (must be before h5pset_chunk)
+!> config for dataset
 call h5pset_layout_f(prp_id, layout, ierr)
 if (ierr /= 0) error stop "problem creating layout"
 

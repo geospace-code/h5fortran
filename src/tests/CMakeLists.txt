@@ -38,7 +38,7 @@ endforeach()
 endfunction(setup_test)
 
 # --- all other tests
-set(testnames array attributes deflate error exist module lt scalar shape string
+set(testnames array attributes deflate error exist module layout lt scalar shape string
 fail_read_size_mismatch fail_read_rank_mismatch fail_nonexist_variable
 fail_unknown_read fail_unknown_write)
 

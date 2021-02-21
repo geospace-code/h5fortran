@@ -26,13 +26,13 @@ type is (character(*))
   call h5ltmake_dataset_string_f(self%lid, dname, value, ier)
 type is (real(real64))
   !! NOTE: 0d does not use chunk_size
-  call hdf_create(self,dname, H5T_NATIVE_DOUBLE, dims,sid,did)
+  call hdf_create(self,dname, H5T_NATIVE_DOUBLE, dims,sid,did, compact=compact)
   call h5dwrite_f(did, H5T_NATIVE_DOUBLE, value, dims, ier)
 type is (real(real32))
-  call hdf_create(self,dname, H5T_NATIVE_REAL, dims,sid,did)
+  call hdf_create(self,dname, H5T_NATIVE_REAL, dims,sid,did, compact=compact)
   call h5dwrite_f(did, H5T_NATIVE_REAL, value, dims, ier)
 type is (integer(int32))
-  call hdf_create(self,dname, H5T_NATIVE_INTEGER, dims,sid,did)
+  call hdf_create(self,dname, H5T_NATIVE_INTEGER, dims,sid,did, compact=compact)
   call h5dwrite_f(did, H5T_NATIVE_INTEGER, value, dims, ier)
 class default
   error stop 'h5fortran: invalid data type'

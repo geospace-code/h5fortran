@@ -4,7 +4,7 @@ use, intrinsic :: iso_c_binding, only : c_ptr, c_loc
 use, intrinsic :: iso_fortran_env, only : real32, real64, int64, int32, stderr=>error_unit
 use hdf5, only : HID_T, SIZE_T, HSIZE_T, H5F_ACC_RDONLY_F, H5F_ACC_RDWR_F, H5F_ACC_TRUNC_F, &
   H5S_ALL_F, H5S_SELECT_SET_F, &
-  H5D_CONTIGUOUS_F, H5D_CHUNKED_F, &
+  H5D_CONTIGUOUS_F, H5D_CHUNKED_F, H5D_COMPACT_F, &
   H5T_NATIVE_DOUBLE, H5T_NATIVE_REAL, H5T_NATIVE_INTEGER, H5T_NATIVE_CHARACTER, H5F_SCOPE_GLOBAL_F, &
   h5open_f, h5close_f, &
   h5dopen_f, h5dclose_f, h5dget_space_f, &
@@ -46,7 +46,7 @@ procedure, public :: initialize => hdf_initialize, finalize => hdf_finalize, &
   ndims => hdf_get_ndims, &
   shape => hdf_get_shape, layout => hdf_get_layout, chunks => hdf_get_chunk, &
   exist => hdf_check_exist, exists => hdf_check_exist, &
-  is_contig => hdf_is_contig, is_chunked => hdf_is_chunked, &
+  is_contig => hdf_is_contig, is_chunked => hdf_is_chunked, is_compact => hdf_is_compact, &
   softlink => create_softlink
 
 !> below are procedure that need generic mapping (type or rank agnostic)
@@ -110,13 +110,14 @@ end function
 end interface
 
 interface !< write.f90
-module subroutine hdf_create(self, dname, dtype, dims, sid, did, chunk_size, istart, iend, stride)
+module subroutine hdf_create(self, dname, dtype, dims, sid, did, chunk_size, istart, iend, stride, compact)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 integer(HID_T), intent(in) :: dtype
 class(*), intent(in) :: dims(:) !< this can be class(*) to allow int4 or int8 in future
 integer(HID_T), intent(out), optional :: sid, did
 integer, intent(in), optional :: chunk_size(:), istart(:), iend(:), stride(:)
+logical, intent(in), optional :: compact
 !! keep istart, iend, stride for future slice shape check
 end subroutine hdf_create
 
@@ -245,73 +246,81 @@ end subroutine lt7read
 end interface
 
 interface !< writer.f90
-module subroutine hdf_write_scalar(self,dname,value, ierr)
+module subroutine hdf_write_scalar(self,dname,value, ierr, compact)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value
+logical, intent(in), optional :: compact
 integer, intent(out), optional :: ierr
 end subroutine hdf_write_scalar
 
-module subroutine hdf_write_1d(self,dname,value, ierr, chunk_size, istart, iend, stride)
+module subroutine hdf_write_1d(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:)
 integer, intent(in), optional :: chunk_size(1)
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
+logical, intent(in), optional :: compact
 integer, intent(out), optional :: ierr
 end subroutine hdf_write_1d
 
-module subroutine hdf_write_2d(self,dname,value, ierr, chunk_size, istart, iend, stride)
+module subroutine hdf_write_2d(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:)
 integer, intent(in), optional :: chunk_size(2)
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
+logical, intent(in), optional :: compact
 integer, intent(out), optional :: ierr
 end subroutine hdf_write_2d
 
-module subroutine hdf_write_3d(self,dname,value, ierr, chunk_size, istart, iend, stride)
+module subroutine hdf_write_3d(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:)
 integer, intent(in), optional :: chunk_size(3)
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
+logical, intent(in), optional :: compact
 integer, intent(out), optional :: ierr
 end subroutine hdf_write_3d
 
-module subroutine hdf_write_4d(self,dname,value, ierr, chunk_size, istart, iend, stride)
+module subroutine hdf_write_4d(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:)
 integer, intent(in), optional :: chunk_size(4)
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
+logical, intent(in), optional :: compact
 integer, intent(out), optional :: ierr
 end subroutine hdf_write_4d
 
-module subroutine hdf_write_5d(self,dname,value, ierr, chunk_size, istart, iend, stride)
+module subroutine hdf_write_5d(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:,:)
 integer, intent(in), optional :: chunk_size(5)
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
+logical, intent(in), optional :: compact
 integer, intent(out), optional :: ierr
 end subroutine hdf_write_5d
 
-module subroutine hdf_write_6d(self,dname,value, ierr, chunk_size, istart, iend, stride)
+module subroutine hdf_write_6d(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:,:,:)
 integer, intent(in), optional :: chunk_size(6)
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
+logical, intent(in), optional :: compact
 integer, intent(out), optional :: ierr
 end subroutine hdf_write_6d
 
-module subroutine hdf_write_7d(self,dname,value, ierr, chunk_size, istart, iend, stride)
+module subroutine hdf_write_7d(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:,:,:,:)
 integer, intent(in), optional :: chunk_size(7)
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
+logical, intent(in), optional :: compact
 integer, intent(out), optional :: ierr
 end subroutine hdf_write_7d
 end interface
@@ -664,6 +673,12 @@ class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
 hdf_is_contig = self%layout(dname) == H5D_CONTIGUOUS_F
 end function hdf_is_contig
+
+logical function hdf_is_compact(self, dname)
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: dname
+hdf_is_compact = self%layout(dname) == H5D_COMPACT_F
+end function hdf_is_compact
 
 logical function hdf_is_chunked(self, dname)
 class(hdf5_file), intent(in) :: self
