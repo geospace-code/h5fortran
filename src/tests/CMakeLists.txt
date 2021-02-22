@@ -3,8 +3,7 @@ add_executable(test_minimal test_minimal.f90)
 # as part of h5fortran
 target_link_libraries(test_minimal PRIVATE h5fortran::h5fortran)
 add_test(NAME h5fortran:minimal
-  COMMAND $<TARGET_FILE:test_minimal>
-  WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+  COMMAND $<TARGET_FILE:test_minimal>)
 set_tests_properties(h5fortran:minimal PROPERTIES FIXTURES_SETUP h5lib)
 
 function(setup_test names)
@@ -24,8 +23,7 @@ if(${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU)
 endif()
 
 add_test(NAME h5fortran:${name}
-  COMMAND $<TARGET_FILE:test_${name}>
-  WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
+  COMMAND $<TARGET_FILE:test_${name}>)
 set_tests_properties(h5fortran:${name} PROPERTIES FIXTURES_REQUIRED h5lib)
 
 
@@ -48,10 +46,10 @@ setup_test("${testnames}")
 find_package(Python3 COMPONENTS Interpreter)
 if(Python3_FOUND)
   add_test(NAME h5fortran:check_shape
-    COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test_shape.py ${PROJECT_BINARY_DIR}/test_shape.h5)
+    COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test_shape.py ${CMAKE_CURRENT_BINARY_DIR}/test_shape.h5)
   set_tests_properties(h5fortran:check_shape PROPERTIES
     DEPENDS h5fortran:shape
-    REQUIRED_FILES ${PROJECT_BINARY_DIR}/test_shape.h5
+    REQUIRED_FILES ${CMAKE_CURRENT_BINARY_DIR}/test_shape.h5
     FIXTURES_REQUIRED h5lib
     TIMEOUT 90)
 endif(Python3_FOUND)

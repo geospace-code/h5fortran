@@ -1,10 +1,12 @@
 project('h5fortran', 'fortran',
-  meson_version : '>=0.52.0',
-  version : '3.5.1',
+  meson_version : '>=0.57.0',
+  version : '3.5.2',
   default_options : ['default_library=static', 'buildtype=release', 'warning_level=3'])
 
 fc = meson.get_compiler('fortran')
 os = host_machine.system()
+
+fs = import('fs')
 
 # -- stub for future > 7-D
 # f08rank15 = fc.links('real, dimension(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1) :: x; end', name: 'f2008 rank 15')

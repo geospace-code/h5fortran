@@ -18,12 +18,13 @@ foreach t : ['array', 'attributes', 'deflate', 'error', 'exist', 'module', 'layo
     pri = 0
   endif
   test(t, e, suite: 'h5basic', timeout: 10, is_parallel: par, priority: pri,
+       workdir : meson.current_build_dir(),
        should_fail : t.contains('fail'))
 endforeach
 
 python = find_program('python')
 
 test('check_shape', python,
-  args: [files('test_shape.py'), meson.build_root() / 'test_shape.h5'],
+  args: [files('test_shape.py'), meson.current_build_dir() / 'test_shape.h5'],
   is_parallel: false,
   suite: 'h5shaky', priority: -100, timeout: 90)
