@@ -1,12 +1,3 @@
-c = configuration_data()
-
-c.set('reader_template', fs.read('reader_template.in.f90'))
-
-configure_file(
-  input : 'reader.in.f90',
-  output : 'reader.f90',
-  configuration : c)
-
 # --- reader_lt
 
 c = configuration_data()
@@ -18,6 +9,5 @@ configure_file(
   output : 'reader_lt.f90',
   configuration : c)
 
-read_src = files('read.f90',
-  meson.current_build_dir() / 'reader.f90',
+read_src = files('read.f90', 'reader.f90',
   meson.current_build_dir() / 'reader_lt.f90')
