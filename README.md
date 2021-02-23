@@ -6,7 +6,6 @@
 ![ci_windows](https://github.com/geospace-code/h5fortran/workflows/ci_windows/badge.svg)
 ![ci_meson](https://github.com/geospace-code/h5fortran/workflows/ci_meson/badge.svg)
 
-
 Simple, robust, thin HDF5 polymorphic Fortran read/write interface.
 Reading or writing {real64,real32,int32} from scalar to 7d is as simple as
 
@@ -69,7 +68,9 @@ cmake --preset=ninja
 cmake --build build
 ```
 
-for more details see [Install.md](./Install.md)
+for more details see [Install.md](./Install.md).
+
+For general use with non-CMake build systems, "h5fortran.pc" pkg-config file is also generated / installed.
 
 ### Autobuild HDF5
 
