@@ -7,19 +7,15 @@ include(CTest)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/../cmake/Modules)
 
-find_package(h5fortran CONFIG)
-
-if(NOT h5fortran_FOUND)
-  message(FATAL_ERROR "could not find h5fortran")
-endif()
-
-include(${h5fortran_DIR}/h5fortranTargets.cmake)
-
-if(NOT TARGET h5fortran::h5fortran)
-  message(FATAL_ERROR "h5fortran not found.")
-endif()
+# --- find external libraries
 
 find_package(HDF5 COMPONENTS Fortran REQUIRED)
+
+# --- Find our library
+
+set(CMAKE_FIND_PACKAGE_PREFER_CONFIG true)
+
+find_package(h5fortran REQUIRED PATHS ${PROJECT_SOURCE_DIR}/../build)
 
 # --- Fortran interface for examples
 add_library(fortran_interface fortran_interface.f90)
