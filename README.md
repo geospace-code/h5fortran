@@ -7,7 +7,7 @@
 ![ci_meson](https://github.com/geospace-code/h5fortran/workflows/ci_meson/badge.svg)
 
 Simple, robust, thin HDF5 polymorphic Fortran read/write interface.
-Reading or writing {real64,real32,int32} from scalar to 7d is as simple as
+Reading or writing {real64,real32,int32,int64} from scalar to 7d is as simple as
 
 ```fortran
 use h5fortran
@@ -28,10 +28,8 @@ Uses Fortran `submodule` for clean template structure.
 This easy-to-use, thin object-oriented modern Fortran library abstracts away the messy parts of HDF5 so that you can read / write various types/ranks of data with a single command.
 In distinction from other high-level HDF5 interfaces, h5fortran works to deduplicate code, using polymorphism wherever feasible and extensive test suite.
 
-Polymorphic API with read/write for types int32, real32, real64 with rank:
-
-* scalar (0-D)
-* 1-D .. 7-D
+Polymorphic API with read/write for types int32, real32, real64 with rank scalar (0-D) through 7-D.
+64-bit integers int64 are read/write from scalar through 3-D.
 
 as well as **character (string)**.
 If you need int64, we have a working example for that: src/concepts/int64.f90 that can easily be put into the h5fortran API--just make a GitHub Issue.
