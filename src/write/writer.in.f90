@@ -1,6 +1,6 @@
 submodule (h5fortran:write) writer
 !! This submodule is for writing 0-D..7-D data
-use hdf5, only: h5dwrite_f
+use hdf5, only: h5dwrite_f, H5T_STD_I64LE
 
 implicit none (type, external)
 
@@ -34,6 +34,9 @@ type is (real(real32))
 type is (integer(int32))
   call hdf_create(self,dname, H5T_NATIVE_INTEGER, dims,sid,did, compact=compact)
   call h5dwrite_f(did, H5T_NATIVE_INTEGER, value, dims, ier)
+type is (integer(int64))
+  call hdf_create(self,dname, H5T_STD_I64LE, dims,sid,did, compact=compact)
+  call h5dwrite_f(did, H5T_STD_I64LE, value, dims, ier)
 class default
   error stop 'h5fortran: invalid data type'
 end select

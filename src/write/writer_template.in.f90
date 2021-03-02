@@ -10,6 +10,8 @@ type is (real(real32))
   call hdf_create(self,dname, H5T_NATIVE_REAL, dims, sid, did, chunk_size, istart, iend, stride, compact)
 type is (integer(int32))
   call hdf_create(self,dname, H5T_NATIVE_INTEGER, dims, sid, did, chunk_size, istart, iend, stride, compact)
+type is (integer(int64))
+  call hdf_create(self,dname, H5T_STD_I64LE, dims, sid, did, chunk_size, istart, iend, stride, compact)
 class default
   error stop 'h5fortran:write:invalid data type'
 end select
@@ -32,11 +34,10 @@ type is (real(real32))
   call h5dwrite_f(did, H5T_NATIVE_REAL, value, dims, ier, mem_sid, sid)
 type is (integer(int32))
   call h5dwrite_f(did, H5T_NATIVE_INTEGER, value, dims, ier, mem_sid, sid)
+type is (integer(int64))
+  call h5dwrite_f(did, H5T_STD_I64LE, value, dims, ier, mem_sid, sid)
 end select
-if (ier/=0) then
-  write(stderr,*) 'h5fortran:ERROR: could not write ',dname, ' to ', self%filename
-  error stop
-endif
+if (ier/=0) error stop 'h5fortran:ERROR: could not write ' // dname // ' to ' // self%filename
 
 call hdf_wrapup(did, sid, ier)
 

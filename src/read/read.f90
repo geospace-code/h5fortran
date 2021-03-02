@@ -3,7 +3,7 @@ submodule (h5fortran) read
 use hdf5, only : h5dget_create_plist_f, &
   h5pget_layout_f, h5pget_chunk_f, &
   h5dget_type_f, h5tget_native_type_f, h5tget_class_f, H5Tget_order_f, h5tclose_f, h5tget_size_f, &
-  H5T_DIR_ASCEND_F, H5T_INTEGER_F, H5T_FLOAT_F, H5T_STRING_F
+  H5T_DIR_ASCEND_F, H5T_INTEGER_F, H5T_FLOAT_F, H5T_STRING_F, H5T_STD_I64LE
 
 use H5LT, only : h5ltpath_valid_f
 
@@ -55,9 +55,9 @@ if(class == H5T_INTEGER_F) then
   if(size_bytes == 4) then
     native_dtype = H5T_NATIVE_INTEGER
   elseif(size_bytes == 8) then
-    error stop "h5fortran:reader: 64-bit integers not yet an h5fortran feature:" // dname // ' from ' // filename
+    native_dtype = H5T_STD_I64LE
   else
-    error stop "h5fortran:reader: expected 32-bit integer:" // dname // ' from ' // filename
+    error stop "h5fortran:reader: expected 32-bit or 64-bit integer:" // dname // ' from ' // filename
   endif
 elseif(class == H5T_FLOAT_F) then
   if(size_bytes == 4) then

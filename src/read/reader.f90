@@ -14,6 +14,7 @@ module procedure hdf_read_scalar
 real(real32) :: buf_r32
 real(real64) :: buf_r64
 integer(int32) :: buf_i32
+integer(int64) :: buf_i64
 
 integer(HSIZE_T) :: dims(rank(value))
 integer(hid_t) :: ds_id, space_id, native_dtype
@@ -55,6 +56,9 @@ if(native_dtype == H5T_NATIVE_DOUBLE) then
   type is (integer(int32))
     call h5dread_f(ds_id, H5T_NATIVE_DOUBLE, buf_r64, dims, ier)
     value = int(buf_r64, int32)
+  type is (integer(int64))
+    call h5dread_f(ds_id, H5T_NATIVE_DOUBLE, buf_r64, dims, ier)
+    value = int(buf_r64, int64)
   class default
     error stop 'unknown variable type'
   end select
@@ -68,6 +72,9 @@ elseif(native_dtype == H5T_NATIVE_REAL) then
   type is (integer(int32))
     call h5dread_f(ds_id, H5T_NATIVE_REAL, buf_r32, dims, ier)
     value = int(buf_r32, int32)
+  type is (integer(int64))
+    call h5dread_f(ds_id, H5T_NATIVE_REAL, buf_r32, dims, ier)
+    value = int(buf_r32, int64)
   class default
     error stop 'unknown variable type'
   end select
@@ -81,6 +88,25 @@ elseif(native_dtype == H5T_NATIVE_INTEGER) then
     value = real(buf_i32, real32)
   type is (integer(int32))
     call h5dread_f(ds_id, H5T_NATIVE_INTEGER, value, dims, ier)
+  type is (integer(int64))
+    call h5dread_f(ds_id, H5T_NATIVE_INTEGER, buf_i32, dims, ier)
+    value = int(buf_i32, int64)
+  class default
+    error stop 'unknown variable type'
+  end select
+elseif(native_dtype == H5T_STD_I64LE) then
+  select type(value)
+  type is (real(real64))
+    call h5dread_f(ds_id, H5T_STD_I64LE, buf_i64, dims, ier)
+    value = real(buf_i64, real64)
+  type is (real(real32))
+    call h5dread_f(ds_id, H5T_STD_I64LE, buf_i64, dims, ier)
+    value = real(buf_i64, real32)
+  type is (integer(int32))
+    call h5dread_f(ds_id, H5T_STD_I64LE, buf_i64, dims, ier)
+    value = int(buf_i64, int32)
+  type is (integer(int64))
+    call h5dread_f(ds_id, H5T_STD_I64LE, value, dims, ier)
   class default
     error stop 'unknown variable type'
   end select
@@ -103,6 +129,7 @@ module procedure hdf_read_1d
 real(real32), allocatable :: buf_r32(:)
 real(real64), allocatable :: buf_r64(:)
 integer(int32), allocatable :: buf_i32(:)
+integer(int64), allocatable :: buf_i64(:)
 
 integer(HSIZE_T) :: dims(rank(value))
 integer(HID_T) :: ds_id, space_id, mem_space_id, native_dtype
@@ -143,6 +170,10 @@ if(native_dtype == H5T_NATIVE_DOUBLE) then
     allocate(buf_r64(size(value, 1)))
     call h5dread_f(ds_id, H5T_NATIVE_DOUBLE, buf_r64, dims, ier, mem_space_id, space_id)
     value = int(buf_r64, int32)
+  type is (integer(int64))
+    allocate(buf_r64(size(value, 1)))
+    call h5dread_f(ds_id, H5T_NATIVE_DOUBLE, buf_r64, dims, ier, mem_space_id, space_id)
+    value = int(buf_r64, int64)
   class default
     error stop 'unknown variable type'
   end select
@@ -158,6 +189,10 @@ elseif(native_dtype == H5T_NATIVE_REAL) then
     allocate(buf_r32(size(value, 1)))
     call h5dread_f(ds_id, H5T_NATIVE_REAL, buf_r32, dims, ier, mem_space_id, space_id)
     value = int(buf_r32, int32)
+  type is (integer(int64))
+    allocate(buf_r32(size(value, 1)))
+    call h5dread_f(ds_id, H5T_NATIVE_REAL, buf_r32, dims, ier, mem_space_id, space_id)
+    value = int(buf_r32, int64)
   class default
     error stop 'unknown variable type'
   end select
@@ -173,6 +208,29 @@ elseif(native_dtype == H5T_NATIVE_INTEGER) then
     value = real(buf_i32, real32)
   type is (integer(int32))
     call h5dread_f(ds_id, H5T_NATIVE_INTEGER, value, dims, ier, mem_space_id, space_id)
+  type is (integer(int64))
+    allocate(buf_i32(size(value, 1)))
+    call h5dread_f(ds_id, H5T_NATIVE_INTEGER, buf_i32, dims, ier, mem_space_id, space_id)
+    value = int(buf_i32, int64)
+  class default
+    error stop 'unknown variable type'
+  end select
+elseif(native_dtype == H5T_STD_I64LE) then
+  select type(value)
+  type is (real(real64))
+    allocate(buf_i64(size(value, 1)))
+    call h5dread_f(ds_id, H5T_STD_I64LE, buf_i64, dims, ier, mem_space_id, space_id)
+    value = real(buf_i64, real64)
+  type is (real(real32))
+    allocate(buf_i64(size(value, 1)))
+    call h5dread_f(ds_id, H5T_STD_I64LE, buf_i64, dims, ier, mem_space_id, space_id)
+    value = real(buf_i64, real32)
+  type is (integer(int32))
+    allocate(buf_i64(size(value, 1)))
+    call h5dread_f(ds_id, H5T_STD_I64LE, buf_i64, dims, ier, mem_space_id, space_id)
+    value = int(buf_i64, int32)
+  type is (integer(int64))
+    call h5dread_f(ds_id, H5T_STD_I64LE, value, dims, ier, mem_space_id, space_id)
   class default
     error stop 'unknown variable type'
   end select
@@ -194,6 +252,7 @@ module procedure hdf_read_2d
 real(real32), allocatable :: buf_r32(:,:)
 real(real64), allocatable :: buf_r64(:,:)
 integer(int32), allocatable :: buf_i32(:,:)
+integer(int64), allocatable :: buf_i64(:,:)
 
 integer(HSIZE_T) :: dims(rank(value))
 integer(HID_T) :: ds_id, space_id, mem_space_id, native_dtype
@@ -234,6 +293,10 @@ if(native_dtype == H5T_NATIVE_DOUBLE) then
     allocate(buf_r64(size(value, 1), size(value, 2)))
     call h5dread_f(ds_id, H5T_NATIVE_DOUBLE, buf_r64, dims, ier, mem_space_id, space_id)
     value = int(buf_r64, int32)
+  type is (integer(int64))
+    allocate(buf_r64(size(value, 1), size(value, 2)))
+    call h5dread_f(ds_id, H5T_NATIVE_DOUBLE, buf_r64, dims, ier, mem_space_id, space_id)
+    value = int(buf_r64, int64)
   class default
     error stop 'unknown variable type'
   end select
@@ -249,6 +312,10 @@ elseif(native_dtype == H5T_NATIVE_REAL) then
     allocate(buf_r32(size(value, 1), size(value, 2)))
     call h5dread_f(ds_id, H5T_NATIVE_REAL, buf_r32, dims, ier, mem_space_id, space_id)
     value = int(buf_r32, int32)
+  type is (integer(int64))
+    allocate(buf_r32(size(value, 1), size(value, 2)))
+    call h5dread_f(ds_id, H5T_NATIVE_REAL, buf_r32, dims, ier, mem_space_id, space_id)
+    value = int(buf_r32, int64)
   class default
     error stop 'unknown variable type'
   end select
@@ -264,6 +331,29 @@ elseif(native_dtype == H5T_NATIVE_INTEGER) then
     value = real(buf_i32, real32)
   type is (integer(int32))
     call h5dread_f(ds_id, H5T_NATIVE_INTEGER, value, dims, ier, mem_space_id, space_id)
+  type is (integer(int64))
+    allocate(buf_i32(size(value, 1), size(value, 2)))
+    call h5dread_f(ds_id, H5T_NATIVE_INTEGER, buf_i32, dims, ier, mem_space_id, space_id)
+    value = int(buf_i32, int64)
+  class default
+    error stop 'unknown variable type'
+  end select
+elseif(native_dtype == H5T_STD_I64LE) then
+  select type(value)
+  type is (real(real64))
+    allocate(buf_i64(size(value, 1), size(value, 2)))
+    call h5dread_f(ds_id, H5T_STD_I64LE, buf_i64, dims, ier, mem_space_id, space_id)
+    value = real(buf_i64, real64)
+  type is (real(real32))
+    allocate(buf_i64(size(value, 1), size(value, 2)))
+    call h5dread_f(ds_id, H5T_STD_I64LE, buf_i64, dims, ier, mem_space_id, space_id)
+    value = real(buf_i64, real32)
+  type is (integer(int32))
+    allocate(buf_i64(size(value, 1), size(value, 2)))
+    call h5dread_f(ds_id, H5T_STD_I64LE, buf_i64, dims, ier, mem_space_id, space_id)
+    value = int(buf_i64, int32)
+  type is (integer(int64))
+    call h5dread_f(ds_id, H5T_STD_I64LE, value, dims, ier, mem_space_id, space_id)
   class default
     error stop 'unknown variable type'
   end select
@@ -285,6 +375,7 @@ module procedure hdf_read_3d
 real(real32), allocatable :: buf_r32(:,:,:)
 real(real64), allocatable :: buf_r64(:,:,:)
 integer(int32), allocatable :: buf_i32(:,:,:)
+integer(int64), allocatable :: buf_i64(:,:,:)
 
 integer(HSIZE_T) :: dims(rank(value))
 integer(HID_T) :: ds_id, space_id, mem_space_id, native_dtype
@@ -325,6 +416,10 @@ if(native_dtype == H5T_NATIVE_DOUBLE) then
     allocate(buf_r64(size(value, 1), size(value, 2), size(value, 3)))
     call h5dread_f(ds_id, H5T_NATIVE_DOUBLE, buf_r64, dims, ier, mem_space_id, space_id)
     value = int(buf_r64, int32)
+  type is (integer(int64))
+    allocate(buf_r64(size(value, 1), size(value, 2), size(value, 3)))
+    call h5dread_f(ds_id, H5T_NATIVE_DOUBLE, buf_r64, dims, ier, mem_space_id, space_id)
+    value = int(buf_r64, int64)
   class default
     error stop 'unknown variable type'
   end select
@@ -340,6 +435,10 @@ elseif(native_dtype == H5T_NATIVE_REAL) then
     allocate(buf_r32(size(value, 1), size(value, 2), size(value, 3)))
     call h5dread_f(ds_id, H5T_NATIVE_REAL, buf_r32, dims, ier, mem_space_id, space_id)
     value = int(buf_r32, int32)
+  type is (integer(int64))
+    allocate(buf_r32(size(value, 1), size(value, 2), size(value, 3)))
+    call h5dread_f(ds_id, H5T_NATIVE_REAL, buf_r32, dims, ier, mem_space_id, space_id)
+    value = int(buf_r32, int64)
   class default
     error stop 'unknown variable type'
   end select
@@ -355,6 +454,29 @@ elseif(native_dtype == H5T_NATIVE_INTEGER) then
     value = real(buf_i32, real32)
   type is (integer(int32))
     call h5dread_f(ds_id, H5T_NATIVE_INTEGER, value, dims, ier, mem_space_id, space_id)
+  type is (integer(int64))
+    allocate(buf_i32(size(value, 1), size(value, 2), size(value, 3)))
+    call h5dread_f(ds_id, H5T_NATIVE_INTEGER, buf_i32, dims, ier, mem_space_id, space_id)
+    value = int(buf_i32, int64)
+  class default
+    error stop 'unknown variable type'
+  end select
+elseif(native_dtype == H5T_STD_I64LE) then
+  select type(value)
+  type is (real(real64))
+    allocate(buf_i64(size(value, 1), size(value, 2), size(value, 3)))
+    call h5dread_f(ds_id, H5T_STD_I64LE, buf_i64, dims, ier, mem_space_id, space_id)
+    value = real(buf_i64, real64)
+  type is (real(real32))
+    allocate(buf_i64(size(value, 1), size(value, 2), size(value, 3)))
+    call h5dread_f(ds_id, H5T_STD_I64LE, buf_i64, dims, ier, mem_space_id, space_id)
+    value = real(buf_i64, real32)
+  type is (integer(int32))
+    allocate(buf_i64(size(value, 1), size(value, 2), size(value, 3)))
+    call h5dread_f(ds_id, H5T_STD_I64LE, buf_i64, dims, ier, mem_space_id, space_id)
+    value = int(buf_i64, int32)
+  type is (integer(int64))
+    call h5dread_f(ds_id, H5T_STD_I64LE, value, dims, ier, mem_space_id, space_id)
   class default
     error stop 'unknown variable type'
   end select
