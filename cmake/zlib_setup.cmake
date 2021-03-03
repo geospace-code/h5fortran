@@ -8,7 +8,10 @@ else()
   set(ZLIB_name ${CMAKE_STATIC_LIBRARY_PREFIX}z${CMAKE_STATIC_LIBRARY_SUFFIX})
 endif()
 
-set(ZLIB_ROOT ${PROJECT_BINARY_DIR}/zlib)
+if(NOT DEFINED ZLIB_ROOT)
+  set(ZLIB_ROOT ${PROJECT_BINARY_DIR}/zlib)
+endif()
+
 set(ZLIB_INCLUDE_DIR ${ZLIB_ROOT}/include)
 set(ZLIB_LIBRARY ${ZLIB_ROOT}/lib/${ZLIB_name})
 

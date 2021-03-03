@@ -9,7 +9,9 @@ set(HDF5_VERSION 1.10.7)
 
 include(ExternalProject)
 
-set(HDF5_ROOT ${PROJECT_BINARY_DIR}/hdf5)
+if(NOT DEFINED HDF5_ROOT)
+  set(HDF5_ROOT ${PROJECT_BINARY_DIR}/hdf5)
+endif()
 
 set(HDF5_LIBRARIES)
 foreach(_name hdf5_hl_fortran hdf5_hl_f90cstub hdf5_fortran hdf5_f90cstub hdf5_hl hdf5)
