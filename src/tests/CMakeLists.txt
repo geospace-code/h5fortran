@@ -2,9 +2,13 @@ add_executable(test_minimal test_minimal.f90)
 # even though we're not using h5fortran, we're testing that HDF5 was linked
 # as part of h5fortran
 target_link_libraries(test_minimal PRIVATE h5fortran::h5fortran)
+set_target_properties(test_minimal PROPERTIES LABELS unit)
 add_test(NAME h5fortran:minimal
   COMMAND $<TARGET_FILE:test_minimal>)
-set_tests_properties(h5fortran:minimal PROPERTIES FIXTURES_SETUP h5lib)
+set_tests_properties(h5fortran:minimal PROPERTIES
+  FIXTURES_SETUP h5lib
+  TIMEOUT 5
+  LABELS unit)
 
 function(setup_test names)
 
@@ -21,10 +25,13 @@ target_link_libraries(test_${name} PRIVATE h5fortran::h5fortran)
 if(${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU)
   target_compile_options(test_${name} PRIVATE -Wno-compare-reals -Wno-conversion)
 endif()
+set_target_properties(test_${name} PROPERTIES LABELS unit)
 
 add_test(NAME h5fortran:${name}
   COMMAND $<TARGET_FILE:test_${name}>)
-set_tests_properties(h5fortran:${name} PROPERTIES FIXTURES_REQUIRED h5lib)
+set_tests_properties(h5fortran:${name} PROPERTIES
+  FIXTURES_REQUIRED h5lib
+  LABELS unit)
 
 
 if(${name} MATCHES ".*fail.*")
@@ -51,5 +58,6 @@ if(Python3_FOUND)
     DEPENDS h5fortran:shape
     REQUIRED_FILES ${CMAKE_CURRENT_BINARY_DIR}/test_shape.h5
     FIXTURES_REQUIRED h5lib
+    LABELS shaky
     TIMEOUT 90)
 endif(Python3_FOUND)
