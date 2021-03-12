@@ -152,9 +152,13 @@ endif()
 ctest_test(
   # set PARALLEL_LEVEL here as the global option seems to be ignored
   PARALLEL_LEVEL ${Ncpu}
+  # specify BUILD to avoid random return 255 despite tests passing
+  BUILD ${CTEST_BINARY_DIRECTORY}
+  SCHEDULE_RANDOM ON
+  REPEAT UNTIL_PASS:3
   RETURN_VALUE _ret
   CAPTURE_CMAKE_ERROR _err
-  REPEAT UNTIL_PASS:3)
+  )
 ctest_submit(PARTS Test)
 
 ctest_submit(
@@ -162,7 +166,7 @@ ctest_submit(
   BUILD_ID build_id)
 
 if(NOT (_ret EQUAL 0 AND _err EQUAL 0))
-  message(FATAL_ERROR "Build ${build_id} failed.")
+  message(FATAL_ERROR "Build ${build_id} failed: CTest code ${_ret}, CMake code ${_err}.")
 endif()
 
 message(STATUS "OK: CTest build ${build_id}")

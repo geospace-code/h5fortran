@@ -89,14 +89,10 @@ gfortran -I~/lib/h5fortran/include myprogram.f90 ~/lib/h5fortran/lib/libh5fortra
 
 ### [optional] create distributable archive
 
-If you wish to create a .zip archive that is usable on systems with compatible Fortran ABI:
+If you wish to create a .zip archive that is usable on systems with compatible Fortran ABI, after building:
 
 ```sh
-ctest -S setup.cmake
-
-cd build
-
-cpack
+cpack --config .\build\CPackConfig.cmake
 ```
 
 ### [optional] specify a particular HDF5 library
