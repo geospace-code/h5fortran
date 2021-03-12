@@ -1,13 +1,34 @@
 cmake_minimum_required(VERSION 3.15...3.20)
 
 set(CTEST_PROJECT_NAME "h5fortran")
-set(CTEST_NIGHTLY_START_TIME "01:00:00 UTC")
-set(CTEST_MODEL "Experimental")
-set(CTEST_SUBMIT_URL "https://my.cdash.org/submit.php?project=${CTEST_PROJECT_NAME}")
 
 set(CTEST_LABELS_FOR_SUBPROJECTS "unit;core;shaky")
 
 # --- boilerplate follows
+
+set(CTEST_NIGHTLY_START_TIME "01:00:00 UTC")
+set(CTEST_SUBMIT_URL "https://my.cdash.org/submit.php?project=${CTEST_PROJECT_NAME}")
+
+# --- Experimental, Nightly, Continuous
+# https://cmake.org/cmake/help/latest/manual/ctest.1.html#dashboard-client-modes
+if(NOT CTEST_MODEL)
+  if(DEFINED ENV{CTEST_MODEL})
+    set(CTEST_MODEL $ENV{CTEST_MODEL})
+  endif()
+endif()
+if(NOT CTEST_MODEL)
+  if(DEFINED ENV{CI})
+    set(CI $ENV{CI})
+    if(CI)
+      set(CTEST_MODEL "Continuous")
+    endif()
+  endif()
+endif()
+if(NOT CTEST_MODEL)
+  set(CTEST_MODEL "Experimental")
+endif()
+
+# --- other defaults
 set(CTEST_TEST_TIMEOUT 10)
 set(CTEST_OUTPUT_ON_FAILURE true)
 
@@ -30,11 +51,12 @@ if(NOT DEFINED CTEST_SITE)
   endif()
 endif()
 
+find_program(GIT_EXECUTABLE NAMES git REQUIRED)
+
 if(NOT DEFINED CTEST_BUILD_NAME)
   if(DEFINED ENV{CTEST_BUILD_NAME})
     set(CTEST_BUILD_NAME $ENV{CTEST_BUILD_NAME})
   else()
-    find_program(GIT_EXECUTABLE NAMES git REQUIRED)
     execute_process(COMMAND ${GIT_EXECUTABLE} describe --tags
       WORKING_DIRECTORY ${CTEST_SOURCE_DIRECTORY}
       OUTPUT_VARIABLE git_rev OUTPUT_STRIP_TRAILING_WHITESPACE
@@ -87,6 +109,27 @@ set(CTEST_NOTES_FILES "${CTEST_SCRIPT_DIRECTORY}/${CTEST_SCRIPT_NAME}")
 set(CTEST_SUBMIT_RETRY_COUNT 3)
 
 ctest_start(${CTEST_MODEL})
+
+if(CTEST_MODEL STREQUAL Nightly OR CTEST_MODEL STREQUAL Continuous)
+  # this erases local code changes i.e. anything not "git push" already is lost forever!
+  # we try to avoid that by guarding with a Git porcelain check
+  execute_process(COMMAND ${GIT_EXECUTABLE} status --porcelain
+    WORKING_DIRECTORY ${CTEST_SOURCE_DIRECTORY}
+    OUTPUT_VARIABLE _ret OUTPUT_STRIP_TRAILING_WHITESPACE
+    RESULT_VARIABLE _err)
+  if(NOT _err EQUAL 0)
+    message(FATAL_ERROR "CTest could not check Git porcelain status")
+  endif()
+  if(_ret)
+    message(FATAL_ERROR "CTest would have erased the non-Git Push'd changes, aborting instead of erasing.")
+  endif()
+
+  ctest_update(RETURN_VALUE _ret)
+  if(_ret EQUAL 0)
+    message(STATUS "No Git-updated files, so no need to test. CTest stopping.")
+    return()
+  endif()
+endif()
 
 ctest_configure(
   RETURN_VALUE _ret
