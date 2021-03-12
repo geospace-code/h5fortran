@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14...3.20)
+cmake_minimum_required(VERSION 3.15...3.20)
 
 set(CTEST_PROJECT_NAME "h5fortran")
 set(CTEST_NIGHTLY_START_TIME "01:00:00 UTC")
@@ -17,7 +17,7 @@ if(NOT DEFINED CTEST_BINARY_DIRECTORY)
 endif()
 
 if(NOT DEFINED CTEST_BUILD_CONFIGURATION)
-  set(CTEST_BUILD_CONFIGURATION "Release")
+  set(CTEST_BUILD_CONFIGURATION "RelWithDebInfo")
 endif()
 
 if(NOT DEFINED CTEST_SITE)
@@ -87,7 +87,6 @@ set(CTEST_NOTES_FILES "${CTEST_SCRIPT_DIRECTORY}/${CTEST_SCRIPT_NAME}")
 set(CTEST_SUBMIT_RETRY_COUNT 3)
 
 ctest_start(${CTEST_MODEL})
-# ctest_submit(PARTS Notes)
 
 ctest_configure(
   RETURN_VALUE _ret
@@ -112,8 +111,12 @@ ctest_test(
   REPEAT UNTIL_PASS:3)
 ctest_submit(PARTS Test)
 
-ctest_submit(PARTS Done)
+ctest_submit(
+  PARTS Done
+  BUILD_ID build_id)
 
 if(NOT (_ret EQUAL 0 AND _err EQUAL 0))
-  message(FATAL_ERROR "Build failed.")
+  message(FATAL_ERROR "Build ${build_id} failed.")
 endif()
+
+message(STATUS "OK: CTest build ${build_id}")

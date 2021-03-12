@@ -117,12 +117,12 @@ sysclock2ms = t * 1000._real64 / rate
 end function sysclock2ms
 
 
-subroutine unlink(file)
+subroutine std_unlink(file)
 character(*), intent(in) :: file
 integer :: u
 open(newunit=u, file=file)
 close(u, status="delete")
-end subroutine unlink
+end subroutine std_unlink
 
 
 subroutine bench_write(file, layout, dat, N)
@@ -189,7 +189,7 @@ end module h5layout
 program compact
 
 use hdf5
-use h5layout, only : bench_read, bench_write, unlink
+use h5layout, only : bench_read, bench_write, std_unlink
 
 implicit none (type, external)
 

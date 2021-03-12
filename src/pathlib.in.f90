@@ -34,15 +34,15 @@ endif
 end procedure is_absolute_path
 
 
-module procedure unlink
+module procedure std_unlink
 !! deletes file in Fortran standard manner.
 integer :: i, u
 
 open(newunit=u, file=filename, iostat=i)
 close(u, status='delete', iostat=i)
 
-inquire(file=filename, exist=unlink)
+inquire(file=filename, exist=std_unlink)
 
-end procedure unlink
+end procedure std_unlink
 
 end submodule pathlib
