@@ -8,7 +8,7 @@ add_test(NAME h5fortran:minimal
 set_tests_properties(h5fortran:minimal PROPERTIES
   FIXTURES_SETUP h5lib
   TIMEOUT 5
-  LABELS unit)
+  LABELS core)
 
 function(setup_test names)
 
@@ -30,12 +30,16 @@ set_target_properties(test_${name} PROPERTIES LABELS unit)
 add_test(NAME h5fortran:${name}
   COMMAND $<TARGET_FILE:test_${name}>)
 set_tests_properties(h5fortran:${name} PROPERTIES
-  FIXTURES_REQUIRED h5lib
-  LABELS unit)
+  FIXTURES_REQUIRED h5lib)
 
 
 if(${name} MATCHES ".*fail.*")
-  set_tests_properties(h5fortran:${name} PROPERTIES WILL_FAIL true)
+  set_tests_properties(h5fortran:${name} PROPERTIES
+    WILL_FAIL true
+    LABELS shaky)
+else()
+  set_tests_properties(h5fortran:${name} PROPERTIES
+    LABELS unit)
 endif()
 
 endforeach()

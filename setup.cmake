@@ -5,7 +5,7 @@ set(CTEST_NIGHTLY_START_TIME "01:00:00 UTC")
 set(CTEST_MODEL "Experimental")
 set(CTEST_SUBMIT_URL "https://my.cdash.org/submit.php?project=${CTEST_PROJECT_NAME}")
 
-set(CTEST_LABELS_FOR_SUBPROJECTS "unit;shaky")
+set(CTEST_LABELS_FOR_SUBPROJECTS "unit;core;shaky")
 
 # --- boilerplate follows
 set(CTEST_TEST_TIMEOUT 10)
@@ -51,6 +51,10 @@ if(NOT DEFINED CTEST_BUILD_NAME)
     endif()
   endif()
 endif()
+
+# for subproject labels
+set(CTEST_USE_LAUNCHERS 1)
+set(ENV{CTEST_USE_LAUNCHERS_DEFAULT} 1)
 
 # CTEST_CMAKE_GENERATOR must always be defined
 if(NOT DEFINED CTEST_CMAKE_GENERATOR AND CMAKE_VERSION VERSION_GREATER_EQUAL 3.17)
@@ -117,7 +121,15 @@ if(NOT (_ret EQUAL 0 AND _err EQUAL 0))
   message(FATAL_ERROR "Build failed.")
 endif()
 
-ctest_test(PARALLEL_LEVEL ${Ncpu})
+ctest_test(
+  PARALLEL_LEVEL ${Ncpu}
+  RETURN_VALUE _ret
+  CAPTURE_CMAKE_ERROR _err
+  REPEAT UNTIL_PASS:3)
 ctest_submit(PARTS Test)
 
 ctest_submit(PARTS Done)
+
+if(NOT (_ret EQUAL 0 AND _err EQUAL 0))
+  message(FATAL_ERROR "Build failed.")
+endif()
