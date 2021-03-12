@@ -47,6 +47,11 @@ def cli():
         help="top-level directory to build under (can be deleted when done)",
         default=tempfile.gettempdir(),
     )
+    p.add_argument(
+        "-git",
+        help="use current HDF5 git revision instead of download",
+        action="store_true",
+    )
     P = p.parse_args()
 
     compiler = P.compiler
@@ -71,7 +76,7 @@ def cli():
 
     dirs["zlib"] = zlib(dirs, urls["zlib"], env=env)
 
-    hdf5(dirs, urls["hdf5"], env=env)
+    hdf5(dirs, urls["hdf5"], env=env, download_git=P.git)
 
 
 def zlib(
@@ -111,13 +116,17 @@ def zlib(
     return install_dir
 
 
-def hdf5(dirs: T.Dict[str, Path], urls: T.Dict[str, str], env: T.Dict[str, str]):
+def hdf5(
+    dirs: T.Dict[str, Path],
+    urls: T.Dict[str, str],
+    env: T.Dict[str, str],
+    download_git: bool = False,
+):
     """build and install HDF5
 
     Git works, but we use release for stability/download speed
     """
 
-    download_git = False
     use_cmake = True
 
     name = "hdf5"
@@ -132,7 +141,7 @@ def hdf5(dirs: T.Dict[str, Path], urls: T.Dict[str, str], env: T.Dict[str, str])
         zlib_filename = "libz.a"
 
     if download_git:
-        git_download(source_dir, urls["url"], urls["tag"])
+        git_download(source_dir, urls["git"], urls["tag"])
     else:
         url = urls["url"]
         name += "-" + url.split("/")[-1].split(".")[0]
