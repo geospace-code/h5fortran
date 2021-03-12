@@ -1,6 +1,4 @@
 name: ci
-env:
-  CTEST_SITE: GitHubActions
 
 on:
   push:
@@ -17,6 +15,9 @@ jobs:
 
   linux:
     runs-on: ubuntu-20.04
+    env:
+      CTEST_SITE: GitHub_Ubuntu
+
     steps:
     - uses: actions/checkout@v2
 
@@ -94,6 +95,7 @@ jobs:
       HOMEBREW_NO_INSTALL_CLEANUP: 1
       CC: gcc-10
       FC: gfortran-10
+      CTEST_SITE: GitHub_MacOS
 
     steps:
     - uses: actions/checkout@v2

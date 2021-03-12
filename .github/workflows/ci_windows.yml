@@ -1,7 +1,7 @@
 name: ci_windows
 env:
   CMAKE_GENERATOR: Ninja
-  CTEST_SITE: GitHubActions
+  CTEST_SITE: GitHub_Windows
 
 on:
   push:
