@@ -56,15 +56,18 @@ jobs:
     #   working-directory: Examples/build
 
     - name: create package
+      if: github.event.action == 'published'
       run: cpack --config build/CPackConfig.cmake
 
     - name: Upload artifact
+      if: github.event.action == 'published'
       uses: actions/upload-artifact@v1
       with:
         name: binary-archive
         path: build/package
 
     - name: get version
+      if: github.event.action == 'published'
       id: get_version
       run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\/v/}
 
