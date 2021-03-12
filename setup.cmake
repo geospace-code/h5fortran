@@ -37,8 +37,8 @@ if(NOT DEFINED CTEST_BINARY_DIRECTORY)
   set(CTEST_BINARY_DIRECTORY ${CTEST_SOURCE_DIRECTORY}/build)
 endif()
 
-if(NOT DEFINED CTEST_BUILD_CONFIGURATION)
-  set(CTEST_BUILD_CONFIGURATION "RelWithDebInfo")
+if(NOT CTEST_BUILD_CONFIGURATION)
+  set(CTEST_BUILD_CONFIGURATION RelWithDebInfo)
 endif()
 
 if(NOT DEFINED CTEST_SITE)
@@ -132,6 +132,8 @@ if(CTEST_MODEL STREQUAL Nightly OR CTEST_MODEL STREQUAL Continuous)
 endif()
 
 ctest_configure(
+  # CMAKE_BUILD_TYPE here becuase the global option seems to be ignored
+  OPTIONS -DCMAKE_BUILD_TYPE=${CTEST_BUILD_CONFIGURATION}
   RETURN_VALUE _ret
   CAPTURE_CMAKE_ERROR _err)
 ctest_submit(PARTS Configure)
@@ -148,6 +150,7 @@ if(NOT (_ret EQUAL 0 AND _err EQUAL 0))
 endif()
 
 ctest_test(
+  # set PARALLEL_LEVEL here as the global option seems to be ignored
   PARALLEL_LEVEL ${Ncpu}
   RETURN_VALUE _ret
   CAPTURE_CMAKE_ERROR _err
