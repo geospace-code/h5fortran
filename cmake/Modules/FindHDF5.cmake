@@ -116,6 +116,10 @@ if(Threads_FOUND)
   list(APPEND CMAKE_REQUIRED_LIBRARIES Threads::Threads)
 endif()
 
+if(UNIX)
+  list(APPEND CMAKE_REQUIRED_LIBRARIES m)
+endif()
+
 set(CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} PARENT_SCOPE)
 
 endfunction(detect_config)
