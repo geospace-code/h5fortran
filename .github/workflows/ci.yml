@@ -1,4 +1,6 @@
 name: ci
+env:
+  CTEST_SITE: GitHubActions
 
 on:
   push:
