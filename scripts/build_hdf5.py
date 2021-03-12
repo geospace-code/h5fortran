@@ -30,7 +30,7 @@ if sys.version_info < (3, 6, 2):
 
 # ========= user parameters ======================
 BUILDDIR = "build"
-JSON_FILE = Path(__file__).parents[1] / "cmake/libraries.json"
+JSON_FILE = Path(__file__).resolve().parents[1] / "cmake/libraries.json"
 # ========= end of user parameters ================
 
 
