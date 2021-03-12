@@ -23,15 +23,14 @@ jobs:
         sudo apt update -yq
         sudo apt install -yq --no-install-recommends ninja-build gfortran libhdf5-dev
 
-    - run: cmake --preset=ninja -DCMAKE_INSTALL_PREFIX=~/hdf5
-    - run: cmake --build build --parallel
+    - run: ctest -S setup.cmake -V
+
+    - run: cmake -DCMAKE_INSTALL_PREFIX=~/hdf5
     - run: cmake --install build
-    - run: ctest --parallel 2 --output-on-failure
-      working-directory: build
 
     - name: configure examples
       run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=~/hdf5
-    - name: build exmaples
+    - name: build examples
       run: cmake --build Examples/build --parallel
     - name: Test examples
       run: ctest --parallel 2 --output-on-failure
@@ -63,14 +62,14 @@ jobs:
 
 
   linuxCmake313:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
 
     - name: install hdf5
       run: |
         sudo apt update -yq
-        sudo apt install -yq --no-install-recommends ninja-build gfortran libhdf5-dev
+        sudo apt install -yq --no-install-recommends gfortran libhdf5-dev
 
     - name: get CMake 3.13
       run: |
@@ -89,19 +88,17 @@ jobs:
     runs-on: macos-latest
     env:
       HOMEBREW_NO_INSTALL_CLEANUP: 1
+      CC: gcc-10
+      FC: gfortran-10
 
     steps:
     - uses: actions/checkout@v2
 
     - run: brew install hdf5 ninja
 
-    - run: cmake --preset=gcc10 -DCMAKE_INSTALL_PREFIX=~/hdf5
-    - run: cmake --build build --parallel
-    - run: cmake --install build
-    - run: ctest --parallel 2 --output-on-failure
-      working-directory: build
+    - run: ctest -S setup.cmake -V
 
-    # - run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=~/hdf5
+    # - run: cmake -S Examples -B Examples/build
     # - run: cmake --build Examples/build --parallel
     # - run: ctest --parallel 2 --output-on-failure
     #   working-directory: Examples/build

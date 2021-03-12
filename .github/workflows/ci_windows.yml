@@ -30,6 +30,7 @@ jobs:
   msys2:
     timeout-minutes: 15
     runs-on: windows-latest
+
     defaults:
       run:
         shell: msys2 {0}
@@ -46,13 +47,9 @@ jobs:
 
     - uses: actions/checkout@v2
 
-    - run: cmake --preset=ninja -DCMAKE_INSTALL_PREFIX=~/hdf5
-    - run: cmake --build build --parallel
-    - run: cmake --install build
-    - run: ctest --parallel 2 --output-on-failure
-      working-directory: build
+    - run: ctest -S setup.cmake -V
 
-    # - run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=~/hdf5
+    # - run: cmake -S Examples -B Examples/build
     # - run: cmake --build Examples/build --parallel
     # - run: ctest --parallel 2 --output-on-failure
     #   working-directory: Examples/build
