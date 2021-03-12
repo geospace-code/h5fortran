@@ -27,7 +27,7 @@ jobs:
 
     - run: ctest -S ci.cmake -V
 
-    - run: cmake -DCMAKE_INSTALL_PREFIX=~/hdf5
+    - run: cmake -B build -DCMAKE_INSTALL_PREFIX=~/hdf5
     - run: cmake --install build
 
     - name: configure examples
@@ -86,7 +86,6 @@ jobs:
 
 
   mac:
-    needs: linux
     runs-on: macos-latest
     env:
       HOMEBREW_NO_INSTALL_CLEANUP: 1
