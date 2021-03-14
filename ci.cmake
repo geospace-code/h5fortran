@@ -85,7 +85,7 @@ if(NOT DEFINED CTEST_CMAKE_GENERATOR)
   endif()
 endif()
 
-# --- test parallelism is used for setup and plotting
+# --- test parallelism
 include(ProcessorCount)
 
 function(cmake_cpu_count)
@@ -107,7 +107,7 @@ cmake_cpu_count()
 
 set(CTEST_NOTES_FILES "${CTEST_SCRIPT_DIRECTORY}/${CTEST_SCRIPT_NAME}")
 set(CTEST_SUBMIT_RETRY_COUNT 3)
-set(CTEST_UPDATE_COMMAND git)  # avoids auto-detect version control failures on some systemes
+set(CTEST_UPDATE_TYPE git)  # avoids auto-detect version control failures on some systemes
 
 ctest_start(${CTEST_MODEL})
 

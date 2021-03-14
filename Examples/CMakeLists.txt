@@ -12,10 +12,11 @@ list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/../cmake/Modules)
 find_package(HDF5 COMPONENTS Fortran REQUIRED)
 
 # --- Find our library
+if(NOT h5fortran_ROOT AND NOT DEFINED ENV{h5fortran_ROOT})
+  set(h5fortran_ROOT ${PROJECT_SOURCE_DIR}/../build)
+endif()
 
-set(CMAKE_FIND_PACKAGE_PREFER_CONFIG true)
-
-find_package(h5fortran REQUIRED PATHS ${PROJECT_SOURCE_DIR}/../build)
+find_package(h5fortran REQUIRED)
 
 # --- Fortran interface for examples
 add_library(fortran_interface fortran_interface.f90)

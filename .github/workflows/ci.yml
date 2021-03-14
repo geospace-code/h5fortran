@@ -15,6 +15,7 @@ jobs:
 
   linux:
     runs-on: ubuntu-20.04
+    timeout-minutes: 15
     env:
       CTEST_SITE: GitHub_Ubuntu
 
@@ -26,13 +27,16 @@ jobs:
         sudo apt update -yq
         sudo apt install -yq --no-install-recommends ninja-build gfortran libhdf5-dev
 
-    - run: ctest -S ci.cmake -V
+    - name: CDash
+      run: ctest -S ci.cmake -V
 
-    - run: cmake -B build -DCMAKE_INSTALL_PREFIX=~/hdf5
-    - run: cmake --install build
+    - name: Install package
+      run: |
+        cmake -B build -DCMAKE_INSTALL_PREFIX=~/h5fortran
+        cmake --install build
 
     - name: configure examples
-      run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=~/hdf5
+      run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=~/h5fortran
     - name: build examples
       run: cmake --build Examples/build --parallel
     - name: Test examples
@@ -69,6 +73,8 @@ jobs:
 
   linuxCmake313:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+
     steps:
     - uses: actions/checkout@v2
 
@@ -91,6 +97,7 @@ jobs:
 
   mac:
     runs-on: macos-latest
+    timeout-minutes: 20
     env:
       HOMEBREW_NO_INSTALL_CLEANUP: 1
       CC: gcc-10
@@ -102,12 +109,18 @@ jobs:
 
     - run: brew install hdf5 ninja
 
-    - run: ctest -S ci.cmake -V
+    - name: CDash
+      run: ctest -S ci.cmake -V
 
-    # - run: cmake -S Examples -B Examples/build
-    # - run: cmake --build Examples/build --parallel
-    # - run: ctest --parallel 2 --output-on-failure
-    #   working-directory: Examples/build
+    - name: Install package
+      run: |
+        cmake -B build -DCMAKE_INSTALL_PREFIX=~/h5fortran
+        cmake --install build
+
+    - run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=~/h5fortran
+    - run: cmake --build Examples/build --parallel
+    - run: ctest --parallel 2 --output-on-failure
+      working-directory: Examples/build
 
     - name: create package
       if: github.event.action == 'published'
