@@ -107,7 +107,9 @@ cmake_cpu_count()
 
 set(CTEST_NOTES_FILES "${CTEST_SCRIPT_DIRECTORY}/${CTEST_SCRIPT_NAME}")
 set(CTEST_SUBMIT_RETRY_COUNT 3)
-set(CTEST_UPDATE_TYPE git)  # avoids auto-detect version control failures on some systemes
+# avoid auto-detect version control failures on some systemes
+set(CTEST_UPDATE_TYPE git)
+set(CTEST_UPDATE_COMMAND git)
 
 ctest_start(${CTEST_MODEL})
 
