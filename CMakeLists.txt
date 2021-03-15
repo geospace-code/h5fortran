@@ -1,8 +1,11 @@
 cmake_minimum_required(VERSION 3.13...3.20)
 
+file(STRINGS ${CMAKE_CURRENT_SOURCE_DIR}/VERSION PROJECT_VERSION
+  REGEX "^([0-9]+\.[0-9]+\.[0-9]+)" LIMIT_INPUT 16 LENGTH_MAXIMUM 16 LIMIT_COUNT 1)
+
 project(h5fortran
   LANGUAGES C Fortran
-  VERSION 3.6.3
+  VERSION ${PROJECT_VERSION}
   DESCRIPTION "thin, light object-oriented HDF5 Fortran interface"
   HOMEPAGE_URL https://github.com/geospace-code/h5fortran)
 
@@ -62,6 +65,12 @@ add_subdirectory(src)
 if(${PROJECT_NAME}_BUILD_TESTING)
   add_subdirectory(src/tests)
 endif()
+
+# additional Find*.cmake necesary
+install(FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindHDF5.cmake
+  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindSZIP.cmake
+  DESTINATION lib/cmake/Modules)
 
 include(cmake/pkgconf.cmake)
 include(cmake/install.cmake)
