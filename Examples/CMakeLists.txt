@@ -5,13 +5,6 @@ LANGUAGES C CXX Fortran)
 
 include(CTest)
 
-list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/../cmake/Modules)
-
-# --- find external libraries
-
-find_package(HDF5 COMPONENTS Fortran REQUIRED)
-
-# --- Find our library
 if(NOT h5fortran_ROOT AND NOT DEFINED ENV{h5fortran_ROOT})
   set(h5fortran_ROOT ${PROJECT_SOURCE_DIR}/../build)
 endif()
