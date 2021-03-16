@@ -4,10 +4,17 @@ set(CTEST_PROJECT_NAME "h5fortran")
 
 set(CTEST_LABELS_FOR_SUBPROJECTS "unit;core;shaky")
 
+set(opts)
+
 # --- boilerplate follows
 
 set(CTEST_NIGHTLY_START_TIME "01:00:00 UTC")
 set(CTEST_SUBMIT_URL "https://my.cdash.org/submit.php?project=${CTEST_PROJECT_NAME}")
+
+# ctest -S doesn't have a way to pass -Dvar:type=value, so do this via env var
+# cannot pass in lists--use CMakePresets.json for list variables. Example:
+# ctest --preset=my1 -S setup.cmake
+list(APPEND opts $ENV{CTEST_${CTEST_PROJECT_NAME}_ARGS})
 
 # --- Experimental, Nightly, Continuous
 # https://cmake.org/cmake/help/latest/manual/ctest.1.html#dashboard-client-modes
@@ -37,9 +44,10 @@ if(NOT DEFINED CTEST_BINARY_DIRECTORY)
   set(CTEST_BINARY_DIRECTORY ${CTEST_SOURCE_DIRECTORY}/build)
 endif()
 
-if(NOT CTEST_BUILD_CONFIGURATION)
-  set(CTEST_BUILD_CONFIGURATION RelWithDebInfo)
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE RelWithDebInfo)
 endif()
+list(APPEND opts -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE})
 
 if(NOT DEFINED CTEST_SITE)
   if(DEFINED ENV{CTEST_SITE})
@@ -137,7 +145,7 @@ cmake_cpu_count()
 
 set(CTEST_NOTES_FILES "${CTEST_SCRIPT_DIRECTORY}/${CTEST_SCRIPT_NAME}")
 set(CTEST_SUBMIT_RETRY_COUNT 3)
-# avoid auto-detect version control failures on some systemes
+# avoid auto-detect version control failures on some systems
 set(CTEST_UPDATE_TYPE git)
 set(CTEST_UPDATE_COMMAND git)
 
@@ -165,8 +173,7 @@ if(CTEST_MODEL STREQUAL Nightly OR CTEST_MODEL STREQUAL Continuous)
 endif()
 
 ctest_configure(
-  # CMAKE_BUILD_TYPE here becuase the global option seems to be ignored
-  OPTIONS -DCMAKE_BUILD_TYPE=${CTEST_BUILD_CONFIGURATION}
+  OPTIONS "${opts}"
   RETURN_VALUE _ret
   CAPTURE_CMAKE_ERROR _err)
 ctest_submit(PARTS Configure)
