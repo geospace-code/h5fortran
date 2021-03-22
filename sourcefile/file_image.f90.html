@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+   
+   <meta name="description" content="Object-oriented Fortran 2008 HDF5 interface">
+    
+    <meta name="author" content="Michael Hirsch, Ph.D." >
+    <link rel="icon" href="../favicon.png">
+
+    <title>file_image.f90 &ndash; Object-oriented Fortran 2008 HDF5 interface</title>
+
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/pygments.css" rel="stylesheet">
+    <link href="../css/font-awesome.min.css" rel="stylesheet">
+    <link href="../css/local.css" rel="stylesheet">
+    
+    <link  href="../tipuesearch/tipuesearch.css" rel="stylesheet">
+    
+    
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    
+    <script src="../js/jquery-2.1.3.min.js"></script>
+    <script src="../js/svg-pan-zoom.min.js"></script>
+
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../index.html">Object-oriented Fortran 2008 HDF5 interface </a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+        
+            <li class="dropdown hidden-xs visible-sm visible-md hidden-lg">
+              <a href="#" class="dropdown-toggle"
+              data-toggle="dropdown" role="button"
+              aria-haspopup="true"
+     aria-expanded="false">Contents <span class="caret"></span></a>
+        <ul class="dropdown-menu">
+          
+              
+            <li><a href="../lists/files.html">Source Files</a></li>
+        
+        
+        
+            <li><a href="../lists/modules.html">Modules</a></li>
+        
+            
+                                
+            <li><a href="../lists/procedures.html">Procedures</a></li>
+        
+               
+            <li><a href="../lists/types.html">Derived Types</a></li>
+        
+        
+            <li><a href="../lists/programs.html">Programs</a></li>
+        
+            </ul>
+            </li>
+
+
+<li class="visible-xs hidden-sm visible-lg"><a href="../lists/files.html">Source Files</a></li>
+
+
+
+<li class="visible-xs hidden-sm visible-lg"><a href="../lists/modules.html">Modules</a></li>
+
+
+
+<li class="visible-xs hidden-sm visible-lg"><a href="../lists/procedures.html">Procedures</a></li>
+
+                             
+<li class="visible-xs hidden-sm visible-lg"><a href="../lists/types.html">Derived Types</a></li>
+
+
+<li class="visible-xs hidden-sm visible-lg"><a href="../lists/programs.html">Programs</a></li>
+
+          </ul>
+        
+        <form action="../search.html" class="navbar-form navbar-right" role="search">
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+        </div>
+<!--
+        <button type="submit" class="btn btn-default">Submit</button>
+-->
+        </form>
+        
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+    
+  
+  <div class="row">
+    <h1>file_image.f90
+    <small>Source File</small>
+    
+    </h1>
+    
+<div class="row">
+  <div class="col-lg-12">
+<div class="well well-sm">
+  <ul class="list-inline" style="margin-bottom:0px;display:inline">
+     
+     
+     
+     
+    
+    
+     <li><i class="fa fa-list-ol"></i>
+       <a data-toggle="tooltip"
+    data-placement="bottom" data-html="true"
+    title=" 2.5% of total for source files.">76 statements</a>
+     </li> 
+     
+     
+     
+    <li><i class="fa fa-code"></i><a href="../src/file_image.f90"> Source File</a></li>
+     
+     
+  </ul>
+  <ol class="breadcrumb in-well text-right">
+  
+    
+  
+     <li class="active">file_image.f90</li>
+  </ol>
+</div>
+</div>
+</div>
+<script>
+  $(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+  })
+</script>
+
+  </div>
+  <div class="row">
+    <div class="col-md-3 hidden-xs hidden-sm visible-md visible-lg">
+    
+<div id="sidebar">
+  
+<h3>Contents</h3>
+ 
+
+
+
+
+
+
+<div class="panel panel-primary">
+  <div class="panel-heading text-left"><h3 class="panel-title"><a data-toggle="collapse" href="#progs-0">Programs</a></h3></div>
+  <div id="progs-0" class="panel-collapse collapse">
+    <div class="list-group">
+      
+      <a class="list-group-item" href="../program/test_file_image.html">test_file_image</a>
+      
+    </div>
+  </div>
+</div>
+
+
+
+<div class="panel panel-primary">
+  <div class="panel-heading text-left"><h3 class="panel-title"><a data-toggle="collapse" href="#mods-0">Modules</a></h3></div>
+  <div id="mods-0" class="panel-collapse collapse">
+    <div class="list-group">
+      
+      <a class="list-group-item" href="../module/file_image.html">file_image</a>
+      
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="panel panel-primary">
+  <div class="panel-heading text-left"><h3 class="panel-title">Source Code</h3></div>
+  <div class="list-group">
+    <a class="list-group-item" href="../sourcefile/file_image.f90.html#src">file_image.f90</a>
+  </div>
+</div>
+
+
+
+</div>
+
+    </div>
+    <div class="col-md-9" id='text'>
+      
+      <br>
+    
+      
+      
+
+    <section class="visible-xs visible-sm hidden-md">
+      
+<h3>Contents</h3>
+ 
+
+
+
+
+
+
+<div class="panel panel-primary">
+  <div class="panel-heading text-left"><h3 class="panel-title"><a data-toggle="collapse" href="#progs-1">Programs</a></h3></div>
+  <div id="progs-1" class="panel-collapse collapse">
+    <div class="list-group">
+      
+      <a class="list-group-item" href="../program/test_file_image.html">test_file_image</a>
+      
+    </div>
+  </div>
+</div>
+
+
+
+<div class="panel panel-primary">
+  <div class="panel-heading text-left"><h3 class="panel-title"><a data-toggle="collapse" href="#mods-1">Modules</a></h3></div>
+  <div id="mods-1" class="panel-collapse collapse">
+    <div class="list-group">
+      
+      <a class="list-group-item" href="../module/file_image.html">file_image</a>
+      
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="panel panel-primary">
+  <div class="panel-heading text-left"><h3 class="panel-title">Source Code</h3></div>
+  <div class="list-group">
+    <a class="list-group-item" href="../sourcefile/file_image.f90.html#src">file_image.f90</a>
+  </div>
+</div>
+
+
+
+    </section>
+    <br class="visible-xs visible-sm hidden-md">
+
+    <section>
+      <h2><span class="anchor" id="src"></span>Source Code</h2>
+    <div class="hl"><pre><span></span><a name="ln-1"></a><span class="k">module </span><span class="n">file_image</span>
+<a name="ln-2"></a><span class="c">!! HDF5 file images are an in-RAM fast HDF5 virtual file.</span>
+<a name="ln-3"></a><span class="c">!! there are many caveats to their use and they might never be included in h5fortran</span>
+<a name="ln-4"></a>
+<a name="ln-5"></a><span class="k">use</span><span class="p">,</span> <span class="k">intrinsic</span> <span class="kd">::</span> <span class="n">iso_fortran_env</span><span class="p">,</span> <span class="k">only</span> <span class="p">:</span> <span class="n">stderr</span><span class="o">=&gt;</span><span class="n">error_unit</span><span class="p">,</span> <span class="n">real32</span><span class="p">,</span> <span class="n">real64</span><span class="p">,</span> <span class="n">int32</span>
+<a name="ln-6"></a><span class="k">use</span><span class="p">,</span> <span class="k">intrinsic</span> <span class="kd">::</span> <span class="nb">iso_c_binding</span><span class="p">,</span> <span class="k">only</span> <span class="p">:</span> <span class="kt">c_ptr</span><span class="p">,</span> <span class="nb">c_loc</span><span class="p">,</span> <span class="nb">c_sizeof</span><span class="p">,</span> <span class="nb">c_associated</span>
+<a name="ln-7"></a><span class="k">use </span><span class="n">hdf5</span><span class="p">,</span> <span class="k">only</span> <span class="p">:</span>  <span class="n">h5pcreate_f</span><span class="p">,</span> <span class="n">h5pclose_f</span><span class="p">,</span> <span class="p">&amp;</span>
+<a name="ln-8"></a> <span class="n">h5pset_file_image_f</span><span class="p">,</span> <span class="n">h5pget_file_image_f</span><span class="p">,</span> <span class="p">&amp;</span>
+<a name="ln-9"></a> <span class="n">H5P_FILE_ACCESS_F</span><span class="p">,</span> <span class="n">hid_t</span><span class="p">,</span> <span class="n">size_t</span><span class="p">,</span> <span class="p">&amp;</span>
+<a name="ln-10"></a> <span class="n">h5open_f</span><span class="p">,</span> <span class="n">h5close_f</span>
+<a name="ln-11"></a>
+<a name="ln-12"></a><span class="c">!  use h5lt, only : H5LTopen_file_image_f</span>
+<a name="ln-13"></a><span class="c">!! h5ltopen_file_image_f does NOT exist yet as of HDF5 1.12.0. The API was specified for HDF5 1.8.9,</span>
+<a name="ln-14"></a><span class="c">!! but never implemented (yet).</span>
+<a name="ln-15"></a>
+<a name="ln-16"></a><span class="k">implicit none</span> <span class="p">(</span><span class="k">type</span><span class="p">,</span> <span class="k">external</span><span class="p">)</span>
+<a name="ln-17"></a><span class="k">private</span>
+<a name="ln-18"></a><span class="k">public</span> <span class="kd">::</span> <span class="n">hid_t</span><span class="p">,</span> <span class="n">create_file_image</span><span class="p">,</span> <span class="n">close_file_image</span><span class="p">,</span> <span class="n">write_file_image</span><span class="p">,</span> <span class="n">read_file_image</span>
+<a name="ln-19"></a>
+<a name="ln-20"></a><span class="k">contains</span>
+<a name="ln-21"></a>
+<a name="ln-22"></a><span class="k">subroutine </span><span class="n">create_file_image</span><span class="p">(</span><span class="n">fapl_id</span><span class="p">)</span>
+<a name="ln-23"></a>
+<a name="ln-24"></a><span class="kt">integer</span><span class="p">(</span><span class="n">hid_t</span><span class="p">),</span> <span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span> <span class="kd">::</span> <span class="n">fapl_id</span>
+<a name="ln-25"></a>
+<a name="ln-26"></a><span class="kt">integer</span><span class="p">(</span><span class="n">size_t</span><span class="p">)</span> <span class="kd">::</span> <span class="n">b_size</span>
+<a name="ln-27"></a><span class="kt">integer</span> <span class="kd">::</span> <span class="n">ier</span>
+<a name="ln-28"></a><span class="k">type</span><span class="p">(</span><span class="kt">C_PTR</span><span class="p">)</span> <span class="kd">::</span> <span class="n">f_ptr</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">1</span><span class="p">)</span>
+<a name="ln-29"></a>
+<a name="ln-30"></a><span class="c">!&gt; open HDF5 library</span>
+<a name="ln-31"></a><span class="k">call </span><span class="n">h5open_f</span><span class="p">(</span><span class="n">ier</span><span class="p">)</span>
+<a name="ln-32"></a><span class="k">if</span><span class="p">(</span><span class="n">ier</span><span class="o">/=</span><span class="mi">0</span><span class="p">)</span> <span class="k">error stop</span> <span class="s1">&#39;could not open HDF5 library&#39;</span>
+<a name="ln-33"></a>
+<a name="ln-34"></a><span class="c">!&gt; create file property ID &quot;fapl_id&quot;</span>
+<a name="ln-35"></a><span class="k">call </span><span class="n">h5pcreate_f</span><span class="p">(</span><span class="n">H5P_FILE_ACCESS_F</span><span class="p">,</span> <span class="n">fapl_id</span><span class="p">,</span> <span class="n">ier</span><span class="p">)</span>
+<a name="ln-36"></a><span class="k">if</span> <span class="p">(</span><span class="n">ier</span><span class="o">/=</span><span class="mi">0</span><span class="p">)</span> <span class="k">error stop</span> <span class="s1">&#39;h5pcreate_f&#39;</span>
+<a name="ln-37"></a>
+<a name="ln-38"></a><span class="c">!&gt; create and check empty buffer</span>
+<a name="ln-39"></a><span class="k">call </span><span class="n">h5pget_file_image_f</span><span class="p">(</span><span class="n">fapl_id</span><span class="p">,</span> <span class="n">f_ptr</span><span class="p">,</span> <span class="n">b_size</span><span class="p">,</span> <span class="n">ier</span><span class="p">)</span>
+<a name="ln-40"></a><span class="k">if</span> <span class="p">(</span><span class="n">ier</span><span class="o">/=</span><span class="mi">0</span><span class="p">)</span> <span class="k">error stop</span> <span class="s1">&#39;h5pget_file_image: create buffer&#39;</span>
+<a name="ln-41"></a><span class="k">if</span> <span class="p">(</span><span class="n">b_size</span> <span class="o">/=</span> <span class="mi">0</span><span class="p">)</span> <span class="k">error stop</span> <span class="s1">&#39;expected empty buffer&#39;</span>
+<a name="ln-42"></a>
+<a name="ln-43"></a><span class="k">end subroutine </span><span class="n">create_file_image</span>
+<a name="ln-44"></a>
+<a name="ln-45"></a>
+<a name="ln-46"></a><span class="k">subroutine </span><span class="n">write_file_image</span><span class="p">(</span><span class="k">data</span><span class="p">,</span> <span class="n">fapl_id</span><span class="p">)</span>
+<a name="ln-47"></a><span class="c">!! polymorphic in future implementation</span>
+<a name="ln-48"></a>
+<a name="ln-49"></a><span class="kt">integer</span><span class="p">(</span><span class="n">hid_t</span><span class="p">),</span> <span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span> <span class="kd">::</span> <span class="n">fapl_id</span>
+<a name="ln-50"></a><span class="kt">integer</span><span class="p">,</span> <span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span> <span class="kd">::</span> <span class="k">data</span><span class="p">(:)</span>
+<a name="ln-51"></a>
+<a name="ln-52"></a><span class="kt">integer</span><span class="p">,</span> <span class="k">dimension</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">size</span><span class="p">(</span><span class="k">data</span><span class="p">)),</span> <span class="k">target</span> <span class="kd">::</span> <span class="n">buffer</span>
+<a name="ln-53"></a><span class="k">type</span><span class="p">(</span><span class="kt">c_ptr</span><span class="p">)</span> <span class="kd">::</span> <span class="n">f_ptr</span>
+<a name="ln-54"></a><span class="kt">integer</span> <span class="kd">::</span> <span class="n">ier</span>
+<a name="ln-55"></a>
+<a name="ln-56"></a><span class="c">!&gt; write data to HDF5 file image</span>
+<a name="ln-57"></a><span class="n">buffer</span> <span class="o">=</span> <span class="k">data</span>
+<a name="ln-58"></a><span class="n">f_ptr</span> <span class="o">=</span> <span class="nb">c_loc</span><span class="p">(</span><span class="n">buffer</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<a name="ln-59"></a><span class="k">call </span><span class="n">h5pset_file_image_f</span><span class="p">(</span><span class="n">fapl_id</span><span class="p">,</span> <span class="n">f_ptr</span><span class="p">,</span> <span class="nb">c_sizeof</span><span class="p">(</span><span class="n">buffer</span><span class="p">),</span> <span class="n">ier</span><span class="p">)</span>
+<a name="ln-60"></a><span class="k">if</span><span class="p">(</span><span class="n">ier</span><span class="o">/=</span><span class="mi">0</span><span class="p">)</span> <span class="k">error stop</span> <span class="s1">&#39;h5pset_file_image_f: set buffer size&#39;</span>
+<a name="ln-61"></a>
+<a name="ln-62"></a><span class="k">end subroutine </span><span class="n">write_file_image</span>
+<a name="ln-63"></a>
+<a name="ln-64"></a>
+<a name="ln-65"></a><span class="k">subroutine </span><span class="n">read_file_image</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="n">fapl_id</span><span class="p">)</span>
+<a name="ln-66"></a>
+<a name="ln-67"></a><span class="kt">integer</span><span class="p">(</span><span class="n">hid_t</span><span class="p">),</span> <span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span> <span class="kd">::</span> <span class="n">fapl_id</span>
+<a name="ln-68"></a><span class="kt">integer</span><span class="p">,</span> <span class="k">dimension</span><span class="p">(:),</span> <span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">),</span> <span class="k">target</span> <span class="kd">::</span> <span class="n">buffer</span>
+<a name="ln-69"></a>
+<a name="ln-70"></a><span class="k">type</span><span class="p">(</span><span class="kt">c_ptr</span><span class="p">)</span> <span class="kd">::</span> <span class="n">f_ptr</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">size</span><span class="p">(</span><span class="n">buffer</span><span class="p">))</span>
+<a name="ln-71"></a><span class="kt">integer</span><span class="p">(</span><span class="n">size_t</span><span class="p">)</span> <span class="kd">::</span> <span class="n">b_size</span>
+<a name="ln-72"></a><span class="kt">integer</span> <span class="kd">::</span> <span class="n">i</span><span class="p">,</span> <span class="n">buffer_size</span>
+<a name="ln-73"></a>
+<a name="ln-74"></a><span class="n">buffer_size</span> <span class="o">=</span> <span class="n">size</span><span class="p">(</span><span class="n">buffer</span><span class="p">)</span> <span class="o">*</span> <span class="nb">storage_size</span><span class="p">(</span><span class="n">int32</span><span class="p">)</span> <span class="o">/</span> <span class="mi">8</span>
+<a name="ln-75"></a>
+<a name="ln-76"></a><span class="k">do </span><span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="p">(</span><span class="n">buffer</span><span class="p">)</span>
+<a name="ln-77"></a>  <span class="n">f_ptr</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">=</span> <span class="nb">C_LOC</span><span class="p">(</span><span class="n">buffer</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+<a name="ln-78"></a><span class="k">enddo</span>
+<a name="ln-79"></a>
+<a name="ln-80"></a><span class="k">call </span><span class="n">h5pget_file_image_f</span><span class="p">(</span><span class="n">fapl_id</span><span class="p">,</span> <span class="n">f_ptr</span><span class="p">,</span> <span class="n">b_size</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+<a name="ln-81"></a><span class="k">if</span><span class="p">(</span><span class="n">i</span><span class="o">/=</span><span class="mi">0</span><span class="p">)</span> <span class="k">error stop</span> <span class="s1">&#39;read_file_image: could not read buffer&#39;</span>
+<a name="ln-82"></a><span class="k">if</span><span class="p">(</span><span class="n">b_size</span> <span class="o">/=</span> <span class="n">buffer_size</span><span class="p">)</span> <span class="k">then</span>
+<a name="ln-83"></a><span class="k">  write</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="o">*</span><span class="p">)</span> <span class="s2">&quot;variable size: &quot;</span><span class="p">,</span> <span class="n">buffer_size</span><span class="p">,</span> <span class="s2">&quot; /= file_image size: &quot;</span><span class="p">,</span><span class="n">b_size</span>
+<a name="ln-84"></a>  <span class="k">error stop</span> <span class="s1">&#39;read_file_image: variable size /= file_image size&#39;</span>
+<a name="ln-85"></a><span class="k">endif</span>
+<a name="ln-86"></a>
+<a name="ln-87"></a><span class="k">end subroutine </span><span class="n">read_file_image</span>
+<a name="ln-88"></a>
+<a name="ln-89"></a>
+<a name="ln-90"></a><span class="k">subroutine </span><span class="n">close_file_image</span><span class="p">(</span><span class="n">fapl_id</span><span class="p">)</span>
+<a name="ln-91"></a>
+<a name="ln-92"></a><span class="kt">integer</span><span class="p">(</span><span class="n">hid_t</span><span class="p">),</span> <span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span> <span class="kd">::</span> <span class="n">fapl_id</span>
+<a name="ln-93"></a><span class="kt">integer</span> <span class="kd">::</span> <span class="n">i</span>
+<a name="ln-94"></a>
+<a name="ln-95"></a><span class="c">!&gt; close file image and library</span>
+<a name="ln-96"></a><span class="k">call </span><span class="n">h5pclose_f</span><span class="p">(</span><span class="n">fapl_id</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+<a name="ln-97"></a><span class="k">if</span> <span class="p">(</span><span class="n">i</span><span class="o">/=</span><span class="mi">0</span><span class="p">)</span> <span class="k">error stop</span> <span class="s1">&#39;problem closing file image&#39;</span>
+<a name="ln-98"></a>
+<a name="ln-99"></a><span class="k">call </span><span class="n">h5close_f</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+<a name="ln-100"></a><span class="k">if</span> <span class="p">(</span><span class="n">i</span><span class="o">/=</span><span class="mi">0</span><span class="p">)</span> <span class="k">error stop</span> <span class="s1">&#39;problem closing HDF5 library&#39;</span>
+<a name="ln-101"></a>
+<a name="ln-102"></a>
+<a name="ln-103"></a><span class="k">end subroutine </span><span class="n">close_file_image</span>
+<a name="ln-104"></a>
+<a name="ln-105"></a>
+<a name="ln-106"></a><span class="k">end module </span><span class="n">file_image</span>
+<a name="ln-107"></a>
+<a name="ln-108"></a>
+<a name="ln-109"></a><span class="k">program </span><span class="n">test_file_image</span>
+<a name="ln-110"></a>
+<a name="ln-111"></a><span class="k">use</span><span class="p">,</span> <span class="k">intrinsic</span> <span class="kd">::</span> <span class="n">iso_fortran_env</span><span class="p">,</span> <span class="k">only</span> <span class="p">:</span> <span class="n">stderr</span><span class="o">=&gt;</span><span class="n">error_unit</span>
+<a name="ln-112"></a><span class="k">use </span><span class="n">file_image</span><span class="p">,</span> <span class="k">only</span> <span class="p">:</span> <span class="n">create_file_image</span><span class="p">,</span> <span class="n">write_file_image</span><span class="p">,</span> <span class="n">read_file_image</span><span class="p">,</span> <span class="n">close_file_image</span><span class="p">,</span> <span class="n">hid_t</span>
+<a name="ln-113"></a>
+<a name="ln-114"></a><span class="k">implicit none</span> <span class="p">(</span><span class="k">type</span><span class="p">,</span> <span class="k">external</span><span class="p">)</span>
+<a name="ln-115"></a>
+<a name="ln-116"></a><span class="kt">integer</span><span class="p">(</span><span class="n">hid_t</span><span class="p">)</span> <span class="kd">::</span> <span class="n">fapl_id</span>
+<a name="ln-117"></a>
+<a name="ln-118"></a><span class="kt">integer</span><span class="p">,</span> <span class="k">dimension</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">8</span><span class="p">)</span> <span class="kd">::</span> <span class="n">in</span><span class="p">,</span> <span class="n">out</span>
+<a name="ln-119"></a><span class="c">!! arbitrary user data</span>
+<a name="ln-120"></a>
+<a name="ln-121"></a><span class="n">in</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">129</span><span class="p">,</span> <span class="o">-</span><span class="mi">13</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">42</span><span class="p">]</span>
+<a name="ln-122"></a>
+<a name="ln-123"></a><span class="k">call </span><span class="n">create_file_image</span><span class="p">(</span><span class="n">fapl_id</span><span class="p">)</span>
+<a name="ln-124"></a>
+<a name="ln-125"></a><span class="k">call </span><span class="n">write_file_image</span><span class="p">(</span><span class="n">in</span><span class="p">,</span> <span class="n">fapl_id</span><span class="p">)</span>
+<a name="ln-126"></a>
+<a name="ln-127"></a><span class="k">call </span><span class="n">read_file_image</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">fapl_id</span><span class="p">)</span>
+<a name="ln-128"></a>
+<a name="ln-129"></a><span class="k">call </span><span class="n">close_file_image</span><span class="p">(</span><span class="n">fapl_id</span><span class="p">)</span>
+<a name="ln-130"></a>
+<a name="ln-131"></a><span class="k">if</span> <span class="p">(</span><span class="nb">any</span><span class="p">(</span><span class="n">in</span> <span class="o">/=</span> <span class="n">out</span><span class="p">))</span> <span class="k">then</span>
+<a name="ln-132"></a><span class="k">  write</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="o">*</span><span class="p">)</span> <span class="s1">&#39;in=&#39;</span><span class="p">,</span><span class="n">in</span>
+<a name="ln-133"></a>  <span class="k">write</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="o">*</span><span class="p">)</span> <span class="s1">&#39;out=&#39;</span><span class="p">,</span><span class="n">out</span>
+<a name="ln-134"></a>  <span class="k">error stop</span> <span class="s1">&#39;output data does not match input data&#39;</span>
+<a name="ln-135"></a><span class="k">endif</span>
+<a name="ln-136"></a>
+<a name="ln-137"></a><span class="k">print</span> <span class="o">*</span><span class="p">,</span> <span class="s1">&#39;OK: file image prototype&#39;</span>
+<a name="ln-138"></a>
+<a name="ln-139"></a><span class="k">end program</span>
+</pre></div>
+
+    </section>
+    </div>
+  </div>
+
+  
+    <hr>    
+    </div> <!-- /container -->
+    <footer>
+      <div class="container">
+      <div class="row">
+        <div class="col-xs-6 col-md-4"><p>&copy; 2021 <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /></a>
+                                          </p></div>
+        <div class="col-xs-6 col-md-4 col-md-push-4">
+          <p class="text-right">
+            Documentation generated by 
+            <a href="https://github.com/cmacmackin/ford">FORD</a>
+            
+          </p>
+        </div>
+        <div class="col-xs-12 col-md-4 col-md-pull-4"><p class="text-center"> Object-oriented Fortran 2008 HDF5 interface was developed by Michael Hirsch, Ph.D.</p></div>
+      </div>
+      <br>
+      </div> <!-- /container -->    
+    </footer>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+<!--
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+-->
+    <script src="../js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../js/ie10-viewport-bug-workaround.js"></script>
+
+    <!-- MathJax JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } },
+        jax: ['input/TeX','input/MathML','output/HTML-CSS'],
+        extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']
+      });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    
+    <script src="../tipuesearch/tipuesearch_content.js"></script>
+    <script src="../tipuesearch/tipuesearch_set.js"></script>
+    <script src="../tipuesearch/tipuesearch.js"></script>
+    
+    
+  </body>
+</html>

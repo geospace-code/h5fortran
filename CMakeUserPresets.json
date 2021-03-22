@@ -1,0 +1,20 @@
+{
+"version": 2,
+"cmakeMinimumRequired": {
+  "major": 3,
+  "minor": 20,
+  "patch": 0
+},
+
+"testPresets": [
+  {
+    "name": "ninja",
+    "configurePreset": "ninja",
+    "output": {"outputOnFailure": true},
+    "execution": {
+      "noTestsAction": "error",
+      "repeat": {"mode": "until-pass", "count": 3}
+    }
+  }
+]
+}
