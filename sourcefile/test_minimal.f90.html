@@ -130,7 +130,7 @@
      <li><i class="fa fa-list-ol"></i>
        <a data-toggle="tooltip"
     data-placement="bottom" data-html="true"
-    title=" 1.2% of total for source files.">28 statements</a>
+    title=" 0.8% of total for source files.">24 statements</a>
      </li> 
      
      
@@ -266,43 +266,41 @@
     <section>
       <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="hl"><pre><span></span><a name="ln-1"></a><span class="k">program </span><span class="n">test_minimal</span>
-<a name="ln-2"></a><span class="k">use </span><span class="n">hdf5</span><span class="p">,</span> <span class="n">only</span> <span class="p">:</span> <span class="n">HID_T</span><span class="p">,</span> <span class="n">HSIZE_T</span><span class="p">,</span> <span class="n">H5_INTEGER_KIND</span><span class="p">,</span> <span class="n">h5kind_to_type</span><span class="p">,</span> <span class="n">h5open_f</span><span class="p">,</span> <span class="n">h5close_f</span><span class="p">,</span> <span class="n">h5fclose_f</span><span class="p">,</span> <span class="n">h5fcreate_f</span><span class="p">,</span> <span class="n">H5F_ACC_TRUNC_F</span>
-<a name="ln-3"></a><span class="k">use </span><span class="n">h5lt</span><span class="p">,</span> <span class="n">only</span> <span class="p">:</span> <span class="n">h5ltmake_dataset_f</span>
-<a name="ln-4"></a>
-<a name="ln-5"></a><span class="k">implicit none</span>
-<a name="ln-6"></a>
-<a name="ln-7"></a><span class="kt">integer</span> <span class="kd">::</span> <span class="n">ierr</span><span class="p">,</span> <span class="n">p</span>
-<a name="ln-8"></a><span class="kt">integer</span><span class="p">(</span><span class="n">HID_T</span><span class="p">)</span> <span class="kd">::</span> <span class="n">lid</span>
-<a name="ln-9"></a><span class="kt">character</span><span class="p">(:),</span> <span class="k">allocatable</span> <span class="kd">::</span> <span class="n">filename</span>
-<a name="ln-10"></a><span class="kt">character</span><span class="p">(</span><span class="mi">256</span><span class="p">)</span> <span class="kd">::</span> <span class="n">argv</span>
-<a name="ln-11"></a><span class="kt">integer</span> <span class="kd">::</span> <span class="n">i</span><span class="p">,</span><span class="n">l</span>
-<a name="ln-12"></a>
-<a name="ln-13"></a><span class="k">call </span><span class="nb">get_command_argument</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">argv</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="n">l</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">i</span><span class="p">)</span>
-<a name="ln-14"></a><span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">/=</span> <span class="mi">0</span> <span class="p">.</span><span class="nb">or</span><span class="p">.</span> <span class="n">l</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="n">argv</span> <span class="o">=</span> <span class="s1">&#39;./&#39;</span>
-<a name="ln-15"></a><span class="n">filename</span> <span class="o">=</span> <span class="nb">trim</span><span class="p">(</span><span class="n">argv</span><span class="p">)</span> <span class="o">//</span> <span class="s1">&#39;/junk_minimal.h5&#39;</span>
-<a name="ln-16"></a><span class="k">print</span> <span class="o">*</span><span class="p">,</span> <span class="s1">&#39;test path: &#39;</span><span class="p">,</span> <span class="n">filename</span>
-<a name="ln-17"></a>
-<a name="ln-18"></a><span class="n">p</span> <span class="o">=</span> <span class="mi">42</span>
-<a name="ln-19"></a>
-<a name="ln-20"></a><span class="k">call </span><span class="n">h5open_f</span><span class="p">(</span><span class="n">ierr</span><span class="p">)</span>
-<a name="ln-21"></a><span class="k">if</span> <span class="p">(</span><span class="n">ierr</span> <span class="o">/=</span> <span class="mi">0</span><span class="p">)</span> <span class="n">error</span> <span class="k">stop</span> <span class="s1">&#39;minimal: could not open hdf5 library&#39;</span>
-<a name="ln-22"></a>
-<a name="ln-23"></a><span class="k">call </span><span class="n">h5fcreate_f</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">H5F_ACC_TRUNC_F</span><span class="p">,</span> <span class="n">lid</span><span class="p">,</span> <span class="n">ierr</span><span class="p">)</span>
-<a name="ln-24"></a><span class="k">if</span> <span class="p">(</span><span class="n">ierr</span><span class="o">/=</span><span class="mi">0</span><span class="p">)</span> <span class="n">error</span> <span class="k">stop</span> <span class="s1">&#39;minimal: could not create file&#39;</span>
-<a name="ln-25"></a><span class="k">print</span> <span class="o">*</span><span class="p">,</span> <span class="s1">&#39;minimal: created &#39;</span><span class="o">//</span><span class="n">filename</span>
-<a name="ln-26"></a>
-<a name="ln-27"></a><span class="k">call </span><span class="n">h5ltmake_dataset_f</span><span class="p">(</span><span class="n">lid</span><span class="p">,</span> <span class="s2">&quot;foo&quot;</span><span class="p">,</span> <span class="n">rank</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="nb">shape</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="nb">kind</span><span class="o">=</span><span class="n">HSIZE_T</span><span class="p">),</span> <span class="n">h5kind_to_type</span><span class="p">(</span><span class="nb">kind</span><span class="p">(</span><span class="n">p</span><span class="p">),</span><span class="n">H5_INTEGER_KIND</span><span class="p">),</span> <span class="n">p</span><span class="p">,</span> <span class="n">ierr</span><span class="p">)</span>
-<a name="ln-28"></a><span class="k">if</span> <span class="p">(</span><span class="n">ierr</span><span class="o">/=</span><span class="mi">0</span><span class="p">)</span> <span class="n">error</span> <span class="k">stop</span> <span class="s1">&#39;minimal: could not create dataset foo&#39;</span>
-<a name="ln-29"></a><span class="k">print</span> <span class="o">*</span><span class="p">,</span> <span class="s1">&#39;minimal: created variable&#39;</span>
-<a name="ln-30"></a>
-<a name="ln-31"></a><span class="k">call </span><span class="n">h5fclose_f</span><span class="p">(</span><span class="n">lid</span><span class="p">,</span> <span class="n">ierr</span><span class="p">)</span>
-<a name="ln-32"></a><span class="k">if</span> <span class="p">(</span><span class="n">ierr</span><span class="o">/=</span><span class="mi">0</span><span class="p">)</span> <span class="n">error</span> <span class="k">stop</span> <span class="s1">&#39;minimal: could not close file&#39;</span>
-<a name="ln-33"></a><span class="k">print</span> <span class="o">*</span><span class="p">,</span> <span class="s1">&#39;minimal: closed &#39;</span><span class="o">//</span><span class="n">filename</span>
-<a name="ln-34"></a>
-<a name="ln-35"></a><span class="k">call </span><span class="n">h5close_f</span><span class="p">(</span><span class="n">ierr</span><span class="p">)</span>
-<a name="ln-36"></a><span class="k">if</span> <span class="p">(</span><span class="n">ierr</span> <span class="o">/=</span> <span class="mi">0</span><span class="p">)</span> <span class="n">error</span> <span class="k">stop</span> <span class="s1">&#39;could not close hdf5 library&#39;</span>
-<a name="ln-37"></a>
-<a name="ln-38"></a><span class="k">end program</span>
+<a name="ln-2"></a>
+<a name="ln-3"></a><span class="k">use </span><span class="n">hdf5</span><span class="p">,</span> <span class="k">only</span> <span class="p">:</span> <span class="n">HID_T</span><span class="p">,</span> <span class="n">HSIZE_T</span><span class="p">,</span> <span class="n">H5_INTEGER_KIND</span><span class="p">,</span> <span class="n">h5kind_to_type</span><span class="p">,</span> <span class="n">h5open_f</span><span class="p">,</span> <span class="n">h5close_f</span><span class="p">,</span> <span class="n">h5fclose_f</span><span class="p">,</span> <span class="n">h5fcreate_f</span><span class="p">,</span> <span class="n">H5F_ACC_TRUNC_F</span>
+<a name="ln-4"></a><span class="k">use </span><span class="n">h5lt</span><span class="p">,</span> <span class="k">only</span> <span class="p">:</span> <span class="n">h5ltmake_dataset_f</span>
+<a name="ln-5"></a>
+<a name="ln-6"></a><span class="k">implicit none</span> <span class="p">(</span><span class="k">type</span><span class="p">,</span> <span class="k">external</span><span class="p">)</span>
+<a name="ln-7"></a>
+<a name="ln-8"></a><span class="kt">integer</span> <span class="kd">::</span> <span class="n">i</span><span class="p">,</span> <span class="n">p</span>
+<a name="ln-9"></a><span class="kt">integer</span><span class="p">(</span><span class="n">HID_T</span><span class="p">)</span> <span class="kd">::</span> <span class="n">lid</span>
+<a name="ln-10"></a><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span> <span class="k">parameter</span> <span class="kd">::</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;test_minimal.h5&#39;</span>
+<a name="ln-11"></a>
+<a name="ln-12"></a><span class="n">p</span> <span class="o">=</span> <span class="mi">42</span>
+<a name="ln-13"></a>
+<a name="ln-14"></a><span class="k">call </span><span class="n">h5open_f</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+<a name="ln-15"></a><span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">/=</span> <span class="mi">0</span><span class="p">)</span> <span class="k">error stop</span> <span class="s1">&#39;minimal: could not open hdf5 library&#39;</span>
+<a name="ln-16"></a>
+<a name="ln-17"></a><span class="k">call </span><span class="n">h5fcreate_f</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">H5F_ACC_TRUNC_F</span><span class="p">,</span> <span class="n">lid</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+<a name="ln-18"></a><span class="k">if</span> <span class="p">(</span><span class="n">i</span><span class="o">/=</span><span class="mi">0</span><span class="p">)</span> <span class="k">error stop</span> <span class="s1">&#39;minimal: could not create file&#39;</span>
+<a name="ln-19"></a><span class="k">print</span> <span class="o">*</span><span class="p">,</span> <span class="s1">&#39;minimal: created &#39;</span><span class="o">//</span><span class="n">filename</span>
+<a name="ln-20"></a>
+<a name="ln-21"></a><span class="k">call </span><span class="n">h5ltmake_dataset_f</span><span class="p">(</span><span class="n">lid</span><span class="p">,</span> <span class="s2">&quot;foo&quot;</span><span class="p">,</span> <span class="n">rank</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="nb">shape</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="nb">kind</span><span class="o">=</span><span class="n">HSIZE_T</span><span class="p">),</span> <span class="n">h5kind_to_type</span><span class="p">(</span><span class="nb">kind</span><span class="p">(</span><span class="n">p</span><span class="p">),</span><span class="n">H5_INTEGER_KIND</span><span class="p">),</span> <span class="n">p</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+<a name="ln-22"></a><span class="k">if</span> <span class="p">(</span><span class="n">i</span><span class="o">/=</span><span class="mi">0</span><span class="p">)</span> <span class="k">error stop</span> <span class="s1">&#39;minimal: could not create dataset foo&#39;</span>
+<a name="ln-23"></a><span class="k">print</span> <span class="o">*</span><span class="p">,</span> <span class="s1">&#39;minimal: created variable&#39;</span>
+<a name="ln-24"></a>
+<a name="ln-25"></a><span class="k">call </span><span class="n">h5fclose_f</span><span class="p">(</span><span class="n">lid</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+<a name="ln-26"></a><span class="k">if</span> <span class="p">(</span><span class="n">i</span><span class="o">/=</span><span class="mi">0</span><span class="p">)</span> <span class="k">error stop</span> <span class="s1">&#39;minimal: could not close file&#39;</span>
+<a name="ln-27"></a><span class="k">print</span> <span class="o">*</span><span class="p">,</span> <span class="s1">&#39;minimal: closed &#39;</span><span class="o">//</span><span class="n">filename</span>
+<a name="ln-28"></a>
+<a name="ln-29"></a><span class="k">call </span><span class="n">h5close_f</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+<a name="ln-30"></a><span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">/=</span> <span class="mi">0</span><span class="p">)</span> <span class="k">error stop</span> <span class="s1">&#39;could not close hdf5 library&#39;</span>
+<a name="ln-31"></a>
+<a name="ln-32"></a><span class="c">! this is a Fortran-standard way to delete files</span>
+<a name="ln-33"></a><span class="k">open</span><span class="p">(</span><span class="n">newunit</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="k">file</span><span class="o">=</span><span class="n">filename</span><span class="p">)</span>
+<a name="ln-34"></a><span class="k">close</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="s1">&#39;delete&#39;</span><span class="p">)</span>
+<a name="ln-35"></a>
+<a name="ln-36"></a><span class="k">end program</span>
 </pre></div>
 
     </section>
@@ -315,7 +313,7 @@
     <footer>
       <div class="container">
       <div class="row">
-        <div class="col-xs-6 col-md-4"><p>&copy; 2020 <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /></a>
+        <div class="col-xs-6 col-md-4"><p>&copy; 2021 <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /></a>
                                           </p></div>
         <div class="col-xs-6 col-md-4 col-md-push-4">
           <p class="text-right">

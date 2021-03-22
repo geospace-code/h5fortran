@@ -1,76 +1,112 @@
-module test_scalar
+program scalar_test
 
-use, intrinsic :: iso_fortran_env, only: real32, real64, int32, stderr=>error_unit
-use hdf5, only: HSIZE_T
+use, intrinsic :: iso_fortran_env, only: real32, real64, int32, int64, stderr=>error_unit
+
 use h5fortran, only: hdf5_file
-implicit none
-contains
+use hdf5, only: HSIZE_T, H5T_NATIVE_INTEGER, H5T_STD_I64LE
 
-subroutine test_scalar_rw(path)
-!! create a new HDF5 file
-type(hdf5_file) :: h5f
-character(*), intent(in) :: path
+implicit none (type, external)
+
+type(hdf5_file) :: h
 real(real32), allocatable :: rr1(:)
 real(real32) :: rt, r1(4)
+
 integer(int32) :: it, i1(4)
 integer(int32), allocatable :: i1t(:)
-integer(HSIZE_T), allocatable :: dims(:)
 
-integer :: i, ierr
+integer(int64) :: it_64, i1_64(4)
+integer(int64), allocatable :: i1t_64(:)
+
+integer(HSIZE_T), allocatable :: dims(:)
+integer :: i
+character(*), parameter :: fn = 'test_scalar.h5'
 
 do i = 1,size(i1)
   i1(i) = i
 enddo
 
 r1 = i1
+i1_64 = i1
 
-call h5f%initialize(path//'/test.h5', ierr, status='new',action='w')
-if (ierr /= 0) error stop
-!! scalar tests
-call h5f%write('/scalar_int', 42_int32, ierr)
-if (ierr /= 0) error stop
-call h5f%write('/scalar_real', 42._real32, ierr)
-if (ierr /= 0) error stop
-call h5f%write('/real1',r1, ierr)
-if (ierr /= 0) error stop
-call h5f%write('/ai1', i1, ierr)
-if (ierr /= 0) error stop
-call h5f%finalize(ierr)
-if (ierr /= 0) error stop
+!> write
+call h%initialize(fn, status='replace')
+!> scalar tests
+call h%write('/scalar_int32', 42_int32)
+call h%write('/scalar_int64', 42_int64)
+call h%write('/scalar_real', -1._real32)
+!> vector
+call h%write('/1d_real', r1)
 
-call h5f%initialize(path//'/test.h5', ierr, status='old',action='r')
-if (ierr /= 0) error stop
-call h5f%read('/scalar_int', it, ierr)
-if (ierr /= 0) error stop
-call h5f%read('/scalar_real', rt, ierr)
-if (ierr /= 0) error stop
+!> create then write
+call h%create('/1d_int32', H5T_NATIVE_INTEGER, shape(i1))
+call h%write('/1d_int32', i1)
+
+call h%create('/1d_int64', H5T_STD_I64LE, shape(i1_64))
+call h%write('/1d_int64', i1_64)
+
+print *, 'PASSED: vector write'
+!> test rewrite
+call h%write('scalar_real', 42.)
+call h%write('scalar_int32', 42_int32)
+call h%write('scalar_int64', 42_int64)
+call h%finalize()
+
+!> read
+
+call h%initialize(fn, status='old', action='r')
+
+call h%read('/scalar_int32', it)
+call h%read('/scalar_int64', it_64)
+
+call h%read('/scalar_real', rt)
 if (.not.(rt==it .and. it==42)) then
   write(stderr,*) it,'/=',rt
   error stop 'scalar real / int: not equal 42'
 endif
+print *, 'PASSED: scalar read/write'
 
-call h5f%shape('/real1',dims, ierr)
-if (ierr /= 0) error stop
+!> read casting -- real to int and int to real
+call h%read('/scalar_real', it)
+if(it/=42) error stop 'scalar cast real => int'
+call h%read('/scalar_int32', rt)
+if(rt/=42) error stop 'scalar cast int32 => real'
+call h%read('/scalar_int64', rt)
+if(rt/=42) error stop 'scalar cast int64 => real'
+print *, 'PASSED: scalar case on read'
+
+!> 1D vector read write
+call h%shape('/1d_real',dims)
 allocate(rr1(dims(1)))
-call h5f%read('/real1',rr1, ierr)
-if (ierr /= 0) error stop
+call h%read('/1d_real',rr1)
 if (.not.all(r1 == rr1)) error stop 'real 1-D: read does not match write'
 
-call h5f%shape('/ai1',dims, ierr)
-if (ierr /= 0) error stop
+call h%shape('/1d_int32',dims)
 allocate(i1t(dims(1)))
-call h5f%read('/ai1',i1t, ierr)
-if (ierr /= 0) error stop
-if (.not.all(i1==i1t)) error stop 'integer 1-D: read does not match write'
+call h%read('/1d_int32',i1t)
+if (.not.all(i1==i1t)) error stop 'int32 1-D: read does not match write'
 
-if (.not. h5f%filename == path//'/test.h5') then
-  write(stderr,*) h5f%filename // ' mismatch filename'
+allocate(i1t_64(dims(1)))
+call h%read('/1d_int64',i1t_64)
+if (.not.all(i1_64==i1t_64)) error stop 'int64 1-D: read does not match write'
+
+print *, 'PASSED: 1D read/write'
+
+!> 1D vector read casting -- real to int and int to real
+call h%read('/1d_real', i1t)
+if (.not.all(r1==i1t)) error stop '1Dcast real => int32'
+call h%read('/1d_real', i1t_64)
+if (.not.all(r1==i1t_64)) error stop '1Dcast real => int64'
+call h%read('/1d_int32', rr1)
+if (.not.all(i1==rr1)) error stop '1D cast int32 => real'
+call h%read('/1d_int64', rr1)
+if (.not.all(i1_64==rr1)) error stop '1D cast int64 => real'
+!> check filename property
+
+if (.not. h%filename == fn) then
+  write(stderr,*) h%filename // ' mismatch filename'
   error stop
 endif
 
-call h5f%finalize(ierr)
-if (ierr /= 0) error stop
+call h%finalize()
 
-end subroutine test_scalar_rw
-
-end module test_scalar
+end program

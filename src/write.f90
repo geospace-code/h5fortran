@@ -3,95 +3,144 @@ submodule (h5fortran) write
 use hdf5, only: &
 h5screate_f, H5S_SCALAR_F, &
 h5dcreate_f, &
-h5pset_chunk_f, h5pset_deflate_f, h5pset_shuffle_f, h5pset_fletcher32_f, h5pcreate_f, H5P_DATASET_CREATE_F, h5pclose_f, &
-h5gopen_f
+h5pset_chunk_f, h5pset_layout_f, h5pset_deflate_f, h5pset_shuffle_f, h5pset_fletcher32_f, h5pcreate_f, h5pclose_f, &
+H5P_DATASET_CREATE_F, &
+h5gopen_f, &
+H5Lcreate_soft_f
 
-use H5LT, only: h5ltpath_valid_f, h5ltset_attribute_string_f, h5ltmake_dataset_string_f
+use H5LT, only: h5ltmake_dataset_string_f, h5ltpath_valid_f
 
-implicit none
+implicit none (type, external)
+
 contains
 
-module procedure writeattr
 
-integer :: ier
+module procedure hdf_create
 
-!call self%write(dname, ier)
+logical :: exists
+integer :: ierr
+integer(HID_T) :: pid, space_id, ds_id
+integer(HSIZE_T) :: vdims(size(dims))
 
-! if (ier == 0) call h5ltpath_valid_f(self%lid, dname, .true., exists, ier)
+if(.not.self%is_open) error stop 'h5fortran:write: file handle is not open'
 
-! if (.not.exists) then
-!   write(stderr,*) 'ERROR: variable ' // dname // ' must be created before writing ' // attr
-!   ier = -1
-! endif
+call h5ltpath_valid_f(self%lid, dname, .true., exists, ierr)
+!! h5lexists_f can false error with groups--just use h5ltpath_valid
 
-call h5ltset_attribute_string_f(self%lid, dname, attr, attrval, ier)
+!! stricter than self%exists() since we're creating and/or writing variable
+if (ierr /= 0) then
+  write(stderr,*) 'ERROR:h5fortran:create: variable path invalid: ',dname, ' in ', self%filename
+  error stop 6
+endif
 
-if (present(ierr)) ierr = ier
-if (check(ier, 'ERROR:writeattr ' // dname // ' ' // self%filename)) then
-  if (present(ierr)) return
+!> allow user to specify int4 or int8 dims
+select type (dims)
+type is (integer(int32))
+  vdims = int(dims, int64)
+type is (integer(hsize_t))
+  vdims = dims
+class default
+  write(stderr,*) 'ERROR:h5fortran:create: wrong type for dims: ', dname, self%filename
+  error stop 5
+end select
+
+if(self%debug) print *,'h5fortran:TRACE:create:exists: ' // dname, exists
+
+if(exists) then
+  if (.not.present(istart)) call hdf_shape_check(self, dname, vdims)
+  !! FIXME: read and write slice shape not checked; but should check in future versions
+  !> open dataset
+  call h5dopen_f(self%lid, dname, ds_id, ierr)
+  if (ierr /= 0) then
+    write(stderr,*) 'ERROR:h5fortran:create: could not open ', dname, ' in ', self%filename
+    error stop
+  endif
+
+  if(present(did)) did = ds_id
+  if(present(sid)) then
+    call h5dget_space_f(ds_id, sid, ierr)
+    if(ierr /= 0) error stop 'h5fortran:create could not get dataset'
+  endif
+  return
+endif
+
+if(self%debug) print *, 'h5fortran:TRACE1: ' // dname
+
+!> Only new datasets go past this point
+
+call self%write_group(dname, ierr)
+if (ierr /= 0) then
+  write(stderr,*) 'ERROR:h5fortran:create: could not create group for ', dname, ' in ', self%filename
   error stop
 endif
 
-end procedure writeattr
+!> create properties
+pid = 0 !< sentinel
 
+if(size(vdims) >= 2) then
+  if(self%debug) print *, 'h5fortran:TRACE:create: deflate: ' // dname
+  call set_deflate(self, vdims, pid, ierr, chunk_size)
+  if (ierr/=0) error stop 'ERROR:h5fortran:create: problem setting deflate on'
+endif
 
-subroutine hdf_setup_write(self, dname, dtype, dims, sid, did, ierr, chunk_size)
-class(hdf5_file), intent(inout) :: self
-character(*), intent(in) :: dname
-integer(HID_T), intent(in) :: dtype
-integer(HSIZE_T), intent(in) :: dims(:)
-integer(HID_T), intent(out) :: sid, did
-integer, intent(in), optional :: chunk_size(:)
-integer, intent(out) :: ierr
+if(present(compact)) then
+! print *, "TRACE1: COMPACT", compact
+!! don't set COMPACT after CHUNKED, will fail. And it's either or anyway.
+if(compact .and. pid == 0 .and. product(vdims) * 8 < 60000)  then
+!! 64000 byte limit, here we assumed 8 bytes / element
+  call h5pcreate_f(H5P_DATASET_CREATE_F, pid, ierr)
+  if (check(ierr, self%filename)) error stop
 
-logical :: exists
-integer(HID_T) :: pid
+  call h5pset_layout_f(pid, H5D_COMPACT_F, ierr)
+  if (check(ierr, self%filename)) error stop
+endif
+endif
 
-!! sentinel values
-pid = 0
-sid = 0
-
-call h5ltpath_valid_f(self%lid, dname, .true., exists, ierr)
-if (check(ierr,  'ERROR: setup_write: ' // dname // ' check exist ' // self%filename)) return
-
-if(exists) then
-  call hdf_shape_check(self, dname, dims, ierr)
-  if (ierr/=0) return
-  !> open dataset
-  call h5dopen_f(self%lid, dname, did, ierr)
-  if (check(ierr, 'ERROR:setup_write: open ' // dname // ' ' // self%filename)) return
-  return
+!> create dataspace
+if(size(vdims) == 0) then
+  call h5screate_f(H5S_SCALAR_F, space_id, ierr)
 else
-  call self%write_group(dname, ierr)
-  if (check(ierr, 'ERROR:setup_write: create ' // dname // ' ' // self%filename)) return
+  call h5screate_simple_f(size(vdims), vdims, space_id, ierr)
 endif
+if (check(ierr, self%filename, dname)) error stop
 
-if(size(dims) >= 2) then
-  if(self%debug) print *, 'DEBUG:setup_write: deflate: ' // dname
-  call hdf_set_deflate(self, dims, pid, ierr, chunk_size)
-endif
-
-if(size(dims) == 0) then
-  call h5screate_f(H5S_SCALAR_F, sid, ierr)
-else
-  call h5screate_simple_f(size(dims), dims, sid, ierr)
-endif
-if (check(ierr,  'ERROR:setup_write: dataspace ' // dname // ' create ' // self%filename)) return
-
+!> create dataset
 if(pid == 0) then
-  call h5dcreate_f(self%lid, dname, dtype, sid, did, ierr)
+  call h5dcreate_f(self%lid, dname, dtype, space_id, ds_id, ierr)
 else
-  call h5dcreate_f(self%lid, dname, dtype, sid, did, ierr, pid)
-  if (check(ierr, 'ERROR:setup_write: create ' // dname // ' property: ' // self%filename)) return
+  call h5dcreate_f(self%lid, dname, dtype, space_id, ds_id, ierr, pid)
+  if (check(ierr, self%filename, dname)) error stop
   call h5pclose_f(pid, ierr)
-  if (check(ierr, 'ERROR:setup_write: close property: ' // self%filename)) return
+  if (check(ierr, self%filename, dname)) error stop
 endif
-if (check(ierr,  'ERROR:setup_write: dataset ' // dname // ' create ' // self%filename)) return
+if (check(ierr, self%filename, dname)) error stop
 
-end subroutine hdf_setup_write
+if(.not.(present(did) .and. present(sid))) then
+  if(self%debug) print *, 'h5fortran:TRACE:create: closing dataset ', dname
+  call hdf_wrapup(ds_id, space_id, ierr)
+endif
+if (check(ierr, self%filename, dname)) error stop
+
+if(present(sid)) sid = space_id
+if(present(did)) did = ds_id
+
+end procedure hdf_create
 
 
-subroutine hdf_set_deflate(self, dims, pid, ierr, chunk_size)
+module procedure create_softlink
+!! HDF5 soft link -- to variables in same file
+!! target need not exist (dangling link)
+!! linking to external files requires an external link (different function required)
+
+integer :: ierr
+
+call H5Lcreate_soft_f(target, self%lid, link, ierr)
+if (check(ierr, self%filename)) return
+
+end procedure create_softlink
+
+
+subroutine set_deflate(self, dims, pid, ierr, chunk_size)
 class(hdf5_file), intent(inout) :: self
 integer(HSIZE_T), intent(in) :: dims(:)
 integer(HID_T), intent(out) :: pid
@@ -117,23 +166,23 @@ if(any(cs < 1)) return
 if(self%debug) print *,'DEBUG:set_deflate: dims: ',dims,'chunk size: ', cs
 
 call h5pcreate_f(H5P_DATASET_CREATE_F, pid, ierr)
-if (check(ierr, 'ERROR: create property ' // self%filename)) return
+if (check(ierr, self%filename)) return
 
 call h5pset_chunk_f(pid, size(dims), cs, ierr)
-if (check(ierr, 'ERROR: set chunk ' // self%filename)) return
+if (check(ierr, self%filename)) return
 
 call h5pset_shuffle_f(pid, ierr)
-if (check(ierr, 'ERROR: enable Shuffle ' // self%filename)) return
+if (check(ierr, self%filename)) return
 
 call h5pset_fletcher32_f(pid, ierr)
-if (check(ierr, 'ERROR: enable Fletcher32 checksum ' // self%filename)) return
+if (check(ierr, self%filename)) return
 
 call h5pset_deflate_f(pid, self%comp_lvl, ierr)
-if (check(ierr, 'ERROR: enable Deflate compression ' // self%filename)) return
+if (check(ierr, self%filename)) return
 
-if(self%debug) print *,'TRACE: set_deflate done'
+if(self%debug) print *,'TRACE:set_deflate done'
 
-end subroutine hdf_set_deflate
+end subroutine set_deflate
 
 
 subroutine guess_chunk_size(dims, chunk_size)
@@ -191,10 +240,13 @@ end subroutine guess_chunk_size
 module procedure hdf_open_group
 
 integer :: ier
+
+if(.not.self%is_open) error stop 'h5fortran:write: file handle is not open'
+
 call h5gopen_f(self%lid, gname, self%gid, ier)
 
 if (present(ierr)) ierr = ier
-if (check(ier, 'ERROR: opening group ' // gname // ' in ' // self%filename)) then
+if (check(ier, self%filename, gname)) then
   if (present(ierr)) return
   error stop
 endif
@@ -209,10 +261,12 @@ module procedure hdf_close_group
 
 integer :: ier
 
+if(.not.self%is_open) error stop 'h5fortran:write: file handle is not open'
+
 call h5gclose_f(self%gid, ier)
 
 if (present(ierr)) ierr = ier
-if (check(ier,  'ERROR: closing group '//self%filename)) then
+if (check(ier, self%filename)) then
   if (present(ierr)) return
   error stop
 endif

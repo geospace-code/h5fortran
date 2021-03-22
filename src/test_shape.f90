@@ -1,37 +1,28 @@
 program test_shape
 !! This program shows how HDF5 dimension orders are distinct in different langauges
-use h5fortran, only: hdf5_file,hsize_t
+use h5fortran, only: hdf5_file,hsize_t, is_hdf5
 use, intrinsic:: iso_fortran_env, only: real64, stdout=>output_unit, stderr=>error_unit
-implicit none
 
-type(hdf5_file) :: h5f
-character(1024) :: argv
-character(:), allocatable :: fn, dname
+implicit none (type, external)
+
+type(hdf5_file) :: h
+character(*), parameter :: path = 'test_shape.h5'
 integer(HSIZE_T), allocatable :: dims(:)
-integer :: ierr
-logical :: exists
 
-if (command_argument_count() /= 2) error stop "filename dset_name"
+integer :: d2(3,4), d7(2,1,3,4,7,6,5)
 
-call get_command_argument(1, argv)
-fn = trim(argv)
+call h%initialize(path, status='scratch')
+call h%write('/d2', d2)
+call h%write('/d7', d7)
 
-call get_command_argument(2, argv)
-dname = trim(argv)
+call h%shape('/d2', dims)
+if (h%ndims('/d2') /= size(dims)) error stop 'rank /= size(dims)'
+if (any(dims /= shape(d2))) error stop '2-D: file shape not match variable shape'
 
-inquire(file=fn, exist=exists)
-if (.not. exists) then
-  write(stderr, *) fn // ' is not a file.'
-  error stop 77
-endif
+call h%shape('/d7', dims)
+if (h%ndims('/d7') /= size(dims)) error stop 'rank /= size(dims)'
+if (any(dims /= shape(d7))) error stop '7-D: file shape not match variable shape'
 
-call h5f%initialize(fn, ierr, status='old', action='r')
-
-call h5f%shape(dname, dims, ierr)
-
-print '(/,A,100I8)', 'Fortran dims: ',dims
-
-call h5F%finalize(ierr)
-if(ierr/=0) error stop 'finalize'
+call h%finalize()
 
 end program

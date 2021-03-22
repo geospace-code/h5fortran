@@ -130,7 +130,7 @@
      <li><i class="fa fa-list-ol"></i>
        <a data-toggle="tooltip"
     data-placement="bottom" data-html="true"
-    title="24.7% of total for modules and submodules.">498 statements</a>
+    title="30.5% of total for modules and submodules.">690 statements</a>
      </li> 
      
      
@@ -184,13 +184,25 @@
       
       <a class="list-group-item" href="../module/h5fortran.html#interface-h5read">h5read</a>
       
-      <a class="list-group-item" href="../module/h5fortran.html#interface-hdf_get_layout">hdf_get_layout</a>
+      <a class="list-group-item" href="../module/h5fortran.html#interface-h5write_attr">h5write_attr</a>
       
-      <a class="list-group-item" href="../module/h5fortran.html#interface-hdf_check_exist">hdf_check_exist</a>
+      <a class="list-group-item" href="../module/h5fortran.html#interface-h5read_attr">h5read_attr</a>
       
-      <a class="list-group-item" href="../module/h5fortran.html#interface-hdf_is_contig">hdf_is_contig</a>
+      <a class="list-group-item" href="../module/h5fortran.html#interface-std_unlink">std_unlink</a>
       
-      <a class="list-group-item" href="../module/h5fortran.html#interface-hdf_is_chunked">hdf_is_chunked</a>
+      <a class="list-group-item" href="../module/h5fortran.html#interface-is_absolute_path">is_absolute_path</a>
+      
+      <a class="list-group-item" href="../module/h5fortran.html#interface-get_tempdir">get_tempdir</a>
+      
+      <a class="list-group-item" href="../module/h5fortran.html#interface-hdf_create">hdf_create</a>
+      
+      <a class="list-group-item" href="../module/h5fortran.html#interface-hdf_open_group">hdf_open_group</a>
+      
+      <a class="list-group-item" href="../module/h5fortran.html#interface-hdf_close_group">hdf_close_group</a>
+      
+      <a class="list-group-item" href="../module/h5fortran.html#interface-create_softlink">create_softlink</a>
+      
+      <a class="list-group-item" href="../module/h5fortran.html#interface-h5exist">h5exist</a>
       
       <a class="list-group-item" href="../module/h5fortran.html#interface-lt0write">lt0write</a>
       
@@ -240,6 +252,12 @@
       
       <a class="list-group-item" href="../module/h5fortran.html#interface-hdf_write_7d">hdf_write_7d</a>
       
+      <a class="list-group-item" href="../module/h5fortran.html#interface-hdf_get_ndims">hdf_get_ndims</a>
+      
+      <a class="list-group-item" href="../module/h5fortran.html#interface-hdf_get_layout">hdf_get_layout</a>
+      
+      <a class="list-group-item" href="../module/h5fortran.html#interface-hdf_check_exist">hdf_check_exist</a>
+      
       <a class="list-group-item" href="../module/h5fortran.html#interface-hdf_get_shape">hdf_get_shape</a>
       
       <a class="list-group-item" href="../module/h5fortran.html#interface-hdf_get_chunk">hdf_get_chunk</a>
@@ -260,11 +278,21 @@
       
       <a class="list-group-item" href="../module/h5fortran.html#interface-hdf_read_7d">hdf_read_7d</a>
       
-      <a class="list-group-item" href="../module/h5fortran.html#interface-hdf_open_group">hdf_open_group</a>
+      <a class="list-group-item" href="../module/h5fortran.html#interface-readattr_char">readattr_char</a>
       
-      <a class="list-group-item" href="../module/h5fortran.html#interface-hdf_close_group">hdf_close_group</a>
+      <a class="list-group-item" href="../module/h5fortran.html#interface-readattr_num">readattr_num</a>
       
-      <a class="list-group-item" href="../module/h5fortran.html#interface-writeattr">writeattr</a>
+      <a class="list-group-item" href="../module/h5fortran.html#interface-writeattr_char">writeattr_char</a>
+      
+      <a class="list-group-item" href="../module/h5fortran.html#interface-writeattr_num">writeattr_num</a>
+      
+      <a class="list-group-item" href="../module/h5fortran.html#interface-writeattr_char_lt">writeattr_char_lt</a>
+      
+      <a class="list-group-item" href="../module/h5fortran.html#interface-writeattr_num_lt">writeattr_num_lt</a>
+      
+      <a class="list-group-item" href="../module/h5fortran.html#interface-readattr_char_lt">readattr_char_lt</a>
+      
+      <a class="list-group-item" href="../module/h5fortran.html#interface-readattr_num_lt">readattr_num_lt</a>
       
     </div>
   </div>
@@ -291,6 +319,14 @@
   <div id="funcs-0" class="panel-collapse collapse">
     <div class="list-group">
       
+      <a class="list-group-item" href="../module/h5fortran.html#proc-hdf_is_contig">hdf_is_contig</a>
+      
+      <a class="list-group-item" href="../module/h5fortran.html#proc-hdf_is_compact">hdf_is_compact</a>
+      
+      <a class="list-group-item" href="../module/h5fortran.html#proc-hdf_is_chunked">hdf_is_chunked</a>
+      
+      <a class="list-group-item" href="../module/h5fortran.html#proc-is_hdf5">is_hdf5</a>
+      
       <a class="list-group-item" href="../module/h5fortran.html#proc-check">check</a>
       
     </div>
@@ -307,6 +343,10 @@
       <a class="list-group-item" href="../module/h5fortran.html#proc-hdf_initialize">hdf_initialize</a>
       
       <a class="list-group-item" href="../module/h5fortran.html#proc-hdf_finalize">hdf_finalize</a>
+      
+      <a class="list-group-item" href="../module/h5fortran.html#proc-hdf_flush">hdf_flush</a>
+      
+      <a class="list-group-item" href="../module/h5fortran.html#proc-hdf5_close">hdf5_close</a>
       
       <a class="list-group-item" href="../module/h5fortran.html#proc-write_group">write_group</a>
       
@@ -334,9 +374,7 @@
     </div>
     
     <div class="col-md-9" id='text'>
-    <p>HDF5 object-oriented polymorphic interface
- Workaround for Intel 19.1 / 2020 bug with /stand:f18
- error #6410: This name has not been declared as an array or a function.   [RANK]</p>
+    <p>HDF5 object-oriented polymorphic interface</p>
       <br>
     
   
@@ -357,167 +395,10 @@
     
     <li>h5lt</li>
     
-    <li><a href='../module/string_utils.html'>string_utils</a></li>
-    
   </ul>
       </li>
       
       
-      
-      <li class="list-group-item">
-  <div class="depgraph"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
- "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<!-- Generated by graphviz version 2.40.1 (20161225.0304)
- -->
-<!-- Title: module~~h5fortran~~UsesGraph Pages: 1 -->
-<svg id="moduleh5fortranUsesGraph" width="301pt" height="180pt"
- viewBox="0.00 0.00 301.00 179.52" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<g id="module~~h5fortran~~UsesGraph" class="graph" transform="scale(1 1) rotate(0) translate(4 175.524)">
-<title>module~~h5fortran~~UsesGraph</title>
-<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-175.524 297,-175.524 297,4 -4,4"/>
-<!-- module~h5fortran -->
-<g id="module~~h5fortran~~UsesGraph_node1" class="node">
-<title>module~h5fortran</title>
-<polygon fill="none" stroke="#000000" points="293,-108 237,-108 237,-84 293,-84 293,-108"/>
-<text text-anchor="middle" x="265" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#000000">h5fortran</text>
-</g>
-<!-- iso_c_binding -->
-<g id="module~~h5fortran~~UsesGraph_node2" class="node">
-<title>iso_c_binding</title>
-<g id="a_module~~h5fortran~~UsesGraph_node2"><a xlink:href="http://fortranwiki.org/fortran/show/ISO_C_BINDING" xlink:title="iso_c_binding">
-<polygon fill="#337ab7" stroke="#337ab7" points="78,-170 0,-170 0,-146 78,-146 78,-170"/>
-<text text-anchor="middle" x="39" y="-155.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">iso_c_binding</text>
-</a>
-</g>
-</g>
-<!-- module~h5fortran&#45;&gt;iso_c_binding -->
-<g id="module~~h5fortran~~UsesGraph_edge1" class="edge">
-<title>module~h5fortran&#45;&gt;iso_c_binding</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M257.2345,-108.0854C246.6489,-123.3081 226.1043,-148.7171 201,-159 165.266,-173.6369 121.2646,-172.2862 88.142,-167.8866"/>
-<polygon fill="#000000" stroke="#000000" points="88.6343,-164.4214 78.2331,-166.4376 87.6214,-171.3478 88.6343,-164.4214"/>
-</g>
-<!-- module~string_utils -->
-<g id="module~~h5fortran~~UsesGraph_node3" class="node">
-<title>module~string_utils</title>
-<g id="a_module~~h5fortran~~UsesGraph_node3"><a xlink:href=".././module/string_utils.html" xlink:title="string_utils">
-<polygon fill="#337ab7" stroke="#337ab7" points="189.5,-150 125.5,-150 125.5,-126 189.5,-126 189.5,-150"/>
-<text text-anchor="middle" x="157.5" y="-135.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">string_utils</text>
-</a>
-</g>
-</g>
-<!-- module~h5fortran&#45;&gt;module~string_utils -->
-<g id="module~~h5fortran~~UsesGraph_edge2" class="edge">
-<title>module~h5fortran&#45;&gt;module~string_utils</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M236.7556,-107.035C224.9575,-111.6445 211.0251,-117.0879 198.1584,-122.1148"/>
-<polygon fill="#000000" stroke="#000000" points="196.6206,-118.958 188.5799,-125.8571 199.168,-125.478 196.6206,-118.958"/>
-</g>
-<!-- h5lt -->
-<g id="module~~h5fortran~~UsesGraph_node4" class="node">
-<title>h5lt</title>
-<polygon fill="#337ab7" stroke="#337ab7" points="184.5,-108 130.5,-108 130.5,-84 184.5,-84 184.5,-108"/>
-<text text-anchor="middle" x="157.5" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">h5lt</text>
-</g>
-<!-- module~h5fortran&#45;&gt;h5lt -->
-<g id="module~~h5fortran~~UsesGraph_edge3" class="edge">
-<title>module~h5fortran&#45;&gt;h5lt</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M236.7556,-96C223.9661,-96 208.6685,-96 194.9392,-96"/>
-<polygon fill="#000000" stroke="#000000" points="194.8136,-92.5001 184.8136,-96 194.8135,-99.5001 194.8136,-92.5001"/>
-</g>
-<!-- iso_fortran_env -->
-<g id="module~~h5fortran~~UsesGraph_node5" class="node">
-<title>iso_fortran_env</title>
-<g id="a_module~~h5fortran~~UsesGraph_node5"><a xlink:href="http://fortranwiki.org/fortran/show/ISO_FORTRAN_ENV" xlink:title="iso_fortran_env">
-<polygon fill="#337ab7" stroke="#337ab7" points="201,-66 114,-66 114,-42 201,-42 201,-66"/>
-<text text-anchor="middle" x="157.5" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">iso_fortran_env</text>
-</a>
-</g>
-</g>
-<!-- module~h5fortran&#45;&gt;iso_fortran_env -->
-<g id="module~~h5fortran~~UsesGraph_edge4" class="edge">
-<title>module~h5fortran&#45;&gt;iso_fortran_env</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M236.7556,-84.965C224.9575,-80.3555 211.0251,-74.9121 198.1584,-69.8852"/>
-<polygon fill="#000000" stroke="#000000" points="199.168,-66.522 188.5799,-66.1429 196.6206,-73.042 199.168,-66.522"/>
-</g>
-<!-- hdf5 -->
-<g id="module~~h5fortran~~UsesGraph_node6" class="node">
-<title>hdf5</title>
-<polygon fill="#337ab7" stroke="#337ab7" points="184.5,-24 130.5,-24 130.5,0 184.5,0 184.5,-24"/>
-<text text-anchor="middle" x="157.5" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">hdf5</text>
-</g>
-<!-- module~h5fortran&#45;&gt;hdf5 -->
-<g id="module~~h5fortran~~UsesGraph_edge5" class="edge">
-<title>module~h5fortran&#45;&gt;hdf5</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M254.6771,-83.6414C242.7879,-69.9689 222.1595,-47.9038 201,-33 198.6218,-31.3249 196.0894,-29.7182 193.4883,-28.1921"/>
-<polygon fill="#000000" stroke="#000000" points="194.965,-25.0117 184.5042,-23.3318 191.6342,-31.1685 194.965,-25.0117"/>
-</g>
-<!-- module~string_utils&#45;&gt;iso_c_binding -->
-<g id="module~~h5fortran~~UsesGraph_edge6" class="edge">
-<title>module~string_utils&#45;&gt;iso_c_binding</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M125.4322,-143.4123C113.9661,-145.3475 100.7661,-147.5753 88.1892,-149.698"/>
-<polygon fill="#000000" stroke="#000000" points="87.5594,-146.2547 78.2813,-151.3702 88.7244,-153.1571 87.5594,-146.2547"/>
-</g>
-</g>
-</svg>
-</div><div><a type="button" class="graph-help" data-toggle="modal" href="#graph-help-text">Help</a></div><div class="modal fade" id="graph-help-text" tabindex="-1" role="dialog"><div class="modal-dialog modal-lg" role="document"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button><h4 class="modal-title" id="-graph-help-label">Graph Key</h4></div><div class="modal-body">
-    <p>Nodes of different colours represent the following: </p>
-    <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
- "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<!-- Generated by graphviz version 2.40.1 (20161225.0304)
- -->
-<!-- Title: Graph Key Pages: 1 -->
-<svg width="490pt" height="32pt"
- viewBox="0.00 0.00 489.50 32.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 28)">
-<title>Graph Key</title>
-<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-28 485.5,-28 485.5,4 -4,4"/>
-<!-- Module -->
-<g id="node1" class="node">
-<title>Module</title>
-<polygon fill="#337ab7" stroke="#337ab7" points="54,-24 0,-24 0,0 54,0 54,-24"/>
-<text text-anchor="middle" x="27" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">Module</text>
-</g>
-<!-- Submodule -->
-<g id="node2" class="node">
-<title>Submodule</title>
-<polygon fill="#5bc0de" stroke="#5bc0de" points="139.5,-24 72.5,-24 72.5,0 139.5,0 139.5,-24"/>
-<text text-anchor="middle" x="106" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">Submodule</text>
-</g>
-<!-- Subroutine -->
-<g id="node3" class="node">
-<title>Subroutine</title>
-<polygon fill="#d9534f" stroke="#d9534f" points="222,-24 158,-24 158,0 222,0 222,-24"/>
-<text text-anchor="middle" x="190" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">Subroutine</text>
-</g>
-<!-- Function -->
-<g id="node4" class="node">
-<title>Function</title>
-<polygon fill="#d94e8f" stroke="#d94e8f" points="294,-24 240,-24 240,0 294,0 294,-24"/>
-<text text-anchor="middle" x="267" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">Function</text>
-</g>
-<!-- Program -->
-<g id="node5" class="node">
-<title>Program</title>
-<polygon fill="#f0ad4e" stroke="#f0ad4e" points="366,-24 312,-24 312,0 366,0 366,-24"/>
-<text text-anchor="middle" x="339" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">Program</text>
-</g>
-<!-- This Page&#39;s Entity -->
-<g id="node6" class="node">
-<title>This Page&#39;s Entity</title>
-<polygon fill="none" stroke="#000000" points="481.5,-24 384.5,-24 384.5,0 481.5,0 481.5,-24"/>
-<text text-anchor="middle" x="433" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#000000">This Page&#39;s Entity</text>
-</g>
-</g>
-</svg>
-
-    
-    <p>Solid arrows point from a submodule to the (sub)module which it is
-    descended from. Dashed arrows point from a module or program unit to 
-    modules which it uses.
-    </p>
-    </div></div></div></div>
-      </li>
       
       </ul>
     </div>
@@ -535,6 +416,10 @@
     <ul class="list-inline">
       <li><h5>Descendants:</h5></li>
       
+      <li><a href='../module/attributes.html'>attributes</a></li>
+      
+      <li><a href='../module/pathlib.html'>pathlib</a></li>
+      
       <li><a href='../module/read.html'>read</a></li>
       
       <li><a href='../module/write.html'>write</a></li>
@@ -542,365 +427,6 @@
     </ul>
   </li>
   
-  
-  <li class="list-group-item">
-    <div class="depgraph"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
- "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<!-- Generated by graphviz version 2.40.1 (20161225.0304)
- -->
-<!-- Title: module~~h5fortran~~UsedByGraph Pages: 1 -->
-<svg id="moduleh5fortranUsedByGraph" width="269pt" height="469pt"
- viewBox="0.00 0.00 269.00 469.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<g id="module~~h5fortran~~UsedByGraph" class="graph" transform="scale(1 1) rotate(0) translate(4 465)">
-<title>module~~h5fortran~~UsedByGraph</title>
-<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-465 265,-465 265,4 -4,4"/>
-<!-- module~h5fortran -->
-<g id="module~~h5fortran~~UsedByGraph_node1" class="node">
-<title>module~h5fortran</title>
-<polygon fill="none" stroke="#000000" points="56,-255 0,-255 0,-231 56,-231 56,-255"/>
-<text text-anchor="middle" x="28" y="-240.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#000000">h5fortran</text>
-</g>
-<!-- program~test_shape -->
-<g id="module~~h5fortran~~UsedByGraph_node2" class="node">
-<title>program~test_shape</title>
-<g id="a_module~~h5fortran~~UsedByGraph_node2"><a xlink:href=".././program/test_shape.html" xlink:title="test_shape">
-<polygon fill="#f0ad4e" stroke="#f0ad4e" points="158.5,-461 93.5,-461 93.5,-437 158.5,-437 158.5,-461"/>
-<text text-anchor="middle" x="126" y="-446.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">test_shape</text>
-</a>
-</g>
-</g>
-<!-- program~test_shape&#45;&gt;module~h5fortran -->
-<g id="module~~h5fortran~~UsedByGraph_edge1" class="edge">
-<title>program~test_shape&#45;&gt;module~h5fortran</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M101.6494,-436.883C98.0697,-434.3204 94.6889,-431.3575 92,-428 52.3382,-378.4776 36.4876,-302.7999 30.8119,-265.4505"/>
-<polygon fill="#000000" stroke="#000000" points="34.2232,-264.575 29.3621,-255.1612 27.2917,-265.5517 34.2232,-264.575"/>
-</g>
-<!-- program~test_deflate -->
-<g id="module~~h5fortran~~UsedByGraph_node3" class="node">
-<title>program~test_deflate</title>
-<g id="a_module~~h5fortran~~UsedByGraph_node3"><a xlink:href=".././program/test_deflate.html" xlink:title="test_deflate">
-<polygon fill="#f0ad4e" stroke="#f0ad4e" points="160,-419 92,-419 92,-395 160,-395 160,-419"/>
-<text text-anchor="middle" x="126" y="-404.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">test_deflate</text>
-</a>
-</g>
-</g>
-<!-- program~test_deflate&#45;&gt;module~h5fortran -->
-<g id="module~~h5fortran~~UsedByGraph_edge2" class="edge">
-<title>program~test_deflate&#45;&gt;module~h5fortran</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M106.931,-394.9613C101.6296,-390.9788 96.1849,-386.2166 92,-381 63.1321,-345.0153 43.8615,-293.885 34.5319,-265.0335"/>
-<polygon fill="#000000" stroke="#000000" points="37.7656,-263.6467 31.4436,-255.1447 31.0838,-265.7334 37.7656,-263.6467"/>
-</g>
-<!-- program~test_hdf5 -->
-<g id="module~~h5fortran~~UsedByGraph_node4" class="node">
-<title>program~test_hdf5</title>
-<g id="a_module~~h5fortran~~UsedByGraph_node4"><a xlink:href=".././program/test_hdf5.html" xlink:title="test_hdf5">
-<polygon fill="#f0ad4e" stroke="#f0ad4e" points="257,-297 200,-297 200,-273 257,-273 257,-297"/>
-<text text-anchor="middle" x="228.5" y="-282.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">test_hdf5</text>
-</a>
-</g>
-</g>
-<!-- program~test_hdf5&#45;&gt;module~h5fortran -->
-<g id="module~~h5fortran~~UsedByGraph_edge3" class="edge">
-<title>program~test_hdf5&#45;&gt;module~h5fortran</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M219.9802,-297.1068C208.425,-312.3526 186.1928,-337.7865 160,-348 131.8427,-358.9795 118.3511,-362.7987 92,-348 60.5655,-330.3466 42.7533,-290.2919 34.2701,-265.0729"/>
-<polygon fill="#000000" stroke="#000000" points="37.5302,-263.7723 31.1931,-255.2817 30.8522,-265.871 37.5302,-263.7723"/>
-</g>
-<!-- module~test_lt -->
-<g id="module~~h5fortran~~UsedByGraph_node7" class="node">
-<title>module~test_lt</title>
-<g id="a_module~~h5fortran~~UsedByGraph_node7"><a xlink:href=".././module/test_lt.html" xlink:title="test_lt">
-<polygon fill="#337ab7" stroke="#337ab7" points="153,-339 99,-339 99,-315 153,-315 153,-339"/>
-<text text-anchor="middle" x="126" y="-324.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">test_lt</text>
-</a>
-</g>
-</g>
-<!-- program~test_hdf5&#45;&gt;module~test_lt -->
-<g id="module~~h5fortran~~UsedByGraph_edge15" class="edge">
-<title>program~test_hdf5&#45;&gt;module~test_lt</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M199.948,-296.6993C188.4497,-301.4108 175.0412,-306.9051 162.8236,-311.9113"/>
-<polygon fill="#000000" stroke="#000000" points="161.266,-308.767 153.3398,-315.7974 163.9202,-315.2444 161.266,-308.767"/>
-</g>
-<!-- module~test_array -->
-<g id="module~~h5fortran~~UsedByGraph_node8" class="node">
-<title>module~test_array</title>
-<g id="a_module~~h5fortran~~UsedByGraph_node8"><a xlink:href=".././module/test_array.html" xlink:title="test_array">
-<polygon fill="#337ab7" stroke="#337ab7" points="156.5,-297 95.5,-297 95.5,-273 156.5,-273 156.5,-297"/>
-<text text-anchor="middle" x="126" y="-282.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">test_array</text>
-</a>
-</g>
-</g>
-<!-- program~test_hdf5&#45;&gt;module~test_array -->
-<g id="module~~h5fortran~~UsedByGraph_edge16" class="edge">
-<title>program~test_hdf5&#45;&gt;module~test_array</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M199.948,-285C189.7131,-285 177.9647,-285 166.8899,-285"/>
-<polygon fill="#000000" stroke="#000000" points="166.5495,-281.5001 156.5495,-285 166.5495,-288.5001 166.5495,-281.5001"/>
-</g>
-<!-- module~test_scalar -->
-<g id="module~~h5fortran~~UsedByGraph_node10" class="node">
-<title>module~test_scalar</title>
-<g id="a_module~~h5fortran~~UsedByGraph_node10"><a xlink:href=".././module/test_scalar.html" xlink:title="test_scalar">
-<polygon fill="#337ab7" stroke="#337ab7" points="158,-255 94,-255 94,-231 158,-231 158,-255"/>
-<text text-anchor="middle" x="126" y="-240.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">test_scalar</text>
-</a>
-</g>
-</g>
-<!-- program~test_hdf5&#45;&gt;module~test_scalar -->
-<g id="module~~h5fortran~~UsedByGraph_edge20" class="edge">
-<title>program~test_hdf5&#45;&gt;module~test_scalar</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M199.948,-273.3007C189.1189,-268.8634 176.5955,-263.7318 164.9682,-258.9675"/>
-<polygon fill="#000000" stroke="#000000" points="166.0493,-255.6281 155.4689,-255.0751 163.3952,-262.1054 166.0493,-255.6281"/>
-</g>
-<!-- module~test_string -->
-<g id="module~~h5fortran~~UsedByGraph_node12" class="node">
-<title>module~test_string</title>
-<g id="a_module~~h5fortran~~UsedByGraph_node12"><a xlink:href=".././module/test_string.html" xlink:title="test_string">
-<polygon fill="#337ab7" stroke="#337ab7" points="157,-213 95,-213 95,-189 157,-189 157,-213"/>
-<text text-anchor="middle" x="126" y="-198.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">test_string</text>
-</a>
-</g>
-</g>
-<!-- program~test_hdf5&#45;&gt;module~test_string -->
-<g id="module~~h5fortran~~UsedByGraph_edge21" class="edge">
-<title>program~test_hdf5&#45;&gt;module~test_string</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M216.501,-272.6392C203.292,-259.3576 181.1195,-238.0034 160,-222 158.5934,-220.9341 157.1306,-219.8727 155.6367,-218.8255"/>
-<polygon fill="#000000" stroke="#000000" points="157.1848,-215.6527 146.9149,-213.0487 153.3194,-221.4887 157.1848,-215.6527"/>
-</g>
-<!-- module~read -->
-<g id="module~~h5fortran~~UsedByGraph_node5" class="node">
-<title>module~read</title>
-<g id="a_module~~h5fortran~~UsedByGraph_node5"><a xlink:href=".././module/read.html" xlink:title="read">
-<polygon fill="#5bc0de" stroke="#5bc0de" points="153,-171 99,-171 99,-147 153,-147 153,-171"/>
-<text text-anchor="middle" x="126" y="-156.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">read</text>
-</a>
-</g>
-</g>
-<!-- module~read&#45;&gt;module~h5fortran -->
-<g id="module~~h5fortran~~UsedByGraph_edge11" class="edge">
-<title>module~read&#45;&gt;module~h5fortran</title>
-<path fill="none" stroke="#000000" d="M104.6457,-171.1714C100.3383,-173.9056 95.9296,-176.916 92,-180 75.3425,-193.0729 58.3465,-210.0063 46.0594,-223.0247"/>
-<polygon fill="#000000" stroke="#000000" points="43.3053,-220.8468 39.0625,-230.555 48.4334,-225.6116 43.3053,-220.8468"/>
-</g>
-<!-- program~test_error -->
-<g id="module~~h5fortran~~UsedByGraph_node6" class="node">
-<title>program~test_error</title>
-<g id="a_module~~h5fortran~~UsedByGraph_node6"><a xlink:href=".././program/test_error.html" xlink:title="test_error">
-<polygon fill="#f0ad4e" stroke="#f0ad4e" points="155.5,-129 96.5,-129 96.5,-105 155.5,-105 155.5,-129"/>
-<text text-anchor="middle" x="126" y="-114.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">test_error</text>
-</a>
-</g>
-</g>
-<!-- program~test_error&#45;&gt;module~h5fortran -->
-<g id="module~~h5fortran~~UsedByGraph_edge4" class="edge">
-<title>program~test_error&#45;&gt;module~h5fortran</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M102.9493,-129.1659C99.0519,-131.7838 95.2283,-134.7526 92,-138 67.3515,-162.7944 48.0482,-198.8353 37.3381,-221.5872"/>
-<polygon fill="#000000" stroke="#000000" points="34.1308,-220.1851 33.1585,-230.7353 40.4977,-223.0941 34.1308,-220.1851"/>
-</g>
-<!-- module~test_lt&#45;&gt;module~h5fortran -->
-<g id="module~~h5fortran~~UsedByGraph_edge5" class="edge">
-<title>module~test_lt&#45;&gt;module~h5fortran</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M104.6457,-314.8286C100.3383,-312.0944 95.9296,-309.084 92,-306 75.3425,-292.9271 58.3465,-275.9937 46.0594,-262.9753"/>
-<polygon fill="#000000" stroke="#000000" points="48.4334,-260.3884 39.0625,-255.445 43.3053,-265.1532 48.4334,-260.3884"/>
-</g>
-<!-- module~test_array&#45;&gt;module~h5fortran -->
-<g id="module~~h5fortran~~UsedByGraph_edge6" class="edge">
-<title>module~test_array&#45;&gt;module~h5fortran</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M97.9171,-272.9645C87.7681,-268.6149 76.1453,-263.6337 65.3282,-258.9978"/>
-<polygon fill="#000000" stroke="#000000" points="66.6572,-255.7595 56.087,-255.0373 63.8997,-262.1935 66.6572,-255.7595"/>
-</g>
-<!-- module~write -->
-<g id="module~~h5fortran~~UsedByGraph_node9" class="node">
-<title>module~write</title>
-<g id="a_module~~h5fortran~~UsedByGraph_node9"><a xlink:href=".././module/write.html" xlink:title="write">
-<polygon fill="#5bc0de" stroke="#5bc0de" points="153,-87 99,-87 99,-63 153,-63 153,-87"/>
-<text text-anchor="middle" x="126" y="-72.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">write</text>
-</a>
-</g>
-</g>
-<!-- module~write&#45;&gt;module~h5fortran -->
-<g id="module~~h5fortran~~UsedByGraph_edge10" class="edge">
-<title>module~write&#45;&gt;module~h5fortran</title>
-<path fill="none" stroke="#000000" d="M102.2197,-87.0563C98.487,-89.6542 94.908,-92.6445 92,-96 59.5499,-133.4445 41.2832,-189.8922 33.1652,-220.8098"/>
-<polygon fill="#000000" stroke="#000000" points="29.7456,-220.0572 30.7104,-230.608 36.5358,-221.7584 29.7456,-220.0572"/>
-</g>
-<!-- module~test_scalar&#45;&gt;module~h5fortran -->
-<g id="module~~h5fortran~~UsedByGraph_edge7" class="edge">
-<title>module~test_scalar&#45;&gt;module~h5fortran</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M93.9111,-243C85.0694,-243 75.3904,-243 66.2383,-243"/>
-<polygon fill="#000000" stroke="#000000" points="66.2019,-239.5001 56.2019,-243 66.2018,-246.5001 66.2019,-239.5001"/>
-</g>
-<!-- program~test_exist -->
-<g id="module~~h5fortran~~UsedByGraph_node11" class="node">
-<title>program~test_exist</title>
-<g id="a_module~~h5fortran~~UsedByGraph_node11"><a xlink:href=".././program/test_exist.html" xlink:title="test_exist">
-<polygon fill="#f0ad4e" stroke="#f0ad4e" points="155,-45 97,-45 97,-21 155,-21 155,-45"/>
-<text text-anchor="middle" x="126" y="-30.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">test_exist</text>
-</a>
-</g>
-</g>
-<!-- program~test_exist&#45;&gt;module~h5fortran -->
-<g id="module~~h5fortran~~UsedByGraph_edge8" class="edge">
-<title>program~test_exist&#45;&gt;module~h5fortran</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M101.6305,-45.1018C98.053,-47.6663 94.6779,-50.6337 92,-54 51.5636,-104.8302 36.0283,-182.5842 30.6094,-220.5594"/>
-<polygon fill="#000000" stroke="#000000" points="27.1258,-220.206 29.2862,-230.5783 34.0655,-221.1227 27.1258,-220.206"/>
-</g>
-<!-- module~test_string&#45;&gt;module~h5fortran -->
-<g id="module~~h5fortran~~UsedByGraph_edge9" class="edge">
-<title>module~test_string&#45;&gt;module~h5fortran</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M97.9171,-213.0355C87.7681,-217.3851 76.1453,-222.3663 65.3282,-227.0022"/>
-<polygon fill="#000000" stroke="#000000" points="63.8997,-223.8065 56.087,-230.9627 66.6572,-230.2405 63.8997,-223.8065"/>
-</g>
-<!-- module~reader_lt -->
-<g id="module~~h5fortran~~UsedByGraph_node13" class="node">
-<title>module~reader_lt</title>
-<g id="a_module~~h5fortran~~UsedByGraph_node13"><a xlink:href=".././module/reader_lt.html" xlink:title="reader_lt">
-<polygon fill="#5bc0de" stroke="#5bc0de" points="256,-234 201,-234 201,-210 256,-210 256,-234"/>
-<text text-anchor="middle" x="228.5" y="-219.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">reader_lt</text>
-</a>
-</g>
-</g>
-<!-- module~reader_lt&#45;&gt;module~read -->
-<g id="module~~h5fortran~~UsedByGraph_edge12" class="edge">
-<title>module~reader_lt&#45;&gt;module~read</title>
-<path fill="none" stroke="#000000" d="M208.737,-209.853C193.2807,-200.353 171.5863,-187.0189 154.29,-176.388"/>
-<polygon fill="#000000" stroke="#000000" points="156.0545,-173.3643 145.7024,-171.1097 152.3891,-179.3279 156.0545,-173.3643"/>
-</g>
-<!-- module~writer -->
-<g id="module~~h5fortran~~UsedByGraph_node14" class="node">
-<title>module~writer</title>
-<g id="a_module~~h5fortran~~UsedByGraph_node14"><a xlink:href=".././module/writer.html" xlink:title="writer">
-<polygon fill="#5bc0de" stroke="#5bc0de" points="255.5,-108 201.5,-108 201.5,-84 255.5,-84 255.5,-108"/>
-<text text-anchor="middle" x="228.5" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">writer</text>
-</a>
-</g>
-</g>
-<!-- module~writer&#45;&gt;module~write -->
-<g id="module~~h5fortran~~UsedByGraph_edge17" class="edge">
-<title>module~writer&#45;&gt;module~write</title>
-<path fill="none" stroke="#000000" d="M201.301,-90.4275C189.7172,-88.0543 176.0134,-85.2467 163.4927,-82.6814"/>
-<polygon fill="#000000" stroke="#000000" points="163.8251,-79.1769 153.3261,-80.5985 162.4201,-86.0345 163.8251,-79.1769"/>
-</g>
-<!-- module~writer_nd -->
-<g id="module~~h5fortran~~UsedByGraph_node15" class="node">
-<title>module~writer_nd</title>
-<g id="a_module~~h5fortran~~UsedByGraph_node15"><a xlink:href=".././module/writer_nd.html" xlink:title="writer_ND">
-<polygon fill="#5bc0de" stroke="#5bc0de" points="258.5,-66 198.5,-66 198.5,-42 258.5,-42 258.5,-66"/>
-<text text-anchor="middle" x="228.5" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">writer_ND</text>
-</a>
-</g>
-</g>
-<!-- module~writer_nd&#45;&gt;module~write -->
-<g id="module~~h5fortran~~UsedByGraph_edge19" class="edge">
-<title>module~writer_nd&#45;&gt;module~write</title>
-<path fill="none" stroke="#000000" d="M198.301,-60.1871C187.248,-62.4516 174.6139,-65.0401 163.0318,-67.413"/>
-<polygon fill="#000000" stroke="#000000" points="162.2846,-63.9933 153.1906,-69.4292 163.6896,-70.8508 162.2846,-63.9933"/>
-</g>
-<!-- module~reader_nd -->
-<g id="module~~h5fortran~~UsedByGraph_node16" class="node">
-<title>module~reader_nd</title>
-<g id="a_module~~h5fortran~~UsedByGraph_node16"><a xlink:href=".././module/reader_nd.html" xlink:title="reader_ND">
-<polygon fill="#5bc0de" stroke="#5bc0de" points="261,-192 196,-192 196,-168 261,-168 261,-192"/>
-<text text-anchor="middle" x="228.5" y="-177.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">reader_ND</text>
-</a>
-</g>
-</g>
-<!-- module~reader_nd&#45;&gt;module~read -->
-<g id="module~~h5fortran~~UsedByGraph_edge13" class="edge">
-<title>module~reader_nd&#45;&gt;module~read</title>
-<path fill="none" stroke="#000000" d="M195.7865,-173.2977C185.3971,-171.1692 173.8332,-168.8 163.1545,-166.6121"/>
-<polygon fill="#000000" stroke="#000000" points="163.7537,-163.1623 153.2547,-164.5839 162.3487,-170.0198 163.7537,-163.1623"/>
-</g>
-<!-- module~writer_lt -->
-<g id="module~~h5fortran~~UsedByGraph_node17" class="node">
-<title>module~writer_lt</title>
-<g id="a_module~~h5fortran~~UsedByGraph_node17"><a xlink:href=".././module/writer_lt.html" xlink:title="writer_lt">
-<polygon fill="#5bc0de" stroke="#5bc0de" points="255.5,-24 201.5,-24 201.5,0 255.5,0 255.5,-24"/>
-<text text-anchor="middle" x="228.5" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">writer_lt</text>
-</a>
-</g>
-</g>
-<!-- module~writer_lt&#45;&gt;module~write -->
-<g id="module~~h5fortran~~UsedByGraph_edge18" class="edge">
-<title>module~writer_lt&#45;&gt;module~write</title>
-<path fill="none" stroke="#000000" d="M208.737,-24.147C193.2807,-33.647 171.5863,-46.9811 154.29,-57.612"/>
-<polygon fill="#000000" stroke="#000000" points="152.3891,-54.6721 145.7024,-62.8903 156.0545,-60.6357 152.3891,-54.6721"/>
-</g>
-<!-- module~reader -->
-<g id="module~~h5fortran~~UsedByGraph_node18" class="node">
-<title>module~reader</title>
-<g id="a_module~~h5fortran~~UsedByGraph_node18"><a xlink:href=".././module/reader.html" xlink:title="reader">
-<polygon fill="#5bc0de" stroke="#5bc0de" points="255.5,-150 201.5,-150 201.5,-126 255.5,-126 255.5,-150"/>
-<text text-anchor="middle" x="228.5" y="-135.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">reader</text>
-</a>
-</g>
-</g>
-<!-- module~reader&#45;&gt;module~read -->
-<g id="module~~h5fortran~~UsedByGraph_edge14" class="edge">
-<title>module~reader&#45;&gt;module~read</title>
-<path fill="none" stroke="#000000" d="M201.301,-143.5725C189.7172,-145.9457 176.0134,-148.7533 163.4927,-151.3186"/>
-<polygon fill="#000000" stroke="#000000" points="162.4201,-147.9655 153.3261,-153.4015 163.8251,-154.8231 162.4201,-147.9655"/>
-</g>
-</g>
-</svg>
-</div><div><a type="button" class="graph-help" data-toggle="modal" href="#graph-help-text">Help</a></div><div class="modal fade" id="graph-help-text" tabindex="-1" role="dialog"><div class="modal-dialog modal-lg" role="document"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button><h4 class="modal-title" id="-graph-help-label">Graph Key</h4></div><div class="modal-body">
-    <p>Nodes of different colours represent the following: </p>
-    <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
- "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<!-- Generated by graphviz version 2.40.1 (20161225.0304)
- -->
-<!-- Title: Graph Key Pages: 1 -->
-<svg width="490pt" height="32pt"
- viewBox="0.00 0.00 489.50 32.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 28)">
-<title>Graph Key</title>
-<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-28 485.5,-28 485.5,4 -4,4"/>
-<!-- Module -->
-<g id="node1" class="node">
-<title>Module</title>
-<polygon fill="#337ab7" stroke="#337ab7" points="54,-24 0,-24 0,0 54,0 54,-24"/>
-<text text-anchor="middle" x="27" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">Module</text>
-</g>
-<!-- Submodule -->
-<g id="node2" class="node">
-<title>Submodule</title>
-<polygon fill="#5bc0de" stroke="#5bc0de" points="139.5,-24 72.5,-24 72.5,0 139.5,0 139.5,-24"/>
-<text text-anchor="middle" x="106" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">Submodule</text>
-</g>
-<!-- Subroutine -->
-<g id="node3" class="node">
-<title>Subroutine</title>
-<polygon fill="#d9534f" stroke="#d9534f" points="222,-24 158,-24 158,0 222,0 222,-24"/>
-<text text-anchor="middle" x="190" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">Subroutine</text>
-</g>
-<!-- Function -->
-<g id="node4" class="node">
-<title>Function</title>
-<polygon fill="#d94e8f" stroke="#d94e8f" points="294,-24 240,-24 240,0 294,0 294,-24"/>
-<text text-anchor="middle" x="267" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">Function</text>
-</g>
-<!-- Program -->
-<g id="node5" class="node">
-<title>Program</title>
-<polygon fill="#f0ad4e" stroke="#f0ad4e" points="366,-24 312,-24 312,0 366,0 366,-24"/>
-<text text-anchor="middle" x="339" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#ffffff">Program</text>
-</g>
-<!-- This Page&#39;s Entity -->
-<g id="node6" class="node">
-<title>This Page&#39;s Entity</title>
-<polygon fill="none" stroke="#000000" points="481.5,-24 384.5,-24 384.5,0 481.5,0 481.5,-24"/>
-<text text-anchor="middle" x="433" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="#000000">This Page&#39;s Entity</text>
-</g>
-</g>
-</svg>
-
-    
-    <p>Solid arrows point from a submodule to the (sub)module which it is
-    descended from. Dashed arrows point from a module or program unit to 
-    modules which it uses.
-    </p>
-    </div></div></div></div>
-  </li>
   
       </ul>
     </div>
@@ -931,13 +457,25 @@
       
       <a class="list-group-item" href="../module/h5fortran.html#interface-h5read">h5read</a>
       
-      <a class="list-group-item" href="../module/h5fortran.html#interface-hdf_get_layout">hdf_get_layout</a>
+      <a class="list-group-item" href="../module/h5fortran.html#interface-h5write_attr">h5write_attr</a>
       
-      <a class="list-group-item" href="../module/h5fortran.html#interface-hdf_check_exist">hdf_check_exist</a>
+      <a class="list-group-item" href="../module/h5fortran.html#interface-h5read_attr">h5read_attr</a>
       
-      <a class="list-group-item" href="../module/h5fortran.html#interface-hdf_is_contig">hdf_is_contig</a>
+      <a class="list-group-item" href="../module/h5fortran.html#interface-std_unlink">std_unlink</a>
       
-      <a class="list-group-item" href="../module/h5fortran.html#interface-hdf_is_chunked">hdf_is_chunked</a>
+      <a class="list-group-item" href="../module/h5fortran.html#interface-is_absolute_path">is_absolute_path</a>
+      
+      <a class="list-group-item" href="../module/h5fortran.html#interface-get_tempdir">get_tempdir</a>
+      
+      <a class="list-group-item" href="../module/h5fortran.html#interface-hdf_create">hdf_create</a>
+      
+      <a class="list-group-item" href="../module/h5fortran.html#interface-hdf_open_group">hdf_open_group</a>
+      
+      <a class="list-group-item" href="../module/h5fortran.html#interface-hdf_close_group">hdf_close_group</a>
+      
+      <a class="list-group-item" href="../module/h5fortran.html#interface-create_softlink">create_softlink</a>
+      
+      <a class="list-group-item" href="../module/h5fortran.html#interface-h5exist">h5exist</a>
       
       <a class="list-group-item" href="../module/h5fortran.html#interface-lt0write">lt0write</a>
       
@@ -987,6 +525,12 @@
       
       <a class="list-group-item" href="../module/h5fortran.html#interface-hdf_write_7d">hdf_write_7d</a>
       
+      <a class="list-group-item" href="../module/h5fortran.html#interface-hdf_get_ndims">hdf_get_ndims</a>
+      
+      <a class="list-group-item" href="../module/h5fortran.html#interface-hdf_get_layout">hdf_get_layout</a>
+      
+      <a class="list-group-item" href="../module/h5fortran.html#interface-hdf_check_exist">hdf_check_exist</a>
+      
       <a class="list-group-item" href="../module/h5fortran.html#interface-hdf_get_shape">hdf_get_shape</a>
       
       <a class="list-group-item" href="../module/h5fortran.html#interface-hdf_get_chunk">hdf_get_chunk</a>
@@ -1007,11 +551,21 @@
       
       <a class="list-group-item" href="../module/h5fortran.html#interface-hdf_read_7d">hdf_read_7d</a>
       
-      <a class="list-group-item" href="../module/h5fortran.html#interface-hdf_open_group">hdf_open_group</a>
+      <a class="list-group-item" href="../module/h5fortran.html#interface-readattr_char">readattr_char</a>
       
-      <a class="list-group-item" href="../module/h5fortran.html#interface-hdf_close_group">hdf_close_group</a>
+      <a class="list-group-item" href="../module/h5fortran.html#interface-readattr_num">readattr_num</a>
       
-      <a class="list-group-item" href="../module/h5fortran.html#interface-writeattr">writeattr</a>
+      <a class="list-group-item" href="../module/h5fortran.html#interface-writeattr_char">writeattr_char</a>
+      
+      <a class="list-group-item" href="../module/h5fortran.html#interface-writeattr_num">writeattr_num</a>
+      
+      <a class="list-group-item" href="../module/h5fortran.html#interface-writeattr_char_lt">writeattr_char_lt</a>
+      
+      <a class="list-group-item" href="../module/h5fortran.html#interface-writeattr_num_lt">writeattr_num_lt</a>
+      
+      <a class="list-group-item" href="../module/h5fortran.html#interface-readattr_char_lt">readattr_char_lt</a>
+      
+      <a class="list-group-item" href="../module/h5fortran.html#interface-readattr_num_lt">readattr_num_lt</a>
       
     </div>
   </div>
@@ -1038,6 +592,14 @@
   <div id="funcs-1" class="panel-collapse collapse">
     <div class="list-group">
       
+      <a class="list-group-item" href="../module/h5fortran.html#proc-hdf_is_contig">hdf_is_contig</a>
+      
+      <a class="list-group-item" href="../module/h5fortran.html#proc-hdf_is_compact">hdf_is_compact</a>
+      
+      <a class="list-group-item" href="../module/h5fortran.html#proc-hdf_is_chunked">hdf_is_chunked</a>
+      
+      <a class="list-group-item" href="../module/h5fortran.html#proc-is_hdf5">is_hdf5</a>
+      
       <a class="list-group-item" href="../module/h5fortran.html#proc-check">check</a>
       
     </div>
@@ -1054,6 +616,10 @@
       <a class="list-group-item" href="../module/h5fortran.html#proc-hdf_initialize">hdf_initialize</a>
       
       <a class="list-group-item" href="../module/h5fortran.html#proc-hdf_finalize">hdf_finalize</a>
+      
+      <a class="list-group-item" href="../module/h5fortran.html#proc-hdf_flush">hdf_flush</a>
+      
+      <a class="list-group-item" href="../module/h5fortran.html#proc-hdf5_close">hdf5_close</a>
       
       <a class="list-group-item" href="../module/h5fortran.html#proc-write_group">write_group</a>
       
@@ -1109,14 +675,6 @@ private interface <a href='../interface/lt0write.html'>lt0write</a>()
    
 </h3>
     
-
-
-
-
-
-
-
-<p>Submodules</p>
     
     <h4>Arguments</h4>
     
@@ -1136,14 +694,6 @@ private interface <a href='../interface/lt1write.html'>lt1write</a>()
    
 </h3>
     
-
-
-
-
-
-
-
-<p>Submodules</p>
     
     <h4>Arguments</h4>
     
@@ -1163,14 +713,6 @@ private interface <a href='../interface/lt2write.html'>lt2write</a>()
    
 </h3>
     
-
-
-
-
-
-
-
-<p>Submodules</p>
     
     <h4>Arguments</h4>
     
@@ -1190,14 +732,6 @@ private interface <a href='../interface/lt3write.html'>lt3write</a>()
    
 </h3>
     
-
-
-
-
-
-
-
-<p>Submodules</p>
     
     <h4>Arguments</h4>
     
@@ -1217,14 +751,6 @@ private interface <a href='../interface/lt4write.html'>lt4write</a>()
    
 </h3>
     
-
-
-
-
-
-
-
-<p>Submodules</p>
     
     <h4>Arguments</h4>
     
@@ -1244,14 +770,6 @@ private interface <a href='../interface/lt5write.html'>lt5write</a>()
    
 </h3>
     
-
-
-
-
-
-
-
-<p>Submodules</p>
     
     <h4>Arguments</h4>
     
@@ -1271,14 +789,6 @@ private interface <a href='../interface/lt6write.html'>lt6write</a>()
    
 </h3>
     
-
-
-
-
-
-
-
-<p>Submodules</p>
     
     <h4>Arguments</h4>
     
@@ -1298,14 +808,6 @@ private interface <a href='../interface/lt7write.html'>lt7write</a>()
    
 </h3>
     
-
-
-
-
-
-
-
-<p>Submodules</p>
     
     <h4>Arguments</h4>
     
@@ -1340,14 +842,6 @@ private interface <a href='../interface/lt0read.html'>lt0read</a>()
    
 </h3>
     
-
-
-
-
-
-
-
-<p>Submodules</p>
     
     <h4>Arguments</h4>
     
@@ -1367,14 +861,6 @@ private interface <a href='../interface/lt1read.html'>lt1read</a>()
    
 </h3>
     
-
-
-
-
-
-
-
-<p>Submodules</p>
     
     <h4>Arguments</h4>
     
@@ -1394,14 +880,6 @@ private interface <a href='../interface/lt2read.html'>lt2read</a>()
    
 </h3>
     
-
-
-
-
-
-
-
-<p>Submodules</p>
     
     <h4>Arguments</h4>
     
@@ -1421,14 +899,6 @@ private interface <a href='../interface/lt3read.html'>lt3read</a>()
    
 </h3>
     
-
-
-
-
-
-
-
-<p>Submodules</p>
     
     <h4>Arguments</h4>
     
@@ -1448,14 +918,6 @@ private interface <a href='../interface/lt4read.html'>lt4read</a>()
    
 </h3>
     
-
-
-
-
-
-
-
-<p>Submodules</p>
     
     <h4>Arguments</h4>
     
@@ -1475,14 +937,6 @@ private interface <a href='../interface/lt5read.html'>lt5read</a>()
    
 </h3>
     
-
-
-
-
-
-
-
-<p>Submodules</p>
     
     <h4>Arguments</h4>
     
@@ -1502,14 +956,6 @@ private interface <a href='../interface/lt6read.html'>lt6read</a>()
    
 </h3>
     
-
-
-
-
-
-
-
-<p>Submodules</p>
     
     <h4>Arguments</h4>
     
@@ -1529,14 +975,6 @@ private interface <a href='../interface/lt7read.html'>lt7read</a>()
    
 </h3>
     
-
-
-
-
-
-
-
-<p>Submodules</p>
     
     <h4>Arguments</h4>
     
@@ -1553,94 +991,52 @@ private interface <a href='../interface/lt7read.html'>lt7read</a>()
     
      
 <div class="panel panel-default">
-  <div class="panel-heading codesum"><span class="anchor" id="interface-hdf_get_layout"></span><h3>interface 
+  <div class="panel-heading codesum"><span class="anchor" id="interface-h5write_attr"></span><h3>public interface <a href='../interface/h5write_attr.html'>h5write_attr</a>
     
   </h3></div>
   
-  <div class="panel-body">
-    
-    <p>Submodules</p>
-  </div>
-  
   <ul class="list-group">
+  
+  
   
     <li class="list-group-item">
     
     
     <h3>
-private module function hdf_get_layout(self, dname) result(layout)
+private interface <a href='../interface/writeattr_num_lt.html'>writeattr_num_lt</a>()
     
     
    
-   <a href='../proc/hdf_get_layout.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
-    
 </h3>
     
-
-
-
-<p>H5D_CONTIGUOUS_F, H5D_CHUNKED_F, H5D_VIRTUAL_F, H5D_COMPACT_F</p>
     
     <h4>Arguments</h4>
     
-      
-      
-<table class="table table-striped varlist">
-<thead><tr><th>Type</th>
-<th>Intent</th><th>Optional</th>
-<th>Attributes</th><th></th><th>Name</th><th></th></thead>
-
-
-
-<tbody>
-
-  
-  
-  
-  
-<tr>
-  
-  <td><span class="anchor" ></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
-  <td>intent(in)</td>
-  <td></td>
-  
-  <td></td><td>::</td>
-  <td><strong>self</strong></td><td></td>
-  
-</tr>
-
-  
-  
-  
-  
-<tr>
-  
-  <td><span class="anchor" ></span>character(len=*),</td>
-  <td>intent(in)</td>
-  <td></td>
-  
-  <td></td><td>::</td>
-  <td><strong>dname</strong></td><td></td>
-  
-</tr>
-
-</tbody>
-</table>
-
-      
+      <em>None</em>
     
-    
-
-  
-  
-  
-  
-     <h4>Return Value <small>integer
-  </small></h4>
-  
     
 
     </li>
+  
+    <li class="list-group-item">
+    
+    
+    <h3>
+private interface <a href='../interface/writeattr_char_lt.html'>writeattr_char_lt</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+    </li>
+  
   
   </ul>
 </div>
@@ -1648,90 +1044,52 @@ private module function hdf_get_layout(self, dname) result(layout)
     
      
 <div class="panel panel-default">
-  <div class="panel-heading codesum"><span class="anchor" id="interface-hdf_check_exist"></span><h3>interface 
+  <div class="panel-heading codesum"><span class="anchor" id="interface-h5read_attr"></span><h3>public interface <a href='../interface/h5read_attr.html'>h5read_attr</a>
     
   </h3></div>
   
-  <div class="panel-body">
-    
-    <p>Submodules</p>
-  </div>
-  
   <ul class="list-group">
+  
+  
   
     <li class="list-group-item">
     
     
     <h3>
-private module function hdf_check_exist(self, dname) result(exists)
+private interface <a href='../interface/readattr_num_lt.html'>readattr_num_lt</a>()
     
     
    
-   <a href='../proc/hdf_check_exist.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
-    
 </h3>
     
     
     <h4>Arguments</h4>
     
-      
-      
-<table class="table table-striped varlist">
-<thead><tr><th>Type</th>
-<th>Intent</th><th>Optional</th>
-<th>Attributes</th><th></th><th>Name</th><th></th></thead>
-
-
-
-<tbody>
-
-  
-  
-  
-  
-<tr>
-  
-  <td><span class="anchor" ></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
-  <td>intent(in)</td>
-  <td></td>
-  
-  <td></td><td>::</td>
-  <td><strong>self</strong></td><td></td>
-  
-</tr>
-
-  
-  
-  
-  
-<tr>
-  
-  <td><span class="anchor" ></span>character(len=*),</td>
-  <td>intent(in)</td>
-  <td></td>
-  
-  <td></td><td>::</td>
-  <td><strong>dname</strong></td><td></td>
-  
-</tr>
-
-</tbody>
-</table>
-
-      
+      <em>None</em>
     
-    
-
-  
-  
-  
-  
-     <h4>Return Value <small>logical
-  </small></h4>
-  
     
 
     </li>
+  
+    <li class="list-group-item">
+    
+    
+    <h3>
+private interface <a href='../interface/readattr_char_lt.html'>readattr_char_lt</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+    </li>
+  
   
   </ul>
 </div>
@@ -1739,7 +1097,7 @@ private module function hdf_check_exist(self, dname) result(exists)
     
      
 <div class="panel panel-default">
-  <div class="panel-heading codesum"><span class="anchor" id="interface-hdf_is_contig"></span><h3>interface 
+  <div class="panel-heading codesum"><span class="anchor" id="interface-std_unlink"></span><h3>interface 
     
   </h3></div>
   
@@ -1754,11 +1112,11 @@ private module function hdf_check_exist(self, dname) result(exists)
     
     
     <h3>
-private module function hdf_is_contig(self, dname)
+private module function std_unlink(filename)
     
     
    
-   <a href='../proc/hdf_is_contig.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+   <a href='../proc/std_unlink.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
     
 </h3>
     
@@ -1782,27 +1140,12 @@ private module function hdf_is_contig(self, dname)
   
 <tr>
   
-  <td><span class="anchor" ></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
-  <td>intent(in)</td>
-  <td></td>
-  
-  <td></td><td>::</td>
-  <td><strong>self</strong></td><td></td>
-  
-</tr>
-
-  
-  
-  
-  
-<tr>
-  
   <td><span class="anchor" ></span>character(len=*),</td>
   <td>intent(in)</td>
   <td></td>
   
   <td></td><td>::</td>
-  <td><strong>dname</strong></td><td></td>
+  <td><strong>filename</strong></td><td></td>
   
 </tr>
 
@@ -1830,7 +1173,7 @@ private module function hdf_is_contig(self, dname)
     
      
 <div class="panel panel-default">
-  <div class="panel-heading codesum"><span class="anchor" id="interface-hdf_is_chunked"></span><h3>interface 
+  <div class="panel-heading codesum"><span class="anchor" id="interface-is_absolute_path"></span><h3>interface 
     
   </h3></div>
   
@@ -1845,11 +1188,129 @@ private module function hdf_is_contig(self, dname)
     
     
     <h3>
-private module function hdf_is_chunked(self, dname)
+private module function is_absolute_path(path)
     
     
    
-   <a href='../proc/hdf_is_chunked.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+   <a href='../proc/is_absolute_path.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+    
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>path</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+  
+  
+  
+  
+     <h4>Return Value <small>logical
+  </small></h4>
+  
+    
+
+    </li>
+  
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="interface-get_tempdir"></span><h3>interface 
+    
+  </h3></div>
+  
+  <div class="panel-body">
+    
+    <p>Submodules</p>
+  </div>
+  
+  <ul class="list-group">
+  
+    <li class="list-group-item">
+    
+    
+    <h3>
+private module function get_tempdir()
+    
+    
+   
+   <a href='../proc/get_tempdir.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+    
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+  
+  
+  
+  
+     <h4>Return Value <small>character(len=:),
+  allocatable</small></h4>
+  
+    
+
+    </li>
+  
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="interface-hdf_create"></span><h3>interface 
+    
+  </h3></div>
+  
+  <ul class="list-group">
+  
+    <li class="list-group-item">
+    
+    
+    <h3>
+private module subroutine hdf_create(self, dname, dtype, dims, sid, did, chunk_size, istart, iend, stride, compact)
+    
+    
+   
+   <a href='../proc/hdf_create.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
     
 </h3>
     
@@ -1874,11 +1335,484 @@ private module function hdf_is_chunked(self, dname)
 <tr>
   
   <td><span class="anchor" ></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
-  <td>intent(in)</td>
+  <td>intent(inout)</td>
   <td></td>
   
   <td></td><td>::</td>
   <td><strong>self</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>dname</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer(kind=HID_T),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>dtype</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>class(*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>dims</strong>(:)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer(kind=HID_T),</td>
+  <td>intent(out),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>sid</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer(kind=HID_T),</td>
+  <td>intent(out),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>did</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>chunk_size</strong>(:)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>istart</strong>(:)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>iend</strong>(:)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>stride</strong>(:)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>logical,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>compact</strong></td><td><p>keep istart, iend, stride for future slice shape check</p></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+    </li>
+  
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="interface-hdf_open_group"></span><h3>interface 
+    
+  </h3></div>
+  
+  <ul class="list-group">
+  
+    <li class="list-group-item">
+    
+    
+    <h3>
+private module subroutine hdf_open_group(self, gname, ierr)
+    
+    
+   
+   <a href='../proc/hdf_open_group.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+    
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
+  <td>intent(inout)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>self</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>gname</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(out),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>ierr</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+    </li>
+  
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="interface-hdf_close_group"></span><h3>interface 
+    
+  </h3></div>
+  
+  <ul class="list-group">
+  
+    <li class="list-group-item">
+    
+    
+    <h3>
+private module subroutine hdf_close_group(self, ierr)
+    
+    
+   
+   <a href='../proc/hdf_close_group.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+    
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
+  <td>intent(inout)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>self</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(out),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>ierr</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+    </li>
+  
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="interface-create_softlink"></span><h3>interface 
+    
+  </h3></div>
+  
+  <ul class="list-group">
+  
+    <li class="list-group-item">
+    
+    
+    <h3>
+private module subroutine create_softlink(self, target, link)
+    
+    
+   
+   <a href='../proc/create_softlink.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+    
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
+  <td>intent(inout)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>self</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>target</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>link</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+    </li>
+  
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="interface-h5exist"></span><h3>interface 
+    
+  </h3></div>
+  
+  <ul class="list-group">
+  
+    <li class="list-group-item">
+    
+    
+    <h3>
+public module function h5exist(filename, dname)
+    
+    
+   
+   <a href='../proc/h5exist.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+    
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>filename</strong></td><td></td>
   
 </tr>
 
@@ -1924,11 +1858,6 @@ private module function hdf_is_chunked(self, dname)
   <div class="panel-heading codesum"><span class="anchor" id="interface-lt0write"></span><h3>interface 
     
   </h3></div>
-  
-  <div class="panel-body">
-    
-    <p>Submodules</p>
-  </div>
   
   <ul class="list-group">
   
@@ -2037,11 +1966,6 @@ private module subroutine lt0write(filename, dname, value, ierr)
     
   </h3></div>
   
-  <div class="panel-body">
-    
-    <p>Submodules</p>
-  </div>
-  
   <ul class="list-group">
   
     <li class="list-group-item">
@@ -2148,11 +2072,6 @@ private module subroutine lt1write(filename, dname, value, ierr)
   <div class="panel-heading codesum"><span class="anchor" id="interface-lt2write"></span><h3>interface 
     
   </h3></div>
-  
-  <div class="panel-body">
-    
-    <p>Submodules</p>
-  </div>
   
   <ul class="list-group">
   
@@ -2261,11 +2180,6 @@ private module subroutine lt2write(filename, dname, value, ierr)
     
   </h3></div>
   
-  <div class="panel-body">
-    
-    <p>Submodules</p>
-  </div>
-  
   <ul class="list-group">
   
     <li class="list-group-item">
@@ -2372,11 +2286,6 @@ private module subroutine lt3write(filename, dname, value, ierr)
   <div class="panel-heading codesum"><span class="anchor" id="interface-lt4write"></span><h3>interface 
     
   </h3></div>
-  
-  <div class="panel-body">
-    
-    <p>Submodules</p>
-  </div>
   
   <ul class="list-group">
   
@@ -2485,11 +2394,6 @@ private module subroutine lt4write(filename, dname, value, ierr)
     
   </h3></div>
   
-  <div class="panel-body">
-    
-    <p>Submodules</p>
-  </div>
-  
   <ul class="list-group">
   
     <li class="list-group-item">
@@ -2596,11 +2500,6 @@ private module subroutine lt5write(filename, dname, value, ierr)
   <div class="panel-heading codesum"><span class="anchor" id="interface-lt6write"></span><h3>interface 
     
   </h3></div>
-  
-  <div class="panel-body">
-    
-    <p>Submodules</p>
-  </div>
   
   <ul class="list-group">
   
@@ -2709,11 +2608,6 @@ private module subroutine lt6write(filename, dname, value, ierr)
     
   </h3></div>
   
-  <div class="panel-body">
-    
-    <p>Submodules</p>
-  </div>
-  
   <ul class="list-group">
   
     <li class="list-group-item">
@@ -2820,11 +2714,6 @@ private module subroutine lt7write(filename, dname, value, ierr)
   <div class="panel-heading codesum"><span class="anchor" id="interface-lt0read"></span><h3>interface 
     
   </h3></div>
-  
-  <div class="panel-body">
-    
-    <p>Submodules</p>
-  </div>
   
   <ul class="list-group">
   
@@ -2933,11 +2822,6 @@ private module subroutine lt0read(filename, dname, value, ierr)
     
   </h3></div>
   
-  <div class="panel-body">
-    
-    <p>Submodules</p>
-  </div>
-  
   <ul class="list-group">
   
     <li class="list-group-item">
@@ -3044,11 +2928,6 @@ private module subroutine lt1read(filename, dname, value, ierr)
   <div class="panel-heading codesum"><span class="anchor" id="interface-lt2read"></span><h3>interface 
     
   </h3></div>
-  
-  <div class="panel-body">
-    
-    <p>Submodules</p>
-  </div>
   
   <ul class="list-group">
   
@@ -3157,11 +3036,6 @@ private module subroutine lt2read(filename, dname, value, ierr)
     
   </h3></div>
   
-  <div class="panel-body">
-    
-    <p>Submodules</p>
-  </div>
-  
   <ul class="list-group">
   
     <li class="list-group-item">
@@ -3268,11 +3142,6 @@ private module subroutine lt3read(filename, dname, value, ierr)
   <div class="panel-heading codesum"><span class="anchor" id="interface-lt4read"></span><h3>interface 
     
   </h3></div>
-  
-  <div class="panel-body">
-    
-    <p>Submodules</p>
-  </div>
   
   <ul class="list-group">
   
@@ -3381,11 +3250,6 @@ private module subroutine lt4read(filename, dname, value, ierr)
     
   </h3></div>
   
-  <div class="panel-body">
-    
-    <p>Submodules</p>
-  </div>
-  
   <ul class="list-group">
   
     <li class="list-group-item">
@@ -3492,11 +3356,6 @@ private module subroutine lt5read(filename, dname, value, ierr)
   <div class="panel-heading codesum"><span class="anchor" id="interface-lt6read"></span><h3>interface 
     
   </h3></div>
-  
-  <div class="panel-body">
-    
-    <p>Submodules</p>
-  </div>
   
   <ul class="list-group">
   
@@ -3605,11 +3464,6 @@ private module subroutine lt6read(filename, dname, value, ierr)
     
   </h3></div>
   
-  <div class="panel-body">
-    
-    <p>Submodules</p>
-  </div>
-  
   <ul class="list-group">
   
     <li class="list-group-item">
@@ -3717,18 +3571,13 @@ private module subroutine lt7read(filename, dname, value, ierr)
     
   </h3></div>
   
-  <div class="panel-body">
-    
-    <p>Submodules</p>
-  </div>
-  
   <ul class="list-group">
   
     <li class="list-group-item">
     
     
     <h3>
-private module subroutine hdf_write_scalar(self, dname, value, ierr)
+private module subroutine hdf_write_scalar(self, dname, value, ierr, compact)
     
     
    
@@ -3810,6 +3659,21 @@ private module subroutine hdf_write_scalar(self, dname, value, ierr)
   
 </tr>
 
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>logical,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>compact</strong></td><td></td>
+  
+</tr>
+
 </tbody>
 </table>
 
@@ -3829,18 +3693,13 @@ private module subroutine hdf_write_scalar(self, dname, value, ierr)
     
   </h3></div>
   
-  <div class="panel-body">
-    
-    <p>Submodules</p>
-  </div>
-  
   <ul class="list-group">
   
     <li class="list-group-item">
     
     
     <h3>
-private module subroutine hdf_write_1d(self, dname, value, ierr)
+private module subroutine hdf_write_1d(self, dname, value, ierr, chunk_size, istart, iend, stride, compact)
     
     
    
@@ -3922,6 +3781,81 @@ private module subroutine hdf_write_1d(self, dname, value, ierr)
   
 </tr>
 
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>chunk_size</strong>(1)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>istart</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>iend</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>stride</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>logical,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>compact</strong></td><td></td>
+  
+</tr>
+
 </tbody>
 </table>
 
@@ -3941,18 +3875,13 @@ private module subroutine hdf_write_1d(self, dname, value, ierr)
     
   </h3></div>
   
-  <div class="panel-body">
-    
-    <p>Submodules</p>
-  </div>
-  
   <ul class="list-group">
   
     <li class="list-group-item">
     
     
     <h3>
-private module subroutine hdf_write_2d(self, dname, value, ierr, chunk_size)
+private module subroutine hdf_write_2d(self, dname, value, ierr, chunk_size, istart, iend, stride, compact)
     
     
    
@@ -4045,7 +3974,67 @@ private module subroutine hdf_write_2d(self, dname, value, ierr, chunk_size)
   <td>optional</td>
   
   <td></td><td>::</td>
-  <td><strong>chunk_size</strong>(rank(value))</td><td></td>
+  <td><strong>chunk_size</strong>(2)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>istart</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>iend</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>stride</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>logical,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>compact</strong></td><td></td>
   
 </tr>
 
@@ -4068,18 +4057,13 @@ private module subroutine hdf_write_2d(self, dname, value, ierr, chunk_size)
     
   </h3></div>
   
-  <div class="panel-body">
-    
-    <p>Submodules</p>
-  </div>
-  
   <ul class="list-group">
   
     <li class="list-group-item">
     
     
     <h3>
-private module subroutine hdf_write_3d(self, dname, value, ierr, chunk_size)
+private module subroutine hdf_write_3d(self, dname, value, ierr, chunk_size, istart, iend, stride, compact)
     
     
    
@@ -4172,7 +4156,67 @@ private module subroutine hdf_write_3d(self, dname, value, ierr, chunk_size)
   <td>optional</td>
   
   <td></td><td>::</td>
-  <td><strong>chunk_size</strong>(rank(value))</td><td></td>
+  <td><strong>chunk_size</strong>(3)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>istart</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>iend</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>stride</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>logical,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>compact</strong></td><td></td>
   
 </tr>
 
@@ -4195,18 +4239,13 @@ private module subroutine hdf_write_3d(self, dname, value, ierr, chunk_size)
     
   </h3></div>
   
-  <div class="panel-body">
-    
-    <p>Submodules</p>
-  </div>
-  
   <ul class="list-group">
   
     <li class="list-group-item">
     
     
     <h3>
-private module subroutine hdf_write_4d(self, dname, value, ierr, chunk_size)
+private module subroutine hdf_write_4d(self, dname, value, ierr, chunk_size, istart, iend, stride, compact)
     
     
    
@@ -4299,7 +4338,67 @@ private module subroutine hdf_write_4d(self, dname, value, ierr, chunk_size)
   <td>optional</td>
   
   <td></td><td>::</td>
-  <td><strong>chunk_size</strong>(rank(value))</td><td></td>
+  <td><strong>chunk_size</strong>(4)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>istart</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>iend</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>stride</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>logical,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>compact</strong></td><td></td>
   
 </tr>
 
@@ -4322,18 +4421,13 @@ private module subroutine hdf_write_4d(self, dname, value, ierr, chunk_size)
     
   </h3></div>
   
-  <div class="panel-body">
-    
-    <p>Submodules</p>
-  </div>
-  
   <ul class="list-group">
   
     <li class="list-group-item">
     
     
     <h3>
-private module subroutine hdf_write_5d(self, dname, value, ierr, chunk_size)
+private module subroutine hdf_write_5d(self, dname, value, ierr, chunk_size, istart, iend, stride, compact)
     
     
    
@@ -4426,7 +4520,67 @@ private module subroutine hdf_write_5d(self, dname, value, ierr, chunk_size)
   <td>optional</td>
   
   <td></td><td>::</td>
-  <td><strong>chunk_size</strong>(rank(value))</td><td></td>
+  <td><strong>chunk_size</strong>(5)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>istart</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>iend</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>stride</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>logical,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>compact</strong></td><td></td>
   
 </tr>
 
@@ -4449,18 +4603,13 @@ private module subroutine hdf_write_5d(self, dname, value, ierr, chunk_size)
     
   </h3></div>
   
-  <div class="panel-body">
-    
-    <p>Submodules</p>
-  </div>
-  
   <ul class="list-group">
   
     <li class="list-group-item">
     
     
     <h3>
-private module subroutine hdf_write_6d(self, dname, value, ierr, chunk_size)
+private module subroutine hdf_write_6d(self, dname, value, ierr, chunk_size, istart, iend, stride, compact)
     
     
    
@@ -4553,7 +4702,67 @@ private module subroutine hdf_write_6d(self, dname, value, ierr, chunk_size)
   <td>optional</td>
   
   <td></td><td>::</td>
-  <td><strong>chunk_size</strong>(rank(value))</td><td></td>
+  <td><strong>chunk_size</strong>(6)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>istart</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>iend</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>stride</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>logical,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>compact</strong></td><td></td>
   
 </tr>
 
@@ -4576,18 +4785,13 @@ private module subroutine hdf_write_6d(self, dname, value, ierr, chunk_size)
     
   </h3></div>
   
-  <div class="panel-body">
-    
-    <p>Submodules</p>
-  </div>
-  
   <ul class="list-group">
   
     <li class="list-group-item">
     
     
     <h3>
-private module subroutine hdf_write_7d(self, dname, value, ierr, chunk_size)
+private module subroutine hdf_write_7d(self, dname, value, ierr, chunk_size, istart, iend, stride, compact)
     
     
    
@@ -4680,7 +4884,67 @@ private module subroutine hdf_write_7d(self, dname, value, ierr, chunk_size)
   <td>optional</td>
   
   <td></td><td>::</td>
-  <td><strong>chunk_size</strong>(rank(value))</td><td></td>
+  <td><strong>chunk_size</strong>(7)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>istart</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>iend</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>stride</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>logical,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>compact</strong></td><td></td>
   
 </tr>
 
@@ -4699,14 +4963,271 @@ private module subroutine hdf_write_7d(self, dname, value, ierr, chunk_size)
     
      
 <div class="panel panel-default">
-  <div class="panel-heading codesum"><span class="anchor" id="interface-hdf_get_shape"></span><h3>interface 
+  <div class="panel-heading codesum"><span class="anchor" id="interface-hdf_get_ndims"></span><h3>interface 
     
   </h3></div>
   
-  <div class="panel-body">
+  <ul class="list-group">
+  
+    <li class="list-group-item">
     
-    <p>Submodules</p>
-  </div>
+    
+    <h3>
+private module function hdf_get_ndims(self, dname) result(drank)
+    
+    
+   
+   <a href='../proc/hdf_get_ndims.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+    
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>self</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>dname</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+  
+  
+  
+  
+     <h4>Return Value <small>integer
+  </small></h4>
+  
+    
+
+    </li>
+  
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="interface-hdf_get_layout"></span><h3>interface 
+    
+  </h3></div>
+  
+  <ul class="list-group">
+  
+    <li class="list-group-item">
+    
+    
+    <h3>
+private module function hdf_get_layout(self, dname) result(layout)
+    
+    
+   
+   <a href='../proc/hdf_get_layout.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+    
+</h3>
+    
+
+
+
+<p>H5D_CONTIGUOUS_F, H5D_CHUNKED_F, H5D_VIRTUAL_F, H5D_COMPACT_F</p>
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>self</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>dname</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+  
+  
+  
+  
+     <h4>Return Value <small>integer
+  </small></h4>
+  
+    
+
+    </li>
+  
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="interface-hdf_check_exist"></span><h3>interface 
+    
+  </h3></div>
+  
+  <ul class="list-group">
+  
+    <li class="list-group-item">
+    
+    
+    <h3>
+private module function hdf_check_exist(self, dname) result(exists)
+    
+    
+   
+   <a href='../proc/hdf_check_exist.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+    
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>self</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>dname</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+  
+  
+  
+  
+     <h4>Return Value <small>logical
+  </small></h4>
+  
+    
+
+    </li>
+  
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="interface-hdf_get_shape"></span><h3>interface 
+    
+  </h3></div>
   
   <ul class="list-group">
   
@@ -4815,11 +5336,6 @@ private module subroutine hdf_get_shape(self, dname, dims, ierr)
     
   </h3></div>
   
-  <div class="panel-body">
-    
-    <p>Submodules</p>
-  </div>
-  
   <ul class="list-group">
   
     <li class="list-group-item">
@@ -4912,11 +5428,6 @@ private module subroutine hdf_get_chunk(self, dname, chunk_size)
     
   </h3></div>
   
-  <div class="panel-body">
-    
-    <p>Submodules</p>
-  </div>
-  
   <ul class="list-group">
   
     <li class="list-group-item">
@@ -4986,7 +5497,7 @@ private module subroutine hdf_read_scalar(self, dname, value, ierr)
   <td></td>
   
   <td></td><td>::</td>
-  <td><strong>value</strong></td><td></td>
+  <td><strong>value</strong></td><td><p>intent(inout) for character</p></td>
   
 </tr>
 
@@ -5023,11 +5534,6 @@ private module subroutine hdf_read_scalar(self, dname, value, ierr)
   <div class="panel-heading codesum"><span class="anchor" id="interface-hdf_read_1d"></span><h3>interface 
     
   </h3></div>
-  
-  <div class="panel-body">
-    
-    <p>Submodules</p>
-  </div>
   
   <ul class="list-group">
   
@@ -5181,11 +5687,6 @@ private module subroutine hdf_read_1d(self, dname, value, ierr, istart, iend, st
     
   </h3></div>
   
-  <div class="panel-body">
-    
-    <p>Submodules</p>
-  </div>
-  
   <ul class="list-group">
   
     <li class="list-group-item">
@@ -5337,11 +5838,6 @@ private module subroutine hdf_read_2d(self, dname, value, ierr, istart, iend, st
   <div class="panel-heading codesum"><span class="anchor" id="interface-hdf_read_3d"></span><h3>interface 
     
   </h3></div>
-  
-  <div class="panel-body">
-    
-    <p>Submodules</p>
-  </div>
   
   <ul class="list-group">
   
@@ -5495,11 +5991,6 @@ private module subroutine hdf_read_3d(self, dname, value, ierr, istart, iend, st
     
   </h3></div>
   
-  <div class="panel-body">
-    
-    <p>Submodules</p>
-  </div>
-  
   <ul class="list-group">
   
     <li class="list-group-item">
@@ -5651,11 +6142,6 @@ private module subroutine hdf_read_4d(self, dname, value, ierr, istart, iend, st
   <div class="panel-heading codesum"><span class="anchor" id="interface-hdf_read_5d"></span><h3>interface 
     
   </h3></div>
-  
-  <div class="panel-body">
-    
-    <p>Submodules</p>
-  </div>
   
   <ul class="list-group">
   
@@ -5809,11 +6295,6 @@ private module subroutine hdf_read_5d(self, dname, value, ierr, istart, iend, st
     
   </h3></div>
   
-  <div class="panel-body">
-    
-    <p>Submodules</p>
-  </div>
-  
   <ul class="list-group">
   
     <li class="list-group-item">
@@ -5966,11 +6447,6 @@ private module subroutine hdf_read_6d(self, dname, value, ierr, istart, iend, st
     
   </h3></div>
   
-  <div class="panel-body">
-    
-    <p>Submodules</p>
-  </div>
-  
   <ul class="list-group">
   
     <li class="list-group-item">
@@ -6119,14 +6595,9 @@ private module subroutine hdf_read_7d(self, dname, value, ierr, istart, iend, st
     
      
 <div class="panel panel-default">
-  <div class="panel-heading codesum"><span class="anchor" id="interface-hdf_open_group"></span><h3>interface 
+  <div class="panel-heading codesum"><span class="anchor" id="interface-readattr_char"></span><h3>interface 
     
   </h3></div>
-  
-  <div class="panel-body">
-    
-    <p>Submodules</p>
-  </div>
   
   <ul class="list-group">
   
@@ -6134,11 +6605,11 @@ private module subroutine hdf_read_7d(self, dname, value, ierr, istart, iend, st
     
     
     <h3>
-private module subroutine hdf_open_group(self, gname, ierr)
+private module subroutine readattr_char(self, dname, attr, attrval, ierr)
     
     
    
-   <a href='../proc/hdf_open_group.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+   <a href='../proc/readattr_char.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
     
 </h3>
     
@@ -6163,7 +6634,7 @@ private module subroutine hdf_open_group(self, gname, ierr)
 <tr>
   
   <td><span class="anchor" ></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
-  <td>intent(inout)</td>
+  <td>intent(in)</td>
   <td></td>
   
   <td></td><td>::</td>
@@ -6182,7 +6653,37 @@ private module subroutine hdf_open_group(self, gname, ierr)
   <td></td>
   
   <td></td><td>::</td>
-  <td><strong>gname</strong></td><td></td>
+  <td><strong>dname</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>attr</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(inout)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>attrval</strong></td><td><p>intent(inout) for character</p></td>
   
 </tr>
 
@@ -6216,14 +6717,9 @@ private module subroutine hdf_open_group(self, gname, ierr)
     
      
 <div class="panel panel-default">
-  <div class="panel-heading codesum"><span class="anchor" id="interface-hdf_close_group"></span><h3>interface 
+  <div class="panel-heading codesum"><span class="anchor" id="interface-readattr_num"></span><h3>interface 
     
   </h3></div>
-  
-  <div class="panel-body">
-    
-    <p>Submodules</p>
-  </div>
   
   <ul class="list-group">
   
@@ -6231,11 +6727,11 @@ private module subroutine hdf_open_group(self, gname, ierr)
     
     
     <h3>
-private module subroutine hdf_close_group(self, ierr)
+private module subroutine readattr_num(self, dname, attr, attrval, ierr)
     
     
    
-   <a href='../proc/hdf_close_group.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+   <a href='../proc/readattr_num.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
     
 </h3>
     
@@ -6260,11 +6756,56 @@ private module subroutine hdf_close_group(self, ierr)
 <tr>
   
   <td><span class="anchor" ></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
-  <td>intent(inout)</td>
+  <td>intent(in)</td>
   <td></td>
   
   <td></td><td>::</td>
   <td><strong>self</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>dname</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>attr</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>class(*),</td>
+  <td>intent(out)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>attrval</strong>(:)</td><td></td>
   
 </tr>
 
@@ -6298,14 +6839,9 @@ private module subroutine hdf_close_group(self, ierr)
     
      
 <div class="panel panel-default">
-  <div class="panel-heading codesum"><span class="anchor" id="interface-writeattr"></span><h3>interface 
+  <div class="panel-heading codesum"><span class="anchor" id="interface-writeattr_char"></span><h3>interface 
     
   </h3></div>
-  
-  <div class="panel-body">
-    
-    <p>Submodules</p>
-  </div>
   
   <ul class="list-group">
   
@@ -6313,11 +6849,11 @@ private module subroutine hdf_close_group(self, ierr)
     
     
     <h3>
-private module subroutine writeattr(self, dname, attr, attrval, ierr)
+private module subroutine writeattr_char(self, dname, attr, attrval, ierr)
     
     
    
-   <a href='../proc/writeattr.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+   <a href='../proc/writeattr_char.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
     
 </h3>
     
@@ -6392,6 +6928,616 @@ private module subroutine writeattr(self, dname, attr, attrval, ierr)
   
   <td></td><td>::</td>
   <td><strong>attrval</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(out),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>ierr</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+    </li>
+  
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="interface-writeattr_num"></span><h3>interface 
+    
+  </h3></div>
+  
+  <ul class="list-group">
+  
+    <li class="list-group-item">
+    
+    
+    <h3>
+private module subroutine writeattr_num(self, dname, attr, attrval, ierr)
+    
+    
+   
+   <a href='../proc/writeattr_num.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+    
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>self</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>dname</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>attr</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>class(*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>attrval</strong>(:)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(out),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>ierr</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+    </li>
+  
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="interface-writeattr_char_lt"></span><h3>interface 
+    
+  </h3></div>
+  
+  <ul class="list-group">
+  
+    <li class="list-group-item">
+    
+    
+    <h3>
+private module subroutine writeattr_char_lt(filename, dname, attr, attrval, ierr)
+    
+    
+   
+   <a href='../proc/writeattr_char_lt.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+    
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>filename</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>dname</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>attr</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>attrval</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(out),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>ierr</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+    </li>
+  
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="interface-writeattr_num_lt"></span><h3>interface 
+    
+  </h3></div>
+  
+  <ul class="list-group">
+  
+    <li class="list-group-item">
+    
+    
+    <h3>
+private module subroutine writeattr_num_lt(filename, dname, attr, attrval, ierr)
+    
+    
+   
+   <a href='../proc/writeattr_num_lt.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+    
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>filename</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>dname</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>attr</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>class(*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>attrval</strong>(:)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(out),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>ierr</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+    </li>
+  
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="interface-readattr_char_lt"></span><h3>interface 
+    
+  </h3></div>
+  
+  <ul class="list-group">
+  
+    <li class="list-group-item">
+    
+    
+    <h3>
+private module subroutine readattr_char_lt(filename, dname, attr, attrval, ierr)
+    
+    
+   
+   <a href='../proc/readattr_char_lt.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+    
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>filename</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>dname</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>attr</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(inout)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>attrval</strong></td><td><p>intent(inout) for character</p></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(out),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>ierr</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+    </li>
+  
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="interface-readattr_num_lt"></span><h3>interface 
+    
+  </h3></div>
+  
+  <ul class="list-group">
+  
+    <li class="list-group-item">
+    
+    
+    <h3>
+private module subroutine readattr_num_lt(filename, dname, attr, attrval, ierr)
+    
+    
+   
+   <a href='../proc/readattr_num_lt.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+    
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>filename</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>dname</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>attr</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>class(*),</td>
+  <td>intent(out)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>attrval</strong>(:)</td><td></td>
   
 </tr>
 
@@ -6559,6 +7705,34 @@ private module subroutine writeattr(self, dname, attr, attrval, ierr)
   
 <tr>
   
+  <td><span class="anchor" id="variable-is_open"></span>logical,</td>
+  
+  <td>public</td>
+  <td></td><td>::</td>
+  <td><strong>is_open</strong></td><td> =</td><td>.false.</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" id="variable-is_scratch"></span>logical,</td>
+  
+  <td>public</td>
+  <td></td><td>::</td>
+  <td><strong>is_scratch</strong></td><td> =</td><td>.false.</td><td><p>will be auto-deleted on close</p></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
   <td><span class="anchor" id="variable-libversion"></span>integer,</td>
   
   <td>public</td>
@@ -6578,8 +7752,14 @@ private module subroutine writeattr(self, dname, attr, attrval, ierr)
       <table class="table table-striped varlist">
       <tbody>
       
+       <tr><td>procedure, public :: <strong><a href='../type/hdf5_file.html#boundprocedure-softlink'>softlink</a></strong>  => create_softlink </td>
+       <td><p>define methods (procedures) that don't need generic procedure</p></td></tr>
+      
+       <tr><td>procedure, public :: <strong><a href='../type/hdf5_file.html#boundprocedure-is_compact'>is_compact</a></strong>  => hdf_is_compact </td>
+       <td></td></tr>
+      
        <tr><td>procedure, public :: <strong><a href='../type/hdf5_file.html#boundprocedure-is_chunked'>is_chunked</a></strong>  => hdf_is_chunked </td>
-       <td><p>initialize HDF5 file</p></td></tr>
+       <td></td></tr>
       
        <tr><td>procedure, public :: <strong><a href='../type/hdf5_file.html#boundprocedure-is_contig'>is_contig</a></strong>  => hdf_is_contig </td>
        <td></td></tr>
@@ -6599,13 +7779,19 @@ private module subroutine writeattr(self, dname, attr, attrval, ierr)
        <tr><td>procedure, public :: <strong><a href='../type/hdf5_file.html#boundprocedure-shape'>shape</a></strong>  => hdf_get_shape </td>
        <td></td></tr>
       
+       <tr><td>procedure, public :: <strong><a href='../type/hdf5_file.html#boundprocedure-ndims'>ndims</a></strong>  => hdf_get_ndims </td>
+       <td></td></tr>
+      
+       <tr><td>procedure, public :: <strong><a href='../type/hdf5_file.html#boundprocedure-flush'>flush</a></strong>  => hdf_flush </td>
+       <td></td></tr>
+      
        <tr><td>procedure, public :: <strong><a href='../type/hdf5_file.html#boundprocedure-close'>close</a></strong>  => hdf_close_group </td>
        <td></td></tr>
       
        <tr><td>procedure, public :: <strong><a href='../type/hdf5_file.html#boundprocedure-open'>open</a></strong>  => hdf_open_group </td>
        <td></td></tr>
       
-       <tr><td>procedure, public :: <strong><a href='../type/hdf5_file.html#boundprocedure-writeattr'>writeattr</a></strong>  </td>
+       <tr><td>procedure, public :: <strong><a href='../type/hdf5_file.html#boundprocedure-create'>create</a></strong>  => hdf_create </td>
        <td></td></tr>
       
        <tr><td>procedure, public :: <strong><a href='../type/hdf5_file.html#boundprocedure-write_group'>write_group</a></strong>  </td>
@@ -6618,13 +7804,33 @@ private module subroutine writeattr(self, dname, attr, attrval, ierr)
        <td></td></tr>
       
        <tr><td>generic, public :: <strong><a href='../type/hdf5_file.html#boundprocedure-write'>write</a></strong>  => hdf_write_scalar, hdf_write_1d, hdf_write_2d, hdf_write_3d, hdf_write_4d, hdf_write_5d, hdf_write_6d, hdf_write_7d </td>
-       <td><p>write group or dataset integer/real</p></td></tr>
+       <td><p>below are procedure that need generic mapping (type or rank agnostic)
+ write group or dataset integer/real</p></td></tr>
+      
+       <tr><td>generic, public :: <strong><a href='../type/hdf5_file.html#boundprocedure-writeattr'>writeattr</a></strong>  => writeattr_char, writeattr_num </td>
+       <td><p>write attributes</p></td></tr>
+      
+       <tr><td>generic, public :: <strong><a href='../type/hdf5_file.html#boundprocedure-readattr'>readattr</a></strong>  => readattr_char, readattr_num </td>
+       <td><p>read attributes</p></td></tr>
       
        <tr><td>generic, public :: <strong><a href='../type/hdf5_file.html#boundprocedure-read'>read</a></strong>  => hdf_read_scalar, hdf_read_1d, hdf_read_2d, hdf_read_3d, hdf_read_4d, hdf_read_5d, hdf_read_6d, hdf_read_7d </td>
-       <td><p>read dataset integer/real</p></td></tr>
+       <td><p>read dataset</p></td></tr>
+      
+       <tr><td>procedure, private :: <strong><a href='../type/hdf5_file.html#boundprocedure-readattr_num'>readattr_num</a></strong>  </td>
+       <td><p>private methods
+ each method must be declared here, and above as a generic, public</p></td></tr>
+      
+       <tr><td>procedure, private :: <strong><a href='../type/hdf5_file.html#boundprocedure-readattr_char'>readattr_char</a></strong>  </td>
+       <td></td></tr>
+      
+       <tr><td>procedure, private :: <strong><a href='../type/hdf5_file.html#boundprocedure-writeattr_num'>writeattr_num</a></strong>  </td>
+       <td></td></tr>
+      
+       <tr><td>procedure, private :: <strong><a href='../type/hdf5_file.html#boundprocedure-writeattr_char'>writeattr_char</a></strong>  </td>
+       <td></td></tr>
       
        <tr><td>procedure, private :: <strong><a href='../type/hdf5_file.html#boundprocedure-hdf_read_7d'>hdf_read_7d</a></strong>  </td>
-       <td><p>private methods</p></td></tr>
+       <td></td></tr>
       
        <tr><td>procedure, private :: <strong><a href='../type/hdf5_file.html#boundprocedure-hdf_read_6d'>hdf_read_6d</a></strong>  </td>
        <td></td></tr>
@@ -6688,8 +7894,301 @@ private module subroutine writeattr(self, dname, attr, attrval, ierr)
     
     
   <div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="proc-hdf_is_contig"></span><h3>
+private function <a href='../proc/hdf_is_contig.html'>hdf_is_contig</a>(self, dname)
+    
+    
+   
+</h3></div>
+  <div class="panel-body">
+       
+    
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>self</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>dname</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+  
+  
+  
+  
+     <h4>Return Value <small>logical
+  </small></h4>
+  
+    
+
+  </div>
+  </div>
+
+    
+    
+  <div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="proc-hdf_is_compact"></span><h3>
+private function <a href='../proc/hdf_is_compact.html'>hdf_is_compact</a>(self, dname)
+    
+    
+   
+</h3></div>
+  <div class="panel-body">
+       
+    
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>self</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>dname</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+  
+  
+  
+  
+     <h4>Return Value <small>logical
+  </small></h4>
+  
+    
+
+  </div>
+  </div>
+
+    
+    
+  <div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="proc-hdf_is_chunked"></span><h3>
+private function <a href='../proc/hdf_is_chunked.html'>hdf_is_chunked</a>(self, dname)
+    
+    
+   
+</h3></div>
+  <div class="panel-body">
+       
+    
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>self</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>dname</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+  
+  
+  
+  
+     <h4>Return Value <small>logical
+  </small></h4>
+  
+    
+
+  </div>
+  </div>
+
+    
+    
+  <div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="proc-is_hdf5"></span><h3>
+public function <a href='../proc/is_hdf5.html'>is_hdf5</a>(filename)
+    
+    
+   
+</h3></div>
+  <div class="panel-body">
+       
+    
+
+
+
+
+
+
+
+<p>is this file HDF5?</p><a href="../proc/is_hdf5.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>filename</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+  
+  
+  
+  
+     <h4>Return Value <small>logical
+  </small></h4>
+  
+    
+
+  </div>
+  </div>
+
+    
+    
+  <div class="panel panel-default">
   <div class="panel-heading codesum"><span class="anchor" id="proc-check"></span><h3>
-public function <a href='../proc/check.html'>check</a>(ierr, msg)
+public function <a href='../proc/check.html'>check</a>(ierr, filename, dname)
     
     
    
@@ -6733,11 +8232,26 @@ public function <a href='../proc/check.html'>check</a>(ierr, msg)
 <tr>
   
   <td><span class="anchor" ></span>character(len=*),</td>
-  <td>intent(in)</td>
-  <td></td>
+  <td>intent(in),</td>
+  <td>optional</td>
   
   <td></td><td>::</td>
-  <td><strong>msg</strong></td><td></td>
+  <td><strong>filename</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>dname</strong></td><td></td>
   
 </tr>
 
@@ -6936,7 +8450,7 @@ private subroutine <a href='../proc/hdf_initialize.html'>hdf_initialize</a>(self
     
   <div class="panel panel-default">
   <div class="panel-heading codesum"><span class="anchor" id="proc-hdf_finalize"></span><h3>
-private subroutine <a href='../proc/hdf_finalize.html'>hdf_finalize</a>(self, ierr)
+private subroutine <a href='../proc/hdf_finalize.html'>hdf_finalize</a>(self, ierr, close_hdf5_interface)
     
     
    
@@ -6951,9 +8465,8 @@ private subroutine <a href='../proc/hdf_finalize.html'>hdf_finalize</a>(self, ie
 
 
 
-<p>close hdf5 file
-  Close Fortran interface.
- sentinel lid</p>
+<p>This must be called on each HDF5 file to flush buffers to disk
+ data loss can occur if program terminates before this procedure</p><a href="../proc/hdf_finalize.html" class="pull-right"><emph>Read more&hellip;</emph></a>
     
     <h4>Arguments</h4>
     
@@ -6982,6 +8495,149 @@ private subroutine <a href='../proc/hdf_finalize.html'>hdf_finalize</a>(self, ie
   <td><strong>self</strong></td><td></td>
   
 </tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(out),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>ierr</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>logical,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>close_hdf5_interface</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+  </div>
+  </div>
+
+    
+    
+  <div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="proc-hdf_flush"></span><h3>
+private subroutine <a href='../proc/hdf_flush.html'>hdf_flush</a>(self, ierr)
+    
+    
+   
+</h3></div>
+  <div class="panel-body">
+       
+    
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>self</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(out),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>ierr</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+  </div>
+  </div>
+
+    
+    
+  <div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="proc-hdf5_close"></span><h3>
+public subroutine <a href='../proc/hdf5_close.html'>hdf5_close</a>(ierr)
+    
+    
+   
+</h3></div>
+  <div class="panel-body">
+       
+    
+
+
+
+
+
+
+
+<p>this subroutine will close ALL existing file handles
+ only call it at end of your program
+ "Flushes all data to disk, closes all open identifiers, and cleans up memory."
+ "Should be called by all HDF5 Fortran programs"</p>
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
 
   
   
@@ -7174,7 +8830,7 @@ public subroutine <a href='../proc/hdf_wrapup.html'>hdf_wrapup</a>(did, sid, ier
     
   <div class="panel panel-default">
   <div class="panel-heading codesum"><span class="anchor" id="proc-hdf_get_slice"></span><h3>
-public subroutine <a href='../proc/hdf_get_slice.html'>hdf_get_slice</a>(self, dname, did, sid, mem_sid, ierr, i0, i1, i2)
+public subroutine <a href='../proc/hdf_get_slice.html'>hdf_get_slice</a>(self, dname, did, sid, mem_sid, i0, i1, i2)
     
     
    
@@ -7190,6 +8846,7 @@ public subroutine <a href='../proc/hdf_get_slice.html'>hdf_get_slice</a>(self, d
 
 
 <p>setup array slices for read and write
+ istart
  iend</p><a href="../proc/hdf_get_slice.html" class="pull-right"><emph>Read more&hellip;</emph></a>
     
     <h4>Arguments</h4>
@@ -7241,8 +8898,8 @@ public subroutine <a href='../proc/hdf_get_slice.html'>hdf_get_slice</a>(self, d
   
 <tr>
   
-  <td><span class="anchor" ></span>integer(kind=hid_t),</td>
-  <td>intent(out)</td>
+  <td><span class="anchor" ></span>integer(kind=HID_T),</td>
+  <td>intent(inout)</td>
   <td></td>
   
   <td></td><td>::</td>
@@ -7277,21 +8934,6 @@ public subroutine <a href='../proc/hdf_get_slice.html'>hdf_get_slice</a>(self, d
   
   <td></td><td>::</td>
   <td><strong>mem_sid</strong></td><td></td>
-  
-</tr>
-
-  
-  
-  
-  
-<tr>
-  
-  <td><span class="anchor" ></span>integer,</td>
-  <td>intent(out)</td>
-  <td></td>
-  
-  <td></td><td>::</td>
-  <td><strong>ierr</strong></td><td></td>
   
 </tr>
 
@@ -7354,7 +8996,7 @@ public subroutine <a href='../proc/hdf_get_slice.html'>hdf_get_slice</a>(self, d
     
   <div class="panel panel-default">
   <div class="panel-heading codesum"><span class="anchor" id="proc-hdf_shape_check"></span><h3>
-public subroutine <a href='../proc/hdf_shape_check.html'>hdf_shape_check</a>(self, dname, dims, ierr)
+public subroutine <a href='../proc/hdf_shape_check.html'>hdf_shape_check</a>(self, dname, dims)
     
     
    
@@ -7369,7 +9011,8 @@ public subroutine <a href='../proc/hdf_shape_check.html'>hdf_shape_check</a>(sel
 
 
 
-<p>check for matching rank, else bad reads can occur--doesn't always crash without this check
+<p>allow user to specify int4 or int8 dims
+ check for matching rank, else bad reads can occur--doesn't always crash without this check
  check for matching size, else bad reads can occur.</p>
     
     <h4>Arguments</h4>
@@ -7421,27 +9064,12 @@ public subroutine <a href='../proc/hdf_shape_check.html'>hdf_shape_check</a>(sel
   
 <tr>
   
-  <td><span class="anchor" ></span>integer(kind=HSIZE_T),</td>
+  <td><span class="anchor" ></span>class(*),</td>
   <td>intent(in)</td>
   <td></td>
   
   <td></td><td>::</td>
   <td><strong>dims</strong>(:)</td><td></td>
-  
-</tr>
-
-  
-  
-  
-  
-<tr>
-  
-  <td><span class="anchor" ></span>integer,</td>
-  <td>intent(out)</td>
-  <td></td>
-  
-  <td></td><td>::</td>
-  <td><strong>ierr</strong></td><td></td>
   
 </tr>
 
@@ -7470,7 +9098,7 @@ public subroutine <a href='../proc/hdf_shape_check.html'>hdf_shape_check</a>(sel
     <footer>
       <div class="container">
       <div class="row">
-        <div class="col-xs-6 col-md-4"><p>&copy; 2020 <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /></a>
+        <div class="col-xs-6 col-md-4"><p>&copy; 2021 <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /></a>
                                           </p></div>
         <div class="col-xs-6 col-md-4 col-md-push-4">
           <p class="text-right">
