@@ -28,7 +28,7 @@ Uses Fortran `submodule` for clean template structure.
 This easy-to-use, thin object-oriented modern Fortran library abstracts away the messy parts of HDF5 so that you can read / write various types/ranks of data with a single command.
 In distinction from other high-level HDF5 interfaces, h5fortran works to deduplicate code, using polymorphism wherever feasible and extensive test suite.
 
-Polymorphic API with read/write for types int32, real32, real64 with rank scalar (0-D) through 7-D.
+Polymorphic [API](./API.md) with read/write for types int32, real32, real64 with rank scalar (0-D) through 7-D.
 64-bit integers int64 are read/write from scalar through 3-D.
 
 as well as **character (string)**.
