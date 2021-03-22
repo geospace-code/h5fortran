@@ -7,24 +7,13 @@ h5fortran is typically built and installed with CMake or Meson.
 * Fortran 2018 compiler (this project uses `submodule` and `error stop`). For example, Gfortran or Intel oneAPI.
 * HDF5 Fortran library (>= 1.8.7, including 1.10.x and 1.12.x)
   * MacOS / Homebrew: `brew install gcc hdf5`
-  * Linux / Windows Subsystem for Linux: `apt install gfortran libhdf5-dev` or `python scripts/compile_hdf5.py`
+  * Linux / Windows Subsystem for Linux: `apt install gfortran libhdf5-dev`
   * Windows MSYS2: `pacman -S mingw-w64-x86_64-hdf5`
+  * build from source (optional): `python scripts/build_hdf5.py`
 
-Note that some precompiled HDF5 libraries aave only C / C++ without Fortran.
+Note that some precompiled HDF5 libraries have only C / C++ without Fortran.
 
-Build this HDF5 OO Fortran interface with Meson or CMake.
 The library `libh5fortran` is built, link it into your program as usual along with the HDF5 libraries and include files.
-It's generally recommended you use a metabuild system with HDF5 (CMake or Meson) unless you are experience with Makefiles and need to use them.
-
-If you use
-[conan](https://conan.io),
-get the prereqs and build by:
-
-```sh
-conan install . -if build
-
-conan build . -bf build
-```
 
 ## CMake
 
@@ -33,66 +22,65 @@ Build and self-test via:
 ```sh
 cmake --preset=ninja
 cmake --build build
+```
+
+(optional) to install to a directory like ~/h5fortran:
+
+```sh
+cmake -B build -DCMAKE_INSTALL_PREFIX=~/h5fortran
+cmake --install build
+```
+
+(optional) to run self-tests, after building:
+
+```sh
 cd build
 ctest
 ```
 
----
-
-To build h5fortran faster by omitting the self-tests:
+### use h5fortran from your project
 
 ```sh
-cmake --preset=notest
-```
-
-### [optional] install
-
-To install h5fortran to a directory, to use in many programs do like:
-
-```sh
-cmake -B build -DCMAKE_INSTALL_PREFIX=~/lib
-
-cmake --build build
-
-cmake --install build
-```
-
-then to link into your existing program from the command line
-
-using CMake from your project
-
-```sh
-cmake -B build -Dh5fortran_DIR=~/lib/h5fortran/lib/cmake/h5fortran
+cmake -B build -Dh5fortran_ROOT=~/h5fortran/
 ```
 
 and in your CMakeLists.txt
 
 ```cmake
-find_package(h5fortran CONFIG)
+cmake_minimum_required(VERSION 3.14...3.20)
+project(myProject LANGUAGES Fortran)
 
-if(h5fortran_FOUND)
-  include(${h5fortran_DIR}/h5fortranTargets.cmake)
-else()
+find_package(h5fortran)
+
+if(NOT h5fortran_FOUND)
   include(FetchContent)
-  FetchContent_Declare(h5fortran_proj
+
+  FetchContent_Declare(H5FORTRAN
     GIT_REPOSITORY https://github.com/geospace-code/h5fortran.git
-    GIT_TAG v3.1.1)
-  FetchContent_MakeAvailable(h5fortran_proj)
+    GIT_TAG v3.6.5)
+  FetchContent_MakeAvailable(H5FORTRAN)
 endif()
+
+# --- your project targets:
+
+add_executable(myProj main.f90)
+target_link_libraries(myProj PRIVATE h5fortran::h5fortran)
 ```
 
-if not using CMake FetchContent as is suggested:
+---
+
+Although CMake is recommened, h5fortran can be used from the HDF5 compiler wrapper "h5fc" like:
 
 ```sh
-gfortran -I~/lib/h5fortran/include myprogram.f90 ~/lib/h5fortran/lib/libh5fortran.a
+h5fc -I~/h5fortran/include myprogram.f90 ~/h5fortran/lib/libh5fortran.a
 ```
 
 ### [optional] create distributable archive
 
-If you wish to create a .zip archive that is usable on systems with compatible Fortran ABI, after building:
+If you wish to create a package archive that is usable on systems with compatible Fortran ABI, after building:
 
 ```sh
-cpack --config .\build\CPackConfig.cmake
+cpack --config build/CPackConfig.cmake
 ```
 
 ### [optional] specify a particular HDF5 library
@@ -103,24 +91,6 @@ cmake -DHDF5_ROOT=/path/to/hdf5lib -B build
 
 or set environment variable `HDF5_ROOT=/path/to/hdf5lib`
 
-### use CMake target `h5fortran` via CMake FetchContent
-
-```cmake
-include(FetchContent)
-
-FetchContent_Declare(h5fortran_proj
-  GIT_REPOSITORY https://github.com/geospace-code/h5fortran.git
-  GIT_TAG v3.1.1
-)
-
-FetchContent_MakeAvailable(h5fortran_proj)
-
-# ------------------------------------------------------
-# whatever your program is
-add_executable(myProj main.f90)
-target_link_libraries(myProj h5fortran::h5fortran)
-```
-
 ## Meson
 
 To build h5fortran as a standalone project
@@ -130,8 +100,6 @@ meson build
 
 meson test -C build
 ```
-
-Meson &ge; 0.53.0 has enhanced HDF5 dependency finding and is recommended.
 
 ### h5fortran Meson subproject
 
@@ -150,5 +118,5 @@ and have a file in the main project `subprojects/h5fortran.wrap` containing:
 [wrap-git]
 directory = h5fortran
 url = https://github.com/geospace-code/h5fortran.git
-revision = head
+revision = v3.6.5
 ```

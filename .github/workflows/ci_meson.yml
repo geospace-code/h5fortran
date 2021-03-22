@@ -24,18 +24,8 @@ jobs:
 
     - run: meson setup build
     - run: meson compile -C build
-    - uses: actions/upload-artifact@v1
-      if: failure()
-      with:
-        name: Linux_Meson_Buildlog
-        path: build/meson-logs/meson-log.txt
 
     - run: meson test -C build -v
-    - uses: actions/upload-artifact@v1
-      if: failure()
-      with:
-        name: Linux_Meson_Testlog
-        path: build/meson-logs/testlog.txt
 
   mac:
     if: false  # some glitch with CI meson, not apparent on physical Mac
@@ -53,15 +43,5 @@ jobs:
     - run: meson setup build
 
     - run: meson compile -C build
-    - uses: actions/upload-artifact@v1
-      if: failure()
-      with:
-        name: Mac_Meson_Buildlog
-        path: build/meson-logs/meson-log.txt
 
     - run: meson test -C build -v
-    - uses: actions/upload-artifact@v1
-      if: failure()
-      with:
-        name: Mac_Meson_Testlog
-        path: build/meson-logs/testlog.txt
