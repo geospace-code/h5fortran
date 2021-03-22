@@ -8,6 +8,9 @@ author: Michael Hirsch, Ph.D.
 github: https://github.com/geospace-code
 license: by
 exclude: CMakeFortranCompilerId.F
+         reader_lt_template.in.f90
+         writer_lt_template.in.f90
+         writer_template.in.f90
 display: public
          protected
          private
