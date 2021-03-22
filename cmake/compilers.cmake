@@ -1,5 +1,4 @@
 include(CheckFortranCompilerFlag)
-include(CheckFortranSourceCompiles)
 
 # check C and Fortran compiler ABI compatibility
 
