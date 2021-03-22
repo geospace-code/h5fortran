@@ -14,8 +14,11 @@ bibliography: paper.bib
 
 # Summary
 
-h5fortran [@h5fortran] is a Fortran interface to HDF5 that abstracts away most details of a frequently-used subset of HDF5 operations.
+h5fortran [@h5fortran] is a Fortran interface to HDF5 that abstracts away most details of a frequently-used subset of HDF5 file read/write operations.
 h5fortran has object-oriented and functional interfaces that makes HDF5 use from Fortran as easy as in high-level languages.
+For example, using the official HDF5 Fortran interface to write an array to disk involves over twenty subroutine calls, plus the associated program logic to call those procedures with efficient parameters.
+The same array write operation with h5fortran is accomplished with a single subroutine call.
+A similar reduction in user-facing complexity is achieved by h5fortran for HDF5 array reads.
 h5fortran adheres to Fortran 2008 standard, working on Gfortran and Intel compilers for Linux, MacOS, Windows on Intel / AMD, ARM and IBM POWER systems.
 CMake is used to build h5fortran, detecting if the HDF5 library is present and working and building HDF5 from source if necessary.
 CPack can be used to generate distributable binary archives.
