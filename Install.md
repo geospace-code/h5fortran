@@ -67,6 +67,24 @@ add_executable(myProj main.f90)
 target_link_libraries(myProj PRIVATE h5fortran::h5fortran)
 ```
 
+and where the main.f90 is like:
+
+```fortran
+program main
+
+use h5fortran, only : hdf5_file
+implicit none
+
+type(hdf5_file) :: h5f
+
+call h5f%initialize('h5fortran_example2.h5', status='replace')
+call h5f%write('/x', 123)
+call h5f%finalize()
+
+
+end program
+```
+
 ---
 
 Although CMake is recommened, h5fortran can be used from the HDF5 compiler wrapper "h5fc" like:
