@@ -53,6 +53,11 @@ Compilers known to work include:
 * Gfortran &ge; 7
 * Intel oneAPI HPC compiler
 
+---
+
+We welcome [contributions](https://github.com/geospace-code/.github/blob/main/CONTRIBUTING.md).
+In general we hold to the geospace-code [code of conduct](https://github.com/geospace-code/.github/blob/main/CODE_OF_CONDUCT.md).
+
 ## Build
 
 Using CMake:
