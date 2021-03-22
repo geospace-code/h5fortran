@@ -493,10 +493,10 @@ subroutine hdf_initialize(self,filename,ierr, status,action,comp_lvl,verbose,deb
 
 class(hdf5_file), intent(inout)    :: self
 character(*), intent(in) :: filename
-integer, intent(out), optional :: ierr
-character(*), intent(in), optional :: status
-character(*), intent(in), optional :: action
-integer, intent(in), optional      :: comp_lvl
+integer, intent(out), optional :: ierr  !< 0 if OK
+character(*), intent(in), optional :: status  !< old, unknown, new, replace, scratch
+character(*), intent(in), optional :: action !< read, write, readwrite
+integer, intent(in), optional      :: comp_lvl  !< 0: no compression. 1-9: ZLIB compression, higher is more compressior
 logical, intent(in), optional      :: verbose, debug
 
 character(:), allocatable :: lstatus, laction
@@ -638,7 +638,8 @@ end subroutine hdf_finalize
 
 
 subroutine hdf_flush(self, ierr)
-
+!! request operating system flush data to disk.
+!! The operating system can do this when it desires, which might be a while.
 class(hdf5_file), intent(in) :: self
 integer, intent(out), optional :: ierr
 integer :: ier
