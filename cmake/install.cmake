@@ -27,12 +27,8 @@ export(EXPORT ${PROJECT_NAME}Targets
 
 # --- CPack
 
-set(_fmt TGZ)
-if(WIN32)
-  set(_fmt ZIP)
-endif()
-set(CPACK_GENERATOR ${_fmt})
-set(CPACK_SOURCE_GENERATOR ${_fmt})
+set(CPACK_GENERATOR "TZST")
+set(CPACK_SOURCE_GENERATOR "TZST")
 set(CPACK_PACKAGE_VENDOR "Michael Hirsch")
 set(CPACK_PACKAGE_CONTACT "Michael Hirsch")
 set(CPACK_DEBIAN_PACKAGE_DEPENDS "libhdf5-dev (>=1.10)")

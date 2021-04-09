@@ -17,7 +17,7 @@ on:
 jobs:
 
   linux:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
       CTEST_SITE: GitHub_Ubuntu
@@ -69,8 +69,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ github.event.release.upload_url }}
-        asset_path: build/package/h5fortran-${{ steps.get_version.outputs.VERSION }}-Linux.tar.gz
-        asset_name:  h5fortran-${{ steps.get_version.outputs.VERSION }}-Linux.tar.gz
+        asset_path: build/package/h5fortran-${{ steps.get_version.outputs.VERSION }}-Linux.tar.zst
+        asset_name:  h5fortran-${{ steps.get_version.outputs.VERSION }}-Linux.tar.zst
         asset_content_type: application/zip
 
 
@@ -148,6 +148,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ github.event.release.upload_url }}
-        asset_path: build/package/h5fortran-${{ steps.get_version.outputs.VERSION }}-Darwin.tar.gz
-        asset_name:  h5fortran-${{ steps.get_version.outputs.VERSION }}-Darwin.tar.gz
+        asset_path: build/package/h5fortran-${{ steps.get_version.outputs.VERSION }}-Darwin.tar.zst
+        asset_name:  h5fortran-${{ steps.get_version.outputs.VERSION }}-Darwin.tar.zst
         asset_content_type: application/zip
