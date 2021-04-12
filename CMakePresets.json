@@ -42,17 +42,6 @@
   "generator": "Unix Makefiles"
 },
 {
-  "name": "makegcc10", "inherits": ["make", "gcc10"],
-  "displayName": "build with GNU Make and GCC",
-  "description": "build with GNU Make and GCC -- useful for MacOS"
-},
-{
-  "name": "buildgcc10",
-  "inherits": ["gcc10", "build"],
-  "displayName": "build all libraries: GCC10",
-  "description": "build all libraries with GCC10 to avoid Clang /usr/bin/gcc"
-},
-{
   "name": "makewin", "inherits": "default",
   "displayName": "build with GNU Make: Windows",
   "generator": "MinGW Makefiles"

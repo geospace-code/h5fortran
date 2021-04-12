@@ -30,13 +30,10 @@ jobs:
         sudo apt update -yq
         sudo apt install -yq --no-install-recommends ninja-build gfortran libhdf5-dev
 
-    - name: CDash
-      run: ctest -S ci.cmake -V
-
-    - name: Install package
-      run: |
-        cmake -B build -DCMAKE_INSTALL_PREFIX=~/h5fortran
-        cmake --install build
+    - run: cmake --preset default -DCMAKE_INSTALL_PREFIX=~/h5fortran
+    - run: cmake --build --preset default
+    - run: ctest --preset default
+    - run: cmake --install build
 
     - name: configure examples
       run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=~/h5fortran
@@ -112,13 +109,10 @@ jobs:
 
     - run: brew install hdf5 ninja
 
-    - name: CDash
-      run: ctest -S ci.cmake -V
-
-    - name: Install package
-      run: |
-        cmake -B build -DCMAKE_INSTALL_PREFIX=~/h5fortran
-        cmake --install build
+    - run: cmake --preset default -DCMAKE_INSTALL_PREFIX=~/h5fortran
+    - run: cmake --build --preset default
+    - run: ctest --preset default
+    - run: cmake --install build
 
     - run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=~/h5fortran
     - run: cmake --build Examples/build --parallel
