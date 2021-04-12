@@ -20,8 +20,11 @@ The library `libh5fortran` is built, link it into your program as usual along wi
 Build and self-test via:
 
 ```sh
-cmake --preset=ninja
-cmake --build build
+cmake --preset default
+cmake --build --preset default
+
+# optional self-test
+ctest --preset default
 ```
 
 (optional) to install to a directory like ~/h5fortran:
@@ -29,13 +32,6 @@ cmake --build build
 ```sh
 cmake -B build -DCMAKE_INSTALL_PREFIX=~/h5fortran
 cmake --install build
-```
-
-(optional) to run self-tests, after building:
-
-```sh
-cd build
-ctest
 ```
 
 ### use h5fortran from your project
@@ -57,7 +53,7 @@ if(NOT h5fortran_FOUND)
 
   FetchContent_Declare(H5FORTRAN
     GIT_REPOSITORY https://github.com/geospace-code/h5fortran.git
-    GIT_TAG v3.6.5)
+    GIT_TAG v3.6.6)
   FetchContent_MakeAvailable(H5FORTRAN)
 endif()
 
