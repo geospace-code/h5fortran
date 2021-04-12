@@ -32,6 +32,8 @@ jobs:
   msys2:
     timeout-minutes: 20
     runs-on: windows-latest
+    env:
+      CMAKE_GENERATOR: Ninja
 
     defaults:
       run:
@@ -49,7 +51,7 @@ jobs:
 
     - uses: actions/checkout@v2
 
-    - run: cmake --preset makewin -DCMAKE_INSTALL_PREFIX=~/h5fortran
+    - run: cmake --preset default -DCMAKE_INSTALL_PREFIX=~/h5fortran
     - run: cmake --build --preset default
     - run: ctest --preset default
     - run: cmake --install build
