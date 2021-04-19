@@ -64,9 +64,10 @@ Using CMake:
 
 ```sh
 git clone https://github.com/geospace-code/h5fortran.git
+
 cd h5fortran
 
-cmake --preset=ninja
+cmake -B build
 
 cmake --build build
 ```
@@ -82,7 +83,7 @@ This takes a minute or two on a typical laptop.
 If you wish to force building the HDF5 library:
 
 ```sh
-cmake --preset=build
+cmake -Dhdf5_external=on
 
 cmake --build build
 ```
