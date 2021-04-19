@@ -53,15 +53,47 @@ fail_unknown_read fail_unknown_write)
 
 setup_test("${testnames}")
 
+set(shape_file ${CMAKE_CURRENT_BINARY_DIR}/test_shape.h5)
+# --- Python h5py
 
 find_package(Python3 COMPONENTS Interpreter)
-if(Python3_FOUND)
-  add_test(NAME h5fortran:check_shape
-    COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test_shape.py ${CMAKE_CURRENT_BINARY_DIR}/test_shape.h5)
-  set_tests_properties(h5fortran:check_shape PROPERTIES
+if(NOT DEFINED h5py_ok)
+  execute_process(COMMAND ${Python3_EXECUTABLE} -c "import h5py"
+    RESULT_VARIABLE h5py_code
+    TIMEOUT 15)
+  if(h5py_code EQUAL 0)
+    set(h5py_ok true CACHE BOOL "h5py OK")
+  else()
+    set(h5py_ok false CACHE BOOL "h5py not OK")
+  endif()
+endif()
+
+if(h5py_ok)
+  add_test(NAME h5fortran:PythonShape
+    COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test_shape.py ${shape_file})
+
+    set_tests_properties(h5fortran:PythonShape PROPERTIES
     DEPENDS h5fortran:shape
-    REQUIRED_FILES ${CMAKE_CURRENT_BINARY_DIR}/test_shape.h5
+    REQUIRED_FILES ${shape_file}
     FIXTURES_REQUIRED h5lib
     LABELS shaky
-    TIMEOUT 90)
-endif(Python3_FOUND)
+    TIMEOUT 15)
+endif(h5py_ok)
+
+# --- Matlab HDF5
+
+if(matlab)
+find_package(Matlab COMPONENTS MAIN_PROGRAM)
+if(Matlab_FOUND)
+  set(matlab_cmd "i=h5info('${shape_file}', '/d7').Dataspace.Size; assert(all(i == [2, 1, 3, 4, 7, 6, 5]))")
+
+  add_test(NAME h5fortran:MatlabShape COMMAND ${Matlab_MAIN_PROGRAM} -batch ${matlab_cmd})
+
+  set_tests_properties(h5fortran:MatlabShape PROPERTIES
+    TIMEOUT 90
+    LABELS shaky
+    REQUIRED_FILES ${shape_file}
+    FIXTURES_REQUIRED h5lib)
+
+endif(Matlab_FOUND)
+endif(matlab)

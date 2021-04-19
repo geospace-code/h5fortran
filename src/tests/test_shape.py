@@ -40,8 +40,3 @@ if h5py is not None:
         if f[var].shape != c_order:
             raise ValueError(f"h5py: expected {c_order} but got {f[var].shape}")
     print("OK: Python h5py")
-
-if shutil.which("matlab"):
-    cmd = f"i=h5info('{fn}', '{var}'); smat = i.Dataspace.Size; assert(all(smat == {list(f_order)}), 'expected {f_order}')"
-    subprocess.check_call(["matlab", "-batch", cmd])
-    print("OK: Matlab")
