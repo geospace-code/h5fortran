@@ -20,11 +20,12 @@ The library `libh5fortran` is built, link it into your program as usual along wi
 Build and self-test via:
 
 ```sh
-cmake --preset default
-cmake --build --preset default
+cmake -B build
+cmake --build build
 
 # optional self-test
-ctest --preset default
+cd build
+ctest
 ```
 
 (optional) to install to a directory like ~/h5fortran:
