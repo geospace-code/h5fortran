@@ -81,14 +81,6 @@ call h5f%finalize()
 end program
 ```
 
----
-
-Although CMake is recommened, h5fortran can be used from the HDF5 compiler wrapper "h5fc" like:
-
-```sh
-h5fc -I~/h5fortran/include myprogram.f90 ~/h5fortran/lib/libh5fortran.a
-```
-
 ### [optional] create distributable archive
 
 If you wish to create a package archive that is usable on systems with compatible Fortran ABI, after building:
@@ -133,4 +125,13 @@ and have a file in the main project `subprojects/h5fortran.wrap` containing:
 directory = h5fortran
 url = https://github.com/geospace-code/h5fortran.git
 revision = v3.6.5
+```
+
+## Standalone compiler wrapper
+
+h5fortran can be used from the
+[HDF5 compiler wrapper "h5fc"](https://support.hdfgroup.org/HDF5/Tutor/compile.html) like:
+
+```sh
+h5fc -I~/h5fortran/include myprogram.f90 ~/h5fortran/lib/libh5fortran.a
 ```
