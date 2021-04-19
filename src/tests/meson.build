@@ -26,5 +26,4 @@ python = find_program('python')
 
 test('PythonShape', python,
   args: [files('test_shape.py'), meson.current_build_dir() / 'test_shape.h5'],
-  is_parallel: false,
-  suite: 'h5shaky', priority: -100, timeout: 15)
+  is_parallel: false, priority: -100, timeout: 15)

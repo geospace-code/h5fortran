@@ -16,8 +16,12 @@ set(CI $ENV{CI})
 
 foreach(name IN LISTS names)
 
-if(CI AND ${name} MATCHES ".*fail.*")
-  continue()
+if(${name} MATCHES ".*fail.*")
+  if(CI)
+    continue()
+  elseif(NOT test_shaky)
+    continue()
+  endif()
 endif()
 
 add_executable(test_${name} test_${name}.f90)
@@ -30,7 +34,8 @@ set_target_properties(test_${name} PROPERTIES LABELS unit)
 add_test(NAME h5fortran:${name}
   COMMAND $<TARGET_FILE:test_${name}>)
 set_tests_properties(h5fortran:${name} PROPERTIES
-  FIXTURES_REQUIRED h5lib)
+  FIXTURES_REQUIRED h5lib
+  TIMEOUT 5)
 
 
 if(${name} MATCHES ".*fail.*")
