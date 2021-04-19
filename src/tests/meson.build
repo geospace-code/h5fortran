@@ -23,7 +23,9 @@ foreach t : ['array', 'attributes', 'deflate', 'error', 'exist', 'module', 'layo
 endforeach
 
 python = find_program('python')
-
-test('PythonShape', python,
-  args: [files('test_shape.py'), meson.current_build_dir() / 'test_shape.h5'],
-  is_parallel: false, priority: -100, timeout: 15)
+r = run_command(python, '-c', 'import h5py')
+if r.returncode() == 0
+  test('PythonShape', python,
+    args: [files('test_shape.py'), meson.current_build_dir() / 'test_shape.h5'],
+    is_parallel: false, priority: -100, timeout: 15)
+endif
