@@ -5,14 +5,9 @@ in a few coding langauges
 """
 
 import argparse
-import shutil
-import subprocess
 from pathlib import Path
 
-try:
-    import h5py
-except ImportError:
-    h5py = None
+import h5py
 
 p = argparse.ArgumentParser(description="analyze output of test_shape.f90")
 p.add_argument("file", help="hDF5 file to analyze")
@@ -28,15 +23,8 @@ c_order = f_order[::-1]
 if not fn.is_file():
     raise FileNotFoundError(fn)
 
-if shutil.which("h5ls"):
-    h5ls = subprocess.check_output(["h5ls", f"{fn}/{var[1:]}"], universal_newlines=True)
-    mat = tuple(map(int, h5ls.split("{", 1)[1].split("}", 1)[0].split(",")))
-    if mat != c_order:
-        raise ValueError(f"h5ls: expected {c_order} but got {mat}")
-    print("OK: h5ls")
+with h5py.File(fn, "r") as f:
+    if f[var].shape != c_order:
+        raise ValueError(f"h5py: expected {c_order} but got {f[var].shape}")
 
-if h5py is not None:
-    with h5py.File(fn, "r") as f:
-        if f[var].shape != c_order:
-            raise ValueError(f"h5py: expected {c_order} but got {f[var].shape}")
-    print("OK: Python h5py")
+print("OK: Python h5py")
