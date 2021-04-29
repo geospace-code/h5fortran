@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.13...3.19)
+cmake_minimum_required(VERSION 3.13...${CMAKE_VERSION})
 project(HDF5_build LANGUAGES C Fortran)
 
 include(${PROJECT_SOURCE_DIR}/../cmake/libraries.cmake)
@@ -14,15 +14,17 @@ if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   elseif(CMAKE_Fortran_COMPILER_ID STREQUAL IntelLLVM)
     set(prefix ~/lib_intel)
   else()
-    set(prefix ~/lib)
+    set(prefix ~/local)
   endif()
 
   get_filename_component(prefix ${prefix} ABSOLUTE)
   set(CMAKE_INSTALL_PREFIX ${prefix} CACHE PATH "top-level install path" FORCE)
 endif()
 
-set(ZLIB_ROOT ${CMAKE_INSTALL_PREFIX}/zlib)
-set(HDF5_ROOT ${CMAKE_INSTALL_PREFIX}/hdf5)
+set(EP_UPDATE_DISCONNECTED true)
+
+set(ZLIB_ROOT ${CMAKE_INSTALL_PREFIX})
+set(HDF5_ROOT ${CMAKE_INSTALL_PREFIX})
 
 message(STATUS "Building and installing HDF5 to ${HDF5_ROOT}")
 
