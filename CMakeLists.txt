@@ -23,7 +23,7 @@ include(cmake/libraries.cmake)
 # --- find or build HDF5 library
 
 if(NOT hdf5_external)
-  find_package(HDF5 COMPONENTS Fortran)
+  find_package(HDF5 COMPONENTS Fortran HL)
 endif()
 
 if(NOT HDF5_FOUND OR hdf5_external)

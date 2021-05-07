@@ -60,6 +60,7 @@ if(Threads_FOUND)
   target_link_libraries(HDF5::HDF5 INTERFACE Threads::Threads)
 endif(Threads_FOUND)
 
+# libdl and libm are needed on some systems--don't remove
 target_link_libraries(HDF5::HDF5 INTERFACE ${CMAKE_DL_LIBS})
 
 if(UNIX)

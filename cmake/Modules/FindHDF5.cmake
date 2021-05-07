@@ -30,6 +30,9 @@ Components
 
 ``Fortran``
 
+The ``HL`` component is implied and silently accepted to keep
+compatibility with factory FindHDF5
+
 
 Targets
 ^^^^^^^
@@ -81,7 +84,7 @@ if( "${_def}" MATCHES
   set(HDF5_VERSION ${HDF5_VERSION} PARENT_SCOPE)
 endif()
 
-# this help avoid picking up miniconda zlib over the desired zlib
+# this helps avoid picking up miniconda zlib over the desired zlib
 get_filename_component(_hint ${HDF5_C_LIBRARY} DIRECTORY)
 if(NOT ZLIB_ROOT)
   set(ZLIB_ROOT "${_hint}/..;${_hint}/../..")
