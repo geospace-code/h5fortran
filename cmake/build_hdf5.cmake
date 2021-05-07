@@ -9,7 +9,8 @@ set(HDF5_VERSION 1.10.7)
 
 include(ExternalProject)
 
-if(NOT DEFINED HDF5_ROOT)
+# need to be sure _ROOT isn't empty, defined is not enough
+if(NOT HDF5_ROOT)
   if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set(HDF5_ROOT ${PROJECT_BINARY_DIR})
   else()

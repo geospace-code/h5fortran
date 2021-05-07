@@ -8,7 +8,8 @@ else()
   set(ZLIB_name ${CMAKE_STATIC_LIBRARY_PREFIX}z${CMAKE_STATIC_LIBRARY_SUFFIX})
 endif()
 
-if(NOT DEFINED ZLIB_ROOT)
+# need to be sure _ROOT isn't empty, defined is not enough
+if(NOT ZLIB_ROOT)
   if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set(ZLIB_ROOT ${PROJECT_BINARY_DIR})
   else()
