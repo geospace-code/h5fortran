@@ -19,9 +19,8 @@ install(FILES
   ${CMAKE_CURRENT_BINARY_DIR}/cmake/${PROJECT_NAME}ConfigVersion.cmake
   DESTINATION lib/cmake/${PROJECT_NAME})
 
-export(EXPORT ${PROJECT_NAME}Targets
-  FILE ${CMAKE_CURRENT_BINARY_DIR}/cmake/${PROJECT_NAME}Targets.cmake
-  NAMESPACE ${PROJECT_NAME}::)
+# instead of export() which would need duplicates everywhere of install() calls,
+# just default install to build dir.
 
 # --- CPack
 
