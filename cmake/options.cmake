@@ -16,7 +16,7 @@ endif()
 
 if(dev)
 else()
-  set(EP_UPDATE_DISCONNECTED true)
+  set_directory_properties(PROPERTIES EP_UPDATE_DISCONNECTED true)
 endif()
 
 # --- auto-ignore build directory
