@@ -98,6 +98,13 @@ set FC=ifort
 This is necessary to workaround techniques used by HDF5 CMake files that don't pickup the CMake `set(ENV{CC})`.
 Otherwise, HDF5 build failures may result due to defaulting to icl-clang.
 
+By default we use Zlib 2.x a.k.a. zlib-ng.
+If you have a problem with Zlib-ng on your system, try the unmaintained Zlib 1.x by:
+
+```sh
+cmake -B build -Dzlib_legacy=on
+```
+
 ## Usage
 
 The simplest [example](./Examples/) h5fortran usage is like:
