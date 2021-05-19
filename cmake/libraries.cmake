@@ -1,6 +1,6 @@
 if(CMAKE_VERSION VERSION_LESS 3.19)
-  set(zlib_url https://github.com/zlib-ng/zlib-ng/archive/refs/tags/2.0.2.zip)
-  set(zlib_sha256 58a86813746ac1e2354244b1e01f22d8b4814c69e7a8fca14c657d13f67bb5bc)
+  set(zlib_url https://github.com/zlib-ng/zlib-ng/archive/refs/tags/2.0.3.zip)
+  set(zlib_sha256 235232f622d17cb4070f67ebeb06b0df8cf0894f9045ea6c51782479318841d2)
 
   set(hdf5_url https://github.com/HDFGroup/hdf5/archive/hdf5-1_10_7.zip)
   set(hdf5_sha256 89ea0b117c27a8f7587e601b65fa1427b28db3a6ee66ffff0178509514128f18)

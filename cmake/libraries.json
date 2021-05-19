@@ -4,8 +4,8 @@
     "sha256": "d7510a8ee1918b7d0cad197a089c0a2cd4d6df05fee22389f67f115e738b178d"
 },
 "zlib2": {
-    "url" : "https://github.com/zlib-ng/zlib-ng/archive/refs/tags/2.0.2.zip",
-    "sha256": "58a86813746ac1e2354244b1e01f22d8b4814c69e7a8fca14c657d13f67bb5bc"
+    "url" : "https://github.com/zlib-ng/zlib-ng/archive/refs/tags/2.0.3.zip",
+    "sha256": "235232f622d17cb4070f67ebeb06b0df8cf0894f9045ea6c51782479318841d2"
 },
 "hdf5": {
     "url": "https://github.com/HDFGroup/hdf5/archive/hdf5-1_10_7.zip",
