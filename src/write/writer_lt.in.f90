@@ -5,9 +5,25 @@ implicit none (type, external)
 contains
 
 
-module procedure lt0write
+module procedure lt0write_r32
 @writer_lt_template@
-end procedure lt0write
+end procedure lt0write_r32
+
+module procedure lt0write_r64
+@writer_lt_template@
+end procedure lt0write_r64
+
+module procedure lt0write_i32
+@writer_lt_template@
+end procedure lt0write_i32
+
+module procedure lt0write_i64
+@writer_lt_template@
+end procedure lt0write_i64
+
+module procedure lt0write_char
+@writer_lt_template@
+end procedure lt0write_char
 
 
 module procedure lt1write

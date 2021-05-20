@@ -52,8 +52,9 @@ procedure, public :: initialize => hdf_initialize, finalize => hdf_finalize, &
 !> below are procedure that need generic mapping (type or rank agnostic)
 
 !> write group or dataset integer/real
-generic, public :: write => hdf_write_scalar, hdf_write_1d, hdf_write_2d, hdf_write_3d, &
-hdf_write_4d, hdf_write_5d, hdf_write_6d, hdf_write_7d
+generic, public :: write => &
+hdf_write_scalar_r32,hdf_write_scalar_r64,hdf_write_scalar_i32,hdf_write_scalar_i64, hdf_write_scalar_char, &
+hdf_write_1d, hdf_write_2d, hdf_write_3d, hdf_write_4d, hdf_write_5d, hdf_write_6d, hdf_write_7d
 
 !> write attributes
 generic, public :: writeattr => writeattr_char, writeattr_num
@@ -68,7 +69,8 @@ hdf_read_scalar, hdf_read_1d, hdf_read_2d, hdf_read_3d, hdf_read_4d,hdf_read_5d,
 !> private methods
 !! each method must be declared here, and above as a generic, public
 procedure,private :: &
-hdf_write_scalar, hdf_write_1d, hdf_write_2d, hdf_write_3d, hdf_write_4d, hdf_write_5d, hdf_write_6d, hdf_write_7d, &
+hdf_write_scalar_r32, hdf_write_scalar_r64, hdf_write_scalar_i32, hdf_write_scalar_i64, hdf_write_scalar_char, &
+hdf_write_1d, hdf_write_2d, hdf_write_3d, hdf_write_4d, hdf_write_5d, hdf_write_6d, hdf_write_7d, &
 hdf_read_scalar, hdf_read_1d, hdf_read_2d, hdf_read_3d, hdf_read_4d, hdf_read_5d, hdf_read_6d, hdf_read_7d, &
 writeattr_char, writeattr_num, readattr_char, readattr_num
 
@@ -76,7 +78,8 @@ end type hdf5_file
 
 
 interface h5write
-procedure lt0write, lt1write, lt2write, lt3write, lt4write, lt5write, lt6write, lt7write
+procedure lt0write_r32, lt0write_r64, lt0write_i32, lt0write_i64, lt0write_char, &
+lt1write, lt2write, lt3write, lt4write, lt5write, lt6write, lt7write
 end interface h5write
 
 interface h5read
@@ -146,11 +149,35 @@ character(*), intent(in) :: filename, dname
 end function h5exist
 
 
-module subroutine lt0write(filename, dname, value, ierr)
+module subroutine lt0write_r32(filename, dname, value, ierr)
 character(*), intent(in) :: filename, dname
-class(*), intent(in) :: value
+real(real32), intent(in) :: value
 integer, intent(out), optional :: ierr
-end subroutine lt0write
+end subroutine lt0write_r32
+
+module subroutine lt0write_r64(filename, dname, value, ierr)
+character(*), intent(in) :: filename, dname
+real(real64), intent(in) :: value
+integer, intent(out), optional :: ierr
+end subroutine lt0write_r64
+
+module subroutine lt0write_i32(filename, dname, value, ierr)
+character(*), intent(in) :: filename, dname
+integer(int32), intent(in) :: value
+integer, intent(out), optional :: ierr
+end subroutine lt0write_i32
+
+module subroutine lt0write_i64(filename, dname, value, ierr)
+character(*), intent(in) :: filename, dname
+integer(int64), intent(in) :: value
+integer, intent(out), optional :: ierr
+end subroutine lt0write_i64
+
+module subroutine lt0write_char(filename, dname, value, ierr)
+character(*), intent(in) :: filename, dname
+character(*), intent(in) :: value
+integer, intent(out), optional :: ierr
+end subroutine lt0write_char
 
 module subroutine lt1write(filename, dname, value, ierr)
 character(*), intent(in) :: filename, dname
@@ -246,13 +273,45 @@ end subroutine lt7read
 end interface
 
 interface !< writer.f90
-module subroutine hdf_write_scalar(self,dname,value, ierr, compact)
+module subroutine hdf_write_scalar_r32(self, dname, value, ierr, compact)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
-class(*), intent(in) :: value
+real(real32), intent(in) :: value
 logical, intent(in), optional :: compact
 integer, intent(out), optional :: ierr
-end subroutine hdf_write_scalar
+end subroutine hdf_write_scalar_r32
+
+module subroutine hdf_write_scalar_r64(self, dname, value, ierr, compact)
+class(hdf5_file), intent(inout) :: self
+character(*), intent(in) :: dname
+real(real64), intent(in) :: value
+logical, intent(in), optional :: compact
+integer, intent(out), optional :: ierr
+end subroutine hdf_write_scalar_r64
+
+module subroutine hdf_write_scalar_i32(self, dname, value, ierr, compact)
+class(hdf5_file), intent(inout) :: self
+character(*), intent(in) :: dname
+integer(int32), intent(in) :: value
+logical, intent(in), optional :: compact
+integer, intent(out), optional :: ierr
+end subroutine hdf_write_scalar_i32
+
+module subroutine hdf_write_scalar_i64(self, dname, value, ierr, compact)
+class(hdf5_file), intent(inout) :: self
+character(*), intent(in) :: dname
+integer(int64), intent(in) :: value
+logical, intent(in), optional :: compact
+integer, intent(out), optional :: ierr
+end subroutine hdf_write_scalar_i64
+
+module subroutine hdf_write_scalar_char(self, dname, value, ierr, compact)
+class(hdf5_file), intent(inout) :: self
+character(*), intent(in) :: dname
+character(*), intent(in) :: value
+logical, intent(in), optional :: compact
+integer, intent(out), optional :: ierr
+end subroutine hdf_write_scalar_char
 
 module subroutine hdf_write_1d(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
 class(hdf5_file), intent(inout) :: self
