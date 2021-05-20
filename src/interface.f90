@@ -56,6 +56,12 @@ generic, public :: write => &
 hdf_write_scalar_r32,hdf_write_scalar_r64,hdf_write_scalar_i32,hdf_write_scalar_i64, hdf_write_scalar_char, &
 hdf_write_1d, hdf_write_2d, hdf_write_3d, hdf_write_4d, hdf_write_5d, hdf_write_6d, hdf_write_7d
 
+generic, public :: write_r32 => hdf_write_scalar_r32
+generic, public :: write_r64 => hdf_write_scalar_r64
+generic, public :: write_i32 => hdf_write_scalar_i32
+generic, public :: write_i64 => hdf_write_scalar_i64
+generic, public :: write_char => hdf_write_scalar_char
+
 !> write attributes
 generic, public :: writeattr => writeattr_char, writeattr_num
 

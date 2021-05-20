@@ -32,8 +32,17 @@ i1_64 = i1
 call h%initialize(fn, status='replace')
 !> scalar tests
 call h%write('/scalar_int32', 42_int32)
+call h%write_i32('/scalar_i32', 42_int32)
+
 call h%write('/scalar_int64', 42_int64)
-call h%write('/scalar_real', -1._real32)
+call h%write_i64('/scalar_i64', 42_int64)
+
+call h%write('/scalar_real32', -1._real32)
+call h%write_r32("/scalar_r32", -1._real32)
+
+call h%write('/scalar_real64', -1._real64)
+call h%write_r64("/scalar_r64", -1._real64)
+
 !> vector
 call h%write('/1d_real', r1)
 
@@ -46,7 +55,7 @@ call h%write('/1d_int64', i1_64)
 
 print *, 'PASSED: vector write'
 !> test rewrite
-call h%write('scalar_real', 42.)
+call h%write('scalar_real32', 42.)
 call h%write('scalar_int32', 42_int32)
 call h%write('scalar_int64', 42_int64)
 call h%finalize()
@@ -58,7 +67,7 @@ call h%initialize(fn, status='old', action='r')
 call h%read('/scalar_int32', it)
 call h%read('/scalar_int64', it_64)
 
-call h%read('/scalar_real', rt)
+call h%read('/scalar_real32', rt)
 if (.not.(rt==it .and. it==42)) then
   write(stderr,*) it,'/=',rt
   error stop 'scalar real / int: not equal 42'
@@ -66,7 +75,7 @@ endif
 print *, 'PASSED: scalar read/write'
 
 !> read casting -- real to int and int to real
-call h%read('/scalar_real', it)
+call h%read('/scalar_real32', it)
 if(it/=42) error stop 'scalar cast real => int'
 call h%read('/scalar_int32', rt)
 if(rt/=42) error stop 'scalar cast int32 => real'
