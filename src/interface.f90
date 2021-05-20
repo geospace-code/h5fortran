@@ -114,7 +114,7 @@ module subroutine hdf_create(self, dname, dtype, dims, sid, did, chunk_size, ist
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 integer(HID_T), intent(in) :: dtype
-class(*), intent(in) :: dims(:) !< this can be class(*) to allow int4 or int8 in future
+integer(HSIZE_T), intent(in) :: dims(:)
 integer(HID_T), intent(out), optional :: sid, did
 integer, intent(in), optional :: chunk_size(:), istart(:), iend(:), stride(:)
 logical, intent(in), optional :: compact

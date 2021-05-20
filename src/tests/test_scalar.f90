@@ -38,10 +38,10 @@ call h%write('/scalar_real', -1._real32)
 call h%write('/1d_real', r1)
 
 !> create then write
-call h%create('/1d_int32', H5T_NATIVE_INTEGER, shape(i1))
+call h%create('/1d_int32', H5T_NATIVE_INTEGER, shape(i1, kind=hsize_t))
 call h%write('/1d_int32', i1)
 
-call h%create('/1d_int64', H5T_STD_I64LE, shape(i1_64))
+call h%create('/1d_int64', H5T_STD_I64LE, shape(i1_64, kind=hsize_t))
 call h%write('/1d_int64', i1_64)
 
 print *, 'PASSED: vector write'

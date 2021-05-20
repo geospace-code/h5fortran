@@ -148,7 +148,7 @@ integer(int32), dimension(4,4) :: i2t
 
 call h%initialize(filename, status='old', action='r+', verbose=.true., debug=.true.)
 
-call h%create('/int32a-1d', dtype=H5T_NATIVE_INTEGER, dims=[3])
+call h%create('/int32a-1d', dtype=H5T_NATIVE_INTEGER, dims=int([3], hsize_t))
 call h%write('/int32a-1d', [1,3], istart=[1], iend=[2])
 print *, 'PASSED: create dataset and write slice 1D'
 
@@ -169,7 +169,7 @@ endif
 print *, 'PASSED: overwrite slice 1d, no stride'
 
 
-call h%create('/int32a-2d', dtype=H5T_NATIVE_INTEGER, dims=[4,4])
+call h%create('/int32a-2d', dtype=H5T_NATIVE_INTEGER, dims=int([4,4], hsize_t))
 print *, 'create and write slice 2d, stride=1'
 call h%write('/int32a-2d', reshape([76,65,54,43], [2,2]), istart=[2,1], iend=[3,2])
 call h%read('/int32a-2d', i2t)
