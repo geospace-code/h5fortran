@@ -35,7 +35,7 @@ add_test(NAME h5fortran:${name}
   COMMAND $<TARGET_FILE:test_${name}>)
 set_tests_properties(h5fortran:${name} PROPERTIES
   FIXTURES_REQUIRED h5lib
-  TIMEOUT 5)
+  TIMEOUT 10)
 
 
 if(${name} MATCHES ".*fail.*")
