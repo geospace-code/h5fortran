@@ -66,7 +66,7 @@ if(${PROJECT_NAME}_BUILD_TESTING)
   add_subdirectory(src/tests)
 endif()
 
-# additional Find*.cmake necesary
+# additional Find*.cmake necessary
 install(FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindHDF5.cmake
   ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindSZIP.cmake

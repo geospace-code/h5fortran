@@ -170,7 +170,7 @@ the logical method %exist() checks if a dataset (variable) exists in the initial
 exists = h5f%exist("/foo")
 ```
 
-A convenience method that checks existance of a dataset without creating the h5 object manually is:
+A convenience method that checks existence of a dataset without creating the h5 object manually is:
 
 ```fortran
 exists = h5exist("my.h5", "/foo")

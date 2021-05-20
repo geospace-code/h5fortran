@@ -25,7 +25,7 @@ contains
 subroutine test_is_hdf5()
 integer :: i
 
-if(is_hdf5('apidfjpj-8j9ejfpq984jfp89q39SHf.h5')) error stop 'test_exist: non-existant file declared hdf5'
+if(is_hdf5('apidfjpj-8j9ejfpq984jfp89q39SHf.h5')) error stop 'test_exist: non-existent file declared hdf5'
 
 open(newunit=i, file='not_hdf5.h5', action='write', status='replace')
 write(i,*) 'I am not an HDF5 file.'

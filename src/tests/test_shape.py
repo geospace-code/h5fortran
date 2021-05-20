@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 read output of test_shape.f90 and see if it's the right shape
-in a few coding langauges
+in a few coding languages
 """
 
 import argparse
