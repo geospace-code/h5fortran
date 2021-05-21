@@ -26,10 +26,7 @@ call h%finalize()
 call h%initialize(path, status='old', action='r')
 call h%read('/little', value)
 
-if (value /= '42') then
-  write(stderr,*) 'test_string:  read/write verification failure. Value: '// value
-  error stop
-endif
+if (value /= '42') error stop 'test_string:  read/write verification failure. Value: '// value
 
 print *,'test_string_rw: reading too much data'
 !! try reading too much data, then truncating to first C_NULL
