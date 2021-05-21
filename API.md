@@ -139,6 +139,22 @@ logical, intent(in), optional :: compact  !< faster I/O for sub-64 kB datasets
 integer, intent(out), optional :: ierr  !< 0 if OK
 ```
 
+While the generic `%write()` method above works for all supported types and ranks, it's also possible to specify the desired type to write.
+The user may desire this to be more explicit about the data type intended for disk writes.
+The optional arguments are the same as above; we give basic examples here:
+
+```fortran
+call h%write_r32(dname, 1._real32)
+
+call h%write_r64(dname, 1._real64)
+
+call h%write_i32(dname, 1_int32)
+
+call h%write_i64(dname, 1_int64)
+
+call h%write_char(dname, "hello")
+```
+
 Write dataset attribute (e.g. units or instrument)
 
 ```fortran
