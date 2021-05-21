@@ -62,10 +62,18 @@ hdf_write_5d_r32, hdf_write_5d_r64, hdf_write_5d_i32, hdf_write_5d_i64, &
 hdf_write_6d_r32, hdf_write_6d_r64, hdf_write_6d_i32, hdf_write_6d_i64, &
 hdf_write_7d_r32, hdf_write_7d_r64, hdf_write_7d_i32, hdf_write_7d_i64
 
-generic, public :: write_r32 => hdf_write_scalar_r32
-generic, public :: write_r64 => hdf_write_scalar_r64
-generic, public :: write_i32 => hdf_write_scalar_i32
-generic, public :: write_i64 => hdf_write_scalar_i64
+generic, public :: write_r32 => hdf_write_scalar_r32,hdf_write_1d_r32,hdf_write_2d_r32,hdf_write_3d_r32, &
+hdf_write_4d_r32,hdf_write_5d_r32,hdf_write_6d_r32,hdf_write_7d_r32
+
+generic, public :: write_r64 => hdf_write_scalar_r64,hdf_write_1d_r64,hdf_write_2d_r64,hdf_write_3d_r64, &
+hdf_write_4d_r64,hdf_write_5d_r64,hdf_write_6d_r64,hdf_write_7d_r64
+
+generic, public :: write_i32 => hdf_write_scalar_i32,hdf_write_1d_i32,hdf_write_2d_i32,hdf_write_3d_i32, &
+hdf_write_4d_i32,hdf_write_5d_i32,hdf_write_6d_i32,hdf_write_7d_i32
+
+generic, public :: write_i64 => hdf_write_scalar_i64,hdf_write_1d_i64,hdf_write_2d_i64,hdf_write_3d_i64, &
+hdf_write_4d_i64,hdf_write_5d_i64,hdf_write_6d_i64,hdf_write_7d_i64
+
 generic, public :: write_char => hdf_write_scalar_char
 
 !> write attributes
