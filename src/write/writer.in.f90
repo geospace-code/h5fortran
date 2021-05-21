@@ -113,39 +113,121 @@ if (check(ier, self%filename, dname) .and. .not.present(ierr)) error stop "h5for
 end procedure hdf_write_scalar_char
 
 
-module procedure hdf_write_1d
-@writer_template@
-end procedure hdf_write_1d
+module procedure hdf_write_1d_r32
+@writer_template_r32@
+end procedure hdf_write_1d_r32
+
+module procedure hdf_write_1d_r64
+@writer_template_r64@
+end procedure hdf_write_1d_r64
+
+module procedure hdf_write_1d_i32
+@writer_template_i32@
+end procedure hdf_write_1d_i32
+
+module procedure hdf_write_1d_i64
+@writer_template_i64@
+end procedure hdf_write_1d_i64
 
 
-module procedure hdf_write_2d
-@writer_template@
-end procedure hdf_write_2d
+module procedure hdf_write_2d_r32
+@writer_template_r32@
+end procedure hdf_write_2d_r32
+
+module procedure hdf_write_2d_r64
+@writer_template_r64@
+end procedure hdf_write_2d_r64
+
+module procedure hdf_write_2d_i32
+@writer_template_i32@
+end procedure hdf_write_2d_i32
+
+module procedure hdf_write_2d_i64
+@writer_template_i64@
+end procedure hdf_write_2d_i64
 
 
-module procedure hdf_write_3d
-@writer_template@
-end procedure hdf_write_3d
+module procedure hdf_write_3d_r32
+@writer_template_r32@
+end procedure hdf_write_3d_r32
+
+module procedure hdf_write_3d_r64
+@writer_template_r64@
+end procedure hdf_write_3d_r64
+
+module procedure hdf_write_3d_i32
+@writer_template_i32@
+end procedure hdf_write_3d_i32
+
+module procedure hdf_write_3d_i64
+@writer_template_i64@
+end procedure hdf_write_3d_i64
 
 
-module procedure hdf_write_4d
-@writer_template@
-end procedure hdf_write_4d
+module procedure hdf_write_4d_r32
+@writer_template_r32@
+end procedure hdf_write_4d_r32
+
+module procedure hdf_write_4d_r64
+@writer_template_r64@
+end procedure hdf_write_4d_r64
+
+module procedure hdf_write_4d_i32
+@writer_template_i32@
+end procedure hdf_write_4d_i32
+
+module procedure hdf_write_4d_i64
+@writer_template_i64@
+end procedure hdf_write_4d_i64
 
 
-module procedure hdf_write_5d
-@writer_template@
-end procedure hdf_write_5d
+module procedure hdf_write_5d_r32
+@writer_template_r32@
+end procedure hdf_write_5d_r32
+
+module procedure hdf_write_5d_r64
+@writer_template_r64@
+end procedure hdf_write_5d_r64
+
+module procedure hdf_write_5d_i32
+@writer_template_i32@
+end procedure hdf_write_5d_i32
+
+module procedure hdf_write_5d_i64
+@writer_template_i64@
+end procedure hdf_write_5d_i64
 
 
-module procedure hdf_write_6d
-@writer_template@
-end procedure hdf_write_6d
+module procedure hdf_write_6d_r32
+@writer_template_r32@
+end procedure hdf_write_6d_r32
+
+module procedure hdf_write_6d_r64
+@writer_template_r64@
+end procedure hdf_write_6d_r64
+
+module procedure hdf_write_6d_i32
+@writer_template_i32@
+end procedure hdf_write_6d_i32
+
+module procedure hdf_write_6d_i64
+@writer_template_i64@
+end procedure hdf_write_6d_i64
 
 
-module procedure hdf_write_7d
-@writer_template@
-end procedure hdf_write_7d
+module procedure hdf_write_7d_r32
+@writer_template_r32@
+end procedure hdf_write_7d_r32
 
+module procedure hdf_write_7d_r64
+@writer_template_r64@
+end procedure hdf_write_7d_r64
 
+module procedure hdf_write_7d_i32
+@writer_template_i32@
+end procedure hdf_write_7d_i32
+
+module procedure hdf_write_7d_i64
+@writer_template_i64@
+end procedure hdf_write_7d_i64
 end submodule writer

@@ -54,7 +54,13 @@ procedure, public :: initialize => hdf_initialize, finalize => hdf_finalize, &
 !> write group or dataset integer/real
 generic, public :: write => &
 hdf_write_scalar_r32,hdf_write_scalar_r64,hdf_write_scalar_i32,hdf_write_scalar_i64, hdf_write_scalar_char, &
-hdf_write_1d, hdf_write_2d, hdf_write_3d, hdf_write_4d, hdf_write_5d, hdf_write_6d, hdf_write_7d
+hdf_write_1d_r32, hdf_write_1d_r64, hdf_write_1d_i32, hdf_write_1d_i64, &
+hdf_write_2d_r32, hdf_write_2d_r64, hdf_write_2d_i32, hdf_write_2d_i64, &
+hdf_write_3d_r32, hdf_write_3d_r64, hdf_write_3d_i32, hdf_write_3d_i64, &
+hdf_write_4d_r32, hdf_write_4d_r64, hdf_write_4d_i32, hdf_write_4d_i64, &
+hdf_write_5d_r32, hdf_write_5d_r64, hdf_write_5d_i32, hdf_write_5d_i64, &
+hdf_write_6d_r32, hdf_write_6d_r64, hdf_write_6d_i32, hdf_write_6d_i64, &
+hdf_write_7d_r32, hdf_write_7d_r64, hdf_write_7d_i32, hdf_write_7d_i64
 
 generic, public :: write_r32 => hdf_write_scalar_r32
 generic, public :: write_r64 => hdf_write_scalar_r64
@@ -76,7 +82,13 @@ hdf_read_scalar, hdf_read_1d, hdf_read_2d, hdf_read_3d, hdf_read_4d,hdf_read_5d,
 !! each method must be declared here, and above as a generic, public
 procedure,private :: &
 hdf_write_scalar_r32, hdf_write_scalar_r64, hdf_write_scalar_i32, hdf_write_scalar_i64, hdf_write_scalar_char, &
-hdf_write_1d, hdf_write_2d, hdf_write_3d, hdf_write_4d, hdf_write_5d, hdf_write_6d, hdf_write_7d, &
+hdf_write_1d_r32, hdf_write_1d_r64, hdf_write_1d_i32, hdf_write_1d_i64, &
+hdf_write_2d_r32, hdf_write_2d_r64, hdf_write_2d_i32, hdf_write_2d_i64, &
+hdf_write_3d_r32, hdf_write_3d_r64, hdf_write_3d_i32, hdf_write_3d_i64, &
+hdf_write_4d_r32, hdf_write_4d_r64, hdf_write_4d_i32, hdf_write_4d_i64, &
+hdf_write_5d_r32, hdf_write_5d_r64, hdf_write_5d_i32, hdf_write_5d_i64, &
+hdf_write_6d_r32, hdf_write_6d_r64, hdf_write_6d_i32, hdf_write_6d_i64, &
+hdf_write_7d_r32, hdf_write_7d_r64, hdf_write_7d_i32, hdf_write_7d_i64, &
 hdf_read_scalar, hdf_read_1d, hdf_read_2d, hdf_read_3d, hdf_read_4d, hdf_read_5d, hdf_read_6d, hdf_read_7d, &
 writeattr_char, writeattr_num, readattr_char, readattr_num
 
@@ -85,7 +97,13 @@ end type hdf5_file
 
 interface h5write
 procedure lt0write_r32, lt0write_r64, lt0write_i32, lt0write_i64, lt0write_char, &
-lt1write, lt2write, lt3write, lt4write, lt5write, lt6write, lt7write
+lt1write_r32, lt1write_r64, lt1write_i32, lt1write_i64, &
+lt2write_r32, lt2write_r64, lt2write_i32, lt2write_i64, &
+lt3write_r32, lt3write_r64, lt3write_i32, lt3write_i64, &
+lt4write_r32, lt4write_r64, lt4write_i32, lt4write_i64, &
+lt5write_r32, lt5write_r64, lt5write_i32, lt5write_i64, &
+lt6write_r32, lt6write_r64, lt6write_i32, lt6write_i64, &
+lt7write_r32, lt7write_r64, lt7write_i32, lt7write_i64
 end interface h5write
 
 interface h5read
@@ -185,47 +203,181 @@ character(*), intent(in) :: value
 integer, intent(out), optional :: ierr
 end subroutine lt0write_char
 
-module subroutine lt1write(filename, dname, value, ierr)
-character(*), intent(in) :: filename, dname
-class(*), intent(in) :: value(:)
-integer, intent(out), optional :: ierr
-end subroutine lt1write
 
-module subroutine lt2write(filename, dname, value, ierr)
+module subroutine lt1write_r32(filename, dname, value, ierr)
 character(*), intent(in) :: filename, dname
-class(*), intent(in) :: value(:,:)
+real(real32), intent(in) :: value(:)
 integer, intent(out), optional :: ierr
-end subroutine lt2write
+end subroutine lt1write_r32
 
-module subroutine lt3write(filename, dname, value, ierr)
+module subroutine lt1write_r64(filename, dname, value, ierr)
 character(*), intent(in) :: filename, dname
-class(*), intent(in) :: value(:,:,:)
+real(real64), intent(in) :: value(:)
 integer, intent(out), optional :: ierr
-end subroutine lt3write
+end subroutine lt1write_r64
 
-module subroutine lt4write(filename, dname, value, ierr)
+module subroutine lt1write_i32(filename, dname, value, ierr)
 character(*), intent(in) :: filename, dname
-class(*), intent(in) :: value(:,:,:,:)
+integer(int32), intent(in) :: value(:)
 integer, intent(out), optional :: ierr
-end subroutine lt4write
+end subroutine lt1write_i32
 
-module subroutine lt5write(filename, dname, value, ierr)
+module subroutine lt1write_i64(filename, dname, value, ierr)
 character(*), intent(in) :: filename, dname
-class(*), intent(in) :: value(:,:,:,:,:)
+integer(int64), intent(in) :: value(:)
 integer, intent(out), optional :: ierr
-end subroutine lt5write
+end subroutine lt1write_i64
 
-module subroutine lt6write(filename, dname, value, ierr)
-character(*), intent(in) :: filename, dname
-class(*), intent(in) :: value(:,:,:,:,:,:)
-integer, intent(out), optional :: ierr
-end subroutine lt6write
 
-module subroutine lt7write(filename, dname, value, ierr)
+module subroutine lt2write_r32(filename, dname, value, ierr)
 character(*), intent(in) :: filename, dname
-class(*), intent(in) :: value(:,:,:,:,:,:,:)
+real(real32), intent(in) :: value(:,:)
 integer, intent(out), optional :: ierr
-end subroutine lt7write
+end subroutine lt2write_r32
+
+module subroutine lt2write_r64(filename, dname, value, ierr)
+character(*), intent(in) :: filename, dname
+real(real64), intent(in) :: value(:,:)
+integer, intent(out), optional :: ierr
+end subroutine lt2write_r64
+
+module subroutine lt2write_i32(filename, dname, value, ierr)
+character(*), intent(in) :: filename, dname
+integer(int32), intent(in) :: value(:,:)
+integer, intent(out), optional :: ierr
+end subroutine lt2write_i32
+
+module subroutine lt2write_i64(filename, dname, value, ierr)
+character(*), intent(in) :: filename, dname
+integer(int64), intent(in) :: value(:,:)
+integer, intent(out), optional :: ierr
+end subroutine lt2write_i64
+
+
+module subroutine lt3write_r32(filename, dname, value, ierr)
+character(*), intent(in) :: filename, dname
+real(real32), intent(in) :: value(:,:,:)
+integer, intent(out), optional :: ierr
+end subroutine lt3write_r32
+
+module subroutine lt3write_r64(filename, dname, value, ierr)
+character(*), intent(in) :: filename, dname
+real(real64), intent(in) :: value(:,:,:)
+integer, intent(out), optional :: ierr
+end subroutine lt3write_r64
+
+module subroutine lt3write_i32(filename, dname, value, ierr)
+character(*), intent(in) :: filename, dname
+integer(int32), intent(in) :: value(:,:,:)
+integer, intent(out), optional :: ierr
+end subroutine lt3write_i32
+
+module subroutine lt3write_i64(filename, dname, value, ierr)
+character(*), intent(in) :: filename, dname
+integer(int64), intent(in) :: value(:,:,:)
+integer, intent(out), optional :: ierr
+end subroutine lt3write_i64
+
+
+module subroutine lt4write_r32(filename, dname, value, ierr)
+character(*), intent(in) :: filename, dname
+real(real32), intent(in) :: value(:,:,:,:)
+integer, intent(out), optional :: ierr
+end subroutine lt4write_r32
+
+module subroutine lt4write_r64(filename, dname, value, ierr)
+character(*), intent(in) :: filename, dname
+real(real64), intent(in) :: value(:,:,:,:)
+integer, intent(out), optional :: ierr
+end subroutine lt4write_r64
+
+module subroutine lt4write_i32(filename, dname, value, ierr)
+character(*), intent(in) :: filename, dname
+integer(int32), intent(in) :: value(:,:,:,:)
+integer, intent(out), optional :: ierr
+end subroutine lt4write_i32
+
+module subroutine lt4write_i64(filename, dname, value, ierr)
+character(*), intent(in) :: filename, dname
+integer(int64), intent(in) :: value(:,:,:,:)
+integer, intent(out), optional :: ierr
+end subroutine lt4write_i64
+
+
+module subroutine lt5write_r32(filename, dname, value, ierr)
+character(*), intent(in) :: filename, dname
+real(real32), intent(in) :: value(:,:,:,:,:)
+integer, intent(out), optional :: ierr
+end subroutine lt5write_r32
+
+module subroutine lt5write_r64(filename, dname, value, ierr)
+character(*), intent(in) :: filename, dname
+real(real64), intent(in) :: value(:,:,:,:,:)
+integer, intent(out), optional :: ierr
+end subroutine lt5write_r64
+
+module subroutine lt5write_i32(filename, dname, value, ierr)
+character(*), intent(in) :: filename, dname
+integer(int32), intent(in) :: value(:,:,:,:,:)
+integer, intent(out), optional :: ierr
+end subroutine lt5write_i32
+
+module subroutine lt5write_i64(filename, dname, value, ierr)
+character(*), intent(in) :: filename, dname
+integer(int64), intent(in) :: value(:,:,:,:,:)
+integer, intent(out), optional :: ierr
+end subroutine lt5write_i64
+
+
+module subroutine lt6write_r32(filename, dname, value, ierr)
+character(*), intent(in) :: filename, dname
+real(real32), intent(in) :: value(:,:,:,:,:,:)
+integer, intent(out), optional :: ierr
+end subroutine lt6write_r32
+
+module subroutine lt6write_r64(filename, dname, value, ierr)
+character(*), intent(in) :: filename, dname
+real(real64), intent(in) :: value(:,:,:,:,:,:)
+integer, intent(out), optional :: ierr
+end subroutine lt6write_r64
+
+module subroutine lt6write_i32(filename, dname, value, ierr)
+character(*), intent(in) :: filename, dname
+integer(int32), intent(in) :: value(:,:,:,:,:,:)
+integer, intent(out), optional :: ierr
+end subroutine lt6write_i32
+
+module subroutine lt6write_i64(filename, dname, value, ierr)
+character(*), intent(in) :: filename, dname
+integer(int64), intent(in) :: value(:,:,:,:,:,:)
+integer, intent(out), optional :: ierr
+end subroutine lt6write_i64
+
+
+module subroutine lt7write_r32(filename, dname, value, ierr)
+character(*), intent(in) :: filename, dname
+real(real32), intent(in) :: value(:,:,:,:,:,:,:)
+integer, intent(out), optional :: ierr
+end subroutine lt7write_r32
+
+module subroutine lt7write_r64(filename, dname, value, ierr)
+character(*), intent(in) :: filename, dname
+real(real64), intent(in) :: value(:,:,:,:,:,:,:)
+integer, intent(out), optional :: ierr
+end subroutine lt7write_r64
+
+module subroutine lt7write_i32(filename, dname, value, ierr)
+character(*), intent(in) :: filename, dname
+integer(int32), intent(in) :: value(:,:,:,:,:,:,:)
+integer, intent(out), optional :: ierr
+end subroutine lt7write_i32
+
+module subroutine lt7write_i64(filename, dname, value, ierr)
+character(*), intent(in) :: filename, dname
+integer(int64), intent(in) :: value(:,:,:,:,:,:,:)
+integer, intent(out), optional :: ierr
+end subroutine lt7write_i64
+
 end interface
 
 interface !< reader_lt.f90
@@ -319,75 +471,290 @@ logical, intent(in), optional :: compact
 integer, intent(out), optional :: ierr
 end subroutine hdf_write_scalar_char
 
-module subroutine hdf_write_1d(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
+
+module subroutine hdf_write_1d_r32(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
-class(*), intent(in) :: value(:)
+real(real32), intent(in) :: value(:)
 integer, intent(in), optional :: chunk_size(1)
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
 logical, intent(in), optional :: compact
 integer, intent(out), optional :: ierr
-end subroutine hdf_write_1d
+end subroutine hdf_write_1d_r32
 
-module subroutine hdf_write_2d(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
+module subroutine hdf_write_1d_r64(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
-class(*), intent(in) :: value(:,:)
+real(real64), intent(in) :: value(:)
+integer, intent(in), optional :: chunk_size(1)
+integer, intent(in), optional, dimension(:) :: istart, iend, stride
+logical, intent(in), optional :: compact
+integer, intent(out), optional :: ierr
+end subroutine hdf_write_1d_r64
+
+module subroutine hdf_write_1d_i32(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
+class(hdf5_file), intent(inout) :: self
+character(*), intent(in) :: dname
+integer(int32), intent(in) :: value(:)
+integer, intent(in), optional :: chunk_size(1)
+integer, intent(in), optional, dimension(:) :: istart, iend, stride
+logical, intent(in), optional :: compact
+integer, intent(out), optional :: ierr
+end subroutine hdf_write_1d_i32
+
+module subroutine hdf_write_1d_i64(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
+class(hdf5_file), intent(inout) :: self
+character(*), intent(in) :: dname
+integer(int64), intent(in) :: value(:)
+integer, intent(in), optional :: chunk_size(1)
+integer, intent(in), optional, dimension(:) :: istart, iend, stride
+logical, intent(in), optional :: compact
+integer, intent(out), optional :: ierr
+end subroutine hdf_write_1d_i64
+
+
+module subroutine hdf_write_2d_r32(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
+class(hdf5_file), intent(inout) :: self
+character(*), intent(in) :: dname
+real(real32), intent(in) :: value(:,:)
 integer, intent(in), optional :: chunk_size(2)
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
 logical, intent(in), optional :: compact
 integer, intent(out), optional :: ierr
-end subroutine hdf_write_2d
+end subroutine hdf_write_2d_r32
 
-module subroutine hdf_write_3d(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
+module subroutine hdf_write_2d_r64(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
-class(*), intent(in) :: value(:,:,:)
+real(real64), intent(in) :: value(:,:)
+integer, intent(in), optional :: chunk_size(2)
+integer, intent(in), optional, dimension(:) :: istart, iend, stride
+logical, intent(in), optional :: compact
+integer, intent(out), optional :: ierr
+end subroutine hdf_write_2d_r64
+
+module subroutine hdf_write_2d_i32(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
+class(hdf5_file), intent(inout) :: self
+character(*), intent(in) :: dname
+integer(int32), intent(in) :: value(:,:)
+integer, intent(in), optional :: chunk_size(2)
+integer, intent(in), optional, dimension(:) :: istart, iend, stride
+logical, intent(in), optional :: compact
+integer, intent(out), optional :: ierr
+end subroutine hdf_write_2d_i32
+
+module subroutine hdf_write_2d_i64(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
+class(hdf5_file), intent(inout) :: self
+character(*), intent(in) :: dname
+integer(int64), intent(in) :: value(:,:)
+integer, intent(in), optional :: chunk_size(2)
+integer, intent(in), optional, dimension(:) :: istart, iend, stride
+logical, intent(in), optional :: compact
+integer, intent(out), optional :: ierr
+end subroutine hdf_write_2d_i64
+
+
+
+module subroutine hdf_write_3d_r32(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
+class(hdf5_file), intent(inout) :: self
+character(*), intent(in) :: dname
+real(real32), intent(in) :: value(:,:,:)
 integer, intent(in), optional :: chunk_size(3)
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
 logical, intent(in), optional :: compact
 integer, intent(out), optional :: ierr
-end subroutine hdf_write_3d
+end subroutine hdf_write_3d_r32
 
-module subroutine hdf_write_4d(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
+module subroutine hdf_write_3d_r64(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
-class(*), intent(in) :: value(:,:,:,:)
+real(real64), intent(in) :: value(:,:,:)
+integer, intent(in), optional :: chunk_size(3)
+integer, intent(in), optional, dimension(:) :: istart, iend, stride
+logical, intent(in), optional :: compact
+integer, intent(out), optional :: ierr
+end subroutine hdf_write_3d_r64
+
+module subroutine hdf_write_3d_i32(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
+class(hdf5_file), intent(inout) :: self
+character(*), intent(in) :: dname
+integer(int32), intent(in) :: value(:,:,:)
+integer, intent(in), optional :: chunk_size(3)
+integer, intent(in), optional, dimension(:) :: istart, iend, stride
+logical, intent(in), optional :: compact
+integer, intent(out), optional :: ierr
+end subroutine hdf_write_3d_i32
+
+module subroutine hdf_write_3d_i64(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
+class(hdf5_file), intent(inout) :: self
+character(*), intent(in) :: dname
+integer(int64), intent(in) :: value(:,:,:)
+integer, intent(in), optional :: chunk_size(3)
+integer, intent(in), optional, dimension(:) :: istart, iend, stride
+logical, intent(in), optional :: compact
+integer, intent(out), optional :: ierr
+end subroutine hdf_write_3d_i64
+
+
+module subroutine hdf_write_4d_r32(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
+class(hdf5_file), intent(inout) :: self
+character(*), intent(in) :: dname
+real(real32), intent(in) :: value(:,:,:,:)
 integer, intent(in), optional :: chunk_size(4)
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
 logical, intent(in), optional :: compact
 integer, intent(out), optional :: ierr
-end subroutine hdf_write_4d
+end subroutine hdf_write_4d_r32
 
-module subroutine hdf_write_5d(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
+module subroutine hdf_write_4d_r64(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
-class(*), intent(in) :: value(:,:,:,:,:)
+real(real64), intent(in) :: value(:,:,:,:)
+integer, intent(in), optional :: chunk_size(4)
+integer, intent(in), optional, dimension(:) :: istart, iend, stride
+logical, intent(in), optional :: compact
+integer, intent(out), optional :: ierr
+end subroutine hdf_write_4d_r64
+
+module subroutine hdf_write_4d_i32(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
+class(hdf5_file), intent(inout) :: self
+character(*), intent(in) :: dname
+integer(int32), intent(in) :: value(:,:,:,:)
+integer, intent(in), optional :: chunk_size(4)
+integer, intent(in), optional, dimension(:) :: istart, iend, stride
+logical, intent(in), optional :: compact
+integer, intent(out), optional :: ierr
+end subroutine hdf_write_4d_i32
+
+module subroutine hdf_write_4d_i64(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
+class(hdf5_file), intent(inout) :: self
+character(*), intent(in) :: dname
+integer(int64), intent(in) :: value(:,:,:,:)
+integer, intent(in), optional :: chunk_size(4)
+integer, intent(in), optional, dimension(:) :: istart, iend, stride
+logical, intent(in), optional :: compact
+integer, intent(out), optional :: ierr
+end subroutine hdf_write_4d_i64
+
+module subroutine hdf_write_5d_r32(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
+class(hdf5_file), intent(inout) :: self
+character(*), intent(in) :: dname
+real(real32), intent(in) :: value(:,:,:,:,:)
 integer, intent(in), optional :: chunk_size(5)
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
 logical, intent(in), optional :: compact
 integer, intent(out), optional :: ierr
-end subroutine hdf_write_5d
+end subroutine hdf_write_5d_r32
 
-module subroutine hdf_write_6d(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
+module subroutine hdf_write_5d_r64(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
-class(*), intent(in) :: value(:,:,:,:,:,:)
+real(real64), intent(in) :: value(:,:,:,:,:)
+integer, intent(in), optional :: chunk_size(5)
+integer, intent(in), optional, dimension(:) :: istart, iend, stride
+logical, intent(in), optional :: compact
+integer, intent(out), optional :: ierr
+end subroutine hdf_write_5d_r64
+
+module subroutine hdf_write_5d_i32(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
+class(hdf5_file), intent(inout) :: self
+character(*), intent(in) :: dname
+integer(int32), intent(in) :: value(:,:,:,:,:)
+integer, intent(in), optional :: chunk_size(5)
+integer, intent(in), optional, dimension(:) :: istart, iend, stride
+logical, intent(in), optional :: compact
+integer, intent(out), optional :: ierr
+end subroutine hdf_write_5d_i32
+
+module subroutine hdf_write_5d_i64(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
+class(hdf5_file), intent(inout) :: self
+character(*), intent(in) :: dname
+integer(int64), intent(in) :: value(:,:,:,:,:)
+integer, intent(in), optional :: chunk_size(5)
+integer, intent(in), optional, dimension(:) :: istart, iend, stride
+logical, intent(in), optional :: compact
+integer, intent(out), optional :: ierr
+end subroutine hdf_write_5d_i64
+
+module subroutine hdf_write_6d_r32(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
+class(hdf5_file), intent(inout) :: self
+character(*), intent(in) :: dname
+real(real32), intent(in) :: value(:,:,:,:,:,:)
 integer, intent(in), optional :: chunk_size(6)
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
 logical, intent(in), optional :: compact
 integer, intent(out), optional :: ierr
-end subroutine hdf_write_6d
+end subroutine hdf_write_6d_r32
 
-module subroutine hdf_write_7d(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
+module subroutine hdf_write_6d_r64(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
-class(*), intent(in) :: value(:,:,:,:,:,:,:)
+real(real64), intent(in) :: value(:,:,:,:,:,:)
+integer, intent(in), optional :: chunk_size(6)
+integer, intent(in), optional, dimension(:) :: istart, iend, stride
+logical, intent(in), optional :: compact
+integer, intent(out), optional :: ierr
+end subroutine hdf_write_6d_r64
+
+module subroutine hdf_write_6d_i32(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
+class(hdf5_file), intent(inout) :: self
+character(*), intent(in) :: dname
+integer(int32), intent(in) :: value(:,:,:,:,:,:)
+integer, intent(in), optional :: chunk_size(6)
+integer, intent(in), optional, dimension(:) :: istart, iend, stride
+logical, intent(in), optional :: compact
+integer, intent(out), optional :: ierr
+end subroutine hdf_write_6d_i32
+
+module subroutine hdf_write_6d_i64(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
+class(hdf5_file), intent(inout) :: self
+character(*), intent(in) :: dname
+integer(int64), intent(in) :: value(:,:,:,:,:,:)
+integer, intent(in), optional :: chunk_size(6)
+integer, intent(in), optional, dimension(:) :: istart, iend, stride
+logical, intent(in), optional :: compact
+integer, intent(out), optional :: ierr
+end subroutine hdf_write_6d_i64
+
+module subroutine hdf_write_7d_r32(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
+class(hdf5_file), intent(inout) :: self
+character(*), intent(in) :: dname
+real(real32), intent(in) :: value(:,:,:,:,:,:,:)
 integer, intent(in), optional :: chunk_size(7)
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
 logical, intent(in), optional :: compact
 integer, intent(out), optional :: ierr
-end subroutine hdf_write_7d
+end subroutine hdf_write_7d_r32
+
+module subroutine hdf_write_7d_r64(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
+class(hdf5_file), intent(inout) :: self
+character(*), intent(in) :: dname
+real(real64), intent(in) :: value(:,:,:,:,:,:,:)
+integer, intent(in), optional :: chunk_size(7)
+integer, intent(in), optional, dimension(:) :: istart, iend, stride
+logical, intent(in), optional :: compact
+integer, intent(out), optional :: ierr
+end subroutine hdf_write_7d_r64
+
+module subroutine hdf_write_7d_i32(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
+class(hdf5_file), intent(inout) :: self
+character(*), intent(in) :: dname
+integer(int32), intent(in) :: value(:,:,:,:,:,:,:)
+integer, intent(in), optional :: chunk_size(7)
+integer, intent(in), optional, dimension(:) :: istart, iend, stride
+logical, intent(in), optional :: compact
+integer, intent(out), optional :: ierr
+end subroutine hdf_write_7d_i32
+
+module subroutine hdf_write_7d_i64(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
+class(hdf5_file), intent(inout) :: self
+character(*), intent(in) :: dname
+integer(int64), intent(in) :: value(:,:,:,:,:,:,:)
+integer, intent(in), optional :: chunk_size(7)
+integer, intent(in), optional, dimension(:) :: istart, iend, stride
+logical, intent(in), optional :: compact
+integer, intent(out), optional :: ierr
+end subroutine hdf_write_7d_i64
 end interface
 
 interface !< read.f90
