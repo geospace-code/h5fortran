@@ -4,12 +4,13 @@ on:
   push:
     paths:
       - "**/meson.build"
-      - ".github/workflows/ci_linux_meson.yml"
+      - ".github/workflows/ci_meson.yml"
 
 
 jobs:
 
   linux:
+    timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -28,7 +29,14 @@ jobs:
     - run: meson test -C build -v
 
   mac:
-    if: false  # some glitch with CI meson, not apparent on physical Mac
+    if: false
+    # need to update Meson itself to find HDF5 on MacOS better
+    timeout-minutes: 20
+    env:
+      HOMEBREW_NO_INSTALL_CLEANUP: 1
+      CC: gcc-10
+      FC: gfortran-10
+
     needs: linux
     runs-on: macos-latest
     steps:
@@ -41,7 +49,6 @@ jobs:
     - run: brew install gcc hdf5 ninja
 
     - run: meson setup build
-
     - run: meson compile -C build
 
     - run: meson test -C build -v
