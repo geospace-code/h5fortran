@@ -82,7 +82,7 @@ def cli():
 def zlib(
     dirs: T.Dict[str, Path], urls: T.Dict[str, str], env: T.Mapping[str, str]
 ) -> Path:
-    name = "zlib-1.2.11"
+    name = "zlib-ng-2.0.3"
     zlib_filename = urls["url"].split("/")[-1]
 
     install_dir = dirs["prefix"] / name
@@ -91,7 +91,7 @@ def zlib(
 
     zlib_archive = dirs["workdir"] / zlib_filename
 
-    url_retrieve(urls["url"], zlib_archive, filehash=["sha1", urls["sha1"]])
+    url_retrieve(urls["url"], zlib_archive, filehash=["sha256", urls["sha256"]])
 
     if not (source_dir / "CMakeLists.txt").is_file():
         with zipfile.ZipFile(zlib_archive) as z:
@@ -103,6 +103,7 @@ def zlib(
         f"-B{build_dir}",
         f"-DCMAKE_INSTALL_PREFIX={install_dir}",
         "-DCMAKE_BUILD_TYPE=Release",
+        "-DZLIB_COMPAT:BOOL=true",
     ]
 
     cmd1 = ["cmake", "--build", str(build_dir), "--parallel"]
@@ -134,9 +135,9 @@ def hdf5(
 
     if os.name == "nt":
         if Path(env["CC"]).stem == "icl":
-            zlib_filename = "zlibstatic.lib"
+            zlib_filename = "zlib.lib"
         else:
-            zlib_filename = "libzlibstatic.a"
+            zlib_filename = "libzlib.a"
     else:
         zlib_filename = "libz.a"
 
@@ -149,7 +150,7 @@ def hdf5(
         source_dir = source_dir.with_name(name)
 
         archive = dirs["workdir"] / url.split("/")[-1]
-        url_retrieve(url, archive, filehash=["sha1", urls["sha1"]])
+        url_retrieve(url, archive, filehash=["sha256", urls["sha256"]])
 
         if not (source_dir / "CMakeLists.txt").is_file():
             with zipfile.ZipFile(archive) as z:
@@ -252,7 +253,7 @@ def url_retrieve(
     outfile: pathlib.Path
         output filepath (including name)
     filehash: tuple of str, str
-        hash type (md5, sha1, etc.) and hash
+        hash type (md5, sha256, etc.) and hash
     overwrite: bool
         overwrite if file exists
     """
