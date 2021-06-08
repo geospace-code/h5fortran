@@ -74,7 +74,7 @@ def cli():
 
     urls = json.loads(JSON_FILE.read_text())
 
-    dirs["zlib"] = zlib(dirs, urls["zlib"], env=env)
+    dirs["zlib"] = zlib(dirs, urls["zlib2"], env=env)
 
     hdf5(dirs, urls["hdf5"], env=env, download_git=P.git)
 
