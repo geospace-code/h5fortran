@@ -116,12 +116,13 @@ jobs:
 
 
   mac:
+    needs: linux
     runs-on: macos-latest
     timeout-minutes: 20
     env:
       HOMEBREW_NO_INSTALL_CLEANUP: 1
-      CC: gcc-10
-      FC: gfortran-10
+      CC: gcc-11
+      FC: gfortran-11
       CTEST_SITE: GitHub_MacOS
 
     steps:
