@@ -71,7 +71,27 @@ jobs:
         asset_content_type: application/zip
 
 
+  linux-gcc7:
+      runs-on: ubuntu-18.04
+      timeout-minutes: 15
+      env:
+        CTEST_PARALLEL_LEVEL: 2
+
+      steps:
+      - uses: actions/checkout@v2
+
+      - name: install libs
+        run: |
+          sudo apt update -yq
+          sudo apt install -yq --no-install-recommends gfortran libhdf5-dev
+
+      - run: cmake --preset make
+      - run: cmake --build --preset default
+      - run: ctest --preset default
+
+
   linuxCmake313:
+    needs: linux
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
