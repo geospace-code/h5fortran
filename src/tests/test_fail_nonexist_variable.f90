@@ -7,8 +7,8 @@ integer :: u
 type(hdf5_file) :: h
 character(*), parameter :: filename = 'bad.h5'
 
-call h%initialize(filename, status='scratch', verbose=.false.)
+call h%open(filename, status='scratch', verbose=.false.)
 call h%read('/not-exist', u)
-call h%finalize()
+call h%close()
 
 end program

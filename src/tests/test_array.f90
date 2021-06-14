@@ -49,17 +49,17 @@ enddo
 r1 = i1
 r2 = i2
 
-call h%initialize(filename, status='replace', comp_lvl=1, verbose=.False.)
+call h%open(filename, status='replace', comp_lvl=1, verbose=.False.)
 
 call h%write('/int32-1d', i1)
 call h%write('/test/group2/int32-2d', i2)
 call h%write('/real32-2d', r2)
 call h%write('/nan', nan)
 
-call h%finalize()
+call h%close()
 
 !! read
-call h%initialize(filename, status='old', action='r', verbose=.false.)
+call h%open(filename, status='old', action='r', verbose=.false.)
 
 !> int32
 call h%read('/int32-1d', i1t)
@@ -86,7 +86,7 @@ if(.not.all(B(2:5,3:6) == r2)) error stop 'real 2D: reading into variable slice'
 call h%read('/nan',nant)
 if (.not.ieee_is_nan(nant)) error stop 'failed storing or reading NaN'
 
-call h%finalize()
+call h%close()
 
 end subroutine test_basic_array
 
@@ -109,7 +109,7 @@ do i = 1,size(i2,2)
   i2(i,:) = i2(1,:) * i
 enddo
 
-call h%initialize(filename, status='old', action='r')
+call h%open(filename, status='old', action='r')
 
 i1t = 0
 call h%read('/int32-1d', i1t(:2), istart=[2], iend=[3], stride=[1])
@@ -132,7 +132,7 @@ if (any(i2t(:2,:3) /= i2(2:3,1:3))) then
   error stop
 endif
 
-call h%finalize()
+call h%close()
 
 end subroutine test_read_slice
 
@@ -146,7 +146,7 @@ integer(int32), dimension(4) :: i1t
 integer(int32), dimension(4,4) :: i2t
 
 
-call h%initialize(filename, status='old', action='r+', verbose=.true., debug=.true.)
+call h%open(filename, status='old', action='r+', verbose=.true., debug=.true.)
 
 call h%create('/int32a-1d', dtype=H5T_NATIVE_INTEGER, dims=int([3], hsize_t))
 call h%write('/int32a-1d', [1,3], istart=[1], iend=[2])
@@ -176,7 +176,7 @@ print *, 'create and write slice 2d, stride=1'
 call h%write('/int32a-2d', reshape([76,65,54,43], [2,2]), istart=[2,1], iend=[3,2])
 call h%read('/int32a-2d', i2t)
 
-call h%finalize()
+call h%close()
 
 
 end subroutine test_write_slice
@@ -196,7 +196,7 @@ allocate(flux(nn,ng),fo(nn))
 flux = 1.0
 write(pnc,'(I2)') pn
 
-call h%initialize(filename,  status='scratch')
+call h%open(filename,  status='scratch')
 
 do i = 1,ng
   write(ic,'(I2)') i
@@ -206,7 +206,7 @@ enddo
 call h%read('/group1/flux_node',fo)
 if (.not.all(fo == flux(:,1))) error stop 'test_read_write: read does not match write'
 
-call h%finalize()
+call h%close()
 
 end subroutine test_readwrite_array
 

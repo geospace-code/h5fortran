@@ -40,9 +40,11 @@ integer :: libversion(3)  !< major, minor, rel
 
 contains
 !> define methods (procedures) that don't need generic procedure
-procedure, public :: initialize => hdf_initialize, finalize => hdf_finalize, &
+procedure, public :: initialize => hdf_initialize, open => hdf_initialize, &
+  finalize => hdf_finalize, close => hdf_finalize, &
   write_group, create => hdf_create, &
-  open => hdf_open_group, close => hdf_close_group, flush => hdf_flush, &
+  open_group => hdf_open_group, close_group => hdf_close_group, &
+  flush => hdf_flush, &
   ndims => hdf_get_ndims, &
   shape => hdf_get_shape, layout => hdf_get_layout, chunks => hdf_get_chunk, &
   exist => hdf_check_exist, exists => hdf_check_exist, &
@@ -100,6 +102,9 @@ hdf_write_7d_r32, hdf_write_7d_r64, hdf_write_7d_i32, hdf_write_7d_i64, &
 hdf_read_scalar, hdf_read_1d, hdf_read_2d, hdf_read_3d, hdf_read_4d, hdf_read_5d, hdf_read_6d, hdf_read_7d, &
 writeattr_char, writeattr_num, readattr_char, readattr_num
 
+!> flush file to disk and close file if user forgets to do so.
+final :: destructor
+
 end type hdf5_file
 
 
@@ -130,9 +135,9 @@ end interface h5read_attr
 !> Submodules
 
 interface !< pathlib.f90
-module logical function std_unlink(filename)
+module subroutine std_unlink(filename)
 character(*), intent(in) :: filename
-end function std_unlink
+end subroutine std_unlink
 
 module logical function is_absolute_path(path)
 character(*), intent(in) :: path
@@ -1069,12 +1074,24 @@ endif
 self%lid = 0
 
 if(self%is_scratch) then
-  if (std_unlink(self%filename)) write(stderr,*) 'WARNING: could not delete scratch file: ' // self%filename
+  call std_unlink(self%filename)
 endif
 
 self%is_open = .false.
 
 end subroutine hdf_finalize
+
+
+subroutine destructor(self)
+!! Close file and handle if user forgets to do so
+
+type(hdf5_file), intent(inout) :: self
+
+print *, "auto-closing " // self%filename
+
+call self%close()
+
+end subroutine destructor
 
 
 subroutine hdf_flush(self, ierr)

@@ -20,7 +20,7 @@ type(hdf5_file) :: h1, h2, h3
 ```
 
 ```fortran
-call h%initialize(filename,ierr, status,action,comp_lvl,verbose,debug)
+call h%open(filename,ierr, status,action,comp_lvl,verbose,debug)
 !! Opens hdf5 file
 
 character(*), intent(in) :: filename
@@ -32,7 +32,7 @@ logical, intent(in), optional      :: verbose, debug
 ```
 
 ```fortran
-call h%finalize(ierr, close_hdf5_interface)
+call h%close(ierr, close_hdf5_interface)
 !! This must be called on each HDF5 file to flush buffers to disk
 !! data loss can occur if program terminates before this procedure
 !!

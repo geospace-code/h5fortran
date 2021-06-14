@@ -15,15 +15,15 @@ character(:), allocatable :: final
 
 character(*), parameter :: path='test_string.h5'
 
-call h%initialize(path, status='replace')
+call h%open(path, status='replace')
 
 call h%write('/little', '42')
 call h%write_char('/little_char', '42')
 call h%write('/MySentence', 'this is a little sentence.')
 
-call h%finalize()
+call h%close()
 
-call h%initialize(path, status='old', action='r')
+call h%open(path, status='old', action='r')
 call h%read('/little', value)
 
 if (value /= '42') error stop 'test_string:  read/write verification failure. Value: '// value
@@ -40,7 +40,7 @@ if (len(final) /= 2) then
   error stop
 endif
 
-call h%finalize()
+call h%close()
 
 print *,'PASSED: HDF5 string write/read'
 

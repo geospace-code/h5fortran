@@ -37,11 +37,15 @@ end procedure is_absolute_path
 module procedure std_unlink
 !! deletes file in Fortran standard manner.
 integer :: i, u
+logical :: exists
+
+inquire(file=filename, exist=exists)
+if(.not. exists) return
 
 open(newunit=u, file=filename, iostat=i)
 close(u, status='delete', iostat=i)
 
-inquire(file=filename, exist=std_unlink)
+if(i/=0) write(stderr,*) "failed to delete file ", filename
 
 end procedure std_unlink
 

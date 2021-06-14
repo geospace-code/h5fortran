@@ -23,7 +23,7 @@ w32 = 142
 w64 = 142
 wi32 = 142
 
-call h%initialize(fn, status="replace", action="write")
+call h%open(fn, status="replace", action="write")
 
 call h%write("/compact1d", [1,2,3], compact=.true.)
 call h%write("/contig1d", [1,2,3], compact=.false.)
@@ -36,10 +36,10 @@ call h%write('/compact_r32', w32, compact=.true.)
 call h%write('/compact_r64', w64, compact=.true.)
 call h%write('/compact_i32', wi32, compact=.true.)
 
-call h%finalize()
+call h%close()
 
 !> read casting
-call h%initialize(fn, status="old", action="read")
+call h%open(fn, status="old", action="read")
 
 call h%read("/compact_r32", r64)
 if(r64 /= w32) error stop "read real32 => real64"
@@ -63,7 +63,7 @@ if (.not. h%is_compact("/compact1d")) error stop "1d is_compact fail"
 if (.not. h%is_compact("/compact7d_32")) error stop "7d is_compact fail"
 if (.not. h%is_compact("/compact0d")) error stop "0d is_compact fail"
 
-call h%finalize()
+call h%close()
 
 
 end program
