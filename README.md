@@ -17,12 +17,17 @@ call h5write('foo.h5', '/x', x)
 call h5read('bar.h5', '/y', y)
 ```
 
-* For NetCDF4 see [nc4fortran](https://github.com/geospace-code/nc4fortran/).
-* Designed for easy use using **static** or **shared** linking via:
-  * CMake ExternalProject
-  * CMake FetchContent
-  * CMake + Git submodule
-  * Meson subproject
+For NetCDF4 see [nc4fortran](https://github.com/geospace-code/nc4fortran/).
+h5fortran is designed for "serial" HDF5 read/write.
+We don't yet implement the interface for "parallel" HDF5.
+
+h5fortran is designed for easy use using **static** or **shared** linking from your project via:
+
+* `cmake --install`
+* CMake ExternalProject
+* CMake FetchContent
+* CMake + Git submodule
+* Meson subproject
 
 Uses Fortran `submodule` for clean template structure.
 This easy-to-use, thin object-oriented modern Fortran library abstracts away the messy parts of HDF5 so that you can read / write various types/ranks of data with a single command.

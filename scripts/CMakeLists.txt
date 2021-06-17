@@ -1,5 +1,10 @@
-cmake_minimum_required(VERSION 3.13...${CMAKE_VERSION})
+cmake_minimum_required(VERSION 3.15...3.20)
 project(HDF5_build LANGUAGES C Fortran)
+
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+  message(FATAL_ERROR "please specify where to install HDF5 under, like
+  cmake -B build -DCMAKE_INSTALL_PREFIX=~/mylibs")
+endif()
 
 include(${PROJECT_SOURCE_DIR}/../cmake/libraries.cmake)
 

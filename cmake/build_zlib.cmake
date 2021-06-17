@@ -1,28 +1,28 @@
-# build Zlib to ensure compatibility. This is a common practice for HDF5.
+# build Zlib to ensure compatibility.
+# We use Zlib 2.x for speed and robustness.
 
 include(ExternalProject)
 
-if(WIN32)
-  if(zlib_legacy)
-    set(ZLIB_name ${CMAKE_STATIC_LIBRARY_PREFIX}zlibstatic${CMAKE_STATIC_LIBRARY_SUFFIX})
-  else()
-    set(ZLIB_name ${CMAKE_STATIC_LIBRARY_PREFIX}zlib${CMAKE_STATIC_LIBRARY_SUFFIX})
-  endif()
+if(WIN32 AND zlib_legacy)
+  set(ZLIB_name ${CMAKE_STATIC_LIBRARY_PREFIX}zlibstatic${CMAKE_STATIC_LIBRARY_SUFFIX})
 else()
   set(ZLIB_name ${CMAKE_STATIC_LIBRARY_PREFIX}z${CMAKE_STATIC_LIBRARY_SUFFIX})
 endif()
 
 # need to be sure _ROOT isn't empty, defined is not enough
 if(NOT ZLIB_ROOT)
-  if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-    set(ZLIB_ROOT ${PROJECT_BINARY_DIR})
-  else()
-    set(ZLIB_ROOT ${CMAKE_INSTALL_PREFIX})
-  endif()
+  set(ZLIB_ROOT ${CMAKE_INSTALL_PREFIX})
 endif()
 
 set(ZLIB_INCLUDE_DIR ${ZLIB_ROOT}/include)
 set(ZLIB_LIBRARY ${ZLIB_ROOT}/lib/${ZLIB_name})
+
+set(zlib_cmake_args
+-DZLIB_COMPAT:BOOL=on
+-DZLIB_ENABLE_TESTS:BOOL=off
+-DBUILD_SHARED_LIBS:BOOL=off
+-DCMAKE_BUILD_TYPE=Release
+-DCMAKE_INSTALL_PREFIX:PATH=${ZLIB_ROOT})
 
 if(zlib_git)
 ExternalProject_Add(ZLIB
@@ -30,7 +30,7 @@ GIT_REPOSITORY ${zlib_git}
 GIT_TAG ${zlib_tag}
 CONFIGURE_HANDLED_BY_BUILD ON
 INACTIVITY_TIMEOUT 15
-CMAKE_ARGS -DZLIB_COMPAT:BOOL=on -DZLIB_ENABLE_TESTS:BOOL=off -DBUILD_SHARED_LIBS:BOOL=off -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=${ZLIB_ROOT}
+CMAKE_ARGS ${zlib_cmake_args}
 BUILD_BYPRODUCTS ${ZLIB_LIBRARY}
 )
 else()
