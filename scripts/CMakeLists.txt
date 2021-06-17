@@ -6,6 +6,8 @@ if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   cmake -B build -DCMAKE_INSTALL_PREFIX=~/mylibs")
 endif()
 
+option(hdf5_parallel "build HDF5 parallel MPI (h5fortran doesn't use yet)")
+
 include(${PROJECT_SOURCE_DIR}/../cmake/libraries.cmake)
 
 set(EP_UPDATE_DISCONNECTED true)

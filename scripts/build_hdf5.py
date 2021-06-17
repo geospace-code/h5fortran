@@ -104,6 +104,8 @@ def zlib(
         f"-DCMAKE_INSTALL_PREFIX={install_dir}",
         "-DCMAKE_BUILD_TYPE=Release",
         "-DZLIB_COMPAT:BOOL=true",
+        "-DBUILD_SHARED_LIBS:BOOL=off",
+        "-DZLIB_ENABLE_TESTS:BOOL=off",
     ]
 
     cmd1 = ["cmake", "--build", str(build_dir), "--parallel"]
@@ -133,11 +135,8 @@ def hdf5(
     name = "hdf5"
     source_dir = dirs["workdir"] / name
 
-    if os.name == "nt":
-        if Path(env["CC"]).stem == "icl":
-            zlib_filename = "zlib.lib"
-        else:
-            zlib_filename = "libzlib.a"
+    if os.name == "nt" and Path(env["CC"]).stem == "icl":
+        zlib_filename = "zlibstatic.lib"
     else:
         zlib_filename = "libz.a"
 
@@ -170,6 +169,7 @@ def hdf5(
             "-DHDF5_GENERATE_HEADERS:BOOL=false",
             "-DHDF5_DISABLE_COMPILER_WARNINGS:BOOL=true",
             "-DBUILD_SHARED_LIBS:BOOL=false",
+            "-DHDF5_ENABLE_PARALLEL:BOOL=false",
             "-DCMAKE_BUILD_TYPE=Release",
             "-DHDF5_BUILD_FORTRAN:BOOL=true",
             "-DHDF5_BUILD_CPP_LIB:BOOL=false",
