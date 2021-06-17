@@ -3,7 +3,7 @@
 
 include(ExternalProject)
 
-if(WIN32 AND zlib_legacy)
+if(MSVC OR (zlib_legacy AND WIN32))
   set(ZLIB_name ${CMAKE_STATIC_LIBRARY_PREFIX}zlibstatic${CMAKE_STATIC_LIBRARY_SUFFIX})
 else()
   set(ZLIB_name ${CMAKE_STATIC_LIBRARY_PREFIX}z${CMAKE_STATIC_LIBRARY_SUFFIX})
