@@ -6,8 +6,6 @@
 FindSZIP
 ---------
 
-by Michael Hirsch, Ph.D. www.scivision.dev
-
 Finds SZIP developed by HDF Group & used by HDF5.
 
 
@@ -35,7 +33,9 @@ URL "http://www.compressconsult.com/szip/"
 DESCRIPTION "compression library"
 PURPOSE "Some system HDF5 libraries have dynamic links to SZIP")
 
-find_library(SZIP_LIBRARY NAMES szip sz)
+find_library(SZIP_LIBRARY
+  NAMES szip sz
+  NAMES_PER_DIR)
 
 find_path(SZIP_INCLUDE_DIR NAMES szlib.h)
 

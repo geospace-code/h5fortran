@@ -30,6 +30,8 @@ Components
 
 ``Fortran``
 
+``parallel`` checks that the MPI parallel HDF5 layer is enabled
+
 The ``HL`` component is implied and silently accepted to keep
 compatibility with factory FindHDF5
 
@@ -40,6 +42,10 @@ Targets
 ``HDF5::HDF5``
   HDF5 Imported Target
 #]=======================================================================]
+
+include(CheckSymbolExists)
+include(CheckCSourceCompiles)
+include(CheckFortranSourceCompiles)
 
 function(detect_config)
 
@@ -53,14 +59,13 @@ endif()
 
 set(CMAKE_REQUIRED_INCLUDES ${HDF5_INCLUDE_DIR})
 
-foreach(f H5pubconf.h H5pubconf-64.h)
-  if(EXISTS ${HDF5_INCLUDE_DIR}/${f})
-    set(_conf ${HDF5_INCLUDE_DIR}/${f})
-    break()
-  endif()
-endforeach()
+find_file(h5_conf
+  NAMES H5pubconf.h H5pubconf-64.h
+  HINTS ${HDF5_INCLUDE_DIR}
+  NO_DEFAULT_PATH
+)
 
-if(NOT _conf)
+if(NOT h5_conf)
   message(WARNING "Could not find HDF5 config header H5pubconf.h, therefore cannot detect HDF5 configuration.")
   set(HDF5_C_FOUND false PARENT_SCOPE)
   return()
@@ -68,11 +73,30 @@ endif()
 
 # get version
 # from CMake/Modules/FindHDF5.cmake
-include(CheckSymbolExists)
-check_symbol_exists(H5_HAVE_FILTER_SZIP ${_conf} _szip)
-check_symbol_exists(H5_HAVE_FILTER_DEFLATE ${_conf} _zlib)
+check_symbol_exists(H5_HAVE_FILTER_SZIP ${h5_conf} _szip)
+check_symbol_exists(H5_HAVE_FILTER_DEFLATE ${h5_conf} _zlib)
 
-file(STRINGS ${_conf} _def
+if(parallel IN_LIST HDF5_FIND_COMPONENTS)
+  check_symbol_exists(H5_HAVE_PARALLEL ${h5_conf} _h5_parallel)
+  if(_h5_parallel)
+    if(NOT TARGET MPI::MPI_C)
+      find_package(MPI COMPONENTS C)
+    endif()
+    if(MPI_C_FOUND)
+      list(APPEND CMAKE_REQUIRED_LIBRARIES MPI::MPI_C)
+      set(HDF5_parallel_FOUND true PARENT_SCOPE)
+      set(HDF5_IS_PARALLEL true CACHE BOOL "HDF5 library compiled with parallel IO support")
+    endif()
+  endif()
+
+  if(NOT HDF5_IS_PARALLEL)
+    message(WARNING "HDF5 parallel was requested but not found")
+    set(HDF5_parallel_FOUND false PARENT_SCOPE)
+    return()
+  endif()
+endif()
+
+file(STRINGS ${h5_conf} _def
 REGEX "^[ \t]*#[ \t]*define[ \t]+H5_VERSION[ \t]+" )
 if( "${_def}" MATCHES
 "H5_VERSION[ \t]+\"([0-9]+\\.[0-9]+\\.[0-9]+)(-patch([0-9]+))?\"" )
@@ -250,23 +274,16 @@ if(HDF5_Fortran_FOUND)
 
 set(CMAKE_REQUIRED_INCLUDES ${HDF5_Fortran_INCLUDE_DIR} ${HDF5_INCLUDE_DIR})
 
-include(CheckFortranSourceCompiles)
-set(_code "program test_minimal
+check_fortran_source_compiles(
+"program test_minimal
 use hdf5, only : h5open_f, h5close_f
 use h5lt, only : h5ltmake_dataset_f
-implicit none (type, external)
+implicit none
 integer :: i
 call h5open_f(i)
-if (i /= 0) error stop 'could not open hdf5 library'
 call h5close_f(i)
-if (i /= 0) error stop
-end")
-check_fortran_source_compiles(${_code} HDF5_Fortran_links SRC_EXT f90)
-
-if(HDF5_Fortran_links AND CMAKE_VERSION VERSION_GREATER_EQUAL 3.14)
-  include(CheckFortranSourceRuns)
-  check_fortran_source_runs(${_code} HDF5_runs SRC_EXT f90)
-endif()
+end program"
+HDF5_Fortran_links SRC_EXT f90)
 
 endif(HDF5_Fortran_FOUND)
 
@@ -275,16 +292,16 @@ if(HDF5_C_FOUND)
 
 set(CMAKE_REQUIRED_INCLUDES ${HDF5_INCLUDE_DIR})
 
-include(CheckCSourceCompiles)
-set(_code "
+check_c_source_compiles(
+"
 #include \"hdf5.h\"
 
 int main(void){
 hid_t f = H5Fcreate (\"junk.h5\", H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
 herr_t status = H5Fclose (f);
-return 0;
-}")
-check_c_source_compiles("${_code}" HDF5_C_links)
+return 0;}
+"
+HDF5_C_links)
 
 set(HDF5_links ${HDF5_C_links})
 
