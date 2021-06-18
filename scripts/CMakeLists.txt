@@ -15,3 +15,9 @@ set(EP_UPDATE_DISCONNECTED true)
 message(STATUS "Building and installing HDF5 to ${CMAKE_INSTALL_PREFIX}")
 
 include(${PROJECT_SOURCE_DIR}/../cmake/build_hdf5.cmake)
+
+include(FeatureSummary)
+
+add_feature_info(HDF5parallel hdf5_parallel "HDF5 MPI layer")
+
+feature_summary(WHAT ALL)
