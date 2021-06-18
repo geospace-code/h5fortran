@@ -48,6 +48,7 @@ ${zlib_root}
 -DHDF5_BUILD_EXAMPLES:BOOL=false)
 
 if(hdf5_parallel)
+  find_package(MPI REQUIRED COMPONENTS C)
   list(APPEND hdf5_cmake_args -DHDF5_ENABLE_PARALLEL:BOOL=true)
 else()
   list(APPEND hdf5_cmake_args -DHDF5_ENABLE_PARALLEL:BOOL=false)

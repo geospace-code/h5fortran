@@ -173,7 +173,7 @@ def hdf5(
             "-DCMAKE_BUILD_TYPE=Release",
             "-DHDF5_BUILD_FORTRAN:BOOL=true",
             "-DHDF5_BUILD_CPP_LIB:BOOL=false",
-            "-DHDF5_BUILD_TOOLS:BOOL=false",
+            "-DHDF5_BUILD_TOOLS:BOOL=true",
             "-DBUILD_TESTING:BOOL=false",
             "-DHDF5_BUILD_EXAMPLES:BOOL=false",
             f"-DZLIB_LIBRARY:FILEPATH={dirs['zlib']}/lib/{zlib_filename}",
