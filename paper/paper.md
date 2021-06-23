@@ -33,13 +33,20 @@ h5fortran has general applicability to projects needing to do any of:
 * read / write variable attributes to / from HDF5 file
 * get the shape of a disk variable to allocate a memory variable for reading that data
 
+HDF5 does not have native support for complex numbers or booleans (`logical` Fortran datatype).
+h5fortran does not yet support complex numbers or booleans.
+High-level HDF5 interfaces in other code languages such as h5py have implemented these types using HDF5 struct and HDF5 enum respectively.
+If the HDF5 community continues to coalese around these *de facto* data type implementations, we may consider implementing them in h5fortran in the future.
+
 In addition to the object-oriented interface, h5fortran provides single-command read / write procedures.
-Array slicing on read allows reading a portion of a large disk variable into memory.
+Array slicing allows reading or writing a portion of a large disk variable to/from RAM.
 If the user has HDF5 with SZIP or ZLIB compression enabled, h5fortran is capable of reading and writing compressed variables, which can save over 50% disk space depending on the data lossless compressibility.
 Data shuffling and Fletcher32 checksums provide better compression and a check of file integrity respectively.
 h5fortran was designed for use by individual users on their laptops or embedded devices, as well as for use in HPC applications where parallel tasks need read only part of a milestone or shared HDF5 variable.
 
-h5fortran was originally developed for the GEMINI [@gemini3d] [@zettergren] ionospheric model, funded in part by NASA ROSES \#80NSSC20K0176.
+h5fortran was originally developed for the GEMINI [@gemini3d] [@zettergren] ionospheric model, funded in part by NASA ROSES \#80NSSC20K0176 and DARPA Cooperative Agreement HR00112120003.
+This work is approved for public release; distribution is unlimited.
+The information does not necessarily reflect the position or the policy of the Government.
 
 # Statement of need
 
