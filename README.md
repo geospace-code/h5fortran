@@ -12,9 +12,9 @@ Reading or writing {real64,real32,int32,int64} from scalar to 7d is as simple as
 ```fortran
 use h5fortran
 
-call h5write('foo.h5', '/x', x)
+call h5write('my.h5', '/x', x)
 
-call h5read('bar.h5', '/y', y)
+call h5read('my.h5', '/y', y)
 ```
 
 For NetCDF4 see [nc4fortran](https://github.com/geospace-code/nc4fortran/).
@@ -92,7 +92,7 @@ To disable this autobuild behavior, use option:
 cmake -B build -Dautobuild=off
 ```
 
-To force building the HDF5 and ZLIB libraries:
+To force building the HDF5 and ZLIB libraries, to gain better performance via optimizing for your system's CPU:
 
 ```sh
 cmake -Dhdf5_external=on
@@ -160,5 +160,5 @@ python3 scripts/build_hdf5.py
 
 The datatypes below are more complex to handle and may see little use due to their downsides.
 
-* complex64/complex128: this is not natively handled in HDF5. There are performance impacts for compound datatypes, thus many choose to just write two datasets, one each for real and imaginary like foo_r and foo_i
+* complex64/complex128: this is not natively handled in HDF5. There are performance impacts for compound datatypes, thus many choose to just write two datasets, one each for real and imaginary like x_r and x_i
 * non-default character kind

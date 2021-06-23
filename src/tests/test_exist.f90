@@ -47,17 +47,14 @@ call h%open(fn)
 if (.not.h%is_open) error stop 'file is open'
 if (.not. h%exist('/x')) error stop 'x exists'
 
-if (h%exist('/foo')) then
-  write(stderr,*) 'variable /foo not exist in ', h%filename
-  error stop
-endif
+if (h%exist('/A')) error stop 'variable /A should not exist in ' // h%filename
 
 call h%close()
 
 if(h%is_open) error stop 'file is closed'
 
 if (.not. h5exist(fn, '/x')) error stop 'x exists'
-if (h5exist(fn, '/foo')) error stop 'foo not exist'
+if (h5exist(fn, '/A')) error stop 'A not exist'
 
 end subroutine test_exist
 
@@ -96,7 +93,7 @@ logical :: e
 type(hdf5_file) :: h
 
 call h%open("scratch.h5", status='scratch')
-call h%write("/foo", 42)
+call h%write("/A", 42)
 call h%close()
 
 inquire(file=h%filename, exist=e)

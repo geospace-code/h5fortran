@@ -167,13 +167,13 @@ Currently, data is written contiguous or compact if not compressed and is only c
 the logical method %exist() checks if a dataset (variable) exists in the opened HDF5 file.
 
 ```fortran
-exists = h5f%exist("/foo")
+exists = h5f%exist("/A")
 ```
 
 A convenience method that checks existence of a dataset without creating the h5 object manually is:
 
 ```fortran
-exists = h5exist("my.h5", "/foo")
+exists = h5exist("my.h5", "/A")
 ```
 
 ## check variable shape, rank/ndims
@@ -186,8 +186,8 @@ call h5f%open('test.h5', status='old',action='r')
 integer :: drank
 integer(hsize_t), allocatable :: dims(:)
 
-drank = h5f%ndims('/foo')
-call h5f%shape('/foo',dims)
+drank = h5f%ndims('/A')
+call h5f%shape('/A',dims)
 
 if (drank /= size(dims)) error stop
 ```
@@ -200,9 +200,9 @@ call h5f%open('test.h5', status='old',action='r')
 integer(hsize_t), allocatable :: dims(:)
 real, allocatable :: A(:,:,:)
 
-call h5f%shape('/foo',dims)
+call h5f%shape('/A',dims)
 allocate(A(dims(1), dims(2), dims(3)))
-call h5f%read('/foo', A)
+call h5f%read('/A', A)
 
 call h5f%close()
 ```
@@ -211,7 +211,7 @@ call h5f%close()
 
 Reading a disk HDF5 array into a variable of matching shape is done with `istart=` and `iend=` arguments, which have 1-D arguments for the start and stop index desired from each dimension.
 
-For example, support HDF5 disk variable "/foo" is shape (10,20,30) and you wish to read just part of this array like:
+For example, support HDF5 disk variable "/A" is shape (10,20,30) and you wish to read just part of this array like:
 
 * dim 1: 5-7
 * dim 2: 1-5
@@ -224,14 +224,14 @@ real, dimension(3,5,7) :: A
 
 call h5f%open('test.h5', status='old',action='r')
 
-call h5f%read('/foo', A, istart=[5, 1, 2], iend=[7, 5, 8])
+call h5f%read('/A', A, istart=[5, 1, 2], iend=[7, 5, 8])
 ```
 
 ## write slice (part of) a disk array
 
 Writing a disk HDF5 array from a variable of matching shape is done with `istart=` and `iend=` arguments, which have 1-D arguments for the start and stop index desired from each dimension.
 
-For example, support HDF5 disk variable "/foo" is shape (10,20,30) and you wish to write a slice from a variable shaped (5,7,1) with start/stop indices:
+For example, support HDF5 disk variable "/A" is shape (10,20,30) and you wish to write a slice from a variable shaped (5,7,1) with start/stop indices:
 
 * dim 1: 3-7
 * dim 2: 4-10
@@ -244,8 +244,8 @@ real, dimension(5,7,1) :: A
 
 call h5f%open('test.h5', status='unknown')
 
-call h5f%create('/foo', H5T_NATIVE_REAL, [5,7,1])
-call h5f%write('/foo', A, istart=[3, 4, 8], iend=[7, 10, 8])
+call h5f%create('/A', H5T_NATIVE_REAL, [5,7,1])
+call h5f%write('/A', A, istart=[3, 4, 8], iend=[7, 10, 8])
 ```
 
 Note the h5f%create() call to open the disk variable.
@@ -256,11 +256,11 @@ This step is also needed with h5py in Python or Matlab HDF5 h5create() before h5
 Assume file handle h5f was already opened, the logical status is inspected:
 
 ```fortran
-is_compact = h5f%is_compact("/foo")
+is_compact = h5f%is_compact("/A")
 
-is_contig = h5f%is_contig('/foo')
+is_contig = h5f%is_contig('/A')
 
-is_chunked = h5f%is_chunked('/foo')
+is_chunked = h5f%is_chunked('/A')
 ```
 
 ## get chunk size
@@ -268,7 +268,7 @@ is_chunked = h5f%is_chunked('/foo')
 if dataset is not chunked, chunk_size == -1
 
 ```sh
-call h5f%chunks('/foo', chunk_size)
+call h5f%chunks('/A', chunk_size)
 ```
 
 ## Create group "scope"

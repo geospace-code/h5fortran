@@ -3,12 +3,12 @@ program read_slice
 
 implicit none (type, external)
 
-type :: foo
+type :: T
 integer :: i44(4,4)
-end type foo
+end type T
 
 integer :: i, bigA(4,4)
-type(foo) :: B
+type(T) :: B
 
 bigA = -1
 

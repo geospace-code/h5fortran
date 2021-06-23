@@ -18,8 +18,8 @@ call h5fcreate_f(filename, H5F_ACC_TRUNC_F, lid, i)
 if (i/=0) error stop 'minimal: could not create file'
 print *, 'minimal: created '//filename
 
-call h5ltmake_dataset_f(lid, "foo", rank(p), shape(p, kind=HSIZE_T), h5kind_to_type(kind(p),H5_INTEGER_KIND), p, i)
-if (i/=0) error stop 'minimal: could not create dataset foo'
+call h5ltmake_dataset_f(lid, "A", rank(p), shape(p, kind=HSIZE_T), h5kind_to_type(kind(p),H5_INTEGER_KIND), p, i)
+if (i/=0) error stop 'minimal: could not create dataset A'
 print *, 'minimal: created variable'
 
 call h5fclose_f(lid, i)
