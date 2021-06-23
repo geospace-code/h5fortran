@@ -154,11 +154,9 @@ Instead of auto-building HDF5 via H5Fortran, one may build and install the HDF5 
 python3 scripts/build_hdf5.py
 ```
 
-### Missing datatypes
+### h5fortran: missing Fortran datatypes
 
-* arrays of rank > 7: this has been stubbed in reader_nd.f90, writer_nd.f90. Only the latest compilers support Fortran 2008 arrays up to rank 15.
-
-The datatypes below are more complex to handle and may see little use due to their downsides.
-
-* complex64/complex128: this is not natively handled in HDF5. There are performance impacts for compound datatypes, thus many choose to just write two datasets, one each for real and imaginary like x_r and x_i
+* arrays of rank > 7: prototyped in reader_nd.f90, writer_nd.f90. Fortran 2008 arrays are up to rank 15, but only recent compilers support.
+* complex64 / complex128: not natively handled in HDF5. There are performance impacts for compound datatypes. Many choose to write two datasets, one each for real and imaginary like `A_real` and `A_imag`
 * non-default character kind
+* logical / boolean: not supported natively by HDF5. h5py implements as [enum](https://docs.h5py.org/en/stable/faq.html#what-datatypes-are-supported).
