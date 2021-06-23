@@ -46,7 +46,7 @@ If the user has HDF5 with SZIP or ZLIB compression enabled, h5fortran is capable
 Data shuffling and Fletcher32 checksums provide better compression and a check of file integrity respectively.
 h5fortran was designed for use by individual users on their laptops or embedded devices, as well as for use in HPC applications where parallel tasks need read only part of a milestone or shared HDF5 variable.
 
-h5fortran was originally developed for the GEMINI [@gemini3d] [@zettergren] ionospheric model, funded in part by NASA ROSES \#80NSSC20K0176 and DARPA Cooperative Agreement HR00112120003.
+h5fortran was originally developed for the GEMINI [@gemini3d; @zettergren] ionospheric model, funded in part by NASA ROSES \#80NSSC20K0176 and DARPA Cooperative Agreement HR00112120003.
 This work is approved for public release; distribution is unlimited.
 The information does not necessarily reflect the position or the policy of the Government.
 
@@ -55,7 +55,7 @@ The information does not necessarily reflect the position or the policy of the G
 Fortran has only raw file input-output (IO) built in to the language.
 To support reproducibility of work done in any programming language and long-term usefulness of the data generated or processed, it is beneficial to use self-describing data file formats like HDF5 [@2011hdf5].
 Many popular languages and libraries used for simulation and data science use the HDF5 [@hdf5] file IO library.
-Most programs and libraries intended for use by practitioners such as modelers and data scientists themselves use an object-oriented HDF5 interface like h5py [@h5py] [@h5pybook].
+Most programs and libraries intended for use by practitioners such as modelers and data scientists themselves use an object-oriented HDF5 interface like h5py [@h5py; @h5pybook].
 
 # Other programs
 
