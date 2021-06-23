@@ -36,7 +36,9 @@ h5fortran has general applicability to projects needing to do any of:
 HDF5 does not have native support for complex numbers or booleans (`logical` Fortran datatype).
 h5fortran does not yet support complex numbers or booleans.
 High-level HDF5 interfaces in other code languages such as h5py have implemented these types using HDF5 struct and HDF5 enum respectively.
-If the HDF5 community continues to coalese around these *de facto* data type implementations, we may consider implementing them in h5fortran in the future.
+If the HDF5 community continues to coalesce around these *de facto* data type implementations, we may consider implementing them in h5fortran in the future.
+h5fortran currently supports the serial HDF5 interface, and does not yet support the parallel MPI-based HDF5 interface.
+h5fortran does not yet support extensible datasets, although we would be open to investigating adding this support upon community request.
 
 In addition to the object-oriented interface, h5fortran provides single-command read / write procedures.
 Array slicing allows reading or writing a portion of a large disk variable to/from RAM.
