@@ -18,19 +18,21 @@ subroutine testGroup()
 
 type(hdf5_file) :: h5f
 
-call h5f%initialize('test_groups.h5', status='replace')
+call h5f%open('test_groups.h5', status='replace')
 
 call h5f%write_group('/test/')
 
-call h5f%open('/test')
+call h5f%open_group('/test')
 
 call h5f%write('group3/scalar', 1_int32)
 
 call h5f%write('group3/scalar_real', 1._real32)
 
-call h5f%close()
+call h5f%close_group()
 
-call h5f%finalize()
+if(.not. h5f%exist('/test/group3/scalar')) error stop "/test/group3/scalar does not exist: create gorup failed"
+
+call h5f%close()
 
 end subroutine testGroup
 
@@ -39,15 +41,15 @@ subroutine test_writeExistingVariable()
 type(hdf5_file) :: h5f
 character(*), parameter :: fn = 'overwrite.h5'
 
-call h5f%initialize(fn, status='replace')
+call h5f%open(fn, status='replace')
 call h5f%write('/scalar_int', 42_int32)
 call h5f%write('/int1d', [42_int32, 1_int32])
-call h5f%finalize()
+call h5f%close()
 
-call h5f%initialize(fn, status='old',action='rw')
+call h5f%open(fn, status='old',action='rw')
 call h5f%write('/scalar_int', 100_int32)
 call h5f%write('/int1d', [100_int32, 10_int32])
-call h5f%finalize()
+call h5f%close()
 
 end subroutine test_writeExistingVariable
 

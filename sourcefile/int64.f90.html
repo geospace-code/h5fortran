@@ -5,12 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
    
-   <meta name="description" content="Object-oriented Fortran 2008 HDF5 interface">
+   <meta name="description" content="Object-oriented Fortran HDF5 interface">
     
     <meta name="author" content="Michael Hirsch, Ph.D." >
     <link rel="icon" href="../favicon.png">
 
-    <title>int64.f90 &ndash; Object-oriented Fortran 2008 HDF5 interface</title>
+    <title>int64.f90 &ndash; Object-oriented Fortran HDF5 interface</title>
 
     <link href="../css/bootstrap.min.css" rel="stylesheet">
     <link href="../css/pygments.css" rel="stylesheet">
@@ -44,7 +44,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="../index.html">Object-oriented Fortran 2008 HDF5 interface </a>
+          <a class="navbar-brand" href="../index.html">Object-oriented Fortran HDF5 interface </a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
@@ -130,7 +130,7 @@
      <li><i class="fa fa-list-ol"></i>
        <a data-toggle="tooltip"
     data-placement="bottom" data-html="true"
-    title=" 1.7% of total for source files.">53 statements</a>
+    title=" 1.5% of total for source files.">53 statements</a>
      </li> 
      
      
@@ -265,112 +265,112 @@
 
     <section>
       <h2><span class="anchor" id="src"></span>Source Code</h2>
-    <div class="hl"><pre><span></span><a name="ln-1"></a><span class="k">program </span><span class="n">main_int64</span>
-<a name="ln-2"></a><span class="c">!! hdf5 fortran interface can also read/write int64, but it&#39;s not in the h5lt interface</span>
-<a name="ln-3"></a><span class="k">use </span><span class="n">hdf5</span>
-<a name="ln-4"></a><span class="k">use</span><span class="p">,</span> <span class="k">intrinsic</span> <span class="kd">::</span> <span class="n">iso_fortran_env</span><span class="p">,</span> <span class="k">only</span> <span class="p">:</span> <span class="n">int64</span>
-<a name="ln-5"></a>
-<a name="ln-6"></a><span class="k">implicit none</span> <span class="p">(</span><span class="k">type</span><span class="p">,</span> <span class="k">external</span><span class="p">)</span>
-<a name="ln-7"></a>
-<a name="ln-8"></a><span class="kt">integer</span> <span class="kd">::</span> <span class="n">ierr</span>
-<a name="ln-9"></a>
-<a name="ln-10"></a><span class="kt">character</span><span class="p">(:),</span> <span class="k">allocatable</span> <span class="kd">::</span> <span class="n">filename</span>
-<a name="ln-11"></a>
-<a name="ln-12"></a><span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;int64.h5&quot;</span>
-<a name="ln-13"></a>
-<a name="ln-14"></a><span class="c">!&gt; initialize fortran interface and file</span>
-<a name="ln-15"></a><span class="k">call </span><span class="n">h5open_f</span><span class="p">(</span><span class="n">ierr</span><span class="p">)</span>
-<a name="ln-16"></a>
-<a name="ln-17"></a><span class="k">call </span><span class="n">write_data</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-<a name="ln-18"></a>
-<a name="ln-19"></a><span class="k">call </span><span class="n">verify_data</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-<a name="ln-20"></a>
-<a name="ln-21"></a><span class="k">call </span><span class="n">h5close_f</span><span class="p">(</span><span class="n">ierr</span><span class="p">)</span>
-<a name="ln-22"></a>
-<a name="ln-23"></a>
-<a name="ln-24"></a><span class="k">contains</span>
-<a name="ln-25"></a>
-<a name="ln-26"></a>
-<a name="ln-27"></a><span class="k">subroutine </span><span class="n">verify_data</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-<a name="ln-28"></a>
-<a name="ln-29"></a><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span> <span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span> <span class="kd">::</span> <span class="n">filename</span>
-<a name="ln-30"></a>
-<a name="ln-31"></a><span class="kt">integer</span><span class="p">(</span><span class="n">hid_t</span><span class="p">)</span> <span class="kd">::</span> <span class="n">fid</span>
-<a name="ln-32"></a><span class="kt">integer</span> <span class="kd">::</span> <span class="n">ierr</span>
-<a name="ln-33"></a>
-<a name="ln-34"></a><span class="k">call </span><span class="n">h5fopen_f</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">h5f_acc_rdonly_f</span><span class="p">,</span> <span class="n">fid</span><span class="p">,</span> <span class="n">ierr</span><span class="p">)</span>
-<a name="ln-35"></a>
-<a name="ln-36"></a><span class="k">if</span><span class="p">(</span><span class="n">read_int64</span><span class="p">(</span><span class="n">fid</span><span class="p">,</span> <span class="s2">&quot;/example&quot;</span><span class="p">)</span> <span class="o">/=</span> <span class="mi">12345</span><span class="p">)</span> <span class="k">error stop</span> <span class="s2">&quot;example not match&quot;</span>
-<a name="ln-37"></a><span class="k">if</span><span class="p">(</span><span class="n">read_int64</span><span class="p">(</span><span class="n">fid</span><span class="p">,</span> <span class="s2">&quot;/big&quot;</span><span class="p">)</span> <span class="o">/=</span> <span class="nb">huge</span><span class="p">(</span><span class="mi">0_int64</span><span class="p">))</span> <span class="k">error stop</span> <span class="s2">&quot;huge not match&quot;</span>
-<a name="ln-38"></a>
-<a name="ln-39"></a><span class="k">call </span><span class="n">h5fclose_f</span><span class="p">(</span><span class="n">fid</span><span class="p">,</span> <span class="n">ierr</span><span class="p">)</span>
-<a name="ln-40"></a>
-<a name="ln-41"></a><span class="k">end subroutine </span><span class="n">verify_data</span>
-<a name="ln-42"></a>
-<a name="ln-43"></a>
-<a name="ln-44"></a><span class="kt">integer</span><span class="p">(</span><span class="n">int64</span><span class="p">)</span> <span class="k">function </span><span class="n">read_int64</span><span class="p">(</span><span class="n">fid</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="k">result</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-<a name="ln-45"></a>
-<a name="ln-46"></a><span class="kt">integer</span><span class="p">(</span><span class="n">hid_t</span><span class="p">),</span> <span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span> <span class="kd">::</span> <span class="n">fid</span>
-<a name="ln-47"></a><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span> <span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span> <span class="kd">::</span> <span class="n">name</span>
-<a name="ln-48"></a>
-<a name="ln-49"></a><span class="kt">integer</span><span class="p">(</span><span class="n">hid_t</span><span class="p">)</span> <span class="kd">::</span>  <span class="n">dsid</span>
-<a name="ln-50"></a>
-<a name="ln-51"></a><span class="k">call </span><span class="n">h5dopen_f</span><span class="p">(</span><span class="n">fid</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">dsid</span><span class="p">,</span> <span class="n">ierr</span><span class="p">)</span>
-<a name="ln-52"></a><span class="k">if</span> <span class="p">(</span><span class="n">ierr</span><span class="o">/=</span><span class="mi">0</span><span class="p">)</span> <span class="k">error stop</span> <span class="s2">&quot;dataset not opened: &quot;</span> <span class="o">//</span> <span class="n">name</span> <span class="o">//</span> <span class="s2">&quot; in file: &quot;</span> <span class="o">//</span> <span class="n">filename</span>
-<a name="ln-53"></a>
-<a name="ln-54"></a><span class="k">CALL </span><span class="n">h5dread_f</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">h5kind_to_type</span><span class="p">(</span><span class="n">int64</span><span class="p">,</span> <span class="n">h5_integer_kind</span><span class="p">),</span> <span class="n">i</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="nb">shape</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">hsize_t</span><span class="p">),</span> <span class="n">ierr</span><span class="p">)</span>
-<a name="ln-55"></a><span class="k">if</span> <span class="p">(</span><span class="n">ierr</span><span class="o">/=</span><span class="mi">0</span><span class="p">)</span> <span class="k">error stop</span> <span class="s2">&quot;dataset not read: &quot;</span> <span class="o">//</span> <span class="n">name</span> <span class="o">//</span> <span class="s2">&quot; in file: &quot;</span> <span class="o">//</span> <span class="n">filename</span>
-<a name="ln-56"></a>
-<a name="ln-57"></a><span class="k">call </span><span class="n">h5dclose_f</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">ierr</span><span class="p">)</span>
-<a name="ln-58"></a>
-<a name="ln-59"></a><span class="k">end function </span><span class="n">read_int64</span>
-<a name="ln-60"></a>
-<a name="ln-61"></a>
-<a name="ln-62"></a>
-<a name="ln-63"></a><span class="k">subroutine </span><span class="n">write_data</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-<a name="ln-64"></a>
-<a name="ln-65"></a><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span> <span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span> <span class="kd">::</span> <span class="n">filename</span>
-<a name="ln-66"></a>
-<a name="ln-67"></a><span class="kt">integer</span><span class="p">(</span><span class="n">hid_t</span><span class="p">)</span> <span class="kd">::</span> <span class="n">fid</span>
-<a name="ln-68"></a><span class="kt">integer</span> <span class="kd">::</span> <span class="n">ierr</span>
-<a name="ln-69"></a>
-<a name="ln-70"></a><span class="k">call </span><span class="n">h5fcreate_f</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">h5f_acc_trunc_f</span><span class="p">,</span> <span class="n">fid</span><span class="p">,</span> <span class="n">ierr</span><span class="p">)</span>
-<a name="ln-71"></a>
-<a name="ln-72"></a><span class="k">call </span><span class="n">write_int64</span><span class="p">(</span><span class="n">fid</span><span class="p">,</span> <span class="mi">12345_int64</span><span class="p">,</span> <span class="s2">&quot;example&quot;</span><span class="p">)</span>
-<a name="ln-73"></a><span class="k">call </span><span class="n">write_int64</span><span class="p">(</span><span class="n">fid</span><span class="p">,</span> <span class="nb">huge</span><span class="p">(</span><span class="mi">0_int64</span><span class="p">),</span> <span class="s2">&quot;big&quot;</span><span class="p">)</span> <span class="c">!&lt; 9223372036854775807</span>
-<a name="ln-74"></a>
-<a name="ln-75"></a><span class="k">call </span><span class="n">h5fclose_f</span><span class="p">(</span><span class="n">fid</span><span class="p">,</span> <span class="n">ierr</span><span class="p">)</span>
-<a name="ln-76"></a>
-<a name="ln-77"></a>
-<a name="ln-78"></a><span class="k">end subroutine </span><span class="n">write_data</span>
-<a name="ln-79"></a>
-<a name="ln-80"></a>
-<a name="ln-81"></a><span class="k">subroutine </span><span class="n">write_int64</span><span class="p">(</span><span class="n">fid</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
-<a name="ln-82"></a>
-<a name="ln-83"></a><span class="kt">integer</span><span class="p">(</span><span class="n">hid_t</span><span class="p">)</span> <span class="kd">::</span> <span class="n">fid</span>
-<a name="ln-84"></a><span class="kt">integer</span><span class="p">(</span><span class="n">int64</span><span class="p">),</span> <span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span> <span class="kd">::</span> <span class="n">i</span>
-<a name="ln-85"></a><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span> <span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span> <span class="kd">::</span> <span class="n">name</span>
-<a name="ln-86"></a>
-<a name="ln-87"></a><span class="kt">integer</span><span class="p">(</span><span class="n">hid_t</span><span class="p">)</span> <span class="kd">::</span> <span class="n">h5_kind_int64</span><span class="p">,</span> <span class="n">sid</span><span class="p">,</span> <span class="n">dsid</span>
-<a name="ln-88"></a>
-<a name="ln-89"></a><span class="n">h5_kind_int64</span> <span class="o">=</span> <span class="n">h5kind_to_type</span><span class="p">(</span><span class="n">int64</span><span class="p">,</span> <span class="n">h5_integer_kind</span><span class="p">)</span>
-<a name="ln-90"></a>
-<a name="ln-91"></a><span class="c">!&gt; dataspace</span>
-<a name="ln-92"></a><span class="k">call </span><span class="n">h5screate_f</span><span class="p">(</span><span class="n">h5s_scalar_f</span><span class="p">,</span> <span class="n">sid</span><span class="p">,</span> <span class="n">ierr</span><span class="p">)</span>
-<a name="ln-93"></a>
-<a name="ln-94"></a><span class="c">!&gt; create the dataset.</span>
-<a name="ln-95"></a><span class="k">call </span><span class="n">h5dcreate_f</span><span class="p">(</span><span class="n">fid</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">h5_kind_int64</span><span class="p">,</span> <span class="n">sid</span><span class="p">,</span> <span class="n">dsid</span><span class="p">,</span> <span class="n">ierr</span><span class="p">)</span>
-<a name="ln-96"></a>
-<a name="ln-97"></a><span class="c">!&gt; write data</span>
-<a name="ln-98"></a><span class="k">call </span><span class="n">h5dwrite_f</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">h5_kind_int64</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="nb">shape</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">hsize_t</span><span class="p">),</span> <span class="n">ierr</span><span class="p">)</span>
-<a name="ln-99"></a>
-<a name="ln-100"></a><span class="c">!&gt; close handles</span>
-<a name="ln-101"></a><span class="k">call </span><span class="n">h5dclose_f</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">ierr</span><span class="p">)</span>
-<a name="ln-102"></a><span class="k">call </span><span class="n">h5sclose_f</span><span class="p">(</span><span class="n">sid</span><span class="p">,</span> <span class="n">ierr</span><span class="p">)</span>
-<a name="ln-103"></a>
-<a name="ln-104"></a><span class="k">end subroutine </span><span class="n">write_int64</span>
-<a name="ln-105"></a>
-<a name="ln-106"></a><span class="k">end program</span>
+    <div class="hl"><pre><span></span><a id="ln-1" name="ln-1"></a><span class="k">program </span><span class="n">main_int64</span>
+<a id="ln-2" name="ln-2"></a><span class="c">!! hdf5 fortran interface can also read/write int64, but it&#39;s not in the h5lt interface</span>
+<a id="ln-3" name="ln-3"></a><span class="k">use </span><span class="n">hdf5</span>
+<a id="ln-4" name="ln-4"></a><span class="k">use</span><span class="p">,</span> <span class="k">intrinsic</span> <span class="kd">::</span> <span class="n">iso_fortran_env</span><span class="p">,</span> <span class="k">only</span> <span class="p">:</span> <span class="n">int64</span>
+<a id="ln-5" name="ln-5"></a>
+<a id="ln-6" name="ln-6"></a><span class="k">implicit none</span> <span class="p">(</span><span class="k">type</span><span class="p">,</span> <span class="k">external</span><span class="p">)</span>
+<a id="ln-7" name="ln-7"></a>
+<a id="ln-8" name="ln-8"></a><span class="kt">integer</span> <span class="kd">::</span> <span class="n">ierr</span>
+<a id="ln-9" name="ln-9"></a>
+<a id="ln-10" name="ln-10"></a><span class="kt">character</span><span class="p">(:),</span> <span class="k">allocatable</span> <span class="kd">::</span> <span class="n">filename</span>
+<a id="ln-11" name="ln-11"></a>
+<a id="ln-12" name="ln-12"></a><span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;int64.h5&quot;</span>
+<a id="ln-13" name="ln-13"></a>
+<a id="ln-14" name="ln-14"></a><span class="c">!&gt; initialize fortran interface and file</span>
+<a id="ln-15" name="ln-15"></a><span class="k">call </span><span class="n">h5open_f</span><span class="p">(</span><span class="n">ierr</span><span class="p">)</span>
+<a id="ln-16" name="ln-16"></a>
+<a id="ln-17" name="ln-17"></a><span class="k">call </span><span class="n">write_data</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+<a id="ln-18" name="ln-18"></a>
+<a id="ln-19" name="ln-19"></a><span class="k">call </span><span class="n">verify_data</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+<a id="ln-20" name="ln-20"></a>
+<a id="ln-21" name="ln-21"></a><span class="k">call </span><span class="n">h5close_f</span><span class="p">(</span><span class="n">ierr</span><span class="p">)</span>
+<a id="ln-22" name="ln-22"></a>
+<a id="ln-23" name="ln-23"></a>
+<a id="ln-24" name="ln-24"></a><span class="k">contains</span>
+<a id="ln-25" name="ln-25"></a>
+<a id="ln-26" name="ln-26"></a>
+<a id="ln-27" name="ln-27"></a><span class="k">subroutine </span><span class="n">verify_data</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+<a id="ln-28" name="ln-28"></a>
+<a id="ln-29" name="ln-29"></a><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span> <span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span> <span class="kd">::</span> <span class="n">filename</span>
+<a id="ln-30" name="ln-30"></a>
+<a id="ln-31" name="ln-31"></a><span class="kt">integer</span><span class="p">(</span><span class="n">hid_t</span><span class="p">)</span> <span class="kd">::</span> <span class="n">fid</span>
+<a id="ln-32" name="ln-32"></a><span class="kt">integer</span> <span class="kd">::</span> <span class="n">ierr</span>
+<a id="ln-33" name="ln-33"></a>
+<a id="ln-34" name="ln-34"></a><span class="k">call </span><span class="n">h5fopen_f</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">h5f_acc_rdonly_f</span><span class="p">,</span> <span class="n">fid</span><span class="p">,</span> <span class="n">ierr</span><span class="p">)</span>
+<a id="ln-35" name="ln-35"></a>
+<a id="ln-36" name="ln-36"></a><span class="k">if</span><span class="p">(</span><span class="n">read_int64</span><span class="p">(</span><span class="n">fid</span><span class="p">,</span> <span class="s2">&quot;/example&quot;</span><span class="p">)</span> <span class="o">/=</span> <span class="mi">12345</span><span class="p">)</span> <span class="k">error stop</span> <span class="s2">&quot;example not match&quot;</span>
+<a id="ln-37" name="ln-37"></a><span class="k">if</span><span class="p">(</span><span class="n">read_int64</span><span class="p">(</span><span class="n">fid</span><span class="p">,</span> <span class="s2">&quot;/big&quot;</span><span class="p">)</span> <span class="o">/=</span> <span class="nb">huge</span><span class="p">(</span><span class="mi">0_int64</span><span class="p">))</span> <span class="k">error stop</span> <span class="s2">&quot;huge not match&quot;</span>
+<a id="ln-38" name="ln-38"></a>
+<a id="ln-39" name="ln-39"></a><span class="k">call </span><span class="n">h5fclose_f</span><span class="p">(</span><span class="n">fid</span><span class="p">,</span> <span class="n">ierr</span><span class="p">)</span>
+<a id="ln-40" name="ln-40"></a>
+<a id="ln-41" name="ln-41"></a><span class="k">end subroutine </span><span class="n">verify_data</span>
+<a id="ln-42" name="ln-42"></a>
+<a id="ln-43" name="ln-43"></a>
+<a id="ln-44" name="ln-44"></a><span class="kt">integer</span><span class="p">(</span><span class="n">int64</span><span class="p">)</span> <span class="k">function </span><span class="n">read_int64</span><span class="p">(</span><span class="n">fid</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="k">result</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+<a id="ln-45" name="ln-45"></a>
+<a id="ln-46" name="ln-46"></a><span class="kt">integer</span><span class="p">(</span><span class="n">hid_t</span><span class="p">),</span> <span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span> <span class="kd">::</span> <span class="n">fid</span>
+<a id="ln-47" name="ln-47"></a><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span> <span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span> <span class="kd">::</span> <span class="n">name</span>
+<a id="ln-48" name="ln-48"></a>
+<a id="ln-49" name="ln-49"></a><span class="kt">integer</span><span class="p">(</span><span class="n">hid_t</span><span class="p">)</span> <span class="kd">::</span>  <span class="n">dsid</span>
+<a id="ln-50" name="ln-50"></a>
+<a id="ln-51" name="ln-51"></a><span class="k">call </span><span class="n">h5dopen_f</span><span class="p">(</span><span class="n">fid</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">dsid</span><span class="p">,</span> <span class="n">ierr</span><span class="p">)</span>
+<a id="ln-52" name="ln-52"></a><span class="k">if</span> <span class="p">(</span><span class="n">ierr</span><span class="o">/=</span><span class="mi">0</span><span class="p">)</span> <span class="k">error stop</span> <span class="s2">&quot;dataset not opened: &quot;</span> <span class="o">//</span> <span class="n">name</span> <span class="o">//</span> <span class="s2">&quot; in file: &quot;</span> <span class="o">//</span> <span class="n">filename</span>
+<a id="ln-53" name="ln-53"></a>
+<a id="ln-54" name="ln-54"></a><span class="k">CALL </span><span class="n">h5dread_f</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">h5kind_to_type</span><span class="p">(</span><span class="n">int64</span><span class="p">,</span> <span class="n">h5_integer_kind</span><span class="p">),</span> <span class="n">i</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="nb">shape</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">hsize_t</span><span class="p">),</span> <span class="n">ierr</span><span class="p">)</span>
+<a id="ln-55" name="ln-55"></a><span class="k">if</span> <span class="p">(</span><span class="n">ierr</span><span class="o">/=</span><span class="mi">0</span><span class="p">)</span> <span class="k">error stop</span> <span class="s2">&quot;dataset not read: &quot;</span> <span class="o">//</span> <span class="n">name</span> <span class="o">//</span> <span class="s2">&quot; in file: &quot;</span> <span class="o">//</span> <span class="n">filename</span>
+<a id="ln-56" name="ln-56"></a>
+<a id="ln-57" name="ln-57"></a><span class="k">call </span><span class="n">h5dclose_f</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">ierr</span><span class="p">)</span>
+<a id="ln-58" name="ln-58"></a>
+<a id="ln-59" name="ln-59"></a><span class="k">end function </span><span class="n">read_int64</span>
+<a id="ln-60" name="ln-60"></a>
+<a id="ln-61" name="ln-61"></a>
+<a id="ln-62" name="ln-62"></a>
+<a id="ln-63" name="ln-63"></a><span class="k">subroutine </span><span class="n">write_data</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+<a id="ln-64" name="ln-64"></a>
+<a id="ln-65" name="ln-65"></a><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span> <span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span> <span class="kd">::</span> <span class="n">filename</span>
+<a id="ln-66" name="ln-66"></a>
+<a id="ln-67" name="ln-67"></a><span class="kt">integer</span><span class="p">(</span><span class="n">hid_t</span><span class="p">)</span> <span class="kd">::</span> <span class="n">fid</span>
+<a id="ln-68" name="ln-68"></a><span class="kt">integer</span> <span class="kd">::</span> <span class="n">ierr</span>
+<a id="ln-69" name="ln-69"></a>
+<a id="ln-70" name="ln-70"></a><span class="k">call </span><span class="n">h5fcreate_f</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">h5f_acc_trunc_f</span><span class="p">,</span> <span class="n">fid</span><span class="p">,</span> <span class="n">ierr</span><span class="p">)</span>
+<a id="ln-71" name="ln-71"></a>
+<a id="ln-72" name="ln-72"></a><span class="k">call </span><span class="n">write_int64</span><span class="p">(</span><span class="n">fid</span><span class="p">,</span> <span class="mi">12345_int64</span><span class="p">,</span> <span class="s2">&quot;example&quot;</span><span class="p">)</span>
+<a id="ln-73" name="ln-73"></a><span class="k">call </span><span class="n">write_int64</span><span class="p">(</span><span class="n">fid</span><span class="p">,</span> <span class="nb">huge</span><span class="p">(</span><span class="mi">0_int64</span><span class="p">),</span> <span class="s2">&quot;big&quot;</span><span class="p">)</span> <span class="c">!&lt; 9223372036854775807</span>
+<a id="ln-74" name="ln-74"></a>
+<a id="ln-75" name="ln-75"></a><span class="k">call </span><span class="n">h5fclose_f</span><span class="p">(</span><span class="n">fid</span><span class="p">,</span> <span class="n">ierr</span><span class="p">)</span>
+<a id="ln-76" name="ln-76"></a>
+<a id="ln-77" name="ln-77"></a>
+<a id="ln-78" name="ln-78"></a><span class="k">end subroutine </span><span class="n">write_data</span>
+<a id="ln-79" name="ln-79"></a>
+<a id="ln-80" name="ln-80"></a>
+<a id="ln-81" name="ln-81"></a><span class="k">subroutine </span><span class="n">write_int64</span><span class="p">(</span><span class="n">fid</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+<a id="ln-82" name="ln-82"></a>
+<a id="ln-83" name="ln-83"></a><span class="kt">integer</span><span class="p">(</span><span class="n">hid_t</span><span class="p">)</span> <span class="kd">::</span> <span class="n">fid</span>
+<a id="ln-84" name="ln-84"></a><span class="kt">integer</span><span class="p">(</span><span class="n">int64</span><span class="p">),</span> <span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span> <span class="kd">::</span> <span class="n">i</span>
+<a id="ln-85" name="ln-85"></a><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span> <span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span> <span class="kd">::</span> <span class="n">name</span>
+<a id="ln-86" name="ln-86"></a>
+<a id="ln-87" name="ln-87"></a><span class="kt">integer</span><span class="p">(</span><span class="n">hid_t</span><span class="p">)</span> <span class="kd">::</span> <span class="n">h5_kind_int64</span><span class="p">,</span> <span class="n">sid</span><span class="p">,</span> <span class="n">dsid</span>
+<a id="ln-88" name="ln-88"></a>
+<a id="ln-89" name="ln-89"></a><span class="n">h5_kind_int64</span> <span class="o">=</span> <span class="n">h5kind_to_type</span><span class="p">(</span><span class="n">int64</span><span class="p">,</span> <span class="n">h5_integer_kind</span><span class="p">)</span>
+<a id="ln-90" name="ln-90"></a>
+<a id="ln-91" name="ln-91"></a><span class="c">!&gt; dataspace</span>
+<a id="ln-92" name="ln-92"></a><span class="k">call </span><span class="n">h5screate_f</span><span class="p">(</span><span class="n">h5s_scalar_f</span><span class="p">,</span> <span class="n">sid</span><span class="p">,</span> <span class="n">ierr</span><span class="p">)</span>
+<a id="ln-93" name="ln-93"></a>
+<a id="ln-94" name="ln-94"></a><span class="c">!&gt; create the dataset.</span>
+<a id="ln-95" name="ln-95"></a><span class="k">call </span><span class="n">h5dcreate_f</span><span class="p">(</span><span class="n">fid</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">h5_kind_int64</span><span class="p">,</span> <span class="n">sid</span><span class="p">,</span> <span class="n">dsid</span><span class="p">,</span> <span class="n">ierr</span><span class="p">)</span>
+<a id="ln-96" name="ln-96"></a>
+<a id="ln-97" name="ln-97"></a><span class="c">!&gt; write data</span>
+<a id="ln-98" name="ln-98"></a><span class="k">call </span><span class="n">h5dwrite_f</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">h5_kind_int64</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="nb">shape</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">hsize_t</span><span class="p">),</span> <span class="n">ierr</span><span class="p">)</span>
+<a id="ln-99" name="ln-99"></a>
+<a id="ln-100" name="ln-100"></a><span class="c">!&gt; close handles</span>
+<a id="ln-101" name="ln-101"></a><span class="k">call </span><span class="n">h5dclose_f</span><span class="p">(</span><span class="n">dsid</span><span class="p">,</span> <span class="n">ierr</span><span class="p">)</span>
+<a id="ln-102" name="ln-102"></a><span class="k">call </span><span class="n">h5sclose_f</span><span class="p">(</span><span class="n">sid</span><span class="p">,</span> <span class="n">ierr</span><span class="p">)</span>
+<a id="ln-103" name="ln-103"></a>
+<a id="ln-104" name="ln-104"></a><span class="k">end subroutine </span><span class="n">write_int64</span>
+<a id="ln-105" name="ln-105"></a>
+<a id="ln-106" name="ln-106"></a><span class="k">end program</span>
 </pre></div>
 
     </section>
@@ -392,7 +392,7 @@
             
           </p>
         </div>
-        <div class="col-xs-12 col-md-4 col-md-pull-4"><p class="text-center"> Object-oriented Fortran 2008 HDF5 interface was developed by Michael Hirsch, Ph.D.</p></div>
+        <div class="col-xs-12 col-md-4 col-md-pull-4"><p class="text-center"> Object-oriented Fortran HDF5 interface was developed by Michael Hirsch, Ph.D.</p></div>
       </div>
       <br>
       </div> <!-- /container -->    

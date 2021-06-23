@@ -5,12 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
    
-   <meta name="description" content="Object-oriented Fortran 2008 HDF5 interface">
+   <meta name="description" content="Object-oriented Fortran HDF5 interface">
     
     <meta name="author" content="Michael Hirsch, Ph.D." >
     <link rel="icon" href="../favicon.png">
 
-    <title>test_minimal.f90 &ndash; Object-oriented Fortran 2008 HDF5 interface</title>
+    <title>test_minimal.f90 &ndash; Object-oriented Fortran HDF5 interface</title>
 
     <link href="../css/bootstrap.min.css" rel="stylesheet">
     <link href="../css/pygments.css" rel="stylesheet">
@@ -44,7 +44,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="../index.html">Object-oriented Fortran 2008 HDF5 interface </a>
+          <a class="navbar-brand" href="../index.html">Object-oriented Fortran HDF5 interface </a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
@@ -130,7 +130,7 @@
      <li><i class="fa fa-list-ol"></i>
        <a data-toggle="tooltip"
     data-placement="bottom" data-html="true"
-    title=" 0.8% of total for source files.">24 statements</a>
+    title=" 0.7% of total for source files.">24 statements</a>
      </li> 
      
      
@@ -265,42 +265,42 @@
 
     <section>
       <h2><span class="anchor" id="src"></span>Source Code</h2>
-    <div class="hl"><pre><span></span><a name="ln-1"></a><span class="k">program </span><span class="n">test_minimal</span>
-<a name="ln-2"></a>
-<a name="ln-3"></a><span class="k">use </span><span class="n">hdf5</span><span class="p">,</span> <span class="k">only</span> <span class="p">:</span> <span class="n">HID_T</span><span class="p">,</span> <span class="n">HSIZE_T</span><span class="p">,</span> <span class="n">H5_INTEGER_KIND</span><span class="p">,</span> <span class="n">h5kind_to_type</span><span class="p">,</span> <span class="n">h5open_f</span><span class="p">,</span> <span class="n">h5close_f</span><span class="p">,</span> <span class="n">h5fclose_f</span><span class="p">,</span> <span class="n">h5fcreate_f</span><span class="p">,</span> <span class="n">H5F_ACC_TRUNC_F</span>
-<a name="ln-4"></a><span class="k">use </span><span class="n">h5lt</span><span class="p">,</span> <span class="k">only</span> <span class="p">:</span> <span class="n">h5ltmake_dataset_f</span>
-<a name="ln-5"></a>
-<a name="ln-6"></a><span class="k">implicit none</span> <span class="p">(</span><span class="k">type</span><span class="p">,</span> <span class="k">external</span><span class="p">)</span>
-<a name="ln-7"></a>
-<a name="ln-8"></a><span class="kt">integer</span> <span class="kd">::</span> <span class="n">i</span><span class="p">,</span> <span class="n">p</span>
-<a name="ln-9"></a><span class="kt">integer</span><span class="p">(</span><span class="n">HID_T</span><span class="p">)</span> <span class="kd">::</span> <span class="n">lid</span>
-<a name="ln-10"></a><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span> <span class="k">parameter</span> <span class="kd">::</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;test_minimal.h5&#39;</span>
-<a name="ln-11"></a>
-<a name="ln-12"></a><span class="n">p</span> <span class="o">=</span> <span class="mi">42</span>
-<a name="ln-13"></a>
-<a name="ln-14"></a><span class="k">call </span><span class="n">h5open_f</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-<a name="ln-15"></a><span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">/=</span> <span class="mi">0</span><span class="p">)</span> <span class="k">error stop</span> <span class="s1">&#39;minimal: could not open hdf5 library&#39;</span>
-<a name="ln-16"></a>
-<a name="ln-17"></a><span class="k">call </span><span class="n">h5fcreate_f</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">H5F_ACC_TRUNC_F</span><span class="p">,</span> <span class="n">lid</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
-<a name="ln-18"></a><span class="k">if</span> <span class="p">(</span><span class="n">i</span><span class="o">/=</span><span class="mi">0</span><span class="p">)</span> <span class="k">error stop</span> <span class="s1">&#39;minimal: could not create file&#39;</span>
-<a name="ln-19"></a><span class="k">print</span> <span class="o">*</span><span class="p">,</span> <span class="s1">&#39;minimal: created &#39;</span><span class="o">//</span><span class="n">filename</span>
-<a name="ln-20"></a>
-<a name="ln-21"></a><span class="k">call </span><span class="n">h5ltmake_dataset_f</span><span class="p">(</span><span class="n">lid</span><span class="p">,</span> <span class="s2">&quot;foo&quot;</span><span class="p">,</span> <span class="n">rank</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="nb">shape</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="nb">kind</span><span class="o">=</span><span class="n">HSIZE_T</span><span class="p">),</span> <span class="n">h5kind_to_type</span><span class="p">(</span><span class="nb">kind</span><span class="p">(</span><span class="n">p</span><span class="p">),</span><span class="n">H5_INTEGER_KIND</span><span class="p">),</span> <span class="n">p</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
-<a name="ln-22"></a><span class="k">if</span> <span class="p">(</span><span class="n">i</span><span class="o">/=</span><span class="mi">0</span><span class="p">)</span> <span class="k">error stop</span> <span class="s1">&#39;minimal: could not create dataset foo&#39;</span>
-<a name="ln-23"></a><span class="k">print</span> <span class="o">*</span><span class="p">,</span> <span class="s1">&#39;minimal: created variable&#39;</span>
-<a name="ln-24"></a>
-<a name="ln-25"></a><span class="k">call </span><span class="n">h5fclose_f</span><span class="p">(</span><span class="n">lid</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
-<a name="ln-26"></a><span class="k">if</span> <span class="p">(</span><span class="n">i</span><span class="o">/=</span><span class="mi">0</span><span class="p">)</span> <span class="k">error stop</span> <span class="s1">&#39;minimal: could not close file&#39;</span>
-<a name="ln-27"></a><span class="k">print</span> <span class="o">*</span><span class="p">,</span> <span class="s1">&#39;minimal: closed &#39;</span><span class="o">//</span><span class="n">filename</span>
-<a name="ln-28"></a>
-<a name="ln-29"></a><span class="k">call </span><span class="n">h5close_f</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-<a name="ln-30"></a><span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">/=</span> <span class="mi">0</span><span class="p">)</span> <span class="k">error stop</span> <span class="s1">&#39;could not close hdf5 library&#39;</span>
-<a name="ln-31"></a>
-<a name="ln-32"></a><span class="c">! this is a Fortran-standard way to delete files</span>
-<a name="ln-33"></a><span class="k">open</span><span class="p">(</span><span class="n">newunit</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="k">file</span><span class="o">=</span><span class="n">filename</span><span class="p">)</span>
-<a name="ln-34"></a><span class="k">close</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="s1">&#39;delete&#39;</span><span class="p">)</span>
-<a name="ln-35"></a>
-<a name="ln-36"></a><span class="k">end program</span>
+    <div class="hl"><pre><span></span><a id="ln-1" name="ln-1"></a><span class="k">program </span><span class="n">test_minimal</span>
+<a id="ln-2" name="ln-2"></a>
+<a id="ln-3" name="ln-3"></a><span class="k">use </span><span class="n">hdf5</span><span class="p">,</span> <span class="k">only</span> <span class="p">:</span> <span class="n">HID_T</span><span class="p">,</span> <span class="n">HSIZE_T</span><span class="p">,</span> <span class="n">H5_INTEGER_KIND</span><span class="p">,</span> <span class="n">h5kind_to_type</span><span class="p">,</span> <span class="n">h5open_f</span><span class="p">,</span> <span class="n">h5close_f</span><span class="p">,</span> <span class="n">h5fclose_f</span><span class="p">,</span> <span class="n">h5fcreate_f</span><span class="p">,</span> <span class="n">H5F_ACC_TRUNC_F</span>
+<a id="ln-4" name="ln-4"></a><span class="k">use </span><span class="n">h5lt</span><span class="p">,</span> <span class="k">only</span> <span class="p">:</span> <span class="n">h5ltmake_dataset_f</span>
+<a id="ln-5" name="ln-5"></a>
+<a id="ln-6" name="ln-6"></a><span class="k">implicit none</span> <span class="p">(</span><span class="k">type</span><span class="p">,</span> <span class="k">external</span><span class="p">)</span>
+<a id="ln-7" name="ln-7"></a>
+<a id="ln-8" name="ln-8"></a><span class="kt">integer</span> <span class="kd">::</span> <span class="n">i</span><span class="p">,</span> <span class="n">p</span>
+<a id="ln-9" name="ln-9"></a><span class="kt">integer</span><span class="p">(</span><span class="n">HID_T</span><span class="p">)</span> <span class="kd">::</span> <span class="n">lid</span>
+<a id="ln-10" name="ln-10"></a><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span> <span class="k">parameter</span> <span class="kd">::</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;test_minimal.h5&#39;</span>
+<a id="ln-11" name="ln-11"></a>
+<a id="ln-12" name="ln-12"></a><span class="n">p</span> <span class="o">=</span> <span class="mi">42</span>
+<a id="ln-13" name="ln-13"></a>
+<a id="ln-14" name="ln-14"></a><span class="k">call </span><span class="n">h5open_f</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+<a id="ln-15" name="ln-15"></a><span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">/=</span> <span class="mi">0</span><span class="p">)</span> <span class="k">error stop</span> <span class="s1">&#39;minimal: could not open hdf5 library&#39;</span>
+<a id="ln-16" name="ln-16"></a>
+<a id="ln-17" name="ln-17"></a><span class="k">call </span><span class="n">h5fcreate_f</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">H5F_ACC_TRUNC_F</span><span class="p">,</span> <span class="n">lid</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+<a id="ln-18" name="ln-18"></a><span class="k">if</span> <span class="p">(</span><span class="n">i</span><span class="o">/=</span><span class="mi">0</span><span class="p">)</span> <span class="k">error stop</span> <span class="s1">&#39;minimal: could not create file&#39;</span>
+<a id="ln-19" name="ln-19"></a><span class="k">print</span> <span class="o">*</span><span class="p">,</span> <span class="s1">&#39;minimal: created &#39;</span><span class="o">//</span><span class="n">filename</span>
+<a id="ln-20" name="ln-20"></a>
+<a id="ln-21" name="ln-21"></a><span class="k">call </span><span class="n">h5ltmake_dataset_f</span><span class="p">(</span><span class="n">lid</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="n">rank</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="nb">shape</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="nb">kind</span><span class="o">=</span><span class="n">HSIZE_T</span><span class="p">),</span> <span class="n">h5kind_to_type</span><span class="p">(</span><span class="nb">kind</span><span class="p">(</span><span class="n">p</span><span class="p">),</span><span class="n">H5_INTEGER_KIND</span><span class="p">),</span> <span class="n">p</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+<a id="ln-22" name="ln-22"></a><span class="k">if</span> <span class="p">(</span><span class="n">i</span><span class="o">/=</span><span class="mi">0</span><span class="p">)</span> <span class="k">error stop</span> <span class="s1">&#39;minimal: could not create dataset A&#39;</span>
+<a id="ln-23" name="ln-23"></a><span class="k">print</span> <span class="o">*</span><span class="p">,</span> <span class="s1">&#39;minimal: created variable&#39;</span>
+<a id="ln-24" name="ln-24"></a>
+<a id="ln-25" name="ln-25"></a><span class="k">call </span><span class="n">h5fclose_f</span><span class="p">(</span><span class="n">lid</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+<a id="ln-26" name="ln-26"></a><span class="k">if</span> <span class="p">(</span><span class="n">i</span><span class="o">/=</span><span class="mi">0</span><span class="p">)</span> <span class="k">error stop</span> <span class="s1">&#39;minimal: could not close file&#39;</span>
+<a id="ln-27" name="ln-27"></a><span class="k">print</span> <span class="o">*</span><span class="p">,</span> <span class="s1">&#39;minimal: closed &#39;</span><span class="o">//</span><span class="n">filename</span>
+<a id="ln-28" name="ln-28"></a>
+<a id="ln-29" name="ln-29"></a><span class="k">call </span><span class="n">h5close_f</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+<a id="ln-30" name="ln-30"></a><span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">/=</span> <span class="mi">0</span><span class="p">)</span> <span class="k">error stop</span> <span class="s1">&#39;could not close hdf5 library&#39;</span>
+<a id="ln-31" name="ln-31"></a>
+<a id="ln-32" name="ln-32"></a><span class="c">! this is a Fortran-standard way to delete files</span>
+<a id="ln-33" name="ln-33"></a><span class="k">open</span><span class="p">(</span><span class="n">newunit</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="k">file</span><span class="o">=</span><span class="n">filename</span><span class="p">)</span>
+<a id="ln-34" name="ln-34"></a><span class="k">close</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="s1">&#39;delete&#39;</span><span class="p">)</span>
+<a id="ln-35" name="ln-35"></a>
+<a id="ln-36" name="ln-36"></a><span class="k">end program</span>
 </pre></div>
 
     </section>
@@ -322,7 +322,7 @@
             
           </p>
         </div>
-        <div class="col-xs-12 col-md-4 col-md-pull-4"><p class="text-center"> Object-oriented Fortran 2008 HDF5 interface was developed by Michael Hirsch, Ph.D.</p></div>
+        <div class="col-xs-12 col-md-4 col-md-pull-4"><p class="text-center"> Object-oriented Fortran HDF5 interface was developed by Michael Hirsch, Ph.D.</p></div>
       </div>
       <br>
       </div> <!-- /container -->    

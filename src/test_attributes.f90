@@ -31,7 +31,7 @@ subroutine test_write_attributes(path)
 type(hdf5_file) :: h
 character(*), intent(in) :: path
 
-call h%initialize(path, status='replace')
+call h%open(path, status='replace')
 
 call h%write('/x', 1)
 
@@ -41,7 +41,7 @@ call h%writeattr('/x', 'life', [42])
 call h%writeattr('/x', 'life_float', [42._real32, 84._real32])
 call h%writeattr('/x', 'life_double', [42._real64])
 
-call h%finalize()
+call h%close()
 
 end subroutine test_write_attributes
 
@@ -57,7 +57,7 @@ real(real64) :: attr64(1)
 
 integer :: x
 
-call h%initialize(path, status='old', action='r')
+call h%open(path, status='old', action='r')
 
 call h%read('/x', x)
 if (x/=1) error stop 'readattr: unexpected value'
@@ -74,7 +74,7 @@ if (any(attr32/=[42._real32, 84._real32])) error stop 'readattr: real32'
 call h%readattr('/x', 'life_double', attr64)
 if (attr64(1)/=42._real64) error stop 'readattr: real64'
 
-call h%finalize()
+call h%close()
 
 end subroutine test_read_attributes
 

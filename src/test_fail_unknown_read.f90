@@ -6,8 +6,8 @@ implicit none (type, external)
 type(hdf5_file) :: h
 complex :: x
 
-call h%initialize('bad.h5', status='scratch', verbose=.false.)
+call h%open('bad.h5', status='scratch', verbose=.false.)
 call h%read('/complex', x)
-call h%finalize()
+call h%close()
 
 end program

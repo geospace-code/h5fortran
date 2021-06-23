@@ -8,9 +8,9 @@ module procedure h5exist
 
 type(hdf5_file) :: h
 
-call h%initialize(filename, status='old', action='r')
+call h%open(filename, status='old', action='r')
 h5exist = h%exist(dname)
-call h%finalize()
+call h%close()
 
 end procedure h5exist
 

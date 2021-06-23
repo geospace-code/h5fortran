@@ -5,12 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
    
-   <meta name="description" content="Object-oriented Fortran 2008 HDF5 interface">
+   <meta name="description" content="Object-oriented Fortran HDF5 interface">
     
     <meta name="author" content="Michael Hirsch, Ph.D." >
     <link rel="icon" href="../favicon.png">
 
-    <title>hdf5_file &ndash; Object-oriented Fortran 2008 HDF5 interface </title>
+    <title>hdf5_file &ndash; Object-oriented Fortran HDF5 interface </title>
 
     <link href="../css/bootstrap.min.css" rel="stylesheet">
     <link href="../css/pygments.css" rel="stylesheet">
@@ -44,7 +44,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="../index.html">Object-oriented Fortran 2008 HDF5 interface </a>
+          <a class="navbar-brand" href="../index.html">Object-oriented Fortran HDF5 interface </a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
@@ -130,7 +130,7 @@
      <li><i class="fa fa-list-ol"></i>
        <a data-toggle="tooltip"
     data-placement="bottom" data-html="true"
-    title="<p>85.0% of total for derived types.</p>Including implementation: 190 statements, 98.4% of total for derived types.">17 statements</a>
+    title="<p>88.5% of total for derived types.</p>Including implementation: 313 statements, 99.1% of total for derived types.">23 statements</a>
      </li> 
      
      
@@ -215,6 +215,18 @@
 
 
 
+<div class="panel panel-primary">
+  <div class="panel-heading text-left"><h3 class="panel-title"><a data-toggle="collapse" href="#fins-0">Finalization Procedures</a></h3></div>
+  <div id="fins-0" class="panel-collapse collapse">
+    <div class="list-group">
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#finalproc-destructor">destructor</a>
+      
+    </div>
+  </div>
+</div>
+
+
 
 <div class="panel panel-primary">
   <div class="panel-heading text-left"><h3 class="panel-title"><a data-toggle="collapse" href="#boundprocs-0">Type-Bound Procedures</a></h3></div>
@@ -243,19 +255,33 @@
       
       <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-flush">flush</a>
       
-      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-close">close</a>
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-close_group">close_group</a>
       
-      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-open">open</a>
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-open_group">open_group</a>
       
       <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-create">create</a>
       
       <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-write_group">write_group</a>
       
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-close">close</a>
+      
       <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-finalize">finalize</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-open">open</a>
       
       <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-initialize">initialize</a>
       
       <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-write">write</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-write_r32">write_r32</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-write_r64">write_r64</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-write_i32">write_i32</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-write_i64">write_i64</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-write_char">write_char</a>
       
       <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-writeattr">writeattr</a>
       
@@ -287,21 +313,71 @@
       
       <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_read_scalar">hdf_read_scalar</a>
       
-      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_7d">hdf_write_7d</a>
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_7d_i64">hdf_write_7d_i64</a>
       
-      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_6d">hdf_write_6d</a>
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_7d_i32">hdf_write_7d_i32</a>
       
-      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_5d">hdf_write_5d</a>
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_7d_r64">hdf_write_7d_r64</a>
       
-      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_4d">hdf_write_4d</a>
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_7d_r32">hdf_write_7d_r32</a>
       
-      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_3d">hdf_write_3d</a>
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_6d_i64">hdf_write_6d_i64</a>
       
-      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_2d">hdf_write_2d</a>
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_6d_i32">hdf_write_6d_i32</a>
       
-      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_1d">hdf_write_1d</a>
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_6d_r64">hdf_write_6d_r64</a>
       
-      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_scalar">hdf_write_scalar</a>
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_6d_r32">hdf_write_6d_r32</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_5d_i64">hdf_write_5d_i64</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_5d_i32">hdf_write_5d_i32</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_5d_r64">hdf_write_5d_r64</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_5d_r32">hdf_write_5d_r32</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_4d_i64">hdf_write_4d_i64</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_4d_i32">hdf_write_4d_i32</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_4d_r64">hdf_write_4d_r64</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_4d_r32">hdf_write_4d_r32</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_3d_i64">hdf_write_3d_i64</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_3d_i32">hdf_write_3d_i32</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_3d_r64">hdf_write_3d_r64</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_3d_r32">hdf_write_3d_r32</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_2d_i64">hdf_write_2d_i64</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_2d_i32">hdf_write_2d_i32</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_2d_r64">hdf_write_2d_r64</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_2d_r32">hdf_write_2d_r32</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_1d_i64">hdf_write_1d_i64</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_1d_i32">hdf_write_1d_i32</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_1d_r64">hdf_write_1d_r64</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_1d_r32">hdf_write_1d_r32</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_scalar_char">hdf_write_scalar_char</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_scalar_i64">hdf_write_scalar_i64</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_scalar_i32">hdf_write_scalar_i32</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_scalar_r64">hdf_write_scalar_r64</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_scalar_r32">hdf_write_scalar_r32</a>
       
     </div>
   </div>
@@ -375,6 +451,18 @@
 
 
 
+<div class="panel panel-primary">
+  <div class="panel-heading text-left"><h3 class="panel-title"><a data-toggle="collapse" href="#fins-1">Finalization Procedures</a></h3></div>
+  <div id="fins-1" class="panel-collapse collapse">
+    <div class="list-group">
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#finalproc-destructor">destructor</a>
+      
+    </div>
+  </div>
+</div>
+
+
 
 <div class="panel panel-primary">
   <div class="panel-heading text-left"><h3 class="panel-title"><a data-toggle="collapse" href="#boundprocs-1">Type-Bound Procedures</a></h3></div>
@@ -403,19 +491,33 @@
       
       <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-flush">flush</a>
       
-      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-close">close</a>
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-close_group">close_group</a>
       
-      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-open">open</a>
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-open_group">open_group</a>
       
       <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-create">create</a>
       
       <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-write_group">write_group</a>
       
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-close">close</a>
+      
       <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-finalize">finalize</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-open">open</a>
       
       <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-initialize">initialize</a>
       
       <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-write">write</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-write_r32">write_r32</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-write_r64">write_r64</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-write_i32">write_i32</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-write_i64">write_i64</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-write_char">write_char</a>
       
       <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-writeattr">writeattr</a>
       
@@ -447,21 +549,71 @@
       
       <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_read_scalar">hdf_read_scalar</a>
       
-      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_7d">hdf_write_7d</a>
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_7d_i64">hdf_write_7d_i64</a>
       
-      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_6d">hdf_write_6d</a>
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_7d_i32">hdf_write_7d_i32</a>
       
-      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_5d">hdf_write_5d</a>
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_7d_r64">hdf_write_7d_r64</a>
       
-      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_4d">hdf_write_4d</a>
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_7d_r32">hdf_write_7d_r32</a>
       
-      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_3d">hdf_write_3d</a>
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_6d_i64">hdf_write_6d_i64</a>
       
-      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_2d">hdf_write_2d</a>
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_6d_i32">hdf_write_6d_i32</a>
       
-      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_1d">hdf_write_1d</a>
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_6d_r64">hdf_write_6d_r64</a>
       
-      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_scalar">hdf_write_scalar</a>
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_6d_r32">hdf_write_6d_r32</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_5d_i64">hdf_write_5d_i64</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_5d_i32">hdf_write_5d_i32</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_5d_r64">hdf_write_5d_r64</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_5d_r32">hdf_write_5d_r32</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_4d_i64">hdf_write_4d_i64</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_4d_i32">hdf_write_4d_i32</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_4d_r64">hdf_write_4d_r64</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_4d_r32">hdf_write_4d_r32</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_3d_i64">hdf_write_3d_i64</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_3d_i32">hdf_write_3d_i32</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_3d_r64">hdf_write_3d_r64</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_3d_r32">hdf_write_3d_r32</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_2d_i64">hdf_write_2d_i64</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_2d_i32">hdf_write_2d_i32</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_2d_r64">hdf_write_2d_r64</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_2d_r32">hdf_write_2d_r32</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_1d_i64">hdf_write_1d_i64</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_1d_i32">hdf_write_1d_i32</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_1d_r64">hdf_write_1d_r64</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_1d_r32">hdf_write_1d_r32</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_scalar_char">hdf_write_scalar_char</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_scalar_i64">hdf_write_scalar_i64</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_scalar_i32">hdf_write_scalar_i32</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_scalar_r64">hdf_write_scalar_r64</a>
+      
+      <a class="list-group-item" href="../type/hdf5_file.html#boundprocedure-hdf_write_scalar_r32">hdf_write_scalar_r32</a>
       
     </div>
   </div>
@@ -636,6 +788,82 @@
     
     
     
+    
+    <section>
+    <h2>Finalization Procedures</h2>
+     
+         
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="finalproc-destructor"></span><h3>final :: <strong>destructor</strong> 
+    </h3></div>
+  <div class="panel-body">
+    
+
+
+    <p>flush file to disk and close file if user forgets to do so.</p>
+  </div>
+  <ul class="list-group">
+     <li class="list-group-item">
+       
+    
+    <h3>
+private subroutine <a href='../proc/destructor.html'>destructor</a>(self)
+    
+    
+   
+</h3>
+    
+
+
+
+
+
+
+
+<p>Close file and handle if user forgets to do so</p>
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>type(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
+  <td>intent(inout)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>self</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+     </li>
+  </ul>
+</div>
+
+         
+    </section>
+    <br>
     
     
      
@@ -1635,6 +1863,15 @@ private subroutine <a href='../proc/hdf_flush.html'>hdf_flush</a>(self, ierr)
    
 </h3>
     
+
+
+
+
+
+
+
+<p>request operating system flush data to disk.
+ The operating system can do this when it desires, which might be a while.</p>
     
     <h4>Arguments</h4>
     
@@ -1696,7 +1933,7 @@ private subroutine <a href='../proc/hdf_flush.html'>hdf_flush</a>(self, ierr)
     
      
 <div class="panel panel-default">
-  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-close"></span><h3>procedure, public :: <strong>close</strong>  => <a href='../interface/hdf_close_group.html'>hdf_close_group</a> 
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-close_group"></span><h3>procedure, public :: <strong>close_group</strong>  => <a href='../interface/hdf_close_group.html'>hdf_close_group</a> 
     
   </h3></div>
   
@@ -1782,7 +2019,7 @@ private module subroutine hdf_close_group(self, ierr)
     
      
 <div class="panel panel-default">
-  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-open"></span><h3>procedure, public :: <strong>open</strong>  => <a href='../interface/hdf_open_group.html'>hdf_open_group</a> 
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-open_group"></span><h3>procedure, public :: <strong>open_group</strong>  => <a href='../interface/hdf_open_group.html'>hdf_open_group</a> 
     
   </h3></div>
   
@@ -1973,7 +2210,7 @@ private module subroutine hdf_create(self, dname, dtype, dims, sid, did, chunk_s
   
 <tr>
   
-  <td><span class="anchor" ></span>class(*),</td>
+  <td><span class="anchor" ></span>integer(kind=HSIZE_T),</td>
   <td>intent(in)</td>
   <td></td>
   
@@ -2198,6 +2435,109 @@ private subroutine <a href='../proc/write_group.html'>write_group</a>(self, gnam
     
      
 <div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-close"></span><h3>procedure, public :: <strong>close</strong>  => <a href='../proc/hdf_finalize.html'>hdf_finalize</a> 
+    
+  </h3></div>
+  
+  <ul class="list-group">
+    
+      <li class="list-group-item">
+      
+        
+          
+    
+    <h3>
+private subroutine <a href='../proc/hdf_finalize.html'>hdf_finalize</a>(self, ierr, close_hdf5_interface)
+    
+    
+   
+</h3>
+    
+
+
+
+
+
+
+
+<p>This must be called on each HDF5 file to flush buffers to disk
+ data loss can occur if program terminates before this procedure</p><a href="../proc/hdf_finalize.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
+  <td>intent(inout)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>self</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(out),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>ierr</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>logical,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>close_hdf5_interface</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+        
+      
+      </li>
+    
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
   <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-finalize"></span><h3>procedure, public :: <strong>finalize</strong>  => <a href='../proc/hdf_finalize.html'>hdf_finalize</a> 
     
   </h3></div>
@@ -2281,6 +2621,183 @@ private subroutine <a href='../proc/hdf_finalize.html'>hdf_finalize</a>(self, ie
   
   <td></td><td>::</td>
   <td><strong>close_hdf5_interface</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+        
+      
+      </li>
+    
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-open"></span><h3>procedure, public :: <strong>open</strong>  => <a href='../proc/hdf_initialize.html'>hdf_initialize</a> 
+    
+  </h3></div>
+  
+  <ul class="list-group">
+    
+      <li class="list-group-item">
+      
+        
+          
+    
+    <h3>
+private subroutine <a href='../proc/hdf_initialize.html'>hdf_initialize</a>(self, filename, ierr, status, action, comp_lvl, verbose, debug)
+    
+    
+   
+</h3>
+    
+
+
+
+
+
+
+
+<p>Opens hdf5 file</p><a href="../proc/hdf_initialize.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
+  <td>intent(inout)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>self</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>filename</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(out),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>ierr</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>status</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>action</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>comp_lvl</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>logical,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>verbose</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>logical,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>debug</strong></td><td></td>
   
 </tr>
 
@@ -2478,7 +2995,7 @@ private subroutine <a href='../proc/hdf_initialize.html'>hdf_initialize</a>(self
     
      
 <div class="panel panel-default">
-  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-write"></span><h3>generic, public :: <strong>write</strong>  => <a href='../type/hdf5_file.html#boundprocedure-hdf_write_scalar'>hdf_write_scalar</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_1d'>hdf_write_1d</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_2d'>hdf_write_2d</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_3d'>hdf_write_3d</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_4d'>hdf_write_4d</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_5d'>hdf_write_5d</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_6d'>hdf_write_6d</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_7d'>hdf_write_7d</a> 
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-write"></span><h3>generic, public :: <strong>write</strong>  => <a href='../type/hdf5_file.html#boundprocedure-hdf_write_scalar_r32'>hdf_write_scalar_r32</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_scalar_r64'>hdf_write_scalar_r64</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_scalar_i32'>hdf_write_scalar_i32</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_scalar_i64'>hdf_write_scalar_i64</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_scalar_char'>hdf_write_scalar_char</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_1d_r32'>hdf_write_1d_r32</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_1d_r64'>hdf_write_1d_r64</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_1d_i32'>hdf_write_1d_i32</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_1d_i64'>hdf_write_1d_i64</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_2d_r32'>hdf_write_2d_r32</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_2d_r64'>hdf_write_2d_r64</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_2d_i32'>hdf_write_2d_i32</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_2d_i64'>hdf_write_2d_i64</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_3d_r32'>hdf_write_3d_r32</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_3d_r64'>hdf_write_3d_r64</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_3d_i32'>hdf_write_3d_i32</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_3d_i64'>hdf_write_3d_i64</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_4d_r32'>hdf_write_4d_r32</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_4d_r64'>hdf_write_4d_r64</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_4d_i32'>hdf_write_4d_i32</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_4d_i64'>hdf_write_4d_i64</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_5d_r32'>hdf_write_5d_r32</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_5d_r64'>hdf_write_5d_r64</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_5d_i32'>hdf_write_5d_i32</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_5d_i64'>hdf_write_5d_i64</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_6d_r32'>hdf_write_6d_r32</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_6d_r64'>hdf_write_6d_r64</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_6d_i32'>hdf_write_6d_i32</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_6d_i64'>hdf_write_6d_i64</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_7d_r32'>hdf_write_7d_r32</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_7d_r64'>hdf_write_7d_r64</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_7d_i32'>hdf_write_7d_i32</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_7d_i64'>hdf_write_7d_i64</a> 
     
   </h3></div>
   
@@ -2498,7 +3015,7 @@ private subroutine <a href='../proc/hdf_initialize.html'>hdf_initialize</a>(self
             
     
     <h3>
-private interface <a href='../interface/hdf_write_scalar.html'>hdf_write_scalar</a>()
+private interface <a href='../interface/hdf_write_scalar_r32.html'>hdf_write_scalar_r32</a>()
     
     
    
@@ -2521,7 +3038,7 @@ private interface <a href='../interface/hdf_write_scalar.html'>hdf_write_scalar<
             
     
     <h3>
-private interface <a href='../interface/hdf_write_1d.html'>hdf_write_1d</a>()
+private interface <a href='../interface/hdf_write_scalar_r64.html'>hdf_write_scalar_r64</a>()
     
     
    
@@ -2544,7 +3061,7 @@ private interface <a href='../interface/hdf_write_1d.html'>hdf_write_1d</a>()
             
     
     <h3>
-private interface <a href='../interface/hdf_write_2d.html'>hdf_write_2d</a>()
+private interface <a href='../interface/hdf_write_scalar_i32.html'>hdf_write_scalar_i32</a>()
     
     
    
@@ -2567,7 +3084,7 @@ private interface <a href='../interface/hdf_write_2d.html'>hdf_write_2d</a>()
             
     
     <h3>
-private interface <a href='../interface/hdf_write_3d.html'>hdf_write_3d</a>()
+private interface <a href='../interface/hdf_write_scalar_i64.html'>hdf_write_scalar_i64</a>()
     
     
    
@@ -2590,7 +3107,7 @@ private interface <a href='../interface/hdf_write_3d.html'>hdf_write_3d</a>()
             
     
     <h3>
-private interface <a href='../interface/hdf_write_4d.html'>hdf_write_4d</a>()
+private interface <a href='../interface/hdf_write_scalar_char.html'>hdf_write_scalar_char</a>()
     
     
    
@@ -2613,7 +3130,7 @@ private interface <a href='../interface/hdf_write_4d.html'>hdf_write_4d</a>()
             
     
     <h3>
-private interface <a href='../interface/hdf_write_5d.html'>hdf_write_5d</a>()
+private interface <a href='../interface/hdf_write_1d_r32.html'>hdf_write_1d_r32</a>()
     
     
    
@@ -2636,7 +3153,7 @@ private interface <a href='../interface/hdf_write_5d.html'>hdf_write_5d</a>()
             
     
     <h3>
-private interface <a href='../interface/hdf_write_6d.html'>hdf_write_6d</a>()
+private interface <a href='../interface/hdf_write_1d_r64.html'>hdf_write_1d_r64</a>()
     
     
    
@@ -2659,7 +3176,1401 @@ private interface <a href='../interface/hdf_write_6d.html'>hdf_write_6d</a>()
             
     
     <h3>
-private interface <a href='../interface/hdf_write_7d.html'>hdf_write_7d</a>()
+private interface <a href='../interface/hdf_write_1d_i32.html'>hdf_write_1d_i32</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_1d_i64.html'>hdf_write_1d_i64</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_2d_r32.html'>hdf_write_2d_r32</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_2d_r64.html'>hdf_write_2d_r64</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_2d_i32.html'>hdf_write_2d_i32</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_2d_i64.html'>hdf_write_2d_i64</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_3d_r32.html'>hdf_write_3d_r32</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_3d_r64.html'>hdf_write_3d_r64</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_3d_i32.html'>hdf_write_3d_i32</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_3d_i64.html'>hdf_write_3d_i64</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_4d_r32.html'>hdf_write_4d_r32</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_4d_r64.html'>hdf_write_4d_r64</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_4d_i32.html'>hdf_write_4d_i32</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_4d_i64.html'>hdf_write_4d_i64</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_5d_r32.html'>hdf_write_5d_r32</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_5d_r64.html'>hdf_write_5d_r64</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_5d_i32.html'>hdf_write_5d_i32</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_5d_i64.html'>hdf_write_5d_i64</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_6d_r32.html'>hdf_write_6d_r32</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_6d_r64.html'>hdf_write_6d_r64</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_6d_i32.html'>hdf_write_6d_i32</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_6d_i64.html'>hdf_write_6d_i64</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_7d_r32.html'>hdf_write_7d_r32</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_7d_r64.html'>hdf_write_7d_r64</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_7d_i32.html'>hdf_write_7d_i32</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_7d_i64.html'>hdf_write_7d_i64</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-write_r32"></span><h3>generic, public :: <strong>write_r32</strong>  => <a href='../type/hdf5_file.html#boundprocedure-hdf_write_scalar_r32'>hdf_write_scalar_r32</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_1d_r32'>hdf_write_1d_r32</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_2d_r32'>hdf_write_2d_r32</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_3d_r32'>hdf_write_3d_r32</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_4d_r32'>hdf_write_4d_r32</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_5d_r32'>hdf_write_5d_r32</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_6d_r32'>hdf_write_6d_r32</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_7d_r32'>hdf_write_7d_r32</a> 
+    
+  </h3></div>
+  
+  <ul class="list-group">
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_scalar_r32.html'>hdf_write_scalar_r32</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_1d_r32.html'>hdf_write_1d_r32</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_2d_r32.html'>hdf_write_2d_r32</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_3d_r32.html'>hdf_write_3d_r32</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_4d_r32.html'>hdf_write_4d_r32</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_5d_r32.html'>hdf_write_5d_r32</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_6d_r32.html'>hdf_write_6d_r32</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_7d_r32.html'>hdf_write_7d_r32</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-write_r64"></span><h3>generic, public :: <strong>write_r64</strong>  => <a href='../type/hdf5_file.html#boundprocedure-hdf_write_scalar_r64'>hdf_write_scalar_r64</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_1d_r64'>hdf_write_1d_r64</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_2d_r64'>hdf_write_2d_r64</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_3d_r64'>hdf_write_3d_r64</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_4d_r64'>hdf_write_4d_r64</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_5d_r64'>hdf_write_5d_r64</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_6d_r64'>hdf_write_6d_r64</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_7d_r64'>hdf_write_7d_r64</a> 
+    
+  </h3></div>
+  
+  <ul class="list-group">
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_scalar_r64.html'>hdf_write_scalar_r64</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_1d_r64.html'>hdf_write_1d_r64</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_2d_r64.html'>hdf_write_2d_r64</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_3d_r64.html'>hdf_write_3d_r64</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_4d_r64.html'>hdf_write_4d_r64</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_5d_r64.html'>hdf_write_5d_r64</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_6d_r64.html'>hdf_write_6d_r64</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_7d_r64.html'>hdf_write_7d_r64</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-write_i32"></span><h3>generic, public :: <strong>write_i32</strong>  => <a href='../type/hdf5_file.html#boundprocedure-hdf_write_scalar_i32'>hdf_write_scalar_i32</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_1d_i32'>hdf_write_1d_i32</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_2d_i32'>hdf_write_2d_i32</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_3d_i32'>hdf_write_3d_i32</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_4d_i32'>hdf_write_4d_i32</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_5d_i32'>hdf_write_5d_i32</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_6d_i32'>hdf_write_6d_i32</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_7d_i32'>hdf_write_7d_i32</a> 
+    
+  </h3></div>
+  
+  <ul class="list-group">
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_scalar_i32.html'>hdf_write_scalar_i32</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_1d_i32.html'>hdf_write_1d_i32</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_2d_i32.html'>hdf_write_2d_i32</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_3d_i32.html'>hdf_write_3d_i32</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_4d_i32.html'>hdf_write_4d_i32</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_5d_i32.html'>hdf_write_5d_i32</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_6d_i32.html'>hdf_write_6d_i32</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_7d_i32.html'>hdf_write_7d_i32</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-write_i64"></span><h3>generic, public :: <strong>write_i64</strong>  => <a href='../type/hdf5_file.html#boundprocedure-hdf_write_scalar_i64'>hdf_write_scalar_i64</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_1d_i64'>hdf_write_1d_i64</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_2d_i64'>hdf_write_2d_i64</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_3d_i64'>hdf_write_3d_i64</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_4d_i64'>hdf_write_4d_i64</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_5d_i64'>hdf_write_5d_i64</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_6d_i64'>hdf_write_6d_i64</a>, <a href='../type/hdf5_file.html#boundprocedure-hdf_write_7d_i64'>hdf_write_7d_i64</a> 
+    
+  </h3></div>
+  
+  <ul class="list-group">
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_scalar_i64.html'>hdf_write_scalar_i64</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_1d_i64.html'>hdf_write_1d_i64</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_2d_i64.html'>hdf_write_2d_i64</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_3d_i64.html'>hdf_write_3d_i64</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_4d_i64.html'>hdf_write_4d_i64</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_5d_i64.html'>hdf_write_5d_i64</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_6d_i64.html'>hdf_write_6d_i64</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_7d_i64.html'>hdf_write_7d_i64</a>()
+    
+    
+   
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      <em>None</em>
+    
+    
+
+         
+      
+      </li>
+    
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-write_char"></span><h3>generic, public :: <strong>write_char</strong>  => <a href='../type/hdf5_file.html#boundprocedure-hdf_write_scalar_char'>hdf_write_scalar_char</a> 
+    
+  </h3></div>
+  
+  <ul class="list-group">
+    
+      <li class="list-group-item">
+      
+         
+            
+    
+    <h3>
+private interface <a href='../interface/hdf_write_scalar_char.html'>hdf_write_scalar_char</a>()
     
     
    
@@ -4790,7 +6701,7 @@ private module subroutine hdf_read_scalar(self, dname, value, ierr)
     
      
 <div class="panel panel-default">
-  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-hdf_write_7d"></span><h3>procedure, private :: <strong>hdf_write_7d</strong>  
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-hdf_write_7d_i64"></span><h3>procedure, private :: <strong>hdf_write_7d_i64</strong>  
     
   </h3></div>
   
@@ -4807,11 +6718,11 @@ private module subroutine hdf_read_scalar(self, dname, value, ierr)
           
     
     <h3>
-private module subroutine hdf_write_7d(self, dname, value, ierr, chunk_size, istart, iend, stride, compact)
+private module subroutine hdf_write_7d_i64(self, dname, value, ierr, chunk_size, istart, iend, stride, compact)
     
     
    
-   <a href='../proc/hdf_write_7d.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+   <a href='../proc/hdf_write_7d_i64.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
     
 </h3>
     
@@ -4865,7 +6776,7 @@ private module subroutine hdf_write_7d(self, dname, value, ierr, chunk_size, ist
   
 <tr>
   
-  <td><span class="anchor" ></span>class(*),</td>
+  <td><span class="anchor" ></span>integer(kind=int64),</td>
   <td>intent(in)</td>
   <td></td>
   
@@ -4981,7 +6892,7 @@ private module subroutine hdf_write_7d(self, dname, value, ierr, chunk_size, ist
     
      
 <div class="panel panel-default">
-  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-hdf_write_6d"></span><h3>procedure, private :: <strong>hdf_write_6d</strong>  
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-hdf_write_7d_i32"></span><h3>procedure, private :: <strong>hdf_write_7d_i32</strong>  
     
   </h3></div>
   
@@ -4998,11 +6909,11 @@ private module subroutine hdf_write_7d(self, dname, value, ierr, chunk_size, ist
           
     
     <h3>
-private module subroutine hdf_write_6d(self, dname, value, ierr, chunk_size, istart, iend, stride, compact)
+private module subroutine hdf_write_7d_i32(self, dname, value, ierr, chunk_size, istart, iend, stride, compact)
     
     
    
-   <a href='../proc/hdf_write_6d.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+   <a href='../proc/hdf_write_7d_i32.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
     
 </h3>
     
@@ -5056,7 +6967,580 @@ private module subroutine hdf_write_6d(self, dname, value, ierr, chunk_size, ist
   
 <tr>
   
-  <td><span class="anchor" ></span>class(*),</td>
+  <td><span class="anchor" ></span>integer(kind=int32),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>value</strong>(:,:,:,:,:,:,:)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(out),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>ierr</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>chunk_size</strong>(7)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>istart</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>iend</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>stride</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>logical,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>compact</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+        
+      
+      </li>
+    
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-hdf_write_7d_r64"></span><h3>procedure, private :: <strong>hdf_write_7d_r64</strong>  
+    
+  </h3></div>
+  
+  <ul class="list-group">
+    
+      <li class="list-group-item">
+      
+        
+          <h3>interface
+          
+          </h3>
+  
+          
+          
+    
+    <h3>
+private module subroutine hdf_write_7d_r64(self, dname, value, ierr, chunk_size, istart, iend, stride, compact)
+    
+    
+   
+   <a href='../proc/hdf_write_7d_r64.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+    
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
+  <td>intent(inout)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>self</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>dname</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>real(kind=real64),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>value</strong>(:,:,:,:,:,:,:)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(out),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>ierr</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>chunk_size</strong>(7)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>istart</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>iend</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>stride</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>logical,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>compact</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+        
+      
+      </li>
+    
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-hdf_write_7d_r32"></span><h3>procedure, private :: <strong>hdf_write_7d_r32</strong>  
+    
+  </h3></div>
+  
+  <ul class="list-group">
+    
+      <li class="list-group-item">
+      
+        
+          <h3>interface
+          
+          </h3>
+  
+          
+          
+    
+    <h3>
+private module subroutine hdf_write_7d_r32(self, dname, value, ierr, chunk_size, istart, iend, stride, compact)
+    
+    
+   
+   <a href='../proc/hdf_write_7d_r32.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+    
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
+  <td>intent(inout)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>self</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>dname</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>real(kind=real32),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>value</strong>(:,:,:,:,:,:,:)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(out),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>ierr</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>chunk_size</strong>(7)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>istart</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>iend</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>stride</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>logical,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>compact</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+        
+      
+      </li>
+    
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-hdf_write_6d_i64"></span><h3>procedure, private :: <strong>hdf_write_6d_i64</strong>  
+    
+  </h3></div>
+  
+  <ul class="list-group">
+    
+      <li class="list-group-item">
+      
+        
+          <h3>interface
+          
+          </h3>
+  
+          
+          
+    
+    <h3>
+private module subroutine hdf_write_6d_i64(self, dname, value, ierr, chunk_size, istart, iend, stride, compact)
+    
+    
+   
+   <a href='../proc/hdf_write_6d_i64.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+    
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
+  <td>intent(inout)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>self</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>dname</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer(kind=int64),</td>
   <td>intent(in)</td>
   <td></td>
   
@@ -5172,7 +7656,7 @@ private module subroutine hdf_write_6d(self, dname, value, ierr, chunk_size, ist
     
      
 <div class="panel panel-default">
-  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-hdf_write_5d"></span><h3>procedure, private :: <strong>hdf_write_5d</strong>  
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-hdf_write_6d_i32"></span><h3>procedure, private :: <strong>hdf_write_6d_i32</strong>  
     
   </h3></div>
   
@@ -5189,11 +7673,11 @@ private module subroutine hdf_write_6d(self, dname, value, ierr, chunk_size, ist
           
     
     <h3>
-private module subroutine hdf_write_5d(self, dname, value, ierr, chunk_size, istart, iend, stride, compact)
+private module subroutine hdf_write_6d_i32(self, dname, value, ierr, chunk_size, istart, iend, stride, compact)
     
     
    
-   <a href='../proc/hdf_write_5d.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+   <a href='../proc/hdf_write_6d_i32.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
     
 </h3>
     
@@ -5247,7 +7731,580 @@ private module subroutine hdf_write_5d(self, dname, value, ierr, chunk_size, ist
   
 <tr>
   
-  <td><span class="anchor" ></span>class(*),</td>
+  <td><span class="anchor" ></span>integer(kind=int32),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>value</strong>(:,:,:,:,:,:)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(out),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>ierr</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>chunk_size</strong>(6)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>istart</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>iend</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>stride</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>logical,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>compact</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+        
+      
+      </li>
+    
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-hdf_write_6d_r64"></span><h3>procedure, private :: <strong>hdf_write_6d_r64</strong>  
+    
+  </h3></div>
+  
+  <ul class="list-group">
+    
+      <li class="list-group-item">
+      
+        
+          <h3>interface
+          
+          </h3>
+  
+          
+          
+    
+    <h3>
+private module subroutine hdf_write_6d_r64(self, dname, value, ierr, chunk_size, istart, iend, stride, compact)
+    
+    
+   
+   <a href='../proc/hdf_write_6d_r64.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+    
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
+  <td>intent(inout)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>self</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>dname</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>real(kind=real64),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>value</strong>(:,:,:,:,:,:)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(out),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>ierr</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>chunk_size</strong>(6)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>istart</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>iend</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>stride</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>logical,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>compact</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+        
+      
+      </li>
+    
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-hdf_write_6d_r32"></span><h3>procedure, private :: <strong>hdf_write_6d_r32</strong>  
+    
+  </h3></div>
+  
+  <ul class="list-group">
+    
+      <li class="list-group-item">
+      
+        
+          <h3>interface
+          
+          </h3>
+  
+          
+          
+    
+    <h3>
+private module subroutine hdf_write_6d_r32(self, dname, value, ierr, chunk_size, istart, iend, stride, compact)
+    
+    
+   
+   <a href='../proc/hdf_write_6d_r32.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+    
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
+  <td>intent(inout)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>self</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>dname</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>real(kind=real32),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>value</strong>(:,:,:,:,:,:)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(out),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>ierr</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>chunk_size</strong>(6)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>istart</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>iend</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>stride</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>logical,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>compact</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+        
+      
+      </li>
+    
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-hdf_write_5d_i64"></span><h3>procedure, private :: <strong>hdf_write_5d_i64</strong>  
+    
+  </h3></div>
+  
+  <ul class="list-group">
+    
+      <li class="list-group-item">
+      
+        
+          <h3>interface
+          
+          </h3>
+  
+          
+          
+    
+    <h3>
+private module subroutine hdf_write_5d_i64(self, dname, value, ierr, chunk_size, istart, iend, stride, compact)
+    
+    
+   
+   <a href='../proc/hdf_write_5d_i64.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+    
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
+  <td>intent(inout)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>self</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>dname</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer(kind=int64),</td>
   <td>intent(in)</td>
   <td></td>
   
@@ -5363,7 +8420,7 @@ private module subroutine hdf_write_5d(self, dname, value, ierr, chunk_size, ist
     
      
 <div class="panel panel-default">
-  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-hdf_write_4d"></span><h3>procedure, private :: <strong>hdf_write_4d</strong>  
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-hdf_write_5d_i32"></span><h3>procedure, private :: <strong>hdf_write_5d_i32</strong>  
     
   </h3></div>
   
@@ -5380,11 +8437,11 @@ private module subroutine hdf_write_5d(self, dname, value, ierr, chunk_size, ist
           
     
     <h3>
-private module subroutine hdf_write_4d(self, dname, value, ierr, chunk_size, istart, iend, stride, compact)
+private module subroutine hdf_write_5d_i32(self, dname, value, ierr, chunk_size, istart, iend, stride, compact)
     
     
    
-   <a href='../proc/hdf_write_4d.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+   <a href='../proc/hdf_write_5d_i32.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
     
 </h3>
     
@@ -5438,7 +8495,580 @@ private module subroutine hdf_write_4d(self, dname, value, ierr, chunk_size, ist
   
 <tr>
   
-  <td><span class="anchor" ></span>class(*),</td>
+  <td><span class="anchor" ></span>integer(kind=int32),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>value</strong>(:,:,:,:,:)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(out),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>ierr</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>chunk_size</strong>(5)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>istart</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>iend</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>stride</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>logical,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>compact</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+        
+      
+      </li>
+    
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-hdf_write_5d_r64"></span><h3>procedure, private :: <strong>hdf_write_5d_r64</strong>  
+    
+  </h3></div>
+  
+  <ul class="list-group">
+    
+      <li class="list-group-item">
+      
+        
+          <h3>interface
+          
+          </h3>
+  
+          
+          
+    
+    <h3>
+private module subroutine hdf_write_5d_r64(self, dname, value, ierr, chunk_size, istart, iend, stride, compact)
+    
+    
+   
+   <a href='../proc/hdf_write_5d_r64.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+    
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
+  <td>intent(inout)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>self</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>dname</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>real(kind=real64),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>value</strong>(:,:,:,:,:)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(out),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>ierr</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>chunk_size</strong>(5)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>istart</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>iend</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>stride</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>logical,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>compact</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+        
+      
+      </li>
+    
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-hdf_write_5d_r32"></span><h3>procedure, private :: <strong>hdf_write_5d_r32</strong>  
+    
+  </h3></div>
+  
+  <ul class="list-group">
+    
+      <li class="list-group-item">
+      
+        
+          <h3>interface
+          
+          </h3>
+  
+          
+          
+    
+    <h3>
+private module subroutine hdf_write_5d_r32(self, dname, value, ierr, chunk_size, istart, iend, stride, compact)
+    
+    
+   
+   <a href='../proc/hdf_write_5d_r32.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+    
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
+  <td>intent(inout)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>self</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>dname</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>real(kind=real32),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>value</strong>(:,:,:,:,:)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(out),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>ierr</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>chunk_size</strong>(5)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>istart</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>iend</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>stride</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>logical,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>compact</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+        
+      
+      </li>
+    
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-hdf_write_4d_i64"></span><h3>procedure, private :: <strong>hdf_write_4d_i64</strong>  
+    
+  </h3></div>
+  
+  <ul class="list-group">
+    
+      <li class="list-group-item">
+      
+        
+          <h3>interface
+          
+          </h3>
+  
+          
+          
+    
+    <h3>
+private module subroutine hdf_write_4d_i64(self, dname, value, ierr, chunk_size, istart, iend, stride, compact)
+    
+    
+   
+   <a href='../proc/hdf_write_4d_i64.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+    
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
+  <td>intent(inout)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>self</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>dname</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer(kind=int64),</td>
   <td>intent(in)</td>
   <td></td>
   
@@ -5554,7 +9184,7 @@ private module subroutine hdf_write_4d(self, dname, value, ierr, chunk_size, ist
     
      
 <div class="panel panel-default">
-  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-hdf_write_3d"></span><h3>procedure, private :: <strong>hdf_write_3d</strong>  
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-hdf_write_4d_i32"></span><h3>procedure, private :: <strong>hdf_write_4d_i32</strong>  
     
   </h3></div>
   
@@ -5571,11 +9201,11 @@ private module subroutine hdf_write_4d(self, dname, value, ierr, chunk_size, ist
           
     
     <h3>
-private module subroutine hdf_write_3d(self, dname, value, ierr, chunk_size, istart, iend, stride, compact)
+private module subroutine hdf_write_4d_i32(self, dname, value, ierr, chunk_size, istart, iend, stride, compact)
     
     
    
-   <a href='../proc/hdf_write_3d.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+   <a href='../proc/hdf_write_4d_i32.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
     
 </h3>
     
@@ -5629,7 +9259,580 @@ private module subroutine hdf_write_3d(self, dname, value, ierr, chunk_size, ist
   
 <tr>
   
-  <td><span class="anchor" ></span>class(*),</td>
+  <td><span class="anchor" ></span>integer(kind=int32),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>value</strong>(:,:,:,:)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(out),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>ierr</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>chunk_size</strong>(4)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>istart</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>iend</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>stride</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>logical,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>compact</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+        
+      
+      </li>
+    
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-hdf_write_4d_r64"></span><h3>procedure, private :: <strong>hdf_write_4d_r64</strong>  
+    
+  </h3></div>
+  
+  <ul class="list-group">
+    
+      <li class="list-group-item">
+      
+        
+          <h3>interface
+          
+          </h3>
+  
+          
+          
+    
+    <h3>
+private module subroutine hdf_write_4d_r64(self, dname, value, ierr, chunk_size, istart, iend, stride, compact)
+    
+    
+   
+   <a href='../proc/hdf_write_4d_r64.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+    
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
+  <td>intent(inout)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>self</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>dname</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>real(kind=real64),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>value</strong>(:,:,:,:)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(out),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>ierr</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>chunk_size</strong>(4)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>istart</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>iend</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>stride</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>logical,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>compact</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+        
+      
+      </li>
+    
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-hdf_write_4d_r32"></span><h3>procedure, private :: <strong>hdf_write_4d_r32</strong>  
+    
+  </h3></div>
+  
+  <ul class="list-group">
+    
+      <li class="list-group-item">
+      
+        
+          <h3>interface
+          
+          </h3>
+  
+          
+          
+    
+    <h3>
+private module subroutine hdf_write_4d_r32(self, dname, value, ierr, chunk_size, istart, iend, stride, compact)
+    
+    
+   
+   <a href='../proc/hdf_write_4d_r32.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+    
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
+  <td>intent(inout)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>self</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>dname</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>real(kind=real32),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>value</strong>(:,:,:,:)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(out),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>ierr</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>chunk_size</strong>(4)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>istart</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>iend</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>stride</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>logical,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>compact</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+        
+      
+      </li>
+    
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-hdf_write_3d_i64"></span><h3>procedure, private :: <strong>hdf_write_3d_i64</strong>  
+    
+  </h3></div>
+  
+  <ul class="list-group">
+    
+      <li class="list-group-item">
+      
+        
+          <h3>interface
+          
+          </h3>
+  
+          
+          
+    
+    <h3>
+private module subroutine hdf_write_3d_i64(self, dname, value, ierr, chunk_size, istart, iend, stride, compact)
+    
+    
+   
+   <a href='../proc/hdf_write_3d_i64.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+    
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
+  <td>intent(inout)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>self</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>dname</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer(kind=int64),</td>
   <td>intent(in)</td>
   <td></td>
   
@@ -5745,7 +9948,7 @@ private module subroutine hdf_write_3d(self, dname, value, ierr, chunk_size, ist
     
      
 <div class="panel panel-default">
-  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-hdf_write_2d"></span><h3>procedure, private :: <strong>hdf_write_2d</strong>  
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-hdf_write_3d_i32"></span><h3>procedure, private :: <strong>hdf_write_3d_i32</strong>  
     
   </h3></div>
   
@@ -5762,11 +9965,11 @@ private module subroutine hdf_write_3d(self, dname, value, ierr, chunk_size, ist
           
     
     <h3>
-private module subroutine hdf_write_2d(self, dname, value, ierr, chunk_size, istart, iend, stride, compact)
+private module subroutine hdf_write_3d_i32(self, dname, value, ierr, chunk_size, istart, iend, stride, compact)
     
     
    
-   <a href='../proc/hdf_write_2d.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+   <a href='../proc/hdf_write_3d_i32.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
     
 </h3>
     
@@ -5820,7 +10023,580 @@ private module subroutine hdf_write_2d(self, dname, value, ierr, chunk_size, ist
   
 <tr>
   
-  <td><span class="anchor" ></span>class(*),</td>
+  <td><span class="anchor" ></span>integer(kind=int32),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>value</strong>(:,:,:)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(out),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>ierr</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>chunk_size</strong>(3)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>istart</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>iend</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>stride</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>logical,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>compact</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+        
+      
+      </li>
+    
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-hdf_write_3d_r64"></span><h3>procedure, private :: <strong>hdf_write_3d_r64</strong>  
+    
+  </h3></div>
+  
+  <ul class="list-group">
+    
+      <li class="list-group-item">
+      
+        
+          <h3>interface
+          
+          </h3>
+  
+          
+          
+    
+    <h3>
+private module subroutine hdf_write_3d_r64(self, dname, value, ierr, chunk_size, istart, iend, stride, compact)
+    
+    
+   
+   <a href='../proc/hdf_write_3d_r64.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+    
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
+  <td>intent(inout)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>self</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>dname</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>real(kind=real64),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>value</strong>(:,:,:)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(out),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>ierr</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>chunk_size</strong>(3)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>istart</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>iend</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>stride</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>logical,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>compact</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+        
+      
+      </li>
+    
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-hdf_write_3d_r32"></span><h3>procedure, private :: <strong>hdf_write_3d_r32</strong>  
+    
+  </h3></div>
+  
+  <ul class="list-group">
+    
+      <li class="list-group-item">
+      
+        
+          <h3>interface
+          
+          </h3>
+  
+          
+          
+    
+    <h3>
+private module subroutine hdf_write_3d_r32(self, dname, value, ierr, chunk_size, istart, iend, stride, compact)
+    
+    
+   
+   <a href='../proc/hdf_write_3d_r32.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+    
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
+  <td>intent(inout)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>self</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>dname</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>real(kind=real32),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>value</strong>(:,:,:)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(out),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>ierr</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>chunk_size</strong>(3)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>istart</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>iend</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>stride</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>logical,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>compact</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+        
+      
+      </li>
+    
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-hdf_write_2d_i64"></span><h3>procedure, private :: <strong>hdf_write_2d_i64</strong>  
+    
+  </h3></div>
+  
+  <ul class="list-group">
+    
+      <li class="list-group-item">
+      
+        
+          <h3>interface
+          
+          </h3>
+  
+          
+          
+    
+    <h3>
+private module subroutine hdf_write_2d_i64(self, dname, value, ierr, chunk_size, istart, iend, stride, compact)
+    
+    
+   
+   <a href='../proc/hdf_write_2d_i64.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+    
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
+  <td>intent(inout)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>self</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>dname</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer(kind=int64),</td>
   <td>intent(in)</td>
   <td></td>
   
@@ -5936,7 +10712,7 @@ private module subroutine hdf_write_2d(self, dname, value, ierr, chunk_size, ist
     
      
 <div class="panel panel-default">
-  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-hdf_write_1d"></span><h3>procedure, private :: <strong>hdf_write_1d</strong>  
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-hdf_write_2d_i32"></span><h3>procedure, private :: <strong>hdf_write_2d_i32</strong>  
     
   </h3></div>
   
@@ -5953,11 +10729,11 @@ private module subroutine hdf_write_2d(self, dname, value, ierr, chunk_size, ist
           
     
     <h3>
-private module subroutine hdf_write_1d(self, dname, value, ierr, chunk_size, istart, iend, stride, compact)
+private module subroutine hdf_write_2d_i32(self, dname, value, ierr, chunk_size, istart, iend, stride, compact)
     
     
    
-   <a href='../proc/hdf_write_1d.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+   <a href='../proc/hdf_write_2d_i32.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
     
 </h3>
     
@@ -6011,7 +10787,580 @@ private module subroutine hdf_write_1d(self, dname, value, ierr, chunk_size, ist
   
 <tr>
   
-  <td><span class="anchor" ></span>class(*),</td>
+  <td><span class="anchor" ></span>integer(kind=int32),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>value</strong>(:,:)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(out),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>ierr</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>chunk_size</strong>(2)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>istart</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>iend</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>stride</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>logical,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>compact</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+        
+      
+      </li>
+    
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-hdf_write_2d_r64"></span><h3>procedure, private :: <strong>hdf_write_2d_r64</strong>  
+    
+  </h3></div>
+  
+  <ul class="list-group">
+    
+      <li class="list-group-item">
+      
+        
+          <h3>interface
+          
+          </h3>
+  
+          
+          
+    
+    <h3>
+private module subroutine hdf_write_2d_r64(self, dname, value, ierr, chunk_size, istart, iend, stride, compact)
+    
+    
+   
+   <a href='../proc/hdf_write_2d_r64.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+    
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
+  <td>intent(inout)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>self</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>dname</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>real(kind=real64),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>value</strong>(:,:)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(out),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>ierr</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>chunk_size</strong>(2)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>istart</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>iend</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>stride</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>logical,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>compact</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+        
+      
+      </li>
+    
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-hdf_write_2d_r32"></span><h3>procedure, private :: <strong>hdf_write_2d_r32</strong>  
+    
+  </h3></div>
+  
+  <ul class="list-group">
+    
+      <li class="list-group-item">
+      
+        
+          <h3>interface
+          
+          </h3>
+  
+          
+          
+    
+    <h3>
+private module subroutine hdf_write_2d_r32(self, dname, value, ierr, chunk_size, istart, iend, stride, compact)
+    
+    
+   
+   <a href='../proc/hdf_write_2d_r32.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+    
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
+  <td>intent(inout)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>self</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>dname</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>real(kind=real32),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>value</strong>(:,:)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(out),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>ierr</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>chunk_size</strong>(2)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>istart</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>iend</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>stride</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>logical,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>compact</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+        
+      
+      </li>
+    
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-hdf_write_1d_i64"></span><h3>procedure, private :: <strong>hdf_write_1d_i64</strong>  
+    
+  </h3></div>
+  
+  <ul class="list-group">
+    
+      <li class="list-group-item">
+      
+        
+          <h3>interface
+          
+          </h3>
+  
+          
+          
+    
+    <h3>
+private module subroutine hdf_write_1d_i64(self, dname, value, ierr, chunk_size, istart, iend, stride, compact)
+    
+    
+   
+   <a href='../proc/hdf_write_1d_i64.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+    
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
+  <td>intent(inout)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>self</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>dname</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer(kind=int64),</td>
   <td>intent(in)</td>
   <td></td>
   
@@ -6127,7 +11476,7 @@ private module subroutine hdf_write_1d(self, dname, value, ierr, chunk_size, ist
     
      
 <div class="panel panel-default">
-  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-hdf_write_scalar"></span><h3>procedure, private :: <strong>hdf_write_scalar</strong>  
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-hdf_write_1d_i32"></span><h3>procedure, private :: <strong>hdf_write_1d_i32</strong>  
     
   </h3></div>
   
@@ -6144,11 +11493,11 @@ private module subroutine hdf_write_1d(self, dname, value, ierr, chunk_size, ist
           
     
     <h3>
-private module subroutine hdf_write_scalar(self, dname, value, ierr, compact)
+private module subroutine hdf_write_1d_i32(self, dname, value, ierr, chunk_size, istart, iend, stride, compact)
     
     
    
-   <a href='../proc/hdf_write_scalar.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+   <a href='../proc/hdf_write_1d_i32.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
     
 </h3>
     
@@ -6202,7 +11551,1104 @@ private module subroutine hdf_write_scalar(self, dname, value, ierr, compact)
   
 <tr>
   
-  <td><span class="anchor" ></span>class(*),</td>
+  <td><span class="anchor" ></span>integer(kind=int32),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>value</strong>(:)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(out),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>ierr</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>chunk_size</strong>(1)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>istart</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>iend</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>stride</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>logical,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>compact</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+        
+      
+      </li>
+    
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-hdf_write_1d_r64"></span><h3>procedure, private :: <strong>hdf_write_1d_r64</strong>  
+    
+  </h3></div>
+  
+  <ul class="list-group">
+    
+      <li class="list-group-item">
+      
+        
+          <h3>interface
+          
+          </h3>
+  
+          
+          
+    
+    <h3>
+private module subroutine hdf_write_1d_r64(self, dname, value, ierr, chunk_size, istart, iend, stride, compact)
+    
+    
+   
+   <a href='../proc/hdf_write_1d_r64.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+    
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
+  <td>intent(inout)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>self</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>dname</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>real(kind=real64),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>value</strong>(:)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(out),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>ierr</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>chunk_size</strong>(1)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>istart</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>iend</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>stride</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>logical,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>compact</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+        
+      
+      </li>
+    
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-hdf_write_1d_r32"></span><h3>procedure, private :: <strong>hdf_write_1d_r32</strong>  
+    
+  </h3></div>
+  
+  <ul class="list-group">
+    
+      <li class="list-group-item">
+      
+        
+          <h3>interface
+          
+          </h3>
+  
+          
+          
+    
+    <h3>
+private module subroutine hdf_write_1d_r32(self, dname, value, ierr, chunk_size, istart, iend, stride, compact)
+    
+    
+   
+   <a href='../proc/hdf_write_1d_r32.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+    
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
+  <td>intent(inout)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>self</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>dname</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>real(kind=real32),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>value</strong>(:)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(out),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>ierr</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>chunk_size</strong>(1)</td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>istart</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>iend</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td>dimension(:)</td><td>::</td>
+  <td><strong>stride</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>logical,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>compact</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+        
+      
+      </li>
+    
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-hdf_write_scalar_char"></span><h3>procedure, private :: <strong>hdf_write_scalar_char</strong>  
+    
+  </h3></div>
+  
+  <ul class="list-group">
+    
+      <li class="list-group-item">
+      
+        
+          <h3>interface
+          
+          </h3>
+  
+          
+          
+    
+    <h3>
+private module subroutine hdf_write_scalar_char(self, dname, value, ierr, compact)
+    
+    
+   
+   <a href='../proc/hdf_write_scalar_char.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+    
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
+  <td>intent(inout)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>self</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>dname</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>value</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(out),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>ierr</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>logical,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>compact</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+        
+      
+      </li>
+    
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-hdf_write_scalar_i64"></span><h3>procedure, private :: <strong>hdf_write_scalar_i64</strong>  
+    
+  </h3></div>
+  
+  <ul class="list-group">
+    
+      <li class="list-group-item">
+      
+        
+          <h3>interface
+          
+          </h3>
+  
+          
+          
+    
+    <h3>
+private module subroutine hdf_write_scalar_i64(self, dname, value, ierr, compact)
+    
+    
+   
+   <a href='../proc/hdf_write_scalar_i64.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+    
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
+  <td>intent(inout)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>self</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>dname</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer(kind=int64),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>value</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(out),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>ierr</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>logical,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>compact</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+        
+      
+      </li>
+    
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-hdf_write_scalar_i32"></span><h3>procedure, private :: <strong>hdf_write_scalar_i32</strong>  
+    
+  </h3></div>
+  
+  <ul class="list-group">
+    
+      <li class="list-group-item">
+      
+        
+          <h3>interface
+          
+          </h3>
+  
+          
+          
+    
+    <h3>
+private module subroutine hdf_write_scalar_i32(self, dname, value, ierr, compact)
+    
+    
+   
+   <a href='../proc/hdf_write_scalar_i32.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+    
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
+  <td>intent(inout)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>self</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>dname</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer(kind=int32),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>value</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(out),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>ierr</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>logical,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>compact</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+        
+      
+      </li>
+    
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-hdf_write_scalar_r64"></span><h3>procedure, private :: <strong>hdf_write_scalar_r64</strong>  
+    
+  </h3></div>
+  
+  <ul class="list-group">
+    
+      <li class="list-group-item">
+      
+        
+          <h3>interface
+          
+          </h3>
+  
+          
+          
+    
+    <h3>
+private module subroutine hdf_write_scalar_r64(self, dname, value, ierr, compact)
+    
+    
+   
+   <a href='../proc/hdf_write_scalar_r64.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+    
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
+  <td>intent(inout)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>self</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>dname</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>real(kind=real64),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>value</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer,</td>
+  <td>intent(out),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>ierr</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>logical,</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>compact</strong></td><td></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+      
+    
+    
+
+        
+      
+      </li>
+    
+  </ul>
+</div>
+
+    
+     
+<div class="panel panel-default">
+  <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-hdf_write_scalar_r32"></span><h3>procedure, private :: <strong>hdf_write_scalar_r32</strong>  
+    
+  </h3></div>
+  
+  <ul class="list-group">
+    
+      <li class="list-group-item">
+      
+        
+          <h3>interface
+          
+          </h3>
+  
+          
+          
+    
+    <h3>
+private module subroutine hdf_write_scalar_r32(self, dname, value, ierr, compact)
+    
+    
+   
+   <a href='../proc/hdf_write_scalar_r32.html'><button type="button" class="btn btn-info depwarn">Implementation &rarr;</button></a>
+    
+</h3>
+    
+    
+    <h4>Arguments</h4>
+    
+      
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>class(<a href='../type/hdf5_file.html'>hdf5_file</a>),</td>
+  <td>intent(inout)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>self</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=*),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>dname</strong></td><td></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>real(kind=real32),</td>
   <td>intent(in)</td>
   <td></td>
   
@@ -6279,7 +12725,7 @@ private module subroutine hdf_write_scalar(self, dname, value, ierr, compact)
             
           </p>
         </div>
-        <div class="col-xs-12 col-md-4 col-md-pull-4"><p class="text-center"> Object-oriented Fortran 2008 HDF5 interface was developed by Michael Hirsch, Ph.D.</p></div>
+        <div class="col-xs-12 col-md-4 col-md-pull-4"><p class="text-center"> Object-oriented Fortran HDF5 interface was developed by Michael Hirsch, Ph.D.</p></div>
       </div>
       <br>
       </div> <!-- /container -->    

@@ -5,12 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
    
-   <meta name="description" content="Object-oriented Fortran 2008 HDF5 interface">
+   <meta name="description" content="Object-oriented Fortran HDF5 interface">
     
     <meta name="author" content="Michael Hirsch, Ph.D." >
     <link rel="icon" href="./favicon.png">
 
-    <title> Object-oriented Fortran 2008 HDF5 interface </title>
+    <title> Object-oriented Fortran HDF5 interface </title>
 
     <link href="./css/bootstrap.min.css" rel="stylesheet">
     <link href="./css/pygments.css" rel="stylesheet">
@@ -44,7 +44,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="./index.html">Object-oriented Fortran 2008 HDF5 interface </a>
+          <a class="navbar-brand" href="./index.html">Object-oriented Fortran HDF5 interface </a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
@@ -112,7 +112,7 @@
     
       <!-- Main component for a primary marketing message or call to action -->
       <div class="jumbotron">
-        <p>Object-oriented Fortran 2008 HDF5 interface</p>
+        <p>Object-oriented Fortran HDF5 interface</p>
         	 
 	<p> Find us on&hellip;</p>
         <p>
@@ -133,8 +133,131 @@
 		  
         <div class="col-md-8">
 		  
-          <h1>Object-oriented Fortran 2008 HDF5 interface</h1>
-          
+          <h1>Object-oriented Fortran HDF5 interface</h1>
+          <p>Simple, robust, thin HDF5 polymorphic Fortran read/write interface.
+Reading or writing {real64,real32,int32,int64} from scalar to 7d is as simple as</p>
+<div class="codehilite"><pre><span></span><code><span class="k">use </span><span class="n">h5fortran</span>
+
+<span class="k">call </span><span class="n">h5write</span><span class="p">(</span><span class="s1">&#39;my.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;/x&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="k">call </span><span class="n">h5read</span><span class="p">(</span><span class="s1">&#39;my.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;/y&#39;</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</code></pre></div>
+
+<p>For NetCDF4 see <a href="https://github.com/geospace-code/nc4fortran/">nc4fortran</a>.
+h5fortran is designed for "serial" HDF5 read/write.
+We don't yet implement the interface for "parallel" HDF5.</p>
+<p>h5fortran is designed for easy use using <strong>static</strong> or <strong>shared</strong> linking from your project via:</p>
+<ul>
+<li><code>cmake --install</code></li>
+<li>CMake ExternalProject</li>
+<li>CMake FetchContent</li>
+<li>CMake + Git submodule</li>
+<li>Meson subproject</li>
+</ul>
+<p>Uses Fortran <code>submodule</code> for clean template structure.
+This easy-to-use, thin object-oriented modern Fortran library abstracts away the messy parts of HDF5 so that you can read / write various types/ranks of data with a single command.
+In distinction from other high-level HDF5 interfaces, h5fortran works to deduplicate code, using polymorphism wherever feasible and extensive test suite.</p>
+<p>Polymorphic <a href="./API.md">API</a> with read/write for types int32, real32, real64 with rank scalar (0-D) through 7-D.
+64-bit integers int64 are read/write from scalar through 3-D.</p>
+<p>as well as <strong>character (string)</strong>.
+If you need int64, we have a working example for that: src/concepts/int64.f90 that can easily be put into the h5fortran API--just make a GitHub Issue.</p>
+<ul>
+<li>HDF5 <strong>attributes</strong> are also supported for read/write with type character, int32, real32, real64.</li>
+<li><strong>Array slicing on read and write</strong> is supported, that is, reading or writing part of a disk HDF5 array into a variable matching the slice shape.</li>
+<li>Mismatched datatypes are coerced as per standard Fortran rules. For example, reading a float HDF5 variable into an integer Fortran variable:  42.3 =&gt; 42</li>
+<li>Zlib (deflate) compression / decompression -- h5fortran will work without Zlib, but will save/load uncompressed data only.</li>
+<li>create HDF5 soft link variables--arbitrarily many soft-linked variable names can point to an actual variable, which need not yet exist.</li>
+</ul>
+<p>Tested on systems with HDF5 1.8, 1.10 and 1.12 including:</p>
+<ul>
+<li>MacOS (homebrew)</li>
+<li>Linux (Ubuntu, CentOS)</li>
+<li>Windows Subsystem for Linux</li>
+<li>Windows MSYS2</li>
+<li>IBM Power with Gfortran</li>
+</ul>
+<p>Compilers known to work include:</p>
+<ul>
+<li>GCC (gfortran) &ge; 7</li>
+<li>Intel oneAPI HPC compiler &ge; 2021</li>
+</ul>
+<hr>
+<p>We welcome <a href="https://github.com/geospace-code/.github/blob/main/CONTRIBUTING.md">contributions</a>.
+In general we hold to the geospace-code <a href="https://github.com/geospace-code/.github/blob/main/CODE_OF_CONDUCT.md">code of conduct</a>.</p>
+<h2>Build</h2>
+<p>Using CMake:</p>
+<div class="codehilite"><pre><span></span><code>git clone https://github.com/geospace-code/h5fortran.git
+
+<span class="nb">cd</span> h5fortran
+
+cmake -B build
+
+cmake --build build
+</code></pre></div>
+
+<p>for more details see <a href="./Install.md">Install.md</a>.</p>
+<p>For general use with non-CMake build systems, "h5fortran.pc" pkg-config file is also generated / installed.</p>
+<h3>Autobuild HDF5</h3>
+<p>h5fortran will automatically build the HDF5 and ZLIB libraries if needed.
+This is useful as many HPC have broken or ABI-incompatible HDF5 libraries installed.
+Building HDF5 and ZLIB takes about a minute on a typical laptop.
+To disable this autobuild behavior, use option:</p>
+<div class="codehilite"><pre><span></span><code>cmake -B build -Dautobuild<span class="o">=</span>off
+</code></pre></div>
+
+<p>To force building the HDF5 and ZLIB libraries, to gain better performance via optimizing for your system's CPU:</p>
+<div class="codehilite"><pre><span></span><code>cmake -Dhdf5_external<span class="o">=</span>on
+
+cmake --build build
+</code></pre></div>
+
+<p>NOTE: If using Intel oneAPI on Windows, ensure that environment variable CC=icl as set manually in the command prompt:</p>
+<div class="codehilite"><pre><span></span><code><span class="nb">set </span><span class="n">CC</span><span class="p">=</span><span class="n">icl</span>
+<span class="nb">set </span><span class="n">FC</span><span class="p">=</span><span class="n">ifort</span>
+</code></pre></div>
+
+<p>This is necessary to workaround techniques used by HDF5 CMake files that don't pickup the CMake <code>set(ENV{CC})</code>.
+Otherwise, HDF5 build failures may result due to defaulting to icl-clang.</p>
+<p>By default we use Zlib 2.x a.k.a. zlib-ng.
+If you have a problem with Zlib-ng on your system, try the unmaintained Zlib 1.x by:</p>
+<div class="codehilite"><pre><span></span><code>cmake -B build -Dzlib_legacy<span class="o">=</span>on
+</code></pre></div>
+
+<h2>Usage</h2>
+<p>The simplest <a href="./Examples/">example</a> h5fortran usage is like:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">use </span><span class="n">h5fortran</span>
+
+<span class="k">call </span><span class="n">h5write</span><span class="p">(</span><span class="s1">&#39;golt.h5&#39;</span><span class="p">,</span><span class="s1">&#39;/x&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">])</span>
+</code></pre></div>
+
+<p>or</p>
+<div class="codehilite"><pre><span></span><code><span class="k">use </span><span class="n">h5fortran</span>
+
+<span class="kt">real</span> <span class="kd">::</span> <span class="n">x2</span>
+
+<span class="k">if</span><span class="p">(.</span><span class="nb">not</span><span class="p">.</span> <span class="n">is_hdf5</span><span class="p">(</span><span class="s1">&#39;golt.h5&#39;</span><span class="p">))</span> <span class="k">error stop</span> <span class="s1">&#39;golt.h5 is not an HDF5 file&#39;</span>
+
+<span class="k">call </span><span class="n">h5read</span><span class="p">(</span><span class="s1">&#39;golt.h5&#39;</span><span class="p">,</span> <span class="s1">&#39;/x&#39;</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span>
+</code></pre></div>
+
+<p>For detailed <a href="./Examples/">examples</a> see <a href="./Examples.md">Examples.md</a>.</p>
+<h2>Notes</h2>
+<ul>
+<li>The first character of the filename should be a character, NOT whitespace to avoid file open/creation errors.</li>
+<li>Polymorphic array rank is implemented.</li>
+</ul>
+<h3>Getting HDF5 library</h3>
+<p>Instead of auto-building HDF5 via H5Fortran, one may build and install the HDF5 library by:</p>
+<div class="codehilite"><pre><span></span><code>python3 scripts/build_hdf5.py
+</code></pre></div>
+
+<h3>h5fortran: missing Fortran datatypes</h3>
+<ul>
+<li>arrays of rank &gt; 7: prototyped in reader_nd.f90, writer_nd.f90. Fortran 2008 arrays are up to rank 15, but only recent compilers support.</li>
+<li>complex64 / complex128: not natively handled in HDF5. There are performance impacts for compound datatypes. Many choose to write two datasets, one each for real and imaginary like <code>A_real</code> and <code>A_imag</code></li>
+<li>non-default character kind</li>
+<li>logical / boolean: not supported natively by HDF5. h5py implements as <a href="https://docs.h5py.org/en/stable/faq.html#what-datatypes-are-supported">enum</a>.</li>
+</ul>
         </div>
 		  
         <div class="col-md-4">
@@ -313,6 +436,10 @@
                   
                 
                   
+                    <li><a href='./proc/destructor.html'>destructor</a></li>
+                  
+                
+                  
                     <li><a href='./proc/get_native_dtype.html'>get_native_dtype</a></li>
                   
                 
@@ -321,11 +448,111 @@
                   
                 
                   
-                    <li><a href='./proc/getter.html'>getter</a></li>
+                    <li><a href="./lists/procedures.html"><em>All procedures&hellip;</em></a></li>
                   
                 
                   
-                    <li><a href="./lists/procedures.html"><em>All procedures&hellip;</em></a></li>
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
                   
                 
                   
@@ -529,11 +756,11 @@
               <ul>
                 
                   
-                    <li><a href='./type/foo.html'>foo</a></li>
+                    <li><a href='./type/hdf5_file.html'>hdf5_file</a></li>
                   
                 
                   
-                    <li><a href='./type/hdf5_file.html'>hdf5_file</a></li>
+                    <li><a href='./type/t.html'>T</a></li>
                   
                 
               </ul>
@@ -555,7 +782,7 @@
             
           </p>
         </div>
-        <div class="col-xs-12 col-md-4 col-md-pull-4"><p class="text-center"> Object-oriented Fortran 2008 HDF5 interface was developed by Michael Hirsch, Ph.D.</p></div>
+        <div class="col-xs-12 col-md-4 col-md-pull-4"><p class="text-center"> Object-oriented Fortran HDF5 interface was developed by Michael Hirsch, Ph.D.</p></div>
       </div>
       <br>
       </div> <!-- /container -->    
