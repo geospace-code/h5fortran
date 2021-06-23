@@ -1,5 +1,6 @@
 
 option(hdf5_external "Build HDF5 library")
+option(autobuild "auto-build HDF5 if missing/broken" on)
 option(dev "developer mode")
 
 option(shaky "run shaky tests that may segfault since designed to fail" off)

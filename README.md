@@ -83,9 +83,16 @@ For general use with non-CMake build systems, "h5fortran.pc" pkg-config file is 
 
 ### Autobuild HDF5
 
-h5fortran will automatically build the HDF5 library if needed.
-This takes a minute or two on a typical laptop.
-If you wish to force building the HDF5 library:
+h5fortran will automatically build the HDF5 and ZLIB libraries if needed.
+This is useful as many HPC have broken or ABI-incompatible HDF5 libraries installed.
+Building HDF5 and ZLIB takes about a minute on a typical laptop.
+To disable this autobuild behavior, use option:
+
+```sh
+cmake -B build -Dautobuild=off
+```
+
+To force building the HDF5 and ZLIB libraries:
 
 ```sh
 cmake -Dhdf5_external=on
