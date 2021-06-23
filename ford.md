@@ -11,6 +11,10 @@ exclude: CMakeFortranCompilerId.F
          reader_lt_template.in.f90
          writer_lt_template.in.f90
          writer_template.in.f90
+         writer_template_i32.in.f90
+         writer_template_r64.in.f90
+         writer_template_r32.in.f90
+         writer_template_i64.in.f90
 display: public
          protected
          private
