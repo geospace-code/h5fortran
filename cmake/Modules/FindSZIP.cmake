@@ -6,7 +6,7 @@
 FindSZIP
 ---------
 
-Finds SZIP developed by HDF Group & used by HDF5.
+Finds libaec or szip used by HDF5.
 
 
 Result Variables
@@ -27,33 +27,31 @@ Targets
   SZIP Imported Target
 #]=======================================================================]
 
-include(FeatureSummary)
-set_package_properties(SZIP PROPERTIES
-URL "http://www.compressconsult.com/szip/"
-DESCRIPTION "compression library"
-PURPOSE "Some system HDF5 libraries have dynamic links to SZIP")
+find_package(libaec QUIET)
 
-find_library(SZIP_AEC_LIBRARY
-  NAMES aec libaec
-  NAMES_PER_DIR
-  DOC "libaec replaces szip with BSD license")
+if(NOT SZIP_FOUND)
+  find_library(SZIP_AEC_LIBRARY
+    NAMES aec libaec
+    NAMES_PER_DIR
+    DOC "libaec replaces szip with BSD license")
 
-find_library(SZIP_SZ_LIBRARY
-  NAMES szip sz
-  NAMES_PER_DIR
-  DOC "SZIP API")
+  find_library(SZIP_SZ_LIBRARY
+    NAMES szip sz
+    NAMES_PER_DIR
+    DOC "SZIP API")
 
-set(SZIP_LIBRARY)
-if(SZIP_AEC_LIBRARY)
-  list(APPEND SZIP_LIBRARY ${SZIP_AEC_LIBRARY})
+  set(SZIP_LIBRARY)
+  if(SZIP_AEC_LIBRARY)
+    list(APPEND SZIP_LIBRARY ${SZIP_AEC_LIBRARY})
+  endif()
+  if(SZIP_SZ_LIBRARY)
+    list(APPEND SZIP_LIBRARY ${SZIP_SZ_LIBRARY})
+  endif()
+
+  find_path(SZIP_INCLUDE_DIR
+    NAMES szlib.h libaec.h
+    DOC "SZIP header")
 endif()
-if(SZIP_SZ_LIBRARY)
-  list(APPEND SZIP_LIBRARY ${SZIP_SZ_LIBRARY})
-endif()
-
-find_path(SZIP_INCLUDE_DIR
-  NAMES szlib.h libaec.h
-  DOC "SZIP header")
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(SZIP
