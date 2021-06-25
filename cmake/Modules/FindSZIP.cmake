@@ -6,7 +6,7 @@
 FindSZIP
 ---------
 
-Finds libaec or szip used by HDF5.
+Finds libaec szip replacement, or legacy szip used by HDF5.
 
 
 Result Variables
@@ -30,10 +30,6 @@ Targets
 find_package(libaec QUIET)
 
 if(NOT SZIP_FOUND)
-  find_library(SZIP_AEC_LIBRARY
-    NAMES aec libaec
-    NAMES_PER_DIR
-    DOC "libaec replaces szip with BSD license")
 
   find_library(SZIP_SZ_LIBRARY
     NAMES szip sz
