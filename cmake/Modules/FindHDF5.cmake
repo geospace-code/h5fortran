@@ -202,8 +202,10 @@ if(Fortran IN_LIST HDF5_FIND_COMPONENTS)
   find_path(HDF5_Fortran_INCLUDE_DIR
     NAMES hdf5.mod
     HINTS ${pc_hdf5_INCLUDE_DIRS}
-    PATH_SUFFIXES ${_psuf}
+    PATH_SUFFIXES ${_psuf} gfortran/modules
+    PATHS /usr/lib64
     DOC "HDF5 Fortran modules")
+  # CentOS: /usr/lib64/gfortran/modules/hdf5.mod
 
   if(HDF5_Fortran_HL_LIBRARY AND HDF5_Fortran_LIBRARY AND HDF5_Fortran_INCLUDE_DIR)
     list(APPEND CMAKE_REQUIRED_LIBRARIES ${HDF5_Fortran_LIBRARIES})
