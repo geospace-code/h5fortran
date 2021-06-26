@@ -1,5 +1,6 @@
 # Object-oriented Fortran HDF5 interface
 
+[![DOI](https://joss.theoj.org/papers/10.21105/joss.02842/status.svg)](https://doi.org/10.21105/joss.02842)
 [![DOI](https://zenodo.org/badge/128736984.svg)](https://zenodo.org/badge/latestdoi/128736984)
 [![CDash](./archive/cdash.png)](https://my.cdash.org/index.php?project=h5fortran)
 ![ci_linux](https://github.com/geospace-code/h5fortran/workflows/ci/badge.svg)
