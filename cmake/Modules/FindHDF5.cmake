@@ -155,14 +155,22 @@ endfunction(detect_config)
 # === main program
 
 set(CMAKE_REQUIRED_LIBRARIES)
-set(_lsuf hdf5 hdf5/serial)
+set(_lsuf hdf5)
 set(_psuf static ${_lsuf})
 
 # we don't use pkg-config names because some distros pkg-config for HDF5 is broken
 # however at least the paths are often correct
 find_package(PkgConfig)
-if(NOT HDF5_C_LIBRARY)
-  pkg_search_module(pc_hdf5 hdf5 hdf5-serial)
+if(NOT HDF5_FOUND)
+  if(parallel IN_LIST HDF5_FIND_COMPONENTS)
+    pkg_search_module(pc_hdf5 hdf5)
+  else()
+    pkg_search_module(pc_hdf5 hdf5 hdf5-serial)
+  endif()
+endif()
+
+if(NOT parallel IN_LIST HDF5_FIND_COMPONENTS)
+  list(APPEND _lsuf hdf5/serial)
 endif()
 
 if(Fortran IN_LIST HDF5_FIND_COMPONENTS)
