@@ -297,6 +297,11 @@ if(NOT parallel IN_LIST HDF5_FIND_COMPONENTS)
   list(APPEND _lsuf hdf5/serial)
 endif()
 
+# Not immediately clear the benefits of this, as we'd have to foreach()
+# a priori names, kind of like we already do with find_library()
+# find_package(hdf5 CONFIG)
+# message(STATUS "hdf5 found ${hdf5_FOUND}")
+
 if(Fortran IN_LIST HDF5_FIND_COMPONENTS)
   find_hdf5_fortran()
 endif()
