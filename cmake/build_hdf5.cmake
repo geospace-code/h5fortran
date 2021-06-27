@@ -11,7 +11,11 @@ include(ExternalProject)
 
 # need to be sure _ROOT isn't empty, defined is not enough
 if(NOT HDF5_ROOT)
-  set(HDF5_ROOT ${CMAKE_INSTALL_PREFIX})
+  if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    set(HDF5_ROOT ${PROJECT_BINARY_DIR})
+  else()
+    set(HDF5_ROOT ${CMAKE_INSTALL_PREFIX})
+  endif()
 endif()
 
 set(HDF5_LIBRARIES)

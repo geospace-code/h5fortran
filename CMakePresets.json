@@ -6,7 +6,9 @@
   "name": "default",
   "binaryDir": "${sourceDir}/build",
   "generator": "Ninja",
-  "cacheVariables": {"CMAKE_BUILD_TYPE": "Release"}
+  "cacheVariables": {
+    "CMAKE_BUILD_TYPE": "Release",
+    "CMAKE_INSTALL_PREFIX": "${sourceDir}/build"}
 },
 {
   "name": "notest", "inherits": "default",
