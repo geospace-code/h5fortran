@@ -1,10 +1,12 @@
-cmake_minimum_required(VERSION 3.15...3.20)
+cmake_minimum_required(VERSION 3.15...3.21)
 project(HDF5_build LANGUAGES C Fortran)
 
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   message(FATAL_ERROR "please specify where to install HDF5 under, like
   cmake -B build -DCMAKE_INSTALL_PREFIX=~/mylibs")
 endif()
+
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/Modules/)
 
 option(hdf5_parallel "build HDF5 parallel MPI (h5fortran doesn't use yet)")
 
