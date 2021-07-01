@@ -114,10 +114,7 @@ if (ier == 0) then
 endif
 
 if (present(ierr)) ierr = ier
-if (ier /= 0) then
-  if (present(ierr)) return
-  error stop
-endif
+if ((ier /= 0) .and. .not. present(ierr)) error stop
 
 end procedure hdf_get_shape
 

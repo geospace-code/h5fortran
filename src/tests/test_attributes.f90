@@ -7,6 +7,7 @@ implicit none (type, external)
 
 character(*), parameter :: filename = 'test_attr.h5'
 character(8) :: s32  !< arbitrary length
+integer :: i32(1)
 
 call test_write_attributes(filename)
 call h5write_attr(filename, '/x', 'str29', '29')
@@ -16,11 +17,9 @@ print *,'PASSED: HDF5 write attributes'
 call test_read_attributes(filename)
 call h5read_attr(filename, '/x', 'str29', s32)
 if (s32 /= '29') error stop 'readattr_lt string'
-block
-  integer :: i32(1)
-  call h5read_attr(filename, '/x', 'int29', i32)
-  if (i32(1) /= 29) error stop 'readattr_lt integer'
-end block
+
+call h5read_attr(filename, '/x', 'int29', i32)
+if (i32(1) /= 29) error stop 'readattr_lt integer'
 
 print *, 'PASSED: HDF5 read attributes'
 

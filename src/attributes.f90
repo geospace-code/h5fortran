@@ -12,14 +12,12 @@ contains
 module procedure readattr_char
 !! NOTE: HDF5 character attributes are scalar.
 integer :: ier
+character(len(attrval)) :: buf
 
 if(.not.self%is_open) error stop 'h5fortran:readattr: file handle is not open'
 
-block
-  character(len(attrval)) :: buf
-  call h5ltget_attribute_string_f(self%lid, dname, attr, buf, ier)
-  attrval = buf
-end block
+call h5ltget_attribute_string_f(self%lid, dname, attr, buf, ier)
+attrval = buf
 
 if (present(ierr)) ierr = ier
 if (check(ier, self%filename, dname) .and. .not. present(ierr)) error stop
