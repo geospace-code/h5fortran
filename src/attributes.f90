@@ -22,10 +22,7 @@ block
 end block
 
 if (present(ierr)) ierr = ier
-if (check(ier, self%filename, dname)) then
-  if (present(ierr)) return
-  error stop
-endif
+if (check(ier, self%filename, dname) .and. .not. present(ierr)) error stop
 
 end procedure readattr_char
 
@@ -52,11 +49,7 @@ end select
 endif
 
 if (present(ierr)) ierr = ier
-if (check(ier, self%filename, dname)) then
-  if (present(ierr)) return
-  error stop
-endif
-
+if (check(ier, self%filename, dname) .and. .not. present(ierr)) error stop
 
 end procedure readattr_num
 
@@ -71,10 +64,7 @@ if(.not.self%is_open) error stop 'h5fortran:writeattr: file handle is not open'
 call h5ltset_attribute_string_f(self%lid, dname, attr, attrval, ier)
 
 if (present(ierr)) ierr = ier
-if (check(ier, self%filename, dname)) then
-  if (present(ierr)) return
-  error stop
-endif
+if (check(ier, self%filename, dname) .and. .not. present(ierr)) error stop
 
 end procedure writeattr_char
 
@@ -100,10 +90,7 @@ class default
 end select
 
 if (present(ierr)) ierr = ier
-if (check(ier, self%filename, dname)) then
-  if (present(ierr)) return
-  error stop
-endif
+if (check(ier, self%filename, dname) .and. .not. present(ierr)) error stop
 
 end procedure writeattr_num
 
@@ -120,10 +107,7 @@ call h%writeattr_char(dname, attr, attrval, ier)
 if (ier == 0) call h%close(ier)
 
 if (present(ierr)) ierr = ier
-if (check(ier, filename, dname)) then
-  if (present(ierr)) return
-  error stop
-endif
+if (check(ier, filename, dname) .and. .not. present(ierr)) error stop
 
 end procedure writeattr_char_lt
 
@@ -140,10 +124,7 @@ call h%writeattr_num(dname, attr, attrval, ier)
 if (ier == 0) call h%close(ier)
 
 if (present(ierr)) ierr = ier
-if (check(ier, filename, dname)) then
-  if (present(ierr)) return
-  error stop
-endif
+if (check(ier, filename, dname) .and. .not. present(ierr)) error stop
 
 end procedure writeattr_num_lt
 

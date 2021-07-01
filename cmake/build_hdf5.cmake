@@ -12,7 +12,7 @@ include(ExternalProject)
 # need to be sure _ROOT isn't empty, defined is not enough
 if(NOT HDF5_ROOT)
   if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-    set(HDF5_ROOT ${PROJECT_BINARY_DIR})
+    set(HDF5_ROOT ${PROJECT_BINARY_DIR} CACHE PATH "HDF5_ROOT")
   else()
     set(HDF5_ROOT ${CMAKE_INSTALL_PREFIX})
   endif()

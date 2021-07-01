@@ -12,7 +12,7 @@ endif()
 # need to be sure _ROOT isn't empty, defined is not enough
 if(NOT ZLIB_ROOT)
   if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-    set(ZLIB_ROOT ${PROJECT_BINARY_DIR})
+    set(ZLIB_ROOT ${PROJECT_BINARY_DIR} CACHE PATH "ZLIB_ROOT")
   else()
     set(ZLIB_ROOT ${CMAKE_INSTALL_PREFIX})
   endif()
