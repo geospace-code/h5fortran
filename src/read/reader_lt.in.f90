@@ -15,9 +15,25 @@ call h%close()
 end procedure h5exist
 
 
-module procedure lt0read
+module procedure lt0read_r32
 @reader_lt_template@
-end procedure lt0read
+end procedure lt0read_r32
+
+module procedure lt0read_r64
+@reader_lt_template@
+end procedure lt0read_r64
+
+module procedure lt0read_i32
+@reader_lt_template@
+end procedure lt0read_i32
+
+module procedure lt0read_i64
+@reader_lt_template@
+end procedure lt0read_i64
+
+module procedure lt0read_char
+@reader_lt_template@
+end procedure lt0read_char
 
 module procedure lt1read
 @reader_lt_template@

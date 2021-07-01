@@ -9,9 +9,26 @@ implicit none (type, external)
 contains
 
 
-module procedure hdf_read_scalar
+module procedure hdf_read_scalar_char
 
-real(real32) :: buf_r32
+integer :: ier
+character(len(value)) :: buf
+
+if(.not.self%is_open) error stop 'h5fortran:reader: file handle is not open'
+
+if (.not.self%exist(dname)) error stop 'h5fortran:reader: ' // dname // ' does not exist in ' // self%filename
+
+call h5ltread_dataset_string_f(self%lid, dname, buf, ier)
+value = buf
+
+if (present(ierr)) ierr = ier
+if (check(ier, self%filename, dname) .and. .not.present(ierr)) error stop
+
+end procedure hdf_read_scalar_char
+
+
+module procedure hdf_read_scalar_r32
+
 real(real64) :: buf_r64
 integer(int32) :: buf_i32
 integer(int64) :: buf_i64
@@ -31,85 +48,20 @@ if(ier/=0) error stop 'h5fortran:reader: ' // dname // ' could not be opened in 
 
 native_dtype = get_native_dtype(ds_id, dname, self%filename)
 
-select type (value)
-type is (character(*))
-  call hdf_wrapup(ds_id, space_id, ier)  !< FIXME: till character is treated same as other types
-  if(native_dtype /= H5T_NATIVE_CHARACTER) error stop "h5fortran:reader: non-character variable: " // dname//" in "//self%filename
-  block
-    character(len(value)) :: buf
-    call h5ltread_dataset_string_f(self%lid, dname, buf, ier)
-    value = buf
-  end block
-  return
-end select
-
 !> cast the dataset read from disk to the variable type presented by user h5f%read("/my_dataset", x)
 !> We only cast when needed to save memory.
 if(native_dtype == H5T_NATIVE_DOUBLE) then
-!! select case doesn't allow H5T_*
-  select type(value)
-  type is (real(real64))
-    call h5dread_f(ds_id, H5T_NATIVE_DOUBLE, value, dims, ier)
-  type is (real(real32))
-    call h5dread_f(ds_id, H5T_NATIVE_DOUBLE, buf_r64, dims, ier)
-    value = real(buf_r64, real32)
-  type is (integer(int32))
-    call h5dread_f(ds_id, H5T_NATIVE_DOUBLE, buf_r64, dims, ier)
-    value = int(buf_r64, int32)
-  type is (integer(int64))
-    call h5dread_f(ds_id, H5T_NATIVE_DOUBLE, buf_r64, dims, ier)
-    value = int(buf_r64, int64)
-  class default
-    error stop 'unknown variable type'
-  end select
+  !! select case doesn't allow H5T_*
+  call h5dread_f(ds_id, H5T_NATIVE_DOUBLE, buf_r64, dims, ier)
+  value = real(buf_r64, real32)
 elseif(native_dtype == H5T_NATIVE_REAL) then
-  select type(value)
-  type is (real(real64))
-    call h5dread_f(ds_id, H5T_NATIVE_REAL, buf_r32, dims, ier)
-    value = real(buf_r32, real64)
-  type is (real(real32))
-    call h5dread_f(ds_id, H5T_NATIVE_REAL, value, dims, ier)
-  type is (integer(int32))
-    call h5dread_f(ds_id, H5T_NATIVE_REAL, buf_r32, dims, ier)
-    value = int(buf_r32, int32)
-  type is (integer(int64))
-    call h5dread_f(ds_id, H5T_NATIVE_REAL, buf_r32, dims, ier)
-    value = int(buf_r32, int64)
-  class default
-    error stop 'unknown variable type'
-  end select
+  call h5dread_f(ds_id, H5T_NATIVE_REAL, value, dims, ier)
 elseif(native_dtype == H5T_NATIVE_INTEGER) then
-  select type(value)
-  type is (real(real64))
-    call h5dread_f(ds_id, H5T_NATIVE_INTEGER, buf_i32, dims, ier)
-    value = real(buf_i32, real64)
-  type is (real(real32))
-    call h5dread_f(ds_id, H5T_NATIVE_INTEGER, buf_i32, dims, ier)
-    value = real(buf_i32, real32)
-  type is (integer(int32))
-    call h5dread_f(ds_id, H5T_NATIVE_INTEGER, value, dims, ier)
-  type is (integer(int64))
-    call h5dread_f(ds_id, H5T_NATIVE_INTEGER, buf_i32, dims, ier)
-    value = int(buf_i32, int64)
-  class default
-    error stop 'unknown variable type'
-  end select
+  call h5dread_f(ds_id, H5T_NATIVE_INTEGER, buf_i32, dims, ier)
+  value = real(buf_i32, real32)
 elseif(native_dtype == H5T_STD_I64LE) then
-  select type(value)
-  type is (real(real64))
-    call h5dread_f(ds_id, H5T_STD_I64LE, buf_i64, dims, ier)
-    value = real(buf_i64, real64)
-  type is (real(real32))
-    call h5dread_f(ds_id, H5T_STD_I64LE, buf_i64, dims, ier)
-    value = real(buf_i64, real32)
-  type is (integer(int32))
-    call h5dread_f(ds_id, H5T_STD_I64LE, buf_i64, dims, ier)
-    value = int(buf_i64, int32)
-  type is (integer(int64))
-    call h5dread_f(ds_id, H5T_STD_I64LE, value, dims, ier)
-  class default
-    error stop 'unknown variable type'
-  end select
+  call h5dread_f(ds_id, H5T_STD_I64LE, buf_i64, dims, ier)
+  value = real(buf_i64, real32)
 else
   error stop 'h5fortran:reader: non-handled datatype--please reach out to developers.'
 end if
@@ -117,11 +69,151 @@ if(ier/=0) error stop 'h5fortran:reader: reading ' // dname // ' from ' // self%
 
 call hdf_wrapup(ds_id, space_id, ier)
 
+if (present(ierr)) ierr = ier
+if (check(ier, self%filename, dname) .and. .not.present(ierr)) error stop
+
+end procedure hdf_read_scalar_r32
+
+
+module procedure hdf_read_scalar_r64
+
+real(real32) :: buf_r32
+integer(int32) :: buf_i32
+integer(int64) :: buf_i64
+
+integer(HSIZE_T) :: dims(rank(value))
+integer(hid_t) :: ds_id, space_id, native_dtype
+integer :: ier
+
+if(.not.self%is_open) error stop 'h5fortran:reader: file handle is not open'
+
+space_id = 0
+
+if (.not.self%exist(dname)) error stop 'h5fortran:reader: ' // dname // ' does not exist in ' // self%filename
+
+call h5dopen_f(self%lid, dname, ds_id, ier)
+if(ier/=0) error stop 'h5fortran:reader: ' // dname // ' could not be opened in ' // self%filename
+
+native_dtype = get_native_dtype(ds_id, dname, self%filename)
+
+!> cast the dataset read from disk to the variable type presented by user h5f%read("/my_dataset", x)
+!> We only cast when needed to save memory.
+if(native_dtype == H5T_NATIVE_DOUBLE) then
+  call h5dread_f(ds_id, H5T_NATIVE_DOUBLE, value, dims, ier)
+elseif(native_dtype == H5T_NATIVE_REAL) then
+  call h5dread_f(ds_id, H5T_NATIVE_REAL, buf_r32, dims, ier)
+  value = real(buf_r32, real64)
+elseif(native_dtype == H5T_NATIVE_INTEGER) then
+  call h5dread_f(ds_id, H5T_NATIVE_INTEGER, buf_i32, dims, ier)
+  value = real(buf_i32, real64)
+elseif(native_dtype == H5T_STD_I64LE) then
+  call h5dread_f(ds_id, H5T_STD_I64LE, buf_i64, dims, ier)
+  value = real(buf_i64, real64)
+else
+  error stop 'h5fortran:reader: non-handled datatype--please reach out to developers.'
+end if
+if(ier/=0) error stop 'h5fortran:reader: reading ' // dname // ' from ' // self%filename
+
+call hdf_wrapup(ds_id, space_id, ier)
 
 if (present(ierr)) ierr = ier
 if (check(ier, self%filename, dname) .and. .not.present(ierr)) error stop
 
-end procedure hdf_read_scalar
+end procedure hdf_read_scalar_r64
+
+
+module procedure hdf_read_scalar_i32
+
+real(real32) :: buf_r32
+real(real64) :: buf_r64
+integer(int64) :: buf_i64
+
+integer(HSIZE_T) :: dims(rank(value))
+integer(hid_t) :: ds_id, space_id, native_dtype
+integer :: ier
+
+if(.not.self%is_open) error stop 'h5fortran:reader: file handle is not open'
+
+space_id = 0
+
+if (.not.self%exist(dname)) error stop 'h5fortran:reader: ' // dname // ' does not exist in ' // self%filename
+
+call h5dopen_f(self%lid, dname, ds_id, ier)
+if(ier/=0) error stop 'h5fortran:reader: ' // dname // ' could not be opened in ' // self%filename
+
+native_dtype = get_native_dtype(ds_id, dname, self%filename)
+
+!> cast the dataset read from disk to the variable type presented by user h5f%read("/my_dataset", x)
+!> We only cast when needed to save memory.
+if(native_dtype == H5T_NATIVE_DOUBLE) then
+  call h5dread_f(ds_id, H5T_NATIVE_DOUBLE, buf_r64, dims, ier)
+  value = int(buf_r64, int32)
+elseif(native_dtype == H5T_NATIVE_REAL) then
+  call h5dread_f(ds_id, H5T_NATIVE_REAL, buf_r32, dims, ier)
+  value = int(buf_r32, int32)
+elseif(native_dtype == H5T_NATIVE_INTEGER) then
+  call h5dread_f(ds_id, H5T_NATIVE_INTEGER, value, dims, ier)
+elseif(native_dtype == H5T_STD_I64LE) then
+  call h5dread_f(ds_id, H5T_STD_I64LE, buf_i64, dims, ier)
+  value = int(buf_i64, int32)
+else
+  error stop 'h5fortran:reader: non-handled datatype--please reach out to developers.'
+end if
+if(ier/=0) error stop 'h5fortran:reader: reading ' // dname // ' from ' // self%filename
+
+call hdf_wrapup(ds_id, space_id, ier)
+
+if (present(ierr)) ierr = ier
+if (check(ier, self%filename, dname) .and. .not.present(ierr)) error stop
+
+end procedure hdf_read_scalar_i32
+
+
+module procedure hdf_read_scalar_i64
+
+real(real32) :: buf_r32
+real(real64) :: buf_r64
+integer(int32) :: buf_i32
+
+integer(HSIZE_T) :: dims(rank(value))
+integer(hid_t) :: ds_id, space_id, native_dtype
+integer :: ier
+
+if(.not.self%is_open) error stop 'h5fortran:reader: file handle is not open'
+
+space_id = 0
+
+if (.not.self%exist(dname)) error stop 'h5fortran:reader: ' // dname // ' does not exist in ' // self%filename
+
+call h5dopen_f(self%lid, dname, ds_id, ier)
+if(ier/=0) error stop 'h5fortran:reader: ' // dname // ' could not be opened in ' // self%filename
+
+native_dtype = get_native_dtype(ds_id, dname, self%filename)
+
+!> cast the dataset read from disk to the variable type presented by user h5f%read("/my_dataset", x)
+!> We only cast when needed to save memory.
+if(native_dtype == H5T_NATIVE_DOUBLE) then
+  call h5dread_f(ds_id, H5T_NATIVE_DOUBLE, buf_r64, dims, ier)
+  value = int(buf_r64, int64)
+elseif(native_dtype == H5T_NATIVE_REAL) then
+  call h5dread_f(ds_id, H5T_NATIVE_REAL, buf_r32, dims, ier)
+  value = int(buf_r32, int64)
+elseif(native_dtype == H5T_NATIVE_INTEGER) then
+  call h5dread_f(ds_id, H5T_NATIVE_INTEGER, buf_i32, dims, ier)
+  value = int(buf_i32, int64)
+elseif(native_dtype == H5T_STD_I64LE) then
+  call h5dread_f(ds_id, H5T_STD_I64LE, value, dims, ier)
+else
+  error stop 'h5fortran:reader: non-handled datatype--please reach out to developers.'
+end if
+if(ier/=0) error stop 'h5fortran:reader: reading ' // dname // ' from ' // self%filename
+
+call hdf_wrapup(ds_id, space_id, ier)
+
+if (present(ierr)) ierr = ier
+if (check(ier, self%filename, dname) .and. .not.present(ierr)) error stop
+
+end procedure hdf_read_scalar_i64
 
 
 module procedure hdf_read_1d
