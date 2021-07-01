@@ -48,15 +48,19 @@ ${zlib_root}
 -DCMAKE_BUILD_TYPE=Release
 -DHDF5_BUILD_FORTRAN:BOOL=true
 -DHDF5_BUILD_CPP_LIB:BOOL=false
--DHDF5_BUILD_TOOLS:BOOL=true
 -DBUILD_TESTING:BOOL=false
 -DHDF5_BUILD_EXAMPLES:BOOL=false)
 
 if(hdf5_parallel)
   find_package(MPI REQUIRED COMPONENTS C)
-  list(APPEND hdf5_cmake_args -DHDF5_ENABLE_PARALLEL:BOOL=true)
+  list(APPEND hdf5_cmake_args
+    -DHDF5_ENABLE_PARALLEL:BOOL=true
+    -DHDF5_BUILD_TOOLS:BOOL=false)
+    # https://github.com/HDFGroup/hdf5/issues/818  for broken ph5diff
 else()
-  list(APPEND hdf5_cmake_args -DHDF5_ENABLE_PARALLEL:BOOL=false)
+  list(APPEND hdf5_cmake_args
+    -DHDF5_ENABLE_PARALLEL:BOOL=false
+    -DHDF5_BUILD_TOOLS:BOOL=true)
 endif()
 
 if(CMAKE_VERSION VERSION_LESS 3.20)
