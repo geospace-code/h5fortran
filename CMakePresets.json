@@ -8,12 +8,15 @@
   "generator": "Ninja",
   "cacheVariables": {
     "CMAKE_BUILD_TYPE": "Release",
-    "CMAKE_INSTALL_PREFIX": "${sourceDir}/build"}
+    "CMAKE_INSTALL_PREFIX": "${sourceDir}/build"
+  }
 },
 {
   "name": "notest", "inherits": "default",
   "displayName": "omit self-tests",
-  "cacheVariables": {"BUILD_TESTING": false}
+  "cacheVariables": {
+    "BUILD_TESTING": false
+  }
 },
 {
   "name": "build", "inherits": "default",
@@ -25,24 +28,11 @@
 },
 {
   "name": "intel", "inherits": "default",
-  "displayName": "Intel Classic compiler: Linux/MacOS",
-  "environment": {
-    "CC": "icc",
-    "CXX": "icpc",
-    "FC": "ifort"
-  }
-},
-{
-  "name": "intelwin", "inherits": "intel",
-  "displayName": "Intel Classic compiler: Windows",
-  "environment": {
-    "CC": "icl",
-    "CXX": "icl"
-  }
-},
-{
-  "name": "intelnext", "inherits": "intel",
   "displayName": "Intel oneAPI LLVM",
+  "binaryDir": "${sourceDir}/build-intel",
+  "cacheVariables": {
+    "CMAKE_INSTALL_PREFIX": "${sourceDir}/build-intel"
+  },
   "environment": {
     "CC": "icx",
     "CXX": "icx",
@@ -54,6 +44,10 @@
   {
     "name": "default",
     "configurePreset": "default"
+  },
+  {
+    "name": "intel",
+    "configurePreset": "intel"
   }
 ],
 "testPresets": [
@@ -66,7 +60,12 @@
   },
   "execution": {
     "noTestsAction": "error",
-    "stopOnFailure": false}
+    "stopOnFailure": false
+  }
+},
+{
+  "name": "intel", "inherits": "default",
+  "configurePreset": "intel"
 }
 ]
 }
