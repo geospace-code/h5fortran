@@ -7,7 +7,7 @@ test('minimal', test_minimal,
   timeout: 10)
 
 foreach t : ['array', 'attributes', 'deflate', 'destructor', 'error', 'exist', 'module', 'layout', 'lt', 'scalar', 'shape', 'string',
-'fail_read_size_mismatch', 'fail_read_rank_mismatch', 'fail_nonexist_variable', 'fail_unknown_read']
+'fail_read_size_mismatch', 'fail_read_rank_mismatch', 'fail_nonexist_variable']
 
   e = executable('test_'+t, 'test_' + t + '.f90', dependencies: hdf5_interface)
   if t == 'shape'
