@@ -15,7 +15,7 @@ Components
 MPI code languages are specified by components:
 
 ``C``
-  C interface for MPI (virtually all MPI libraries will have this)
+  C interface for MPI--all MPI libraries have this. Default.
 
 ``CXX``
   C++ interface for MPI (not all MPI libraries have C++ interface)
@@ -449,10 +449,11 @@ find_program(MPIEXEC_EXECUTABLE
   PATH_SUFFIXES bin openmpi/bin mpich/bin
 )
 
-
-if(C IN_LIST MPI_FIND_COMPONENTS)
-  find_c()
+# like factory FindMPI, always find MPI_C
+if(NOT C IN_LIST MPI_FIND_COMPONENTS)
+  list(APPEND MPI_FIND_COMPONENTS C)
 endif()
+find_c()
 
 if(CXX IN_LIST MPI_FIND_COMPONENTS)
   find_cxx()
