@@ -31,22 +31,15 @@ find_package(libaec QUIET)
 
 if(NOT SZIP_FOUND)
 
-  find_library(SZIP_SZ_LIBRARY
+  find_library(SZIP_LIBRARY
     NAMES szip sz
     NAMES_PER_DIR
     DOC "SZIP API")
 
-  set(SZIP_LIBRARY)
-  if(SZIP_AEC_LIBRARY)
-    list(APPEND SZIP_LIBRARY ${SZIP_AEC_LIBRARY})
-  endif()
-  if(SZIP_SZ_LIBRARY)
-    list(APPEND SZIP_LIBRARY ${SZIP_SZ_LIBRARY})
-  endif()
-
   find_path(SZIP_INCLUDE_DIR
-    NAMES szlib.h libaec.h
+    NAMES szlib.h
     DOC "SZIP header")
+
 endif()
 
 include(FindPackageHandleStandardArgs)
