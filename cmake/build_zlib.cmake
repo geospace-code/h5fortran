@@ -28,25 +28,21 @@ set(zlib_cmake_args
 -DCMAKE_BUILD_TYPE=Release
 -DCMAKE_INSTALL_PREFIX:PATH=${ZLIB_ROOT})
 
-if(zlib_git)
-ExternalProject_Add(ZLIB
-GIT_REPOSITORY ${zlib_git}
-GIT_TAG ${zlib_tag}
-CONFIGURE_HANDLED_BY_BUILD ON
-INACTIVITY_TIMEOUT 15
-CMAKE_ARGS ${zlib_cmake_args}
-BUILD_BYPRODUCTS ${ZLIB_LIBRARY}
-)
+if(CMAKE_VERSION VERSION_LESS 3.20)
+  ExternalProject_Add(ZLIB
+  URL ${zlib_url}
+  URL_HASH SHA256=${zlib_sha256}
+  CMAKE_ARGS ${zlib_cmake_args}
+  BUILD_BYPRODUCTS ${ZLIB_LIBRARY})
 else()
-ExternalProject_Add(ZLIB
-URL ${zlib_url}
-URL_HASH SHA256=${zlib_sha256}
-CONFIGURE_HANDLED_BY_BUILD ON
-INACTIVITY_TIMEOUT 15
-CMAKE_ARGS ${zlib_cmake_args}
-BUILD_BYPRODUCTS ${ZLIB_LIBRARY}
-)
-endif(zlib_git)
+  ExternalProject_Add(ZLIB
+  URL ${zlib_url}
+  URL_HASH SHA256=${zlib_sha256}
+  CMAKE_ARGS ${zlib_cmake_args}
+  BUILD_BYPRODUCTS ${ZLIB_LIBRARY}
+  CONFIGURE_HANDLED_BY_BUILD ON
+  INACTIVITY_TIMEOUT 15)
+endif()
 
 # --- imported target
 
