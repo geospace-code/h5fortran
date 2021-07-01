@@ -36,6 +36,25 @@ Result Variables
 ``MPI_INCLUDE_DIRS``
   MPI include path
 
+``MPI_<LANG>_LIBRARIES``
+  libraries for <LANG>
+
+``MPI_<LANG>_INCLUDE_DIRS``
+  include dirs for <LANG>
+
+``MPI_<LANG>_LINK_FLAGS``
+  link flags for <LANG>
+
+
+Imported Targets
+^^^^^^^^^^^^^^^^
+
+``MPI::MPI_<LANG>``
+  imported target for <LANG>  e.g. ``MPI::MPI_C`` or ``MPI::MPI_Fortran``
+
+
+
+
 #]=======================================================================]
 include(CheckFortranSourceCompiles)
 include(CheckCSourceCompiles)
@@ -63,7 +82,18 @@ set(${outvar} ${ret} PARENT_SCOPE)
 endfunction(get_flags)
 
 
+function(get_link_flags raw outvar)
+
+string(REGEX MATCHALL "(^| )(-Wl,|-L|-Xlinker +)([^\" ]+|\"[^\"]+\")" _flags "${raw}")
+list(TRANSFORM _flags STRIP)
+
+set(${outvar} ${_flags} PARENT_SCOPE)
+
+endfunction(get_link_flags)
+
+
 function(pop_flag raw flag outvar)
+# this gives the argument to flags to get their paths like -I or -l or -L
 
 set(_v)
 string(REGEX MATCHALL "(^| )${flag} *([^\" ]+|\"[^\"]+\")" _vars "${raw}")
@@ -78,6 +108,7 @@ endfunction(pop_flag)
 
 
 function(pop_path raw outvar)
+# these are file paths without flags like /usr/lib/mpi.so
 
 set(flag /)
 set(_v)
@@ -146,6 +177,8 @@ if(c_wrap)
 
     pop_path(${c_raw} lib_paths)
     set(MPI_C_LIBRARY ${lib_paths})
+
+    get_link_flags(${c_raw} MPI_C_LINK_FLAGS)
   endif(c_raw)
 endif(c_wrap)
 
@@ -194,6 +227,7 @@ endif()
 
 set(MPI_C_INCLUDE_DIR ${MPI_C_INCLUDE_DIR} PARENT_SCOPE)
 set(MPI_C_LIBRARY ${MPI_C_LIBRARY} PARENT_SCOPE)
+set(MPI_C_LINK_FLAGS ${MPI_C_LINK_FLAGS} PARENT_SCOPE)
 set(MPI_C_FOUND true PARENT_SCOPE)
 
 endfunction(find_c)
@@ -255,6 +289,8 @@ if(cxx_wrap)
 
     pop_path(${cxx_raw} lib_paths)
     set(MPI_CXX_LIBRARY ${lib_paths})
+
+    get_link_flags(${cxx_raw} MPI_CXX_LINK_FLAGS)
   endif(cxx_raw)
 endif(cxx_wrap)
 
@@ -304,6 +340,7 @@ endif()
 
 set(MPI_CXX_INCLUDE_DIR ${MPI_CXX_INCLUDE_DIR} PARENT_SCOPE)
 set(MPI_CXX_LIBRARY ${MPI_CXX_LIBRARY} PARENT_SCOPE)
+set(MPI_CXX_LINK_FLAGS ${MPI_CXX_LINK_FLAGS} PARENT_SCOPE)
 set(MPI_CXX_FOUND true PARENT_SCOPE)
 
 endfunction(find_cxx)
@@ -367,6 +404,8 @@ if(f_wrap)
 
     pop_path(${f_raw} lib_paths)
     set(MPI_Fortran_LIBRARY ${lib_paths})
+
+    get_link_flags(${f_raw} MPI_Fortran_LINK_FLAGS)
   endif(f_raw)
 endif(f_wrap)
 
@@ -428,6 +467,7 @@ endif()
 
 set(MPI_Fortran_INCLUDE_DIR ${MPI_Fortran_INCLUDE_DIR} PARENT_SCOPE)
 set(MPI_Fortran_LIBRARY ${MPI_Fortran_LIBRARY} PARENT_SCOPE)
+set(MPI_Fortran_LINK_FLAGS ${MPI_Fortran_LINK_FLAGS} PARENT_SCOPE)
 set(MPI_Fortran_FOUND true PARENT_SCOPE)
 
 endfunction(find_fortran)
@@ -484,6 +524,9 @@ if(MPI_C_FOUND)
       INTERFACE_LINK_LIBRARIES "${MPI_C_LIBRARIES}"
       INTERFACE_INCLUDE_DIRECTORIES "${MPI_C_INCLUDE_DIRS}"
     )
+    if(MPI_C_LINK_FLAGS)
+      set_target_properties(MPI::MPI_C PROPERTIES INTERFACE_LINK_OPTIONS "${MPI_C_LINK_FLAGS}")
+    endif()
   endif()
 endif(MPI_C_FOUND)
 
@@ -496,6 +539,9 @@ if(MPI_CXX_FOUND)
       INTERFACE_LINK_LIBRARIES "${MPI_CXX_LIBRARIES}"
       INTERFACE_INCLUDE_DIRECTORIES "${MPI_CXX_INCLUDE_DIRS}"
     )
+    if(MPI_CXX_LINK_FLAGS)
+      set_target_properties(MPI::MPI_CXX PROPERTIES INTERFACE_LINK_OPTIONS "${MPI_CXX_LINK_FLAGS}")
+    endif()
   endif()
 endif(MPI_CXX_FOUND)
 
@@ -508,6 +554,9 @@ if(MPI_Fortran_FOUND)
       INTERFACE_LINK_LIBRARIES "${MPI_Fortran_LIBRARIES}"
       INTERFACE_INCLUDE_DIRECTORIES "${MPI_Fortran_INCLUDE_DIRS}"
     )
+    if(MPI_Fortran_LINK_FLAGS)
+      set_target_properties(MPI::MPI_Fortran PROPERTIES INTERFACE_LINK_OPTIONS "${MPI_Fortran_LINK_FLAGS}")
+    endif()
   endif()
 
 endif(MPI_Fortran_FOUND)
