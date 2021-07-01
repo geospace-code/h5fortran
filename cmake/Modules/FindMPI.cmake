@@ -121,13 +121,15 @@ endif()
 if(CMAKE_C_COMPILER_ID MATCHES Intel)
   set(wrap_name mpiicc mpiicc.bat)
 else()
-  set(wrap_name mpicc)
+  set(wrap_name mpicc mpicc.openmpi mpicc.mpich)
 endif()
 
 find_program(c_wrap
   NAMES ${wrap_name}
   HINTS ${_hints}
-  NAMES_PER_DIR)
+  NAMES_PER_DIR
+  PATHS /usr/lib64
+  PATH_SUFFIXES bin openmpi/bin)
 if(c_wrap)
   get_filename_component(_wrap_hint ${c_wrap} DIRECTORY)
   get_filename_component(_wrap_hint ${_wrap_hint} DIRECTORY)
@@ -228,13 +230,15 @@ endif()
 if(CMAKE_CXX_COMPILER_ID MATCHES Intel)
   set(wrap_name mpiicpc mpiicpc.bat)
 else()
-  set(wrap_name mpicxx)
+  set(wrap_name mpicxx mpicxx.openmpi mpicxx.mpich)
 endif()
 
 find_program(cxx_wrap
   NAMES ${wrap_name}
   HINTS ${_hints}
-  NAMES_PER_DIR)
+  NAMES_PER_DIR
+  PATHS /usr/lib64
+  PATH_SUFFIXES bin openmpi/bin)
 if(cxx_wrap)
   get_filename_component(_wrap_hint ${cxx_wrap} DIRECTORY)
   get_filename_component(_wrap_hint ${_wrap_hint} DIRECTORY)
@@ -337,13 +341,16 @@ endif()
 if(CMAKE_Fortran_COMPILER_ID MATCHES Intel)
   set(wrap_name mpiifort mpiifort.bat)
 else()
-  set(wrap_name mpifort mpifc)
+  set(wrap_name mpifort mpifc mpifort.openmpi mpifort.mpich)
 endif()
 
 find_program(f_wrap
   NAMES ${wrap_name}
   HINTS ${_hints}
-  NAMES_PER_DIR)
+  NAMES_PER_DIR
+  PATHS /usr/lib64
+  PATH_SUFFIXES bin openmpi/bin
+  )
 if(f_wrap)
   get_filename_component(_wrap_hint ${f_wrap} DIRECTORY)
   get_filename_component(_wrap_hint ${_wrap_hint} DIRECTORY)
