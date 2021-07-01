@@ -16,14 +16,14 @@ endif()
 # --- compiler options
 # we left off "-std=f2018" type flags as they tend to issue false warnings
 
-if(CMAKE_Fortran_COMPILER_ID STREQUAL Intel)
+if(CMAKE_Fortran_COMPILER_ID MATCHES Intel)
   if(WIN32)
     # add_compile_options(/Qdiag-error-limit:3)
-    string(APPEND CMAKE_Fortran_FLAGS " /warn /heap-arrays")
+    string(APPEND CMAKE_Fortran_FLAGS " /QxHost /warn /heap-arrays")
     string(APPEND CMAKE_Fortran_FLAGS_DEBUG " /traceback /check:bounds /debug:all")
   else()
     # add_compile_options(-diag-error-limit=3)
-    string(APPEND CMAKE_Fortran_FLAGS " -warn -heap-arrays")
+    string(APPEND CMAKE_Fortran_FLAGS " -xHost -warn -heap-arrays")
     string(APPEND CMAKE_Fortran_FLAGS_DEBUG " -traceback -check all -debug extended")
   endif()
 elseif(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
