@@ -45,6 +45,11 @@ Result Variables
 ``MPI_<LANG>_LINK_FLAGS``
   link flags for <LANG>
 
+``MPI_Fortran_HAVE_F90_MODULE``
+  has MPI-2 Fortran 90 interface
+
+``MPI_Fortran_HAVE_F08_MODULE``
+  has MPI-3 Fortran 2008 interface
 
 Imported Targets
 ^^^^^^^^^^^^^^^^
@@ -84,8 +89,31 @@ endfunction(get_flags)
 
 function(get_link_flags raw outvar)
 
-string(REGEX MATCHALL "(^| )(-Wl,|-L|-Xlinker +)([^\" ]+|\"[^\"]+\")" _flags "${raw}")
-list(TRANSFORM _flags STRIP)
+
+string(REGEX MATCHALL "(^| )(${CMAKE_LIBRARY_PATH_FLAG})([^\" ]+|\"[^\"]+\")" _Lflags "${raw}")
+list(TRANSFORM _Lflags STRIP)
+set(_flags ${_Lflags})
+
+string(REGEX MATCHALL "(^| )(-Wl,)([^\" ]+|\"[^\"]+\")" _Wflags "${raw}")
+list(TRANSFORM _Wflags STRIP)
+if(_Wflags)
+  set(CMAKE_C_LINKER_WRAPPER_FLAG "-Wl,")
+  set(CMAKE_C_LINKER_WRAPPER_FLAG_SEP ",")
+  set(CMAKE_CXX_LINKER_WRAPPER_FLAG "-Wl,")
+  set(CMAKE_CXX_LINKER_WRAPPER_FLAG_SEP ",")
+  set(CMAKE_Fortran_LINKER_WRAPPER_FLAG "-Wl,")
+  set(CMAKE_Fortran_LINKER_WRAPPER_FLAG_SEP ",")
+  list(APPEND _flags ${_Wflags})
+else()
+  pop_flag("${raw}" -Xlinker _Xflags)
+  if(_Xflags)
+    set(CMAKE_C_LINKER_WRAPPER_FLAG "-Xlinker" " ")
+    set(CMAKE_CXX_LINKER_WRAPPER_FLAG "-Xlinker" " ")
+    set(CMAKE_Fortran_LINKER_WRAPPER_FLAG "-Xlinker" " ")
+    string(REPLACE ";" "," _Xflags "${_Xflags}")
+    list(APPEND _flags "LINKER:${_Xflags}")
+  endif()
+endif()
 
 set(${outvar} ${_flags} PARENT_SCOPE)
 
@@ -109,6 +137,10 @@ endfunction(pop_flag)
 
 function(pop_path raw outvar)
 # these are file paths without flags like /usr/lib/mpi.so
+
+if(MSVC)
+  return()
+endif()
 
 set(flag /)
 set(_v)
@@ -465,9 +497,17 @@ if(NOT MPI_Fortran_links)
   return()
 endif()
 
+check_fortran_source_compiles(
+"program test
+use mpi_f08, only : mpi_comm_rank, mpi_comm_world, mpi_init, mpi_finalize
+end program"
+MPI_Fortran_HAVE_F08_MODULE SRC_EXT f90)
+
 set(MPI_Fortran_INCLUDE_DIR ${MPI_Fortran_INCLUDE_DIR} PARENT_SCOPE)
 set(MPI_Fortran_LIBRARY ${MPI_Fortran_LIBRARY} PARENT_SCOPE)
 set(MPI_Fortran_LINK_FLAGS ${MPI_Fortran_LINK_FLAGS} PARENT_SCOPE)
+set(MPI_Fortran_HAVE_F90_MODULE true PARENT_SCOPE)
+set(MPI_Fortran_HAVE_F08_MODULE ${MPI_Fortran_HAVE_F08_MODULE} PARENT_SCOPE)
 set(MPI_Fortran_FOUND true PARENT_SCOPE)
 
 endfunction(find_fortran)
