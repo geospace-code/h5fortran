@@ -15,7 +15,7 @@ character(:), allocatable :: final
 
 character(*), parameter :: path='test_string.h5'
 
-call h%open(path, status='replace')
+call h%open(path, action='w')
 
 call h%write('/little', '42')
 call h%write_char('/little_char', '42')
@@ -23,7 +23,7 @@ call h%write('/MySentence', 'this is a little sentence.')
 
 call h%close()
 
-call h%open(path, status='old', action='r')
+call h%open(path, action='r')
 call h%read('/little', value)
 
 if (value /= '42') error stop 'test_string:  read/write verification failure. Value: '// value

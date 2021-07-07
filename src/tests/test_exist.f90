@@ -14,9 +14,6 @@ print *, 'OK: exist'
 call test_softlink()
 print *, "OK: softlink"
 
-call test_scratch()
-print *, 'OK: scratch'
-
 call test_multifiles()
 print *, 'OK: multiple files open at once'
 
@@ -27,7 +24,7 @@ integer :: i
 
 if(is_hdf5('apidfjpj-8j9ejfpq984jfp89q39SHf.h5')) error stop 'test_exist: non-existent file declared hdf5'
 
-open(newunit=i, file='not_hdf5.h5', action='write', status='replace')
+open(newunit=i, file='not_hdf5.h5', action='write')
 write(i,*) 'I am not an HDF5 file.'
 close(i)
 
@@ -64,7 +61,7 @@ type(hdf5_file) :: h
 character(*), parameter :: fn = 'soft.h5'
 integer :: y
 
-call h%open(fn, status="new")
+call h%open(fn, action='w')
 
 call h%write("/actual", 142)
 call h%softlink("/actual", "/additional")
@@ -88,29 +85,15 @@ call h%close()
 end subroutine test_softlink
 
 
-subroutine test_scratch()
-logical :: e
-type(hdf5_file) :: h
-
-call h%open("scratch.h5", status='scratch')
-call h%write("/A", 42)
-call h%close()
-
-inquire(file=h%filename, exist=e)
-if(e) error stop 'scratch file not autodeleted'
-
-end subroutine test_scratch
-
-
 subroutine test_multifiles()
 
 type(hdf5_file) :: f,g,h
 integer :: ierr
 
-call f%open(filename='A.h5', status='scratch')
-call g%open(filename='B.h5', status='scratch')
+call f%open(filename='A.h5', action='w')
+call g%open(filename='B.h5', action='w')
 if (h%is_open) error stop 'is_open not isolated at constructor'
-call h%open(filename='C.h5', status='scratch')
+call h%open(filename='C.h5', action='w')
 
 call f%flush()
 

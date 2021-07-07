@@ -33,7 +33,6 @@ integer :: comp_lvl = 0 !< compression level (1-9)  0: disable compression
 logical :: verbose=.true.
 logical :: debug=.false.
 logical :: is_open = .false.
-logical :: is_scratch = .false.
 !! will be auto-deleted on close
 integer :: libversion(3)  !< major, minor, rel
 
@@ -999,12 +998,12 @@ subroutine hdf_initialize(self,filename,ierr, status,action,comp_lvl,verbose,deb
 class(hdf5_file), intent(inout)    :: self
 character(*), intent(in) :: filename
 integer, intent(out), optional :: ierr  !< 0 if OK
-character(*), intent(in), optional :: status  !< old, unknown, new, replace, scratch
+character(*), intent(in), optional :: status  !< DEPRECATED
 character(*), intent(in), optional :: action !< read, write, readwrite
 integer, intent(in), optional      :: comp_lvl  !< 0: no compression. 1-9: ZLIB compression, higher is more compressior
 logical, intent(in), optional      :: verbose, debug
 
-character(:), allocatable :: lstatus, laction
+character(:), allocatable :: laction
 integer :: ier
 
 if(self%is_open) then
@@ -1046,40 +1045,26 @@ if (check(ier, 'ERROR: HDF5 library set traceback')) then
   error stop
 endif
 
-lstatus = 'unknown'
-if(present(status)) lstatus = status
+if(present(status)) write(stderr,*) "h5fortran: WARNING: status argument is deprecated. use action instead."
 
 laction = 'rw'
 if(present(action)) laction = action
 
-select case(lstatus)
-case ('old', 'unknown')
-  select case(laction)
-    case('read','r')
-      call h5fopen_f(filename, H5F_ACC_RDONLY_F, self%lid,ier)
-    case('r+')
-      call h5fopen_f(filename, H5F_ACC_RDWR_F, self%lid, ier)
-    case('readwrite', 'rw', 'append', 'a')
-      if(is_hdf5(filename)) then
-        call h5fopen_f(filename, H5F_ACC_RDWR_F, self%lid, ier)
-      else
-        call h5fcreate_f(filename, H5F_ACC_TRUNC_F, self%lid, ier)
-      endif
-    case ('w','write')
-      call h5fcreate_f(filename, H5F_ACC_TRUNC_F, self%lid, ier)
-    case default
-      write(stderr,*) 'Unsupported action -> ' // laction
-      error stop 128
-    end select
-case('new','replace')
+select case(laction)
+case('read','r')
+  call h5fopen_f(filename, H5F_ACC_RDONLY_F, self%lid,ier)
+case('r+')
+  call h5fopen_f(filename, H5F_ACC_RDWR_F, self%lid, ier)
+case('readwrite', 'rw', 'append', 'a')
+  if(is_hdf5(filename)) then
+    call h5fopen_f(filename, H5F_ACC_RDWR_F, self%lid, ier)
+  else
+    call h5fcreate_f(filename, H5F_ACC_TRUNC_F, self%lid, ier)
+  endif
+case ('w','write')
   call h5fcreate_f(filename, H5F_ACC_TRUNC_F, self%lid, ier)
-case('scratch')
-  call h5fcreate_f(filename, H5F_ACC_TRUNC_F, self%lid, ier)
-  self%is_scratch = .true.
-  if(.not.is_absolute_path(filename)) self%filename = get_tempdir() // '/' // filename
 case default
-  write(stderr,*) 'Unsupported status -> '// lstatus
-  error stop 128
+  error stop 'Unsupported action: ' // laction
 end select
 
 if (present(ierr)) ierr = ier
@@ -1132,10 +1117,6 @@ if (present(close_hdf5_interface)) then
 endif
 !> sentinel lid
 self%lid = 0
-
-if(self%is_scratch) then
-  call std_unlink(self%filename)
-endif
 
 self%is_open = .false.
 

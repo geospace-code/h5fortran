@@ -23,7 +23,7 @@ w32 = 142
 w64 = 142
 wi32 = 142
 
-call h%open(fn, status="replace", action="write")
+call h%open(fn, action="w")
 
 call h%write("/compact1d", [1,2,3], compact=.true.)
 call h%write("/contig1d", [1,2,3], compact=.false.)
@@ -39,7 +39,7 @@ call h%write('/compact_i32', wi32, compact=.true.)
 call h%close()
 
 !> read casting
-call h%open(fn, status="old", action="read")
+call h%open(fn, action="r")
 
 call h%read("/compact_r32", r64)
 if(r64 /= w32) error stop "read real32 => real64"

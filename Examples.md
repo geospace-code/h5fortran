@@ -19,7 +19,7 @@ If `ierr` is omitted, then h5fortran will raise `error stop` if an error occurs.
 ## Create new HDF5 file, with variable "value1"
 
 ```fortran
-call h5f%open('test.h5', status='new')
+call h5f%open('test.h5', action='w')
 
 call h5f%write('/value1', 123.)
 
@@ -115,29 +115,13 @@ call h5read_attr('myfile.h5', '/x', 'date', idate)
 call h5read_attr('myfile.h5', '/x', 'units', unit_str)
 ```
 
-## create temporary "scratch" file
-
-Analogous to regular Fortran `open(status='scratch')`, the file created will attempt to be deleted.
-A distinction is that filename (or full path) must be specified.
-If the full path is not specified, the system temporary directory will be used if found.
-Otherwise, the current working directory + filename will be used.
-
-```sh
-call h5%open('orbits.h5', status='scratch')
-
-...
-
-call h5%close()
-!! scratch file deleted by %close
-```
-
 ## Add/append variable "value1" to existing HDF5 file "test.h5"
 
 * if file `test.h5` exists, add a variable to it
 * if file `test.h5` does not exist, create it and add a variable to it.
 
 ```fortran
-call h5f%open('test.h5', status='unknown',action='rw')
+call h5f%open('test.h5', action='rw')
 
 call h5f%write('/value1', 123.)
 
@@ -181,7 +165,7 @@ exists = h5exist("my.h5", "/A")
 `h5f%ndims` we didn't use `%rank` to avoid confusion with intrinsic "rank()"
 
 ```fortran
-call h5f%open('test.h5', status='old',action='r')
+call h5f%open('test.h5', action='r')
 
 integer :: drank
 integer(hsize_t), allocatable :: dims(:)
@@ -195,7 +179,7 @@ if (drank /= size(dims)) error stop
 ## Read scalar, 3-D array of unknown size
 
 ```fortran
-call h5f%open('test.h5', status='old',action='r')
+call h5f%open('test.h5', action='r')
 
 integer(hsize_t), allocatable :: dims(:)
 real, allocatable :: A(:,:,:)
@@ -222,7 +206,7 @@ then do:
 ```fortran
 real, dimension(3,5,7) :: A
 
-call h5f%open('test.h5', status='old',action='r')
+call h5f%open('test.h5', action='r')
 
 call h5f%read('/A', A, istart=[5, 1, 2], iend=[7, 5, 8])
 ```
@@ -242,7 +226,7 @@ then do:
 ```fortran
 real, dimension(5,7,1) :: A
 
-call h5f%open('test.h5', status='unknown')
+call h5f%open('test.h5')
 
 call h5f%create('/A', H5T_NATIVE_REAL, [5,7,1])
 call h5f%write('/A', A, istart=[3, 4, 8], iend=[7, 10, 8])
@@ -293,7 +277,7 @@ call h5f%open(..., verbose=.true., debug=.true.)
 
 ## Permissive syntax
 
-We make the hdf5%open(..., status=...) like Fortran open()
+We make the hdf5%open(..., action=...) like Fortran open()
 
-* overwrite (truncate) existing file: open with `status='new'` or `status='replace'`
-* append to existing file or create file: `status='old'` or `status='unknown'`
+* overwrite (truncate) existing file: open with `action='w'`
+* append to existing file or create file: `action='rw'`

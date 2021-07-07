@@ -29,7 +29,7 @@ r1 = i1
 i1_64 = i1
 
 !> write
-call h%open(fn, status='replace')
+call h%open(fn, action='w')
 !> scalar tests
 call h%write('/scalar_int32', 42_int32)
 call h%write_i32('/scalar_i32', 42_int32)
@@ -62,7 +62,7 @@ call h%close()
 
 !> read
 
-call h%open(fn, status='old', action='r')
+call h%open(fn, action='r')
 
 call h%read('/scalar_int32', it)
 call h%read('/scalar_int64', it_64)

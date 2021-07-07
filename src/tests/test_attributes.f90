@@ -30,7 +30,7 @@ subroutine test_write_attributes(path)
 type(hdf5_file) :: h
 character(*), intent(in) :: path
 
-call h%open(path, status='replace')
+call h%open(path, action='w')
 
 call h%write('/x', 1)
 
@@ -56,7 +56,7 @@ real(real64) :: attr64(1)
 
 integer :: x
 
-call h%open(path, status='old', action='r')
+call h%open(path, action='r')
 
 call h%read('/x', x)
 if (x/=1) error stop 'readattr: unexpected value'

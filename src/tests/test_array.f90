@@ -49,7 +49,7 @@ enddo
 r1 = i1
 r2 = i2
 
-call h%open(filename, status='replace', comp_lvl=1, verbose=.False.)
+call h%open(filename, action='w', comp_lvl=1, verbose=.False.)
 
 call h%write('/int32-1d', i1)
 call h%write('/test/group2/int32-2d', i2)
@@ -59,7 +59,7 @@ call h%write('/nan', nan)
 call h%close()
 
 !! read
-call h%open(filename, status='old', action='r', verbose=.false.)
+call h%open(filename, action='r', verbose=.false.)
 
 !> int32
 call h%read('/int32-1d', i1t)
@@ -109,7 +109,7 @@ do i = 1,size(i2,2)
   i2(i,:) = i2(1,:) * i
 enddo
 
-call h%open(filename, status='old', action='r')
+call h%open(filename, action='r')
 
 i1t = 0
 call h%read('/int32-1d', i1t(:2), istart=[2], iend=[3], stride=[1])
@@ -146,7 +146,7 @@ integer(int32), dimension(4) :: i1t
 integer(int32), dimension(4,4) :: i2t
 
 
-call h%open(filename, status='old', action='r+', verbose=.true., debug=.true.)
+call h%open(filename, action='r+', verbose=.true., debug=.true.)
 
 call h%create('/int32a-1d', dtype=H5T_NATIVE_INTEGER, dims=int([3], hsize_t))
 call h%write('/int32a-1d', [1,3], istart=[1], iend=[2])
@@ -196,7 +196,7 @@ allocate(flux(nn,ng),fo(nn))
 flux = 1.0
 write(pnc,'(I2)') pn
 
-call h%open(filename,  status='scratch')
+call h%open(filename, action='rw')
 
 do i = 1,ng
   write(ic,'(I2)') i

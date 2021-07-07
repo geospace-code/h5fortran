@@ -18,7 +18,7 @@ subroutine testGroup()
 
 type(hdf5_file) :: h5f
 
-call h5f%open('test_groups.h5', status='replace')
+call h5f%open('test_groups.h5', action='w')
 
 call h5f%write_group('/test/')
 
@@ -41,12 +41,12 @@ subroutine test_writeExistingVariable()
 type(hdf5_file) :: h5f
 character(*), parameter :: fn = 'overwrite.h5'
 
-call h5f%open(fn, status='replace')
+call h5f%open(fn, action='w')
 call h5f%write('/scalar_int', 42_int32)
 call h5f%write('/int1d', [42_int32, 1_int32])
 call h5f%close()
 
-call h5f%open(fn, status='old',action='rw')
+call h5f%open(fn, action='r+')
 call h5f%write('/scalar_int', 100_int32)
 call h5f%write('/int1d', [100_int32, 10_int32])
 call h5f%close()

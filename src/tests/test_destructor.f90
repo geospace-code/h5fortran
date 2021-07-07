@@ -20,13 +20,13 @@ integer :: i
 block
   type(hdf5_file) :: h
   !! we use block to test destructor is invoked
-  call h%open(fn, action="write", status="replace")
+  call h%open(fn, action="w")
   call h%write('/x', 42)
 end block
 
 if(h%is_open) error stop "destructor did not close " // fn
 
-call h%open(fn, action="read", status="old")
+call h%open(fn, action="r")
 call h%read("/x", i)
 if(i/=42) error stop "destructor did not flush " // fn
 

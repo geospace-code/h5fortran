@@ -98,7 +98,7 @@ module procedure writeattr_char_lt
 type(hdf5_file) :: h
 integer :: ier
 
-call h%open(filename, ier, status='old')
+call h%open(filename, ier, action='r+')
 
 call h%writeattr_char(dname, attr, attrval, ier)
 
@@ -115,7 +115,7 @@ module procedure writeattr_num_lt
 type(hdf5_file) :: h
 integer :: ier
 
-call h%open(filename, ier, status='old')
+call h%open(filename, ier, action='r+')
 
 call h%writeattr_num(dname, attr, attrval, ier)
 
@@ -132,7 +132,7 @@ module procedure readattr_char_lt
 type(hdf5_file) :: h
 integer :: ier
 
-call h%open(filename, ier, status='old')
+call h%open(filename, ier, action='r')
 
 call h%readattr_char(dname, attr, attrval, ier)
 
@@ -149,7 +149,7 @@ module procedure readattr_num_lt
 type(hdf5_file) :: h
 integer :: ier
 
-call h%open(filename, ier, status='old')
+call h%open(filename, ier, action='r')
 
 call h%readattr_num(dname, attr, attrval, ier)
 

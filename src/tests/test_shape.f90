@@ -11,7 +11,7 @@ integer(HSIZE_T), allocatable :: dims(:)
 
 integer :: d2(3,4), d7(2,1,3,4,7,6,5)
 
-call h%open(path, status='scratch')
+call h%open(path, action='w')
 call h%write('/d2', d2)
 call h%write('/d7', d7)
 
