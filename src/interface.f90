@@ -33,7 +33,6 @@ integer :: comp_lvl = 0 !< compression level (1-9)  0: disable compression
 logical :: verbose=.true.
 logical :: debug=.false.
 logical :: is_open = .false.
-!! will be auto-deleted on close
 integer :: libversion(3)  !< major, minor, rel
 
 
@@ -1263,23 +1262,16 @@ character(*), intent(in), optional :: filename, dname
 
 character(:), allocatable :: fn, dn
 
+check = .false.
+if (ierr==0) return
+
 check = .true.
 fn = ""
 dn = ""
 if (present(filename)) fn = filename
 if (present(dname)) dn = dname
 
-select case (ierr)
-case (0)
-  check = .false.
-  return
-case (6)
-  write(stderr,*) 'ERROR: ' // fn // ':' // dname // ' datatype is not handled by h5fortran.'
-case (128)
-  write(stderr,*) 'ERROR:initialize ' // fn // ' could not be opened or created'
-case default
-  write(stderr,*) 'ERROR: ' // fn // ':' // dn // ' error code ', ierr
-end select
+write(stderr,*) 'h5fortran:ERROR: ' // fn // ':' // dn // ' error code ', ierr
 
 end function check
 
