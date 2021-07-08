@@ -74,29 +74,21 @@ if(NOT h5_conf)
   return()
 endif()
 
-# get version
-# from CMake/Modules/FindHDF5.cmake
-check_symbol_exists(H5_HAVE_FILTER_SZIP ${h5_conf} have_szip)
-check_symbol_exists(H5_HAVE_FILTER_DEFLATE ${h5_conf} have_zlib)
+# check HDF5 features that require link of external libraries.
+check_symbol_exists(H5_HAVE_FILTER_SZIP ${h5_conf} hdf5_have_szip)
+check_symbol_exists(H5_HAVE_FILTER_DEFLATE ${h5_conf} hdf5_have_zlib)
 
-if(parallel IN_LIST HDF5_FIND_COMPONENTS)
-  check_symbol_exists(H5_HAVE_PARALLEL ${h5_conf} _h5_parallel)
-  if(_h5_parallel)
-    if(NOT TARGET MPI::MPI_C)
-      find_package(MPI COMPONENTS C)
-    endif()
-    if(MPI_C_FOUND)
-      set(HDF5_parallel_FOUND true PARENT_SCOPE)
-      set(HDF5_IS_PARALLEL true CACHE BOOL "HDF5 library compiled with parallel IO support")
-    endif()
-  endif()
+# Always check for HDF5 MPI support because HDF5 link fails if MPI is linked into HDF5.
+check_symbol_exists(H5_HAVE_PARALLEL ${h5_conf} HDF5_IS_PARALLEL)
 
-  if(NOT HDF5_IS_PARALLEL)
-    set(HDF5_parallel_FOUND false PARENT_SCOPE)
-    return()
-  endif()
+if(HDF5_IS_PARALLEL)
+  set(HDF5_parallel_FOUND true PARENT_SCOPE)
+else()
+  set(HDF5_parallel_FOUND false PARENT_SCOPE)
 endif()
 
+# get version
+# from CMake/Modules/FindHDF5.cmake
 file(STRINGS ${h5_conf} _def
 REGEX "^[ \t]*#[ \t]*define[ \t]+H5_VERSION[ \t]+" )
 if( "${_def}" MATCHES
@@ -118,10 +110,10 @@ if(NOT SZIP_ROOT)
   set(SZIP_ROOT "${ZLIB_ROOT}")
 endif()
 
-if(have_zlib)
+if(hdf5_have_zlib)
   find_package(ZLIB)
 
-  if(have_szip)
+  if(hdf5_have_szip)
     # Szip even though not used by default.
     # If system HDF5 dynamically links libhdf5 with szip, our builds will fail if we don't also link szip.
     # however, we don't require SZIP for this case as other HDF5 libraries may statically link SZIP.
@@ -144,7 +136,8 @@ if(UNIX)
   list(APPEND CMAKE_REQUIRED_LIBRARIES m)
 endif()
 
-if(MPI_C_FOUND)
+if(HDF5_IS_PARALLEL)
+  find_package(MPI COMPONENTS C)
   list(APPEND CMAKE_REQUIRED_LIBRARIES MPI::MPI_C)
 endif()
 
@@ -380,10 +373,10 @@ if(HDF5_FOUND)
     set_target_properties(HDF5::HDF5 PROPERTIES
       INTERFACE_LINK_LIBRARIES "${HDF5_LIBRARIES}"
       INTERFACE_INCLUDE_DIRECTORIES "${HDF5_INCLUDE_DIRS}")
-    if(have_zlib)
+    if(hdf5_have_zlib)
       target_link_libraries(HDF5::HDF5 INTERFACE ZLIB::ZLIB)
     endif()
-    if(have_szip)
+    if(hdf5_have_szip)
       target_link_libraries(HDF5::HDF5 INTERFACE SZIP::SZIP)
     endif()
 
