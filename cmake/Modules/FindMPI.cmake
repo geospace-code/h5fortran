@@ -221,7 +221,7 @@ foreach(n ${names})
   find_library(MPI_C_${n}_LIBRARY
     NAMES ${n}
     HINTS ${lib_dirs} ${_wrap_hint} ${pc_mpi_c_LIBRARY_DIRS} ${pc_mpi_c_LIBDIR} ${_hints}
-    PATH_SUFFIXES lib lib/release
+    PATH_SUFFIXES release
   )
   if(MPI_C_${n}_LIBRARY)
     list(APPEND MPI_C_LIBRARY ${MPI_C_${n}_LIBRARY})
@@ -235,7 +235,6 @@ endif()
 find_path(MPI_C_INCLUDE_DIR
   NAMES mpi.h
   HINTS ${inc_dirs} ${_wrap_hint} ${pc_mpi_c_INCLUDE_DIRS} ${_hints} ${_hints_inc}
-  PATH_SUFFIXES include
 )
 if(NOT MPI_C_INCLUDE_DIR)
   return()
@@ -333,7 +332,7 @@ foreach(n ${names})
   find_library(MPI_CXX_${n}_LIBRARY
     NAMES ${n}
     HINTS ${lib_dirs} ${_wrap_hint} ${pc_mpi_cxx_LIBRARY_DIRS} ${pc_mpi_cxx_LIBDIR} ${_hints}
-    PATH_SUFFIXES lib lib/release
+    PATH_SUFFIXES release
   )
   if(MPI_CXX_${n}_LIBRARY)
     list(APPEND MPI_CXX_LIBRARY ${MPI_CXX_${n}_LIBRARY})
@@ -347,7 +346,6 @@ endif()
 find_path(MPI_CXX_INCLUDE_DIR
   NAMES mpi.h
   HINTS ${inc_dirs} ${_wrap_hint} ${pc_mpi_cxx_INCLUDE_DIRS} ${_hints} ${_hints_inc}
-  PATH_SUFFIXES include
 )
 if(NOT MPI_CXX_INCLUDE_DIR)
   return()
@@ -448,7 +446,7 @@ foreach(n ${names})
   find_library(MPI_Fortran_${n}_LIBRARY
     NAMES ${n}
     HINTS ${lib_dirs} ${_wrap_hint} ${pc_mpi_f_LIBRARY_DIRS} ${pc_mpi_f_LIBDIR} ${_hints}
-    PATH_SUFFIXES lib lib/release
+    PATH_SUFFIXES release
   )
   if(MPI_Fortran_${n}_LIBRARY)
     list(APPEND MPI_Fortran_LIBRARY ${MPI_Fortran_${n}_LIBRARY})
@@ -462,7 +460,7 @@ endif()
 find_path(MPI_Fortran_INCLUDE_DIR
   NAMES mpi.mod
   HINTS ${inc_dirs} ${_wrap_hint} ${pc_mpi_f_INCLUDE_DIRS} ${_hints} ${_hints_inc}
-  PATH_SUFFIXES include lib
+  PATH_SUFFIXES lib
   # yes, openmpi puts .mod files into lib/
 )
 if(NOT MPI_Fortran_INCLUDE_DIR)
@@ -473,7 +471,7 @@ if(WIN32 AND NOT CMAKE_Fortran_COMPILER_ID MATCHES Intel)
   find_path(MPI_Fortran_INCLUDE_EXTRA
     NAMES mpifptr.h
     HINTS ${inc_dirs} ${_wrap_hint} ${pc_mpi_f_INCLUDE_DIRS} ${_hints} ${_hints_inc}
-    PATH_SUFFIXES include include/x64
+    PATH_SUFFIXES x64
   )
 
   if(MPI_Fortran_INCLUDE_EXTRA AND NOT MPI_Fortran_INCLUDE_EXTRA STREQUAL ${MPI_Fortran_INCLUDE_DIR})
