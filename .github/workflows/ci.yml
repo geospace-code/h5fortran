@@ -2,6 +2,7 @@ name: ci
 
 env:
   CTEST_PARALLEL_LEVEL: 3
+  cmake_version: 3.21.0-rc3
 
 on:
   push:
@@ -25,18 +26,35 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    # FIXME: till CMake 3.21 is released, we need to use the following
+    - uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - run: |
+        pip install cmakeutils
+        python -m cmakeutils.cmake_setup ${cmake_version} --prefix ${HOME}/.local
+        echo "${HOME}/.local/cmake-${cmake_version}-linux-x86_64/bin" >> $GITHUB_PATH
+
     - name: install hdf5
       run: |
         sudo apt update -yq
         sudo apt install -yq --no-install-recommends ninja-build gfortran libhdf5-dev
 
-    - run: cmake --preset default -DCMAKE_INSTALL_PREFIX=~/h5fortran
+    - run: cmake --preset default -DCMAKE_INSTALL_PREFIX=~
     - run: cmake --build --preset default
-    - run: ctest --preset default
+    - run: ctest --preset default --output-junit test-results.xml
+
+    - name: Publish Unit Test Results
+      uses: EnricoMi/publish-unit-test-result-action@v1
+      if: always()
+      with:
+        files: build/test-results.xml
+
     - run: cmake --install build
 
     - name: configure examples
-      run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=~/h5fortran
+      run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=~
     - name: build examples
       run: cmake --build Examples/build --parallel
     - name: Test examples
