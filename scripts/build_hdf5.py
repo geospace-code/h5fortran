@@ -21,7 +21,7 @@ import urllib.request
 import hashlib
 import urllib.error
 import socket
-import zipfile
+import tarfile
 import json
 import sys
 
@@ -52,6 +52,9 @@ def cli():
         help="use current HDF5 git revision instead of download",
         action="store_true",
     )
+    p.add_argument(
+        "-parallel", help="build HDF5 with MPI parallel support", action="store_true"
+    )
     P = p.parse_args()
 
     compiler = P.compiler
@@ -76,25 +79,25 @@ def cli():
 
     dirs["zlib"] = zlib(dirs, urls["zlib2"], env=env)
 
-    hdf5(dirs, urls["hdf5"], env=env, download_git=P.git)
+    hdf5(dirs, urls["hdf5"], env=env, download_git=P.git, parallel=P.parallel)
 
 
 def zlib(
     dirs: T.Dict[str, Path], urls: T.Dict[str, str], env: T.Mapping[str, str]
 ) -> Path:
-    name = "zlib-ng-2.0.3"
     zlib_filename = urls["url"].split("/")[-1]
+    install_dir = dirs["prefix"]
 
-    install_dir = dirs["prefix"] / name
-    source_dir = dirs["workdir"] / name
+    source_dir = dirs["workdir"] / f"zlib-ng-{zlib_filename[:5]}"
+    # FIXME: make source_dir more programmatic by introspecting tar file and
+    # looking for CMakeLists.txt. I think this is what CMake itself does via ExternalProject.
     build_dir = source_dir / BUILDDIR
 
     zlib_archive = dirs["workdir"] / zlib_filename
-
     url_retrieve(urls["url"], zlib_archive, filehash=["sha256", urls["sha256"]])
 
     if not (source_dir / "CMakeLists.txt").is_file():
-        with zipfile.ZipFile(zlib_archive) as z:
+        with tarfile.open(zlib_archive) as z:
             z.extractall(dirs["workdir"])
 
     cmd0 = [
@@ -123,16 +126,17 @@ def hdf5(
     dirs: T.Dict[str, Path],
     urls: T.Dict[str, str],
     env: T.Dict[str, str],
+    *,
     download_git: bool = False,
+    parallel: bool = False,
 ):
     """build and install HDF5
 
     Git works, but we use release for stability/download speed
     """
 
-    use_cmake = True
-
     name = "hdf5"
+    use_cmake = True
     source_dir = dirs["workdir"] / name
 
     if os.name == "nt" and Path(env["CC"]).stem == "icl":
@@ -152,10 +156,10 @@ def hdf5(
         url_retrieve(url, archive, filehash=["sha256", urls["sha256"]])
 
         if not (source_dir / "CMakeLists.txt").is_file():
-            with zipfile.ZipFile(archive) as z:
+            with tarfile.open(archive) as z:
                 z.extractall(dirs["workdir"])
 
-    install_dir = dirs["prefix"] / name
+    install_dir = dirs["prefix"]
     build_dir = source_dir / BUILDDIR
     env["ZLIB_ROOT"] = str(dirs["zlib"])
 
@@ -173,7 +177,6 @@ def hdf5(
             "-DCMAKE_BUILD_TYPE=Release",
             "-DHDF5_BUILD_FORTRAN:BOOL=true",
             "-DHDF5_BUILD_CPP_LIB:BOOL=false",
-            "-DHDF5_BUILD_TOOLS:BOOL=true",
             "-DBUILD_TESTING:BOOL=false",
             "-DHDF5_BUILD_EXAMPLES:BOOL=false",
             f"-DZLIB_LIBRARY:FILEPATH={dirs['zlib']}/lib/{zlib_filename}",
@@ -186,6 +189,15 @@ def hdf5(
             # "-DHDF5_ALLOW_EXTERNAL_SUPPORT=GIT",
             # "-DZLIB_GIT_URL=https://github.com/madler/zlib.git",
         ]
+
+        if parallel:
+            cmd0 += ["-DHDF5_ENABLE_PARALLEL:BOOL=true" "-DHDF5_BUILD_TOOLS:BOOL=false"]
+            # https://github.com/HDFGroup/hdf5/issues/818  for broken ph5diff
+        else:
+            cmd0 += [
+                "-DHDF5_ENABLE_PARALLEL:BOOL=false",
+                "-DHDF5_BUILD_TOOLS:BOOL=true",
+            ]
 
         cmd1 = ["cmake", "--build", str(build_dir), "--parallel"]
 
@@ -313,9 +325,9 @@ def gcc_compilers() -> T.Mapping[str, str]:
 def intel_compilers() -> T.Mapping[str, str]:
     return get_compilers(
         "Intel",
-        FC="ifort",
-        CC="icl" if os.name == "nt" else "icc",
-        CXX="icl" if os.name == "nt" else "icpc",
+        FC="ifx",
+        CC="icx",
+        CXX="icx" if os.name == "nt" else "icpx",
     )
 
 
