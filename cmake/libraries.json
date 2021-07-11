@@ -9,7 +9,13 @@
     "git": "https://github.com/zlib-ng/zlib-ng.git"
 },
 "hdf5": {
-    "url": "https://github.com/HDFGroup/hdf5/archive/hdf5-1_10_7.zip",
+    "url": "https://github.com/HDFGroup/hdf5/archive/refs/tags/hdf5-1_12_1.tar.gz",
+    "sha256": "e6dde173c2d243551922d23a0387a79961205b018502e6a742acb30b61bc2d5f",
+    "git": "https://github.com/HDFGroup/hdf5.git",
+    "tag": "hdf5-1_12_1"
+},
+"hdf5-1.10": {
+    "url": "https://github.com/HDFGroup/hdf5/archive/refs/tags/hdf5-1_10_7.tar.gz",
     "sha256": "89ea0b117c27a8f7587e601b65fa1427b28db3a6ee66ffff0178509514128f18",
     "git": "https://github.com/HDFGroup/hdf5.git",
     "tag": "1.10/master"
