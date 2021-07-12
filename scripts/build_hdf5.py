@@ -325,9 +325,9 @@ def gcc_compilers() -> T.Mapping[str, str]:
 def intel_compilers() -> T.Mapping[str, str]:
     return get_compilers(
         "Intel",
-        FC="ifx",
-        CC="icx",
-        CXX="icx" if os.name == "nt" else "icpx",
+        FC="ifort",
+        CC="icl" if os.name == "nt" else "icc",
+        CXX="icl" if os.name == "nt" else "icpc",
     )
 
 
