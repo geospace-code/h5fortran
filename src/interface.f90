@@ -427,46 +427,47 @@ end subroutine lt0read_char
 
 
 
-
+!! NOTE: intent(inout) for non-scalar read is avoid reallocation and segfault with allocatable arrays in user programs,
+!! even when the array was already allocated before the h5fortran interface was called.
 module subroutine lt1read(filename, dname, value, ierr)
 character(*), intent(in) :: filename, dname
-class(*), intent(out) :: value(:)
+class(*), intent(inout) :: value(:)
 integer, intent(out), optional :: ierr
 end subroutine lt1read
 
 module subroutine lt2read(filename, dname, value, ierr)
 character(*), intent(in) :: filename, dname
-class(*), intent(out) :: value(:,:)
+class(*), intent(inout) :: value(:,:)
 integer, intent(out), optional :: ierr
 end subroutine lt2read
 
 module subroutine lt3read(filename, dname, value, ierr)
 character(*), intent(in) :: filename, dname
-class(*), intent(out) :: value(:,:,:)
+class(*), intent(inout) :: value(:,:,:)
 integer, intent(out), optional :: ierr
 end subroutine lt3read
 
 module subroutine lt4read(filename, dname, value, ierr)
 character(*), intent(in) :: filename, dname
-class(*), intent(out) :: value(:,:,:,:)
+class(*), intent(inout) :: value(:,:,:,:)
 integer, intent(out), optional :: ierr
 end subroutine lt4read
 
 module subroutine lt5read(filename, dname, value, ierr)
 character(*), intent(in) :: filename, dname
-class(*), intent(out) :: value(:,:,:,:,:)
+class(*), intent(inout) :: value(:,:,:,:,:)
 integer, intent(out), optional :: ierr
 end subroutine lt5read
 
 module subroutine lt6read(filename, dname, value, ierr)
 character(*), intent(in) :: filename, dname
-class(*), intent(out) :: value(:,:,:,:,:,:)
+class(*), intent(inout) :: value(:,:,:,:,:,:)
 integer, intent(out), optional :: ierr
 end subroutine lt6read
 
 module subroutine lt7read(filename, dname, value, ierr)
 character(*), intent(in) :: filename, dname
-class(*), intent(out) :: value(:,:,:,:,:,:,:)
+class(*), intent(inout) :: value(:,:,:,:,:,:,:)
 integer, intent(out), optional :: ierr
 end subroutine lt7read
 end interface
@@ -871,7 +872,7 @@ end subroutine hdf_read_scalar_i64
 module subroutine hdf_read_1d(self, dname, value, ierr, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-class(*), intent(out) :: value(:)
+class(*), intent(inout) :: value(:)
 integer, intent(out), optional :: ierr
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
 end subroutine hdf_read_1d
@@ -879,7 +880,7 @@ end subroutine hdf_read_1d
 module subroutine hdf_read_2d(self, dname, value, ierr, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-class(*), intent(out) :: value(:,:)
+class(*), intent(inout) :: value(:,:)
 integer, intent(out), optional :: ierr
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
 end subroutine hdf_read_2d
@@ -887,7 +888,7 @@ end subroutine hdf_read_2d
 module subroutine hdf_read_3d(self, dname, value, ierr, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-class(*), intent(out) :: value(:,:,:)
+class(*), intent(inout) :: value(:,:,:)
 integer, intent(out), optional :: ierr
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
 end subroutine hdf_read_3d
@@ -895,7 +896,7 @@ end subroutine hdf_read_3d
 module subroutine hdf_read_4d(self, dname, value, ierr, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-class(*), intent(out) :: value(:,:,:,:)
+class(*), intent(inout) :: value(:,:,:,:)
 integer, intent(out), optional :: ierr
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
 end subroutine hdf_read_4d
@@ -903,7 +904,7 @@ end subroutine hdf_read_4d
 module subroutine hdf_read_5d(self, dname, value, ierr, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-class(*), intent(out) :: value(:,:,:,:,:)
+class(*), intent(inout) :: value(:,:,:,:,:)
 integer, intent(out), optional :: ierr
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
 end subroutine hdf_read_5d
@@ -911,7 +912,7 @@ end subroutine hdf_read_5d
 module subroutine hdf_read_6d(self, dname, value, ierr, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-class(*), intent(out) :: value(:,:,:,:,:,:)
+class(*), intent(inout) :: value(:,:,:,:,:,:)
 integer, intent(out), optional :: ierr
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
 end subroutine hdf_read_6d
@@ -919,7 +920,7 @@ end subroutine hdf_read_6d
 module subroutine hdf_read_7d(self, dname, value, ierr, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-class(*), intent(out) :: value(:,:,:,:,:,:,:)
+class(*), intent(inout) :: value(:,:,:,:,:,:,:)
 integer, intent(out), optional :: ierr
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
 end subroutine hdf_read_7d
