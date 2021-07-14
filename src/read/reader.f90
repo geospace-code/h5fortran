@@ -14,9 +14,7 @@ module procedure hdf_read_scalar_char
 integer :: ier
 character(len(value)) :: buf
 
-if(.not.self%is_open) error stop 'h5fortran:reader: file handle is not open'
-
-if (.not.self%exist(dname)) error stop 'h5fortran:reader: ' // dname // ' does not exist in ' // self%filename
+call hdf_shape_check(self, dname, shape(value))
 
 call h5ltread_dataset_string_f(self%lid, dname, buf, ier)
 value = buf
@@ -37,11 +35,9 @@ integer(HSIZE_T) :: dims(rank(value))
 integer(hid_t) :: ds_id, space_id, native_dtype
 integer :: ier
 
-if(.not.self%is_open) error stop 'h5fortran:reader: file handle is not open'
+call hdf_shape_check(self, dname, shape(value))
 
 space_id = 0
-
-if (.not.self%exist(dname)) error stop 'h5fortran:reader: ' // dname // ' does not exist in ' // self%filename
 
 call h5dopen_f(self%lid, dname, ds_id, ier)
 if(ier/=0) error stop 'h5fortran:reader: ' // dname // ' could not be opened in ' // self%filename
@@ -85,11 +81,9 @@ integer(HSIZE_T) :: dims(rank(value))
 integer(hid_t) :: ds_id, space_id, native_dtype
 integer :: ier
 
-if(.not.self%is_open) error stop 'h5fortran:reader: file handle is not open'
+call hdf_shape_check(self, dname, shape(value))
 
 space_id = 0
-
-if (.not.self%exist(dname)) error stop 'h5fortran:reader: ' // dname // ' does not exist in ' // self%filename
 
 call h5dopen_f(self%lid, dname, ds_id, ier)
 if(ier/=0) error stop 'h5fortran:reader: ' // dname // ' could not be opened in ' // self%filename
@@ -132,11 +126,9 @@ integer(HSIZE_T) :: dims(rank(value))
 integer(hid_t) :: ds_id, space_id, native_dtype
 integer :: ier
 
-if(.not.self%is_open) error stop 'h5fortran:reader: file handle is not open'
+call hdf_shape_check(self, dname, shape(value))
 
 space_id = 0
-
-if (.not.self%exist(dname)) error stop 'h5fortran:reader: ' // dname // ' does not exist in ' // self%filename
 
 call h5dopen_f(self%lid, dname, ds_id, ier)
 if(ier/=0) error stop 'h5fortran:reader: ' // dname // ' could not be opened in ' // self%filename
@@ -179,11 +171,9 @@ integer(HSIZE_T) :: dims(rank(value))
 integer(hid_t) :: ds_id, space_id, native_dtype
 integer :: ier
 
-if(.not.self%is_open) error stop 'h5fortran:reader: file handle is not open'
+call hdf_shape_check(self, dname, shape(value))
 
 space_id = 0
-
-if (.not.self%exist(dname)) error stop 'h5fortran:reader: ' // dname // ' does not exist in ' // self%filename
 
 call h5dopen_f(self%lid, dname, ds_id, ier)
 if(ier/=0) error stop 'h5fortran:reader: ' // dname // ' could not be opened in ' // self%filename
