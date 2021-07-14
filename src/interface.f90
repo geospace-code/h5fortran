@@ -1007,7 +1007,7 @@ character(:), allocatable :: laction
 integer :: ier
 
 if(self%is_open) then
-  write(stderr,*) 'WARNING:h5fortran:initialize: file handle already open: '//self%filename
+  write(stderr,*) 'h5fortran:initialize: file handle already open: '//self%filename
   return
 endif
 
@@ -1019,11 +1019,7 @@ if (present(debug)) self%debug = debug
 
 !> Initialize FORTRAN interface.
 call h5open_f(ier)
-if(present(ierr)) ierr = ier
-if (check(ier, 'ERROR: HDF5 library initialize')) then
-  if (present(ierr)) return
-  error stop
-endif
+if (ier /= 0) error stop 'h5fortran:initialize: HDF5 library initialize'
 
 !> get library version
 call h5get_libversion_f(self%libversion(1), self%libversion(2), self%libversion(3), ier)
@@ -1320,8 +1316,7 @@ type is (integer(int32))
 type is (integer(hsize_t))
   istart = i0
 class default
-  write(stderr,*) 'ERROR:h5fortran:slice: wrong type for istart: ', dname, self%filename
-  error stop 5
+  error stop 'ERROR:h5fortran:slice: wrong type for istart: ' // dname // ' in ' // self%filename
 end select
 
 !! iend
@@ -1332,8 +1327,7 @@ type is (integer(int32))
 type is (integer(hsize_t))
   iend = i1
 class default
-  write(stderr,*) 'ERROR:h5fortran:slice: wrong type for iend: ', dname, self%filename
-  error stop 5
+  error stop 'ERROR:h5fortran:slice: wrong type for iend: ' // dname // ' in ' // self%filename
 end select
 
 !! stride
@@ -1345,8 +1339,7 @@ if (present(i2)) then
   type is (integer(hsize_t))
     stride = i2
   class default
-    write(stderr,*) 'ERROR:h5fortran:slice: wrong type for stride: ', dname, self%filename
-    error stop 5
+    error stop 'ERROR:h5fortran:slice: wrong type for stride: ' // dname // ' in ' // self%filename
   end select
   if(self%debug) print *,'DEBUG: user-stride:',stride
 else
@@ -1362,10 +1355,7 @@ mem_dims = iend - istart
 !> some callers have already opened the dataset. 0 is a sentinel saying not opened yet.
 if (did == 0) then
   call h5dopen_f(self%lid, dname, did, ierr)
-  if(ierr /= 0) then
-    write(stderr,*) 'h5fortran:get_slice:H5Dopen: ' // dname // ' ' // self%filename
-    error stop
-  endif
+  if(ierr /= 0) error stop 'h5fortran:get_slice:H5Dopen: ' // dname // ' ' // self%filename
 endif
 call h5dget_space_f(did, sid, ierr)
 if(ierr /= 0) error stop 'h5fortran:get_slice could not get dataset'
@@ -1389,10 +1379,8 @@ integer :: dtype, drank
 
 if(.not.self%is_open) error stop 'h5fortran:shape: file handle is not open'
 
-if (.not.self%exist(dname)) then
-  write(stderr,*) 'ERROR: ' // dname // ' does not exist in ' // self%filename
-  error stop
-endif
+if (.not.self%exist(dname)) error stop 'ERROR: ' // dname // ' does not exist in ' // self%filename
+
 
 !> allow user to specify int4 or int8 dims
 select type (dims)
@@ -1401,29 +1389,24 @@ type is (integer(int32))
 type is (integer(hsize_t))
   vdims = dims
 class default
-  write(stderr,*) 'ERROR:h5fortran:shape_check: wrong type for dims: ', dname, self%filename
-  error stop 5
+  error stop 'ERROR:h5fortran:shape_check: wrong type for dims: ' // dname // ' in ' // self%filename
 end select
 
 !> check for matching rank, else bad reads can occur--doesn't always crash without this check
 call h5ltget_dataset_ndims_f(self%lid, dname, drank, ierr)
-if (ierr/=0) then
-  write(stderr,*) 'ERROR:h5fortran:shape_check: get_dataset_ndim ' // dname // ' read ' // self%filename
-  error stop
-endif
+if (ierr/=0) error stop 'ERROR:h5fortran:shape_check: get_dataset_ndim ' // dname // ' read ' // self%filename
+
 
 if (drank /= size(vdims)) then
-  write(stderr,'(A,I6,A,I6)') 'ERROR:h5fortran:shape_check: rank mismatch ' // dname // ' = ',drank,'  variable rank =', size(vdims)
+  write(stderr,'(A,I0,A,I0)') 'ERROR:h5fortran:shape_check: rank mismatch ' // dname // ' = ',drank,'  variable rank =', size(vdims)
   error stop
 endif
 
 !> check for matching size, else bad reads can occur.
 
 call h5ltget_dataset_info_f(self%lid, dname, ddims, dtype, dsize, ierr)
-if (ierr/=0) then
-  write(stderr,*) 'ERROR:h5fortran:shape_check: get_dataset_info ' // dname // ' read ' // self%filename
-  error stop
-endif
+if (ierr/=0) error stop 'ERROR:h5fortran:shape_check: get_dataset_info ' // dname // ' read ' // self%filename
+
 
 if(.not. all(vdims == ddims)) then
   write(stderr,*) 'ERROR:h5fortran:shape_check: shape mismatch ' // dname // ' = ',ddims,'  variable shape =', vdims

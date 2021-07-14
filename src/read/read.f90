@@ -151,7 +151,6 @@ endif
 call h5dclose_f(did, ierr)
 if (check(ierr, 'ERROR:get_chunk: close dataset: ' // dname // ' ' // self%filename)) return
 
-
 end procedure hdf_get_chunk
 
 
