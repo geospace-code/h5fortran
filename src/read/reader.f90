@@ -14,7 +14,7 @@ module procedure hdf_read_scalar_char
 integer :: ier
 character(len(value)) :: buf
 
-call hdf_shape_check(self, dname, shape(value))
+call hdf_rank_check(self, dname, shape(value, HSIZE_T))
 
 call h5ltread_dataset_string_f(self%lid, dname, buf, ier)
 value = buf
@@ -35,7 +35,7 @@ integer(HSIZE_T) :: dims(rank(value))
 integer(hid_t) :: ds_id, space_id, native_dtype
 integer :: ier
 
-call hdf_shape_check(self, dname, shape(value))
+call hdf_rank_check(self, dname, shape(value, HSIZE_T))
 
 space_id = 0
 
@@ -81,7 +81,7 @@ integer(HSIZE_T) :: dims(rank(value))
 integer(hid_t) :: ds_id, space_id, native_dtype
 integer :: ier
 
-call hdf_shape_check(self, dname, shape(value))
+call hdf_rank_check(self, dname, shape(value, HSIZE_T))
 
 space_id = 0
 
@@ -126,7 +126,7 @@ integer(HSIZE_T) :: dims(rank(value))
 integer(hid_t) :: ds_id, space_id, native_dtype
 integer :: ier
 
-call hdf_shape_check(self, dname, shape(value))
+call hdf_rank_check(self, dname, shape(value, HSIZE_T))
 
 space_id = 0
 
@@ -171,7 +171,7 @@ integer(HSIZE_T) :: dims(rank(value))
 integer(hid_t) :: ds_id, space_id, native_dtype
 integer :: ier
 
-call hdf_shape_check(self, dname, shape(value))
+call hdf_rank_check(self, dname, shape(value, HSIZE_T))
 
 space_id = 0
 
@@ -220,7 +220,7 @@ integer :: ier
 ds_id = 0 !< sentinel
 space_id = H5S_ALL_F
 mem_space_id = H5S_ALL_F
-dims = shape(value)
+dims = shape(value, HSIZE_T)
 
 if(present(istart) .and. present(iend)) then
   if (present(stride)) then
@@ -343,7 +343,7 @@ integer :: ier
 ds_id = 0 !< sentinel
 space_id = H5S_ALL_F
 mem_space_id = H5S_ALL_F
-dims = shape(value)
+dims = shape(value, HSIZE_T)
 
 if(present(istart) .and. present(iend)) then
   if (present(stride)) then
@@ -466,7 +466,7 @@ integer :: ier
 ds_id = 0 !< sentinel
 space_id = H5S_ALL_F
 mem_space_id = H5S_ALL_F
-dims = shape(value)
+dims = shape(value, HSIZE_T)
 
 if(present(istart) .and. present(iend)) then
   if (present(stride)) then
@@ -588,7 +588,7 @@ integer :: ier
 ds_id = 0 !< sentinel
 space_id = H5S_ALL_F
 mem_space_id = H5S_ALL_F
-dims = shape(value)
+dims = shape(value, HSIZE_T)
 
 if(present(istart) .and. present(iend)) then
   if (present(stride)) then
@@ -679,7 +679,7 @@ integer :: ier
 ds_id = 0 !< sentinel
 space_id = H5S_ALL_F
 mem_space_id = H5S_ALL_F
-dims = shape(value)
+dims = shape(value, HSIZE_T)
 
 if(present(istart) .and. present(iend)) then
   if (present(stride)) then
@@ -770,7 +770,7 @@ integer :: ier
 ds_id = 0 !< sentinel
 space_id = H5S_ALL_F
 mem_space_id = H5S_ALL_F
-dims = shape(value)
+dims = shape(value, HSIZE_T)
 
 if(present(istart) .and. present(iend)) then
   if (present(stride)) then
@@ -861,7 +861,7 @@ integer :: ier
 ds_id = 0 !< sentinel
 space_id = H5S_ALL_F
 mem_space_id = H5S_ALL_F
-dims = shape(value)
+dims = shape(value, HSIZE_T)
 
 if(present(istart) .and. present(iend)) then
   if (present(stride)) then

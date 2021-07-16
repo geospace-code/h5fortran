@@ -32,8 +32,16 @@ if (ierr /= 0) error stop 'ERROR:h5fortran:create: variable path invalid: ' // d
 if(self%debug) print *,'h5fortran:TRACE:create:exists: ' // dname, exists
 
 if(exists) then
-  if (.not.present(istart)) call hdf_shape_check(self, dname, dims)
+  if (.not.present(istart)) then
+    if (size(dims) == 0) then
+      !! scalar
+      call hdf_rank_check(self, dname, dims)
+    else
+      call hdf_shape_check(self, dname, dims)
+    endif
+  endif
   !! FIXME: read and write slice shape not checked; but should check in future versions
+
   !> open dataset
   call h5dopen_f(self%lid, dname, ds_id, ierr)
   if (ierr /= 0) error stop 'ERROR:h5fortran:create: could not open ' // dname // ' in ' // self%filename

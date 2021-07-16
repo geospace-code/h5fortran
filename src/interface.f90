@@ -18,7 +18,7 @@ use h5lt, only : h5ltget_dataset_ndims_f, h5ltget_dataset_info_f
 implicit none (type, external)
 private
 public :: hdf5_file, hdf5_close, h5write, h5read, h5exist, is_hdf5, h5write_attr, h5read_attr, &
-  check, hdf_shape_check, hdf_get_slice, hdf_wrapup, & !< for submodules only
+  check, hdf_shape_check, hdf_rank_check, hdf_get_slice, hdf_wrapup, & !< for submodules only
   HSIZE_T, HID_T, H5T_NATIVE_DOUBLE, H5T_NATIVE_REAL, H5T_NATIVE_INTEGER !< HDF5 types for end users
 
 !> main type
@@ -1367,49 +1367,50 @@ if(ierr /= 0) error stop 'h5fortran:get_slice could not create dataspace'
 end subroutine hdf_get_slice
 
 
-subroutine hdf_shape_check(self, dname, dims)
+subroutine hdf_rank_check(self, dname, dims)
+
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
-class(*), intent(in) :: dims(:)
+integer(HSIZE_T), intent(in) :: dims(:)
 
-integer :: ierr
-integer(SIZE_T) :: dsize
-integer(HSIZE_T), dimension(size(dims)):: ddims, vdims
-integer :: dtype, drank
+integer :: ierr, drank
 
-if(.not.self%is_open) error stop 'h5fortran:shape: file handle is not open'
+if(.not.self%is_open) error stop 'h5fortran:rank_check: file handle is not open'
 
 if (.not.self%exist(dname)) error stop 'ERROR: ' // dname // ' does not exist in ' // self%filename
 
-
-!> allow user to specify int4 or int8 dims
-select type (dims)
-type is (integer(int32))
-  vdims = int(dims, int64)
-type is (integer(hsize_t))
-  vdims = dims
-class default
-  error stop 'ERROR:h5fortran:shape_check: wrong type for dims: ' // dname // ' in ' // self%filename
-end select
-
 !> check for matching rank, else bad reads can occur--doesn't always crash without this check
 call h5ltget_dataset_ndims_f(self%lid, dname, drank, ierr)
-if (ierr/=0) error stop 'ERROR:h5fortran:shape_check: get_dataset_ndim ' // dname // ' read ' // self%filename
+if (ierr/=0) error stop 'ERROR:h5fortran:rank_check: get_dataset_ndim ' // dname // ' read ' // self%filename
 
-
-if (drank /= size(vdims)) then
-  write(stderr,'(A,I0,A,I0)') 'ERROR:h5fortran:shape_check: rank mismatch ' // dname // ' = ',drank,'  variable rank =', size(vdims)
+if (drank /= size(dims)) then
+  write(stderr,'(A,I0,A,I0)') 'ERROR:h5fortran:rank_check: rank mismatch ' // dname // ' = ',drank,'  variable rank =', size(dims)
   error stop
 endif
 
+end subroutine hdf_rank_check
+
+
+subroutine hdf_shape_check(self, dname, dims)
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: dname
+integer(HSIZE_T), intent(in) :: dims(:)
+
+integer :: ierr
+integer(SIZE_T) :: type_size
+integer(HSIZE_T), dimension(size(dims)):: ddims
+integer :: type_class
+
+call hdf_rank_check(self, dname, dims)
+
 !> check for matching size, else bad reads can occur.
 
-call h5ltget_dataset_info_f(self%lid, dname, ddims, dtype, dsize, ierr)
+call h5ltget_dataset_info_f(self%lid, dname, ddims, type_class, type_size, ierr)
 if (ierr/=0) error stop 'ERROR:h5fortran:shape_check: get_dataset_info ' // dname // ' read ' // self%filename
 
 
-if(.not. all(vdims == ddims)) then
-  write(stderr,*) 'ERROR:h5fortran:shape_check: shape mismatch ' // dname // ' = ',ddims,'  variable shape =', vdims
+if(any(int(dims, int64) /= ddims)) then
+  write(stderr,*) 'ERROR:h5fortran:shape_check: shape mismatch ' // dname // ' = ',ddims,'  variable shape =', dims
   error stop
 endif
 
