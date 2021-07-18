@@ -41,7 +41,6 @@ call h5write(fn, '/x', 42)
 if(.not.is_hdf5(fn)) error stop 'file does not exist'
 
 call h%open(fn)
-if (.not.h%is_open) error stop 'file is open'
 if (.not. h%exist('/x')) error stop 'x exists'
 
 if (h%exist('/A')) error stop 'variable /A should not exist in ' // h%filename

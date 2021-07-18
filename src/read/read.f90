@@ -181,17 +181,12 @@ module procedure hdf_check_exist
 
 integer :: ierr
 
-exists = .false.
-
 if(.not.self%is_open) error stop 'h5fortran:exist: file handle is not open'
 
 call h5ltpath_valid_f(self%lid, dname, .true., exists, ierr)
 !! h5lexists_f can false error with groups--just use h5ltpath_valid
 
-if (ierr/=0) then
-  write(stderr,*) 'ERROR:h5fortran:check_exist: could not determine status of ' // dname // ' in ' // self%filename
-  return
-endif
+if (ierr/=0) error stop 'h5fortran:check_exist: could not determine status of ' // dname // ' in ' // self%filename
 
 end procedure hdf_check_exist
 
