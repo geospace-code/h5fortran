@@ -174,14 +174,14 @@ integer(hsize_t) :: adims(1)
 if(.not.self%is_open) error stop 'h5fortran:attr_shape: file handle is not open'
 
 if (.not.self%exist(dname)) then
-  write(stderr,*) 'ERROR: ' // dname // ' attribute ' // attr // ' does not exist in ' // self%filename
+  write(stderr,*) 'ERROR:h5fortran ' // dname // ' attribute ' // attr // ' does not exist in ' // self%filename
   ierr = -1
   return
 endif
 
 !> check for matching rank, else bad reads can occur--doesn't always crash without this check
 call h5ltget_attribute_ndims_f(self%lid, dname, attr, arank, ierr)
-if (check(ierr, 'ERROR:get_attribute_ndims: ' // dname // ' ' // self%filename)) return
+if (check(ierr, 'ERROR:h5fortran:get_attribute_ndims: ' // dname // ' ' // self%filename)) return
 
 if (arank /= 1) then
   write(stderr,'(A,I6,A,I6)') 'ERROR: attribute rank mismatch ' // dname // ' attribute "' // attr // '" = ', &
@@ -193,10 +193,10 @@ endif
 !> check for matching size, else bad reads can occur.
 
 call h5ltget_attribute_info_f(self%lid, dname, attr, adims, atype, attr_bytes, ierr)
-if (check(ierr, 'ERROR: get_attribute_info' // dname // ' read ' // self%filename)) return
+if (check(ierr, 'ERROR:h5fortran: get_attribute_info' // dname // ' read ' // self%filename)) return
 
 if(.not. all(asize == adims)) then
-  write(stderr,*) 'ERROR: shape mismatch ' // dname // ' attribute "' // attr //'" = ', adims,'  shape =', asize
+  write(stderr,*) 'ERROR:h5fortran: shape mismatch ' // dname // ' attribute "' // attr //'" = ', adims,'  shape =', asize
   ierr = -1
   return
 endif

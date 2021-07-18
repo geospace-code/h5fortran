@@ -1007,7 +1007,7 @@ character(:), allocatable :: laction
 integer :: ier
 
 if(self%is_open) then
-  write(stderr,*) 'h5fortran:initialize: file handle already open: '//self%filename
+  write(stderr,*) 'h5fortran:open: file handle already open: '//self%filename
   return
 endif
 
@@ -1019,13 +1019,13 @@ if (present(debug)) self%debug = debug
 
 !> Initialize FORTRAN interface.
 call h5open_f(ier)
-if (ier /= 0) error stop 'h5fortran:initialize: HDF5 library initialize'
+if (ier /= 0) error stop 'h5fortran:open: HDF5 library initialize'
 
 !> get library version
 call h5get_libversion_f(self%libversion(1), self%libversion(2), self%libversion(3), ier)
 if (self%debug) print '(A,3I3)', 'HDF5 version: ',self%libversion
 if(present(ierr)) ierr = ier
-if (check(ier, 'ERROR: HDF5 library get version')) then
+if (check(ier, 'ERROR:h5fortran: HDF5 library get version')) then
   if (present(ierr)) return
   error stop
 endif
@@ -1036,12 +1036,12 @@ else
   call h5eset_auto_f(0, ier)
 endif
 if(present(ierr)) ierr = ier
-if (check(ier, 'ERROR: HDF5 library set traceback')) then
+if (check(ier, 'ERROR:h5fortran: HDF5 library set traceback')) then
   if (present(ierr)) return
   error stop
 endif
 
-if(present(status)) write(stderr,*) "h5fortran: WARNING: status argument is deprecated. use action instead."
+if(present(status)) write(stderr,*) "h5fortran:open: WARNING: status argument is deprecated. use action instead."
 
 laction = 'rw'
 if(present(action)) laction = action
@@ -1060,7 +1060,7 @@ case('readwrite', 'rw', 'append', 'a')
 case ('w','write')
   call h5fcreate_f(filename, H5F_ACC_TRUNC_F, self%lid, ier)
 case default
-  error stop 'Unsupported action: ' // laction
+  error stop 'h5fortran: Unsupported action: ' // laction
 end select
 
 if (present(ierr)) ierr = ier
@@ -1089,14 +1089,14 @@ integer, intent(out), optional :: ierr
 integer :: ier
 
 if (.not. self%is_open) then
-  write(stderr,*) 'WARNING:h5fortran:finalize: file handle is already closed: '// self%filename
+  write(stderr,*) 'WARNING:h5fortran:close: file handle is already closed: '// self%filename
   return
 endif
 
 !> close hdf5 file
 call h5fclose_f(self%lid, ier)
 if (present(ierr)) ierr = ier
-if (check(ier, 'ERROR:finalize: HDF5 file close: ' // self%filename)) then
+if (check(ier, 'ERROR:h5fortran:close: HDF5 file close: ' // self%filename)) then
   if (present(ierr)) return
   error stop
 endif
@@ -1105,7 +1105,7 @@ if (present(close_hdf5_interface)) then
   if (close_hdf5_interface) then
     call h5close_f(ier)
     if (present(ierr)) ierr = ier
-    if (check(ier, 'ERROR: HDF5 library close')) then
+    if (check(ier, 'ERROR:h5fortran: HDF5 library close')) then
       if (present(ierr)) return
       error stop
     endif

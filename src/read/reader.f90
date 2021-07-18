@@ -281,7 +281,7 @@ if(native_dtype == H5T_NATIVE_DOUBLE) then
     call h5dread_f(ds_id, H5T_NATIVE_DOUBLE, buf_r64, dims, ier, mem_space_id, space_id)
     value = int(buf_r64, int64)
   class default
-    error stop 'unknown variable type'
+    error stop 'h5fortran:read: unknown variable type'
   end select
 elseif(native_dtype == H5T_NATIVE_REAL) then
   select type(value)
@@ -300,7 +300,7 @@ elseif(native_dtype == H5T_NATIVE_REAL) then
     call h5dread_f(ds_id, H5T_NATIVE_REAL, buf_r32, dims, ier, mem_space_id, space_id)
     value = int(buf_r32, int64)
   class default
-    error stop 'unknown variable type'
+    error stop 'h5fortran:read: unknown variable type'
   end select
 elseif(native_dtype == H5T_NATIVE_INTEGER) then
   select type(value)
@@ -319,7 +319,7 @@ elseif(native_dtype == H5T_NATIVE_INTEGER) then
     call h5dread_f(ds_id, H5T_NATIVE_INTEGER, buf_i32, dims, ier, mem_space_id, space_id)
     value = int(buf_i32, int64)
   class default
-    error stop 'unknown variable type'
+    error stop 'h5fortran:read: unknown variable type'
   end select
 elseif(native_dtype == H5T_STD_I64LE) then
   select type(value)
@@ -338,7 +338,7 @@ elseif(native_dtype == H5T_STD_I64LE) then
   type is (integer(int64))
     call h5dread_f(ds_id, H5T_STD_I64LE, value, dims, ier, mem_space_id, space_id)
   class default
-    error stop 'unknown variable type'
+    error stop 'h5fortran:read: unknown variable type'
   end select
 else
   error stop 'h5fortran:reader: non-handled datatype--please reach out to developers.'
@@ -404,7 +404,7 @@ if(native_dtype == H5T_NATIVE_DOUBLE) then
     call h5dread_f(ds_id, H5T_NATIVE_DOUBLE, buf_r64, dims, ier, mem_space_id, space_id)
     value = int(buf_r64, int64)
   class default
-    error stop 'unknown variable type'
+    error stop 'h5fortran:read: unknown variable type'
   end select
 elseif(native_dtype == H5T_NATIVE_REAL) then
   select type(value)
@@ -423,7 +423,7 @@ elseif(native_dtype == H5T_NATIVE_REAL) then
     call h5dread_f(ds_id, H5T_NATIVE_REAL, buf_r32, dims, ier, mem_space_id, space_id)
     value = int(buf_r32, int64)
   class default
-    error stop 'unknown variable type'
+    error stop 'h5fortran:read: unknown variable type'
   end select
 elseif(native_dtype == H5T_NATIVE_INTEGER) then
   select type(value)
@@ -442,7 +442,7 @@ elseif(native_dtype == H5T_NATIVE_INTEGER) then
     call h5dread_f(ds_id, H5T_NATIVE_INTEGER, buf_i32, dims, ier, mem_space_id, space_id)
     value = int(buf_i32, int64)
   class default
-    error stop 'unknown variable type'
+    error stop 'h5fortran:read: unknown variable type'
   end select
 elseif(native_dtype == H5T_STD_I64LE) then
   select type(value)
@@ -461,7 +461,7 @@ elseif(native_dtype == H5T_STD_I64LE) then
   type is (integer(int64))
     call h5dread_f(ds_id, H5T_STD_I64LE, value, dims, ier, mem_space_id, space_id)
   class default
-    error stop 'unknown variable type'
+    error stop 'h5fortran:read: unknown variable type'
   end select
 else
   error stop 'h5fortran:reader: non-handled datatype--please reach out to developers.'
@@ -527,7 +527,7 @@ if(native_dtype == H5T_NATIVE_DOUBLE) then
     call h5dread_f(ds_id, H5T_NATIVE_DOUBLE, buf_r64, dims, ier, mem_space_id, space_id)
     value = int(buf_r64, int64)
   class default
-    error stop 'unknown variable type'
+    error stop 'h5fortran:read: unknown variable type'
   end select
 elseif(native_dtype == H5T_NATIVE_REAL) then
   select type(value)
@@ -546,7 +546,7 @@ elseif(native_dtype == H5T_NATIVE_REAL) then
     call h5dread_f(ds_id, H5T_NATIVE_REAL, buf_r32, dims, ier, mem_space_id, space_id)
     value = int(buf_r32, int64)
   class default
-    error stop 'unknown variable type'
+    error stop 'h5fortran:read: unknown variable type'
   end select
 elseif(native_dtype == H5T_NATIVE_INTEGER) then
   select type(value)
@@ -565,7 +565,7 @@ elseif(native_dtype == H5T_NATIVE_INTEGER) then
     call h5dread_f(ds_id, H5T_NATIVE_INTEGER, buf_i32, dims, ier, mem_space_id, space_id)
     value = int(buf_i32, int64)
   class default
-    error stop 'unknown variable type'
+    error stop 'h5fortran:read: unknown variable type'
   end select
 elseif(native_dtype == H5T_STD_I64LE) then
   select type(value)
@@ -584,7 +584,7 @@ elseif(native_dtype == H5T_STD_I64LE) then
   type is (integer(int64))
     call h5dread_f(ds_id, H5T_STD_I64LE, value, dims, ier, mem_space_id, space_id)
   class default
-    error stop 'unknown variable type'
+    error stop 'h5fortran:read: unknown variable type'
   end select
 else
   error stop 'h5fortran:reader: non-handled datatype--please reach out to developers.'
@@ -645,7 +645,7 @@ if(native_dtype == H5T_NATIVE_DOUBLE) then
     call h5dread_f(ds_id, H5T_NATIVE_DOUBLE, buf_r64, dims, ier, mem_space_id, space_id)
     value = int(buf_r64, int32)
   class default
-    error stop 'unknown variable type'
+    error stop 'h5fortran:read: unknown variable type'
   end select
 elseif(native_dtype == H5T_NATIVE_REAL) then
   select type(value)
@@ -660,7 +660,7 @@ elseif(native_dtype == H5T_NATIVE_REAL) then
     call h5dread_f(ds_id, H5T_NATIVE_REAL, buf_r32, dims, ier, mem_space_id, space_id)
     value = int(buf_r32, int32)
   class default
-    error stop 'unknown variable type'
+    error stop 'h5fortran:read: unknown variable type'
   end select
 elseif(native_dtype == H5T_NATIVE_INTEGER) then
   select type(value)
@@ -675,7 +675,7 @@ elseif(native_dtype == H5T_NATIVE_INTEGER) then
   type is (integer(int32))
     call h5dread_f(ds_id, H5T_NATIVE_INTEGER, value, dims, ier, mem_space_id, space_id)
   class default
-    error stop 'unknown variable type'
+    error stop 'h5fortran:read: unknown variable type'
   end select
 else
   error stop 'h5fortran:reader: non-handled datatype--please reach out to developers.'
@@ -736,7 +736,7 @@ if(native_dtype == H5T_NATIVE_DOUBLE) then
     call h5dread_f(ds_id, H5T_NATIVE_DOUBLE, buf_r64, dims, ier, mem_space_id, space_id)
     value = int(buf_r64, int32)
   class default
-    error stop 'unknown variable type'
+    error stop 'h5fortran:read: unknown variable type'
   end select
 elseif(native_dtype == H5T_NATIVE_REAL) then
   select type(value)
@@ -751,7 +751,7 @@ elseif(native_dtype == H5T_NATIVE_REAL) then
     call h5dread_f(ds_id, H5T_NATIVE_REAL, buf_r32, dims, ier, mem_space_id, space_id)
     value = int(buf_r32, int32)
   class default
-    error stop 'unknown variable type'
+    error stop 'h5fortran:read: unknown variable type'
   end select
 elseif(native_dtype == H5T_NATIVE_INTEGER) then
   select type(value)
@@ -766,7 +766,7 @@ elseif(native_dtype == H5T_NATIVE_INTEGER) then
   type is (integer(int32))
     call h5dread_f(ds_id, H5T_NATIVE_INTEGER, value, dims, ier, mem_space_id, space_id)
   class default
-    error stop 'unknown variable type'
+    error stop 'h5fortran:read: unknown variable type'
   end select
 else
   error stop 'h5fortran:reader: non-handled datatype--please reach out to developers.'
@@ -827,7 +827,7 @@ if(native_dtype == H5T_NATIVE_DOUBLE) then
     call h5dread_f(ds_id, H5T_NATIVE_DOUBLE, buf_r64, dims, ier, mem_space_id, space_id)
     value = int(buf_r64, int32)
   class default
-    error stop 'unknown variable type'
+    error stop 'h5fortran:read: unknown variable type'
   end select
 elseif(native_dtype == H5T_NATIVE_REAL) then
   select type(value)
@@ -842,7 +842,7 @@ elseif(native_dtype == H5T_NATIVE_REAL) then
     call h5dread_f(ds_id, H5T_NATIVE_REAL, buf_r32, dims, ier, mem_space_id, space_id)
     value = int(buf_r32, int32)
   class default
-    error stop 'unknown variable type'
+    error stop 'h5fortran:read: unknown variable type'
   end select
 elseif(native_dtype == H5T_NATIVE_INTEGER) then
   select type(value)
@@ -857,7 +857,7 @@ elseif(native_dtype == H5T_NATIVE_INTEGER) then
   type is (integer(int32))
     call h5dread_f(ds_id, H5T_NATIVE_INTEGER, value, dims, ier, mem_space_id, space_id)
   class default
-    error stop 'unknown variable type'
+    error stop 'h5fortran:read: unknown variable type'
   end select
 else
   error stop 'h5fortran:reader: non-handled datatype--please reach out to developers.'
@@ -918,7 +918,7 @@ if(native_dtype == H5T_NATIVE_DOUBLE) then
     call h5dread_f(ds_id, H5T_NATIVE_DOUBLE, buf_r64, dims, ier, mem_space_id, space_id)
     value = int(buf_r64, int32)
   class default
-    error stop 'unknown variable type'
+    error stop 'h5fortran:read: unknown variable type'
   end select
 elseif(native_dtype == H5T_NATIVE_REAL) then
   select type(value)
@@ -933,7 +933,7 @@ elseif(native_dtype == H5T_NATIVE_REAL) then
     call h5dread_f(ds_id, H5T_NATIVE_REAL, buf_r32, dims, ier, mem_space_id, space_id)
     value = int(buf_r32, int32)
   class default
-    error stop 'unknown variable type'
+    error stop 'h5fortran:read: unknown variable type'
   end select
 elseif(native_dtype == H5T_NATIVE_INTEGER) then
   select type(value)
@@ -948,7 +948,7 @@ elseif(native_dtype == H5T_NATIVE_INTEGER) then
   type is (integer(int32))
     call h5dread_f(ds_id, H5T_NATIVE_INTEGER, value, dims, ier, mem_space_id, space_id)
   class default
-    error stop 'unknown variable type'
+    error stop 'h5fortran:read: unknown variable type'
   end select
 else
   error stop 'h5fortran:reader: non-handled datatype--please reach out to developers.'
