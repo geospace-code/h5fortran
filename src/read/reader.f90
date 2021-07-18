@@ -14,7 +14,7 @@ module procedure hdf_read_scalar_char
 integer :: ier
 character(len(value)) :: buf
 
-call hdf_rank_check(self, dname, shape(value, HSIZE_T))
+call hdf_rank_check(self, dname, rank(value))
 
 call h5ltread_dataset_string_f(self%lid, dname, buf, ier)
 value = buf
@@ -32,12 +32,18 @@ integer(int32) :: buf_i32
 integer(int64) :: buf_i64
 
 integer(HSIZE_T) :: dims(rank(value))
-integer(hid_t) :: ds_id, space_id, native_dtype
+integer(hid_t) :: ds_id, native_dtype
 integer :: ier
 
-call hdf_rank_check(self, dname, shape(value, HSIZE_T))
+logical :: vector_scalar
+real(real32) :: vbuf(1)
 
-space_id = 0
+call hdf_rank_check(self, dname, rank(value), vector_scalar)
+if(vector_scalar) then
+  call hdf_read_1d(self, dname, vbuf, ier)
+  value = vbuf(1)
+  return
+endif
 
 call h5dopen_f(self%lid, dname, ds_id, ier)
 if(ier/=0) error stop 'h5fortran:reader: ' // dname // ' could not be opened in ' // self%filename
@@ -63,7 +69,7 @@ else
 end if
 if(ier/=0) error stop 'h5fortran:reader: reading ' // dname // ' from ' // self%filename
 
-call hdf_wrapup(ds_id, space_id, ier)
+call hdf_wrapup(ds_id)
 
 if (present(ierr)) ierr = ier
 if (check(ier, self%filename, dname) .and. .not.present(ierr)) error stop
@@ -78,12 +84,18 @@ integer(int32) :: buf_i32
 integer(int64) :: buf_i64
 
 integer(HSIZE_T) :: dims(rank(value))
-integer(hid_t) :: ds_id, space_id, native_dtype
+integer(hid_t) :: ds_id, native_dtype
 integer :: ier
 
-call hdf_rank_check(self, dname, shape(value, HSIZE_T))
+logical :: vector_scalar
+real(real64) :: vbuf(1)
 
-space_id = 0
+call hdf_rank_check(self, dname, rank(value), vector_scalar)
+if(vector_scalar) then
+  call hdf_read_1d(self, dname, vbuf, ier)
+  value = vbuf(1)
+  return
+endif
 
 call h5dopen_f(self%lid, dname, ds_id, ier)
 if(ier/=0) error stop 'h5fortran:reader: ' // dname // ' could not be opened in ' // self%filename
@@ -108,7 +120,7 @@ else
 end if
 if(ier/=0) error stop 'h5fortran:reader: reading ' // dname // ' from ' // self%filename
 
-call hdf_wrapup(ds_id, space_id, ier)
+call hdf_wrapup(ds_id)
 
 if (present(ierr)) ierr = ier
 if (check(ier, self%filename, dname) .and. .not.present(ierr)) error stop
@@ -123,12 +135,18 @@ real(real64) :: buf_r64
 integer(int64) :: buf_i64
 
 integer(HSIZE_T) :: dims(rank(value))
-integer(hid_t) :: ds_id, space_id, native_dtype
+integer(hid_t) :: ds_id, native_dtype
 integer :: ier
 
-call hdf_rank_check(self, dname, shape(value, HSIZE_T))
+logical :: vector_scalar
+integer(int32) :: vbuf(1)
 
-space_id = 0
+call hdf_rank_check(self, dname, rank(value), vector_scalar)
+if(vector_scalar) then
+  call hdf_read_1d(self, dname, vbuf, ier)
+  value = vbuf(1)
+  return
+endif
 
 call h5dopen_f(self%lid, dname, ds_id, ier)
 if(ier/=0) error stop 'h5fortran:reader: ' // dname // ' could not be opened in ' // self%filename
@@ -153,7 +171,7 @@ else
 end if
 if(ier/=0) error stop 'h5fortran:reader: reading ' // dname // ' from ' // self%filename
 
-call hdf_wrapup(ds_id, space_id, ier)
+call hdf_wrapup(ds_id)
 
 if (present(ierr)) ierr = ier
 if (check(ier, self%filename, dname) .and. .not.present(ierr)) error stop
@@ -168,12 +186,18 @@ real(real64) :: buf_r64
 integer(int32) :: buf_i32
 
 integer(HSIZE_T) :: dims(rank(value))
-integer(hid_t) :: ds_id, space_id, native_dtype
+integer(hid_t) :: ds_id, native_dtype
 integer :: ier
 
-call hdf_rank_check(self, dname, shape(value, HSIZE_T))
+logical :: vector_scalar
+integer(int64) :: vbuf(1)
 
-space_id = 0
+call hdf_rank_check(self, dname, rank(value), vector_scalar)
+if(vector_scalar) then
+  call hdf_read_1d(self, dname, vbuf, ier)
+  value = vbuf(1)
+  return
+endif
 
 call h5dopen_f(self%lid, dname, ds_id, ier)
 if(ier/=0) error stop 'h5fortran:reader: ' // dname // ' could not be opened in ' // self%filename
@@ -198,7 +222,7 @@ else
 end if
 if(ier/=0) error stop 'h5fortran:reader: reading ' // dname // ' from ' // self%filename
 
-call hdf_wrapup(ds_id, space_id, ier)
+call hdf_wrapup(ds_id)
 
 if (present(ierr)) ierr = ier
 if (check(ier, self%filename, dname) .and. .not.present(ierr)) error stop
@@ -321,7 +345,7 @@ else
 end if
 if(ier/=0) error stop 'h5fortran:reader: reading ' // dname // ' from ' // self%filename
 
-call hdf_wrapup(ds_id, space_id, ier)
+call hdf_wrapup(ds_id, space_id)
 
 if (present(ierr)) ierr = ier
 if (check(ier, self%filename, dname) .and. .not.present(ierr)) error stop
@@ -444,7 +468,7 @@ else
 end if
 if(ier/=0) error stop 'h5fortran:reader: reading ' // dname // ' from ' // self%filename
 
-call hdf_wrapup(ds_id, space_id, ier)
+call hdf_wrapup(ds_id, space_id)
 
 if (present(ierr)) ierr = ier
 if (check(ier, self%filename, dname) .and. .not.present(ierr)) error stop
@@ -567,7 +591,7 @@ else
 end if
 if(ier/=0) error stop 'h5fortran:reader: reading ' // dname // ' from ' // self%filename
 
-call hdf_wrapup(ds_id, space_id, ier)
+call hdf_wrapup(ds_id, space_id)
 
 if (present(ierr)) ierr = ier
 if (check(ier, self%filename, dname) .and. .not.present(ierr)) error stop
@@ -658,7 +682,7 @@ else
 end if
 if(ier/=0) error stop 'h5fortran:reader: reading ' // dname // ' from ' // self%filename
 
-call hdf_wrapup(ds_id, space_id, ier)
+call hdf_wrapup(ds_id, space_id)
 
 if (present(ierr)) ierr = ier
 if (check(ier, self%filename, dname) .and. .not.present(ierr)) error stop
@@ -749,7 +773,7 @@ else
 end if
 if(ier/=0) error stop 'h5fortran:reader: reading ' // dname // ' from ' // self%filename
 
-call hdf_wrapup(ds_id, space_id, ier)
+call hdf_wrapup(ds_id, space_id)
 
 if (present(ierr)) ierr = ier
 if (check(ier, self%filename, dname) .and. .not.present(ierr)) error stop
@@ -840,7 +864,7 @@ else
 end if
 if(ier/=0) error stop 'h5fortran:reader: reading ' // dname // ' from ' // self%filename
 
-call hdf_wrapup(ds_id, space_id, ier)
+call hdf_wrapup(ds_id, space_id)
 
 if (present(ierr)) ierr = ier
 if (check(ier, self%filename, dname) .and. .not.present(ierr)) error stop
@@ -931,7 +955,7 @@ else
 end if
 if(ier/=0) error stop 'h5fortran:reader: reading ' // dname // ' from ' // self%filename
 
-call hdf_wrapup(ds_id, space_id, ier)
+call hdf_wrapup(ds_id, space_id)
 
 if (present(ierr)) ierr = ier
 if (check(ier, self%filename, dname) .and. .not.present(ierr)) error stop

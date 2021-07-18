@@ -51,8 +51,8 @@ class default
   ierr = 6
 end select
 
-call hdf_wrapup(did, sid, ierr)
-if (check(ierr, 'ERROR: ' // dname // ' write ' // self%filename))  return
+call hdf_wrapup(did, sid)
+if (check(ierr, 'ERROR:h5fortran: ' // dname // ' write ' // self%filename))  return
 
 end procedure hdf_write_8d
 

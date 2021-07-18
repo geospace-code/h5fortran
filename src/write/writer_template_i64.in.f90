@@ -20,7 +20,7 @@ endif
 call h5dwrite_f(did, H5T_STD_I64LE, value, dims, ier, mem_sid, sid)
 if (ier/=0) error stop 'h5fortran:ERROR: could not write ' // dname // ' to ' // self%filename
 
-call hdf_wrapup(did, sid, ier)
+call hdf_wrapup(did, sid)
 
 if (present(ierr)) ierr = ier
 if (check(ier, self%filename, dname) .and. .not.present(ierr)) error stop

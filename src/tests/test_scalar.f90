@@ -45,6 +45,7 @@ call h%write_r64("/scalar_r64", -1._real64)
 
 !> vector
 call h%write('/1d_real', r1)
+call h%write('/vector_scalar_real', [37.])
 
 !> create then write
 call h%create('/1d_int32', H5T_NATIVE_INTEGER, shape(i1, kind=hsize_t))
@@ -81,13 +82,22 @@ call h%read('/scalar_int32', rt)
 if(rt/=42) error stop 'scalar cast int32 => real'
 call h%read('/scalar_int64', rt)
 if(rt/=42) error stop 'scalar cast int64 => real'
-print *, 'PASSED: scalar case on read'
+print *, 'PASSED: scalar cast on read'
+
+!> read vector length 1 as scalar
+call h%shape('/vector_scalar_real', dims)
+if (any(dims /= [1])) error stop "expected vector length 1"
+
+call h%read('/vector_scalar_real', rt)
+if(rt/=37) error stop 'vector scalar 1d length 1 => scalar'
 
 !> 1D vector read write
-call h%shape('/1d_real',dims)
+call h%shape('/1d_real', dims)
 allocate(rr1(dims(1)))
-call h%read('/1d_real',rr1)
+print *, "OK: 1d shape read real32"
+call h%read('/1d_real', rr1)
 if (.not.all(r1 == rr1)) error stop 'real 1-D: read does not match write'
+print *, "OK: 1d read real32"
 
 call h%shape('/1d_int32',dims)
 allocate(i1t(dims(1)))

@@ -35,7 +35,7 @@ if(exists) then
   if (.not.present(istart)) then
     if (size(dims) == 0) then
       !! scalar
-      call hdf_rank_check(self, dname, dims)
+      call hdf_rank_check(self, dname, size(dims))
     else
       call hdf_shape_check(self, dname, dims)
     endif
@@ -105,7 +105,7 @@ if (check(ierr, self%filename, dname)) error stop "h5fortran:h5dcreate: " // dna
 
 if(.not.(present(did) .and. present(sid))) then
   if(self%debug) print *, 'h5fortran:TRACE:create: closing dataset ', dname
-  call hdf_wrapup(ds_id, space_id, ierr)
+  call hdf_wrapup(ds_id, space_id)
 endif
 if (check(ierr, self%filename, dname)) error stop "h5fortran:wrapup: " // dname
 

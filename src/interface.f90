@@ -1273,18 +1273,23 @@ write(stderr,*) 'h5fortran:ERROR: ' // fn // ':' // dn // ' error code ', ierr
 end function check
 
 
-subroutine hdf_wrapup(did, sid, ierr)
-integer(HID_T), intent(in) :: sid, did
-integer, intent(out) :: ierr
+subroutine hdf_wrapup(dset_id, space_id)
 
-if(sid /= 0) then
-  call h5sclose_f(sid, ierr)
-  if (check(ierr, 'ERROR:h5sclose dataspace')) return
+integer(HID_T), intent(in) :: dset_id
+integer(HID_T), intent(in), optional :: space_id
+
+integer :: ierr
+
+ierr = 0
+
+if(present(space_id)) then
+  if(space_id /= 0) call h5sclose_f(space_id, ierr)
+  if (ierr /= 0) error stop 'h5sclose dataspace'
 endif
 
-if(did /= 0) then
-  call h5dclose_f(did, ierr)
-  if (check(ierr, 'ERROR:h5dclose dataset')) return
+if(dset_id /= 0) then
+  call h5dclose_f(dset_id, ierr)
+  if (ierr /= 0) error stop 'h5dclose dataset'
 endif
 
 end subroutine hdf_wrapup
@@ -1367,13 +1372,18 @@ if(ierr /= 0) error stop 'h5fortran:get_slice could not create dataspace'
 end subroutine hdf_get_slice
 
 
-subroutine hdf_rank_check(self, dname, dims)
+subroutine hdf_rank_check(self, dname, mrank, vector_scalar)
 
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
-integer(HSIZE_T), intent(in) :: dims(:)
+integer, intent(in) :: mrank
+logical, intent(out), optional :: vector_scalar
 
-integer :: ierr, drank
+integer(HSIZE_T) :: ddims(1)
+integer(SIZE_T) :: type_size
+integer :: ierr, drank, type_class
+
+if(present(vector_scalar)) vector_scalar = .false.
 
 if(.not.self%is_open) error stop 'h5fortran:rank_check: file handle is not open'
 
@@ -1381,12 +1391,24 @@ if (.not.self%exist(dname)) error stop 'ERROR: ' // dname // ' does not exist in
 
 !> check for matching rank, else bad reads can occur--doesn't always crash without this check
 call h5ltget_dataset_ndims_f(self%lid, dname, drank, ierr)
-if (ierr/=0) error stop 'ERROR:h5fortran:rank_check: get_dataset_ndim ' // dname // ' read ' // self%filename
+if (ierr/=0) error stop 'h5fortran:rank_check: get_dataset_ndim ' // dname // ' read ' // self%filename
 
-if (drank /= size(dims)) then
-  write(stderr,'(A,I0,A,I0)') 'ERROR:h5fortran:rank_check: rank mismatch ' // dname // ' = ',drank,'  variable rank =', size(dims)
-  error stop
+if (drank == mrank) return
+
+if (present(vector_scalar) .and. drank == 1 .and. mrank == 0) then
+  !! check if vector of length 1
+  call h5ltget_dataset_info_f(self%lid, dname, dims=ddims, &
+    type_class=type_class, type_size=type_size, errcode=ierr)
+  if (ierr/=0) error stop 'h5fortran:rank_check: get_dataset_info ' // dname // ' read ' // self%filename
+  if (ddims(1) == 1) then
+    vector_scalar = .true.
+    return
+  endif
 endif
+
+write(stderr,'(A,I0,A,I0)') 'h5fortran:rank_check: rank mismatch ' // dname // ' = ',drank,'  variable rank =', mrank
+error stop
+
 
 end subroutine hdf_rank_check
 
@@ -1401,16 +1423,17 @@ integer(SIZE_T) :: type_size
 integer(HSIZE_T), dimension(size(dims)):: ddims
 integer :: type_class
 
-call hdf_rank_check(self, dname, dims)
+call hdf_rank_check(self, dname, size(dims))
 
 !> check for matching size, else bad reads can occur.
 
-call h5ltget_dataset_info_f(self%lid, dname, ddims, type_class, type_size, ierr)
-if (ierr/=0) error stop 'ERROR:h5fortran:shape_check: get_dataset_info ' // dname // ' read ' // self%filename
+call h5ltget_dataset_info_f(self%lid, dname, dims=ddims, &
+    type_class=type_class, type_size=type_size, errcode=ierr)
+if (ierr/=0) error stop 'h5fortran:shape_check: get_dataset_info ' // dname // ' read ' // self%filename
 
 
 if(any(int(dims, int64) /= ddims)) then
-  write(stderr,*) 'ERROR:h5fortran:shape_check: shape mismatch ' // dname // ' = ',ddims,'  variable shape =', dims
+  write(stderr,*) 'h5fortran:shape_check: shape mismatch ' // dname // ' = ',ddims,'  variable shape =', dims
   error stop
 endif
 

@@ -95,22 +95,19 @@ end procedure hdf_get_ndims
 
 module procedure hdf_get_shape
 !! must get dims before info, as "dims" must be allocated or segfault occurs.
-integer(SIZE_T) :: dsize
-integer :: dtype, drank, ier
+integer(SIZE_T) :: type_size
+integer :: type_class, drank, ier
 
 if(.not.self%is_open) error stop 'h5fortran:get_shape: file handle is not open'
 
-ier = -1
+if(.not. self%exist(dname)) error stop 'h5fortran:get_shape: ' // dname // ' does not exist in ' // self%filename
 
-if (self%exist(dname)) then
-  call h5ltget_dataset_ndims_f(self%lid, dname, drank, ier)
-else
-  write(stderr, *) 'ERROR:get_shape: ' // dname // ' does not exist in ' // self%filename
-endif
+call h5ltget_dataset_ndims_f(self%lid, dname, drank, ier)
 
 if (ier == 0) then
   allocate(dims(drank))
-  call h5ltget_dataset_info_f(self%lid, dname, dims, dtype, dsize, ier)
+  call h5ltget_dataset_info_f(self%lid, dname, dims=dims, &
+    type_class=type_class, type_size=type_size, errcode=ier)
 endif
 
 if (present(ierr)) ierr = ier
