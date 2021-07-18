@@ -2,7 +2,6 @@ name: ci
 
 env:
   CTEST_PARALLEL_LEVEL: 3
-  cmake_version: 3.21.0-rc3
 
 on:
   push:
