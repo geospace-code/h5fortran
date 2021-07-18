@@ -1124,6 +1124,8 @@ subroutine destructor(self)
 
 type(hdf5_file), intent(inout) :: self
 
+if (.not. self%is_open) return
+
 print *, "auto-closing " // self%filename
 
 call self%close()
