@@ -31,10 +31,13 @@ jobs:
         sudo apt update -yq
         sudo apt install -yq --no-install-recommends ninja-build gfortran libhdf5-dev
 
-    - run: cmake --preset default -DCMAKE_INSTALL_PREFIX=~
-    - run: cmake --build --preset default
-    - run: ctest --preset default
-    # - run: ctest --preset default --output-junit test-results.xml
+    - run: cmake --preset multi -DCMAKE_INSTALL_PREFIX=~
+    - run: cmake --build --preset debug
+    - run: ctest --preset debug
+    # - run: ctest --preset debug --output-junit test-results.xml
+
+    - run: cmake --build --preset release
+    - run: ctest --preset release
 
     - name: Publish Unit Test Results
       uses: EnricoMi/publish-unit-test-result-action@v1
