@@ -12,6 +12,10 @@
   }
 },
 {
+  "name": "multi", "inherits": "default",
+  "generator": "Ninja Multi-Config"
+},
+{
   "name": "notest", "inherits": "default",
   "displayName": "omit self-tests",
   "cacheVariables": {
@@ -45,6 +49,16 @@
     "configurePreset": "default"
   },
   {
+    "name": "release",
+    "configurePreset": "multi",
+    "configuration": "Release"
+  },
+  {
+    "name": "debug",
+    "configurePreset": "multi",
+    "configuration": "Debug"
+  },
+  {
     "name": "intel",
     "configurePreset": "intel"
   }
@@ -61,6 +75,16 @@
     "noTestsAction": "error",
     "stopOnFailure": false
   }
+},
+{
+  "name": "release", "inherits": "default",
+  "configurePreset": "multi",
+  "configuration": "Release"
+},
+{
+  "name": "debug", "inherits": "default",
+  "configurePreset": "multi",
+  "configuration": "Debug"
 },
 {
   "name": "intel", "inherits": "default",

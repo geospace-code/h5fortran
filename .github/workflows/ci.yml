@@ -136,12 +136,16 @@ jobs:
 
     - run: brew install hdf5 ninja
 
-    - run: cmake --preset default -DCMAKE_INSTALL_PREFIX=~/h5fortran
-    - run: cmake --build --preset default
-    - run: ctest --preset default
+    - run: cmake --preset multi -DCMAKE_INSTALL_PREFIX=~
+    - run: cmake --build --preset debug
+    - run: ctest --preset debug
+
+    - run: cmake --build --preset release
+    - run: ctest --preset release
+
     - run: cmake --install build
 
-    - run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=~/h5fortran
+    - run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=~
     - run: cmake --build Examples/build --parallel
     - run: ctest --parallel 2 --output-on-failure
       working-directory: Examples/build
