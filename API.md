@@ -190,17 +190,15 @@ The runtime penalty may be insignificant unless you call these functions many ti
 The `h5write` opens `filename` with `action='readwrite'` (create if not present, append if existing).
 
 ```fortran
-call h5write(filename, dname, value, ierr)
+call h5write(filename, dname, value)
 character(*), intent(in) :: filename, dname
 class(*), intent(in) :: value(:)
-integer, intent(out), optional :: ierr  !< 0 if OK
 ```
 
 The `h5read` opens `filename` with `action='read'` (error if file not exist).
 
 ```fortran
-call h5read(filename, dname, value, ierr)
+call h5read(filename, dname, value)
 character(*), intent(in) :: filename, dname
 class(*), intent(out) :: value(:)
-integer, intent(out), optional :: ierr
 ```
