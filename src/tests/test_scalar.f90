@@ -56,9 +56,9 @@ call h%write('/1d_int64', i1_64)
 
 print *, 'PASSED: vector write'
 !> test rewrite
-call h%write('scalar_real32', 42.)
-call h%write('scalar_int32', 42_int32)
-call h%write('scalar_int64', 42_int64)
+call h%write('/scalar_real32', 42.)
+call h%write('/scalar_int32', 42_int32)
+call h%write('/scalar_int64', 42_int64)
 call h%close()
 
 !> read
@@ -86,10 +86,10 @@ print *, 'PASSED: scalar cast on read'
 
 !> read vector length 1 as scalar
 call h%shape('/vector_scalar_real', dims)
-if (any(dims /= [1])) error stop "expected vector length 1"
+if (any(dims /= [1])) error stop "vector_scalar: expected vector length 1"
 
 call h%read('/vector_scalar_real', rt)
-if(rt/=37) error stop 'vector scalar 1d length 1 => scalar'
+if(rt/=37) error stop 'vector_scalar: 1d length 1 => scalar'
 
 !> 1D vector read write
 call h%shape('/1d_real', dims)
@@ -119,12 +119,9 @@ call h%read('/1d_int32', rr1)
 if (.not.all(i1==rr1)) error stop '1D cast int32 => real'
 call h%read('/1d_int64', rr1)
 if (.not.all(i1_64==rr1)) error stop '1D cast int64 => real'
-!> check filename property
 
-if (.not. h%filename == fn) then
-  write(stderr,*) h%filename // ' mismatch filename'
-  error stop
-endif
+!> check filename property
+if (.not. h%filename == fn) error stop h%filename // ' mismatch filename'
 
 call h%close()
 
