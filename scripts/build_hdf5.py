@@ -55,6 +55,7 @@ def cli():
     p.add_argument(
         "-parallel", help="build HDF5 with MPI parallel support", action="store_true"
     )
+    p.add_argument("-debug", help="debug configure CMake", action="store_true")
     P = p.parse_args()
 
     compiler = P.compiler
@@ -77,13 +78,24 @@ def cli():
 
     urls = json.loads(JSON_FILE.read_text())
 
-    dirs["zlib"] = zlib(dirs, urls["zlib2"], env=env)
+    dirs["zlib"] = zlib(dirs, urls["zlib2"], env=env, debug=P.debug)
 
-    hdf5(dirs, urls["hdf5"], env=env, download_git=P.git, parallel=P.parallel)
+    hdf5(
+        dirs,
+        urls["hdf5"],
+        env=env,
+        download_git=P.git,
+        parallel=P.parallel,
+        debug=P.debug,
+    )
 
 
 def zlib(
-    dirs: T.Dict[str, Path], urls: T.Dict[str, str], env: T.Mapping[str, str]
+    dirs: T.Dict[str, Path],
+    urls: T.Dict[str, str],
+    *,
+    env: T.Mapping[str, str],
+    debug: bool = False,
 ) -> Path:
     zlib_filename = urls["url"].split("/")[-1]
     install_dir = dirs["prefix"]
@@ -111,6 +123,9 @@ def zlib(
         "-DZLIB_ENABLE_TESTS:BOOL=off",
     ]
 
+    if debug:
+        cmd0.append("--debug-find")
+
     cmd1 = ["cmake", "--build", str(build_dir), "--parallel"]
 
     cmd2 = ["cmake", "--install", str(build_dir)]
@@ -129,6 +144,7 @@ def hdf5(
     *,
     download_git: bool = False,
     parallel: bool = False,
+    debug: bool = False,
 ):
     """build and install HDF5
 
@@ -198,6 +214,9 @@ def hdf5(
                 "-DHDF5_ENABLE_PARALLEL:BOOL=false",
                 "-DHDF5_BUILD_TOOLS:BOOL=true",
             ]
+
+        if debug:
+            cmd0.append("--debug-find")
 
         cmd1 = ["cmake", "--build", str(build_dir), "--parallel"]
 
