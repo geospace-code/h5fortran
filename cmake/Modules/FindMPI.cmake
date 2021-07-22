@@ -98,8 +98,10 @@ list(TRANSFORM _Lflags STRIP)
 set(_flags ${_Lflags})
 
 # check if compiler absolute path is first element and remove
-if(${raw} MATCHES "^/" AND ${_flags} MATCHES "^/")
-  list(REMOVE_AT _flags 0)
+if(${raw} MATCHES "^/")
+  if(${_flags} MATCHES "^/")
+    list(REMOVE_AT _flags 0)
+  endif()
 endif()
 
 string(REGEX MATCHALL "(^| )(-Wl,)([^\" ]+|\"[^\"]+\")" _Wflags "${raw}")
