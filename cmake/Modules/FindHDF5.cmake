@@ -364,7 +364,6 @@ HDF5_C_links)
 if(HDF5_C_links AND HDF5_parallel_FOUND)
 
 list(APPEND CMAKE_REQUIRED_LIBRARIES MPI::MPI_C)
-set(CMAKE_REQUIRED_LINK_OPTIONS ${MPI_C_LINK_FLAGS})
 
 check_c_source_compiles([=[
 #include "hdf5.h"
@@ -414,7 +413,6 @@ HDF5_Fortran_links SRC_EXT f90)
 if(HDF5_Fortran_links AND HDF5_parallel_FOUND)
 
 list(APPEND CMAKE_REQUIRED_LIBRARIES MPI::MPI_Fortran)
-set(CMAKE_REQUIRED_LINK_OPTIONS ${MPI_Fortran_LINK_FLAGS})
 
 check_fortran_source_compiles("
 program test_fortran_mpi
@@ -453,7 +451,6 @@ endif()
 
 set(CMAKE_REQUIRED_LIBRARIES)
 set(CMAKE_REQUIRED_INCLUDES)
-set(CMAKE_REQUIRED_LINK_OPTIONS)
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(HDF5
