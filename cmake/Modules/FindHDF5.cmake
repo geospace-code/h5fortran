@@ -81,10 +81,18 @@ check_symbol_exists(H5_HAVE_FILTER_DEFLATE ${h5_conf} hdf5_have_zlib)
 # Always check for HDF5 MPI support because HDF5 link fails if MPI is linked into HDF5.
 check_symbol_exists(H5_HAVE_PARALLEL ${h5_conf} HDF5_IS_PARALLEL)
 
+set(HDF5_parallel_FOUND false PARENT_SCOPE)
+
 if(HDF5_IS_PARALLEL)
-  set(HDF5_parallel_FOUND true PARENT_SCOPE)
-else()
-  set(HDF5_parallel_FOUND false PARENT_SCOPE)
+  set(mpi_comp C)
+  if(Fortran IN_LIST HDF5_FIND_COMPONENTS)
+    list(APPEND mpi_comp Fortran)
+  endif()
+
+  find_package(MPI COMPONENTS ${mpi_comp})
+  if(MPI_FOUND)
+    set(HDF5_parallel_FOUND true PARENT_SCOPE)
+  endif()
 endif()
 
 # get version
@@ -134,11 +142,6 @@ endif()
 
 if(UNIX)
   list(APPEND CMAKE_REQUIRED_LIBRARIES m)
-endif()
-
-if(HDF5_IS_PARALLEL)
-  find_package(MPI COMPONENTS C)
-  list(APPEND CMAKE_REQUIRED_LIBRARIES MPI::MPI_C)
 endif()
 
 set(CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} PARENT_SCOPE)
@@ -358,9 +361,10 @@ return 0;}
 ]=]
 HDF5_C_links)
 
-if(HDF5_C_links AND parallel IN_LIST HDF5_FIND_COMPONENTS)
+if(HDF5_C_links AND HDF5_parallel_FOUND)
 
 list(APPEND CMAKE_REQUIRED_LIBRARIES MPI::MPI_C)
+set(CMAKE_REQUIRED_LINK_OPTIONS ${MPI_C_LINK_FLAGS})
 
 check_c_source_compiles([=[
 #include "hdf5.h"
@@ -407,9 +411,10 @@ call h5close_f(i)
 end program"
 HDF5_Fortran_links SRC_EXT f90)
 
-if(HDF5_Fortran_links AND parallel IN_LIST HDF5_FIND_COMPONENTS)
+if(HDF5_Fortran_links AND HDF5_parallel_FOUND)
 
 list(APPEND CMAKE_REQUIRED_LIBRARIES MPI::MPI_Fortran)
+set(CMAKE_REQUIRED_LINK_OPTIONS ${MPI_Fortran_LINK_FLAGS})
 
 check_fortran_source_compiles("
 program test_fortran_mpi
@@ -445,6 +450,10 @@ endif()
 if(HDF5_Fortran_FOUND AND NOT HDF5_Fortran_links)
   set(HDF5_links false)
 endif()
+
+set(CMAKE_REQUIRED_LIBRARIES)
+set(CMAKE_REQUIRED_INCLUDES)
+set(CMAKE_REQUIRED_LINK_OPTIONS)
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(HDF5
