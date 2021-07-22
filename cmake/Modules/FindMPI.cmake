@@ -94,6 +94,11 @@ string(REGEX MATCHALL "(^| )(${CMAKE_LIBRARY_PATH_FLAG})([^\" ]+|\"[^\"]+\")" _L
 list(TRANSFORM _Lflags STRIP)
 set(_flags ${_Lflags})
 
+# check if compiler absolute path is first element and remove
+if(${raw} MATCHES "^/" AND ${_flags} MATCHES "^/")
+  list(REMOVE_AT _flags 0)
+endif()
+
 string(REGEX MATCHALL "(^| )(-Wl,)([^\" ]+|\"[^\"]+\")" _Wflags "${raw}")
 list(TRANSFORM _Wflags STRIP)
 if(_Wflags)
@@ -114,8 +119,6 @@ else()
     list(APPEND _flags "LINKER:${_Xflags}")
   endif()
 endif()
-
-string(REPLACE ";" " " _flags "${_flags}")
 
 set(${outvar} ${_flags} PARENT_SCOPE)
 
@@ -152,6 +155,11 @@ foreach(_p IN LISTS _vars)
   list(APPEND _v "/${_p}")
 endforeach()
 
+# check if compiler absolute path is first element and remove
+if(${raw} MATCHES "^/")
+  list(REMOVE_AT _v 0)
+endif()
+
 set(${outvar} ${_v} PARENT_SCOPE)
 
 endfunction(pop_path)
@@ -179,9 +187,7 @@ else()
   set(names mpi pmpi)
 endif()
 
-if(NOT MPI_C_FOUND)
-  pkg_search_module(pc_mpi_c ompi-c)
-endif()
+pkg_search_module(pc_mpi_c ompi-c)
 
 if(CMAKE_C_COMPILER_ID MATCHES Intel)
   set(wrap_name mpiicc mpiicc.bat)
@@ -292,9 +298,7 @@ else()
     mpichcxx mpi pmpi)
 endif()
 
-if(NOT MPI_CXX_FOUND)
-  pkg_search_module(pc_mpi_cxx ompi-cxx)
-endif()
+pkg_search_module(pc_mpi_cxx ompi-cxx)
 
 if(CMAKE_CXX_COMPILER_ID MATCHES Intel)
   set(wrap_name mpiicpc mpiicpc.bat)
@@ -357,9 +361,8 @@ endif()
 
 set(CMAKE_REQUIRED_INCLUDES ${MPI_CXX_INCLUDE_DIR})
 set(CMAKE_REQUIRED_LIBRARIES ${MPI_CXX_LIBRARY})
-if(Threads_FOUND)
-  list(APPEND CMAKE_REQUIRED_LIBRARIES Threads::Threads)
-endif()
+list(APPEND CMAKE_REQUIRED_LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
+
 check_cxx_source_compiles("
 #include <mpi.h>
 #ifndef NULL
@@ -407,9 +410,7 @@ else()
     )
 endif()
 
-if(NOT MPI_Fortran_FOUND)
-  pkg_search_module(pc_mpi_f ompi-fort)
-endif()
+pkg_search_module(pc_mpi_f ompi-fort)
 
 if(CMAKE_Fortran_COMPILER_ID MATCHES Intel)
   set(wrap_name mpiifort mpiifort.bat)
@@ -490,9 +491,7 @@ endif()
 
 set(CMAKE_REQUIRED_INCLUDES ${MPI_Fortran_INCLUDE_DIR})
 set(CMAKE_REQUIRED_LIBRARIES ${MPI_Fortran_LIBRARY})
-if(Threads_FOUND)
-  list(APPEND CMAKE_REQUIRED_LIBRARIES Threads::Threads)
-endif()
+list(APPEND CMAKE_REQUIRED_LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
 
 check_fortran_source_compiles("
 program test
