@@ -62,7 +62,7 @@ jobs:
     - run: cmake --install build
 
     - run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=~
-    - run: cmake --build Examples/build --parallel
+    - run: cmake --build Examples/build
     - run: ctest --parallel 2 --output-on-failure
       working-directory: Examples/build
 
