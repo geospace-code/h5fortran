@@ -60,13 +60,9 @@ set_target_properties(h5fortran PROPERTIES
 add_library(h5fortran::h5fortran INTERFACE IMPORTED GLOBAL)
 target_link_libraries(h5fortran::h5fortran INTERFACE h5fortran)
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/h5fortran.mod DESTINATION include)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/h5fortran.mod TYPE INCLUDE)
 
-install(TARGETS h5fortran
-  EXPORT ${PROJECT_NAME}Targets
-  ARCHIVE DESTINATION lib
-  LIBRARY DESTINATION lib)
-
+install(TARGETS h5fortran EXPORT ${PROJECT_NAME}Targets)
 
 add_subdirectory(src)
 

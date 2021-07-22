@@ -45,6 +45,9 @@ Result Variables
 ``MPI_<LANG>_LINK_FLAGS``
   link flags for <LANG>
 
+``MPI_<LANG>_COMPILER``
+  compiler wrapper for <LANG>
+
 ``MPI_Fortran_HAVE_F90_MODULE``
   has MPI-2 Fortran 90 interface
 
@@ -187,7 +190,9 @@ else()
   set(names mpi pmpi)
 endif()
 
-pkg_search_module(pc_mpi_c ompi-c)
+if(NOT MPI_C_COMPILER)
+  pkg_search_module(pc_mpi_c ompi-c)
+endif()
 
 if(CMAKE_C_COMPILER_ID MATCHES Intel)
   set(wrap_name mpiicc mpiicc.bat)
@@ -195,18 +200,18 @@ else()
   set(wrap_name mpicc mpicc.openmpi mpicc.mpich)
 endif()
 
-find_program(c_wrap
+find_program(MPI_C_COMPILER
   NAMES ${wrap_name}
   HINTS ${_hints}
   NAMES_PER_DIR
   PATHS /usr/lib64
   PATH_SUFFIXES bin openmpi/bin mpich/bin
   )
-if(c_wrap)
-  get_filename_component(_wrap_hint ${c_wrap} DIRECTORY)
+if(MPI_C_COMPILER)
+  get_filename_component(_wrap_hint ${MPI_C_COMPILER} DIRECTORY)
   get_filename_component(_wrap_hint ${_wrap_hint} DIRECTORY)
 
-  get_flags(${c_wrap} c_raw)
+  get_flags(${MPI_C_COMPILER} c_raw)
   if(c_raw)
     pop_flag(${c_raw} -I inc_dirs)
     pop_flag(${c_raw} ${CMAKE_LIBRARY_PATH_FLAG} lib_dirs)
@@ -221,7 +226,7 @@ if(c_wrap)
 
     get_link_flags(${c_raw} MPI_C_LINK_FLAGS)
   endif(c_raw)
-endif(c_wrap)
+endif(MPI_C_COMPILER)
 
 foreach(n ${names})
 
@@ -250,7 +255,6 @@ endif()
 
 set(CMAKE_REQUIRED_INCLUDES ${MPI_C_INCLUDE_DIR})
 set(CMAKE_REQUIRED_LIBRARIES ${MPI_C_LIBRARY})
-set(CMAKE_REQUIRED_LINK_OPTIONS ${MPI_C_LINK_FLAGS})
 list(APPEND CMAKE_REQUIRED_LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
 
 check_c_source_compiles("
@@ -299,7 +303,9 @@ else()
     mpichcxx mpi pmpi)
 endif()
 
-pkg_search_module(pc_mpi_cxx ompi-cxx)
+if(NOT MPI_CXX_COMPILER)
+  pkg_search_module(pc_mpi_cxx ompi-cxx)
+endif()
 
 if(CMAKE_CXX_COMPILER_ID MATCHES Intel)
   set(wrap_name mpiicpc mpiicpc.bat)
@@ -307,18 +313,18 @@ else()
   set(wrap_name mpicxx mpicxx.openmpi mpicxx.mpich)
 endif()
 
-find_program(cxx_wrap
+find_program(MPI_CXX_COMPILER
   NAMES ${wrap_name}
   HINTS ${_hints}
   NAMES_PER_DIR
   PATHS /usr/lib64
   PATH_SUFFIXES bin openmpi/bin mpich/bin
   )
-if(cxx_wrap)
-  get_filename_component(_wrap_hint ${cxx_wrap} DIRECTORY)
+if(MPI_CXX_COMPILER)
+  get_filename_component(_wrap_hint ${MPI_CXX_COMPILER} DIRECTORY)
   get_filename_component(_wrap_hint ${_wrap_hint} DIRECTORY)
 
-  get_flags(${cxx_wrap} cxx_raw)
+  get_flags(${MPI_CXX_COMPILER} cxx_raw)
   if(cxx_raw)
     pop_flag(${cxx_raw} -I inc_dirs)
     pop_flag(${cxx_raw} ${CMAKE_LIBRARY_PATH_FLAG} lib_dirs)
@@ -333,7 +339,7 @@ if(cxx_wrap)
 
     get_link_flags(${cxx_raw} MPI_CXX_LINK_FLAGS)
   endif(cxx_raw)
-endif(cxx_wrap)
+endif(MPI_CXX_COMPILER)
 
 foreach(n ${names})
 
@@ -362,7 +368,6 @@ endif()
 
 set(CMAKE_REQUIRED_INCLUDES ${MPI_CXX_INCLUDE_DIR})
 set(CMAKE_REQUIRED_LIBRARIES ${MPI_CXX_LIBRARY})
-set(CMAKE_REQUIRED_LINK_OPTIONS ${MPI_CXX_LINK_FLAGS})
 list(APPEND CMAKE_REQUIRED_LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
 
 check_cxx_source_compiles("
@@ -412,7 +417,9 @@ else()
     )
 endif()
 
-pkg_search_module(pc_mpi_f ompi-fort)
+if(NOT MPI_Fortran_COMPILER)
+  pkg_search_module(pc_mpi_f ompi-fort)
+endif()
 
 if(CMAKE_Fortran_COMPILER_ID MATCHES Intel)
   set(wrap_name mpiifort mpiifort.bat)
@@ -420,18 +427,18 @@ else()
   set(wrap_name mpifort mpifc mpifort.openmpi mpifort.mpich)
 endif()
 
-find_program(f_wrap
+find_program(MPI_Fortran_COMPILER
   NAMES ${wrap_name}
   HINTS ${_hints}
   NAMES_PER_DIR
   PATHS /usr/lib64
   PATH_SUFFIXES bin openmpi/bin mpich/bin
   )
-if(f_wrap)
-  get_filename_component(_wrap_hint ${f_wrap} DIRECTORY)
+if(MPI_Fortran_COMPILER)
+  get_filename_component(_wrap_hint ${MPI_Fortran_COMPILER} DIRECTORY)
   get_filename_component(_wrap_hint ${_wrap_hint} DIRECTORY)
 
-  get_flags(${f_wrap} f_raw)
+  get_flags(${MPI_Fortran_COMPILER} f_raw)
   if(f_raw)
     pop_flag(${f_raw} -I inc_dirs)
     pop_flag(${f_raw} ${CMAKE_LIBRARY_PATH_FLAG} lib_dirs)
@@ -446,7 +453,7 @@ if(f_wrap)
 
     get_link_flags(${f_raw} MPI_Fortran_LINK_FLAGS)
   endif(f_raw)
-endif(f_wrap)
+endif(MPI_Fortran_COMPILER)
 
 foreach(n ${names})
 
@@ -493,7 +500,6 @@ endif()
 
 set(CMAKE_REQUIRED_INCLUDES ${MPI_Fortran_INCLUDE_DIR})
 set(CMAKE_REQUIRED_LIBRARIES ${MPI_Fortran_LIBRARY})
-set(CMAKE_REQUIRED_LINK_OPTIONS ${MPI_Fortran_LINK_FLAGS})
 list(APPEND CMAKE_REQUIRED_LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
 
 check_fortran_source_compiles("
@@ -560,10 +566,6 @@ endif()
 if(Fortran IN_LIST MPI_FIND_COMPONENTS)
   find_fortran()
 endif()
-
-set(CMAKE_REQUIRED_INCLUDES)
-set(CMAKE_REQUIRED_LIBRARIES)
-set(CMAKE_REQUIRED_LINK_OPTIONS)
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(MPI
