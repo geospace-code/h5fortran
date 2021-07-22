@@ -3,14 +3,16 @@ cmake_minimum_required(VERSION 3.20...3.21)
 # note: the use of "lib" vs. CMAKE_STATIC_LIBRARY_PREFIX is deliberate based on the particulars of these libraries
 # across Intel Fortran on Windows vs. Gfortran on Windows vs. Linux.
 
-include(cmake/libraries.cmake)
+include(ExternalProject)
+
+include(${CMAKE_CURRENT_LIST_DIR}/libraries.cmake)
 
 set(hdf5_external true CACHE BOOL "autobuild HDF5")
 
 set(HDF5_VERSION 1.10.7)
 # for user information, not used by ExternalProject itself
 
-include(ExternalProject)
+
 
 # need to be sure _ROOT isn't empty, defined is not enough
 if(NOT HDF5_ROOT)
