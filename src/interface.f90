@@ -35,6 +35,8 @@ logical :: debug=.false.
 logical :: is_open = .false.
 integer :: libversion(3)  !< major, minor, rel
 
+logical :: use_mpi = .false. !< MPI or serial HDF5
+
 
 contains
 !> define methods (procedures) that don't need generic procedure
