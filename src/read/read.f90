@@ -98,8 +98,6 @@ module procedure hdf_get_shape
 integer(SIZE_T) :: type_size
 integer :: type_class, drank, ier
 
-if(.not.self%is_open) error stop 'h5fortran:get_shape: file handle is not open'
-
 if(.not. self%exist(dname)) error stop 'h5fortran:get_shape: ' // dname // ' does not exist in ' // self%filename
 
 call h5ltget_dataset_ndims_f(self%lid, dname, drank, ier)
