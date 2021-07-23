@@ -74,7 +74,7 @@ implicit none
 
 type(hdf5_file) :: h5f
 
-call h5f%open('h5fortran_example2.h5', status='replace')
+call h5f%open('h5fortran_example2.h5', action='w')
 call h5f%write('/x', 123)
 call h5f%close()
 

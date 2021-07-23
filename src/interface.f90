@@ -999,7 +999,7 @@ class(hdf5_file), intent(inout)    :: self
 character(*), intent(in) :: filename
 integer, intent(out), optional :: ierr  !< 0 if OK
 character(*), intent(in), optional :: status  !< DEPRECATED
-character(*), intent(in), optional :: action !< read, write, readwrite
+character(*), intent(in), optional :: action !< r, r+, rw, w, a
 integer, intent(in), optional      :: comp_lvl  !< 0: no compression. 1-9: ZLIB compression, higher is more compressior
 logical, intent(in), optional      :: verbose, debug
 
@@ -1047,17 +1047,17 @@ laction = 'rw'
 if(present(action)) laction = action
 
 select case(laction)
-case('read','r')
+case('r')
   call h5fopen_f(filename, H5F_ACC_RDONLY_F, self%lid,ier)
 case('r+')
   call h5fopen_f(filename, H5F_ACC_RDWR_F, self%lid, ier)
-case('readwrite', 'rw', 'append', 'a')
+case('rw', 'a')
   if(is_hdf5(filename)) then
     call h5fopen_f(filename, H5F_ACC_RDWR_F, self%lid, ier)
   else
     call h5fcreate_f(filename, H5F_ACC_TRUNC_F, self%lid, ier)
   endif
-case ('w','write')
+case ('w')
   call h5fcreate_f(filename, H5F_ACC_TRUNC_F, self%lid, ier)
 case default
   error stop 'h5fortran: Unsupported action: ' // laction

@@ -25,7 +25,7 @@ call h%open(filename,ierr, action,comp_lvl,verbose,debug)
 
 character(*), intent(in) :: filename
 integer, intent(out), optional :: ierr  !< 0 if OK
-character(*), intent(in), optional :: action  !< read, write, readwrite
+character(*), intent(in), optional :: action  !< r, w, rw
 integer, intent(in), optional      :: comp_lvl  !< 0: no compression. 1-9: ZLIB compression, higher is more compressior
 logical, intent(in), optional      :: verbose, debug
 ```
@@ -187,7 +187,7 @@ class(*), intent(out) :: attrval(:)  !< character, real, integer
 These are single-call operations that are slower than the object-oriented methods above.
 The runtime penalty may be insignificant unless you call these functions many times, say in a for loop.
 
-The `h5write` opens `filename` with `action='readwrite'` (create if not present, append if existing).
+The `h5write` opens `filename` with `action='rw'` (create if not present, append if existing).
 
 ```fortran
 call h5write(filename, dname, value)
@@ -195,7 +195,7 @@ character(*), intent(in) :: filename, dname
 class(*), intent(in) :: value(:)
 ```
 
-The `h5read` opens `filename` with `action='read'` (error if file not exist).
+The `h5read` opens `filename` with `action='r'` (error if file not exist).
 
 ```fortran
 call h5read(filename, dname, value)
