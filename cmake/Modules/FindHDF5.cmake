@@ -309,6 +309,112 @@ set(HDF5_HL_FOUND true PARENT_SCOPE)
 
 endfunction(find_hdf5_c)
 
+
+function(check_hdf5_link)
+
+if(NOT HDF5_C_FOUND)
+  return()
+endif()
+
+list(PREPEND CMAKE_REQUIRED_LIBRARIES ${HDF5_C_LIBRARIES})
+set(CMAKE_REQUIRED_INCLUDES ${HDF5_C_INCLUDE_DIR})
+
+if(HDF5_parallel_FOUND)
+  list(APPEND CMAKE_REQUIRED_LIBRARIES MPI::MPI_C)
+
+  check_symbol_exists(H5Pset_fapl_mpio hdf5.h HAVE_H5Pset_fapl_mpio)
+  if(NOT HAVE_H5Pset_fapl_mpio)
+    return()
+  endif()
+
+  set(src [=[
+  #include "hdf5.h"
+  #include "mpi.h"
+
+  int main(void){
+  MPI_Init(NULL, NULL);
+
+  hid_t plist_id = H5Pcreate(H5P_FILE_ACCESS);
+  H5Pset_fapl_mpio(plist_id, MPI_COMM_WORLD, MPI_INFO_NULL);
+
+  H5Pclose(plist_id);
+
+  MPI_Finalize();
+
+  return 0;
+  }
+  ]=])
+
+else()
+  set(src [=[
+  #include "hdf5.h"
+
+  int main(void){
+  hid_t f = H5Fcreate("junk.h5", H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
+  herr_t status = H5Fclose (f);
+  return 0;}
+  ]=])
+endif(HDF5_parallel_FOUND)
+
+check_c_source_compiles("${src}" HDF5_C_links)
+
+if(NOT HDF5_C_links)
+  return()
+endif()
+
+
+
+if(HDF5_Fortran_FOUND)
+
+list(PREPEND CMAKE_REQUIRED_LIBRARIES ${HDF5_Fortran_LIBRARIES})
+set(CMAKE_REQUIRED_INCLUDES ${HDF5_Fortran_INCLUDE_DIR} ${HDF5_C_INCLUDE_DIR})
+
+if(HDF5_parallel_FOUND)
+  list(APPEND CMAKE_REQUIRED_LIBRARIES MPI::MPI_Fortran)
+
+  set(src "program test_fortran_mpi
+  use hdf5
+  use mpi
+
+  integer :: ierr
+  integer(HID_T) :: plist_id
+
+  call mpi_init(ierr)
+
+  call h5open_f(ierr)
+
+  call h5pcreate_f(H5P_FILE_ACCESS_F, plist_id, ierr)
+  call h5pset_fapl_mpio_f(plist_id, MPI_COMM_WORLD, MPI_INFO_NULL, ierr)
+
+  call h5pclose_f(plist_id, ierr)
+
+  call mpi_finalize(ierr)
+
+  end program")
+else()
+  set(src "program test_minimal
+  use hdf5, only : h5open_f, h5close_f
+  use h5lt, only : h5ltmake_dataset_f
+  implicit none
+  integer :: i
+  call h5open_f(i)
+  call h5close_f(i)
+  end program")
+endif()
+
+check_fortran_source_compiles(${src} HDF5_Fortran_links SRC_EXT f90)
+
+if(NOT HDF5_Fortran_links)
+  return()
+endif()
+
+endif(HDF5_Fortran_FOUND)
+
+
+set(HDF5_links true PARENT_SCOPE)
+
+endfunction(check_hdf5_link)
+
 # === main program
 
 set(CMAKE_REQUIRED_LIBRARIES)
@@ -366,102 +472,7 @@ endif(HDF5_C_FOUND)
 
 # --- configure time checks
 # these checks avoid messy, confusing errors at build time
-
-if(HDF5_C_FOUND)
-
-list(PREPEND CMAKE_REQUIRED_LIBRARIES ${HDF5_C_LIBRARIES})
-set(CMAKE_REQUIRED_INCLUDES ${HDF5_C_INCLUDE_DIR})
-
-if(HDF5_parallel_FOUND)
-  list(APPEND CMAKE_REQUIRED_LIBRARIES MPI::MPI_C)
-
-  set(src [=[
-  #include "hdf5.h"
-  #include "mpi.h"
-
-  int main(void){
-  MPI_Init(NULL, NULL);
-
-  hid_t plist_id = H5Pcreate(H5P_FILE_ACCESS);
-  H5Pset_fapl_mpio(plist_id, MPI_COMM_WORLD, MPI_INFO_NULL);
-
-  H5Pclose(plist_id);
-
-  MPI_Finalize();
-
-  return 0;
-  }
-  ]=])
-
-else()
-  set(src [=[
-  #include "hdf5.h"
-
-  int main(void){
-  hid_t f = H5Fcreate ("junk.h5", H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
-  herr_t status = H5Fclose (f);
-  return 0;}
-  ]=])
-endif(HDF5_parallel_FOUND)
-
-check_c_source_compiles("${src}" HDF5_C_links)
-
-set(HDF5_links ${HDF5_C_links})
-
-endif(HDF5_C_FOUND)
-
-
-if(HDF5_Fortran_FOUND AND HDF5_links)
-
-list(PREPEND CMAKE_REQUIRED_LIBRARIES ${HDF5_Fortran_LIBRARIES})
-set(CMAKE_REQUIRED_INCLUDES ${HDF5_Fortran_INCLUDE_DIR} ${HDF5_C_INCLUDE_DIR})
-
-if(HDF5_parallel_FOUND)
-  list(APPEND CMAKE_REQUIRED_LIBRARIES MPI::MPI_Fortran)
-
-  set(src "program test_fortran_mpi
-  use hdf5
-  use mpi
-
-  integer :: ierr
-  integer(HID_T) :: plist_id
-
-  call mpi_init(ierr)
-
-  call h5open_f(ierr)
-
-  call h5pcreate_f(H5P_FILE_ACCESS_F, plist_id, ierr)
-  call h5pset_fapl_mpio_f(plist_id, MPI_COMM_WORLD, MPI_INFO_NULL, ierr)
-
-  call h5pclose_f(plist_id, ierr)
-
-  call mpi_finalize(ierr)
-
-  end program")
-else()
-  set(src "program test_minimal
-  use hdf5, only : h5open_f, h5close_f
-  use h5lt, only : h5ltmake_dataset_f
-  implicit none
-  integer :: i
-  call h5open_f(i)
-  call h5close_f(i)
-  end program")
-endif()
-
-check_fortran_source_compiles(${src} HDF5_Fortran_links SRC_EXT f90)
-
-
-if(NOT HDF5_Fortran_links)
-  set(HDF5_Fortran_links false)
-endif()
-
-endif(HDF5_Fortran_FOUND AND HDF5_links)
-
-
-if(HDF5_Fortran_FOUND AND NOT HDF5_Fortran_links)
-  set(HDF5_links false)
-endif()
+check_hdf5_link()
 
 set(CMAKE_REQUIRED_LIBRARIES)
 set(CMAKE_REQUIRED_INCLUDES)
