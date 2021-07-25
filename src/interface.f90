@@ -1025,12 +1025,8 @@ if (ier /= 0) error stop 'h5fortran:open: HDF5 library initialize'
 
 !> get library version
 call h5get_libversion_f(self%libversion(1), self%libversion(2), self%libversion(3), ier)
-if (self%debug) print '(A,3I3)', 'HDF5 version: ',self%libversion
-if(present(ierr)) ierr = ier
-if (check(ier, 'ERROR:h5fortran: HDF5 library get version')) then
-  if (present(ierr)) return
-  error stop
-endif
+if (self%debug) print '(a,i0,a1,i0,a1,i0)', 'HDF5 version: ',self%libversion(1),'.',self%libversion(2),'.',self%libversion(3)
+if (check(ier, 'ERROR:h5fortran: HDF5 library get version')) error stop
 
 if(self%verbose) then
   call h5eset_auto_f(1, ier)
