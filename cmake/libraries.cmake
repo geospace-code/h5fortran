@@ -10,3 +10,4 @@ endif()
 
 string(JSON hdf5_url GET ${_libj} hdf5 url)
 string(JSON hdf5_sha256 GET ${_libj} hdf5 sha256)
+string(JSON HDF5_VERSION GET ${_libj} hdf5 version)

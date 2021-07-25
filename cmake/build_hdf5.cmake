@@ -9,11 +9,6 @@ include(${CMAKE_CURRENT_LIST_DIR}/libraries.cmake)
 
 set(hdf5_external true CACHE BOOL "autobuild HDF5")
 
-set(HDF5_VERSION 1.10.7)
-# for user information, not used by ExternalProject itself
-
-
-
 # need to be sure _ROOT isn't empty, defined is not enough
 if(NOT HDF5_ROOT)
   if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
@@ -49,12 +44,14 @@ ${zlib_root}
 -DCMAKE_MODULE_PATH:PATH=${CMAKE_MODULE_PATH}
 -DHDF5_GENERATE_HEADERS:BOOL=false
 -DHDF5_DISABLE_COMPILER_WARNINGS:BOOL=true
+-DBUILD_STATIC_LIBS:BOOL=true
 -DBUILD_SHARED_LIBS:BOOL=false
 -DCMAKE_BUILD_TYPE=Release
 -DHDF5_BUILD_FORTRAN:BOOL=true
 -DHDF5_BUILD_CPP_LIB:BOOL=false
 -DBUILD_TESTING:BOOL=false
--DHDF5_BUILD_EXAMPLES:BOOL=false)
+-DHDF5_BUILD_EXAMPLES:BOOL=false
+-DUSE_LIBAEC:bool=true)
 
 if(hdf5_parallel)
   find_package(MPI REQUIRED COMPONENTS C)

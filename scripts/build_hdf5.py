@@ -188,8 +188,8 @@ def hdf5(
             f"-DCMAKE_INSTALL_PREFIX={install_dir}",
             "-DHDF5_GENERATE_HEADERS:BOOL=false",
             "-DHDF5_DISABLE_COMPILER_WARNINGS:BOOL=true",
+            "-DBUILD_STATIC_LIBS:BOOL=true",
             "-DBUILD_SHARED_LIBS:BOOL=false",
-            "-DHDF5_ENABLE_PARALLEL:BOOL=false",
             "-DCMAKE_BUILD_TYPE=Release",
             "-DHDF5_BUILD_FORTRAN:BOOL=true",
             "-DHDF5_BUILD_CPP_LIB:BOOL=false",
@@ -199,7 +199,8 @@ def hdf5(
             f"-DZLIB_INCLUDE_DIR:PATH={dirs['zlib']}/include",
             "-DHDF5_ENABLE_Z_LIB_SUPPORT:BOOL=true",
             "-DZLIB_USE_EXTERNAL:BOOL=false",
-            # these options below didn't work for building with HDF5 1.10.7
+            "-DUSE_LIBAEC:bool=true"
+            # the options below didn't work for building with HDF5 1.10.7
             # "-DZLIB_USE_EXTERNAL:BOOL=true"
             # "-DHDF5_ENABLE_Z_LIB_SUPPORT:BOOL=true",
             # "-DHDF5_ALLOW_EXTERNAL_SUPPORT=GIT",
@@ -207,7 +208,10 @@ def hdf5(
         ]
 
         if parallel:
-            cmd0 += ["-DHDF5_ENABLE_PARALLEL:BOOL=true" "-DHDF5_BUILD_TOOLS:BOOL=false"]
+            cmd0 += [
+                "-DHDF5_ENABLE_PARALLEL:BOOL=true",
+                "-DHDF5_BUILD_TOOLS:BOOL=false",
+            ]
             # https://github.com/HDFGroup/hdf5/issues/818  for broken ph5diff
         else:
             cmd0 += [
