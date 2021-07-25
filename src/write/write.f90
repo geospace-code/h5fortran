@@ -4,7 +4,7 @@ use hdf5, only: &
 h5screate_f, H5S_SCALAR_F, &
 h5dcreate_f, &
 h5pset_chunk_f, h5pset_layout_f, h5pset_deflate_f, h5pset_shuffle_f, h5pset_fletcher32_f, h5pcreate_f, h5pclose_f, &
-H5P_DATASET_CREATE_F, &
+H5P_DATASET_CREATE_F, H5P_DEFAULT_F, &
 h5gopen_f, &
 H5Lcreate_soft_f
 
@@ -19,7 +19,7 @@ module procedure hdf_create
 
 logical :: exists
 integer :: ierr
-integer(HID_T) :: pid, space_id, ds_id
+integer(HID_T) :: plist_id, space_id, ds_id
 
 if(.not.self%is_open) error stop 'h5fortran:write: file handle is not open: ' // self%filename
 
@@ -63,23 +63,23 @@ if (ierr /= 0) error stop 'ERROR:h5fortran:create: could not create group for ' 
 
 
 !> create properties
-pid = 0 !< sentinel
+plist_id = H5P_DEFAULT_F
 
 if(size(dims) >= 2) then
   if(self%debug) print *, 'h5fortran:TRACE:create: deflate: ' // dname
-  call set_deflate(self, dims, pid, ierr, chunk_size)
+  call set_deflate(self, dims, plist_id, ierr, chunk_size)
   if (ierr/=0) error stop 'ERROR:h5fortran:create: problem setting deflate on ' // dname
 endif
 
 if(present(compact)) then
 ! print *, "TRACE1: COMPACT", compact
 !! don't set COMPACT after CHUNKED, will fail. And it's either or anyway.
-if(compact .and. pid == 0 .and. product(dims) * 8 < 60000)  then
+if(compact .and. plist_id == 0 .and. product(dims) * 8 < 60000)  then
 !! 64000 byte limit, here we assumed 8 bytes / element
-  call h5pcreate_f(H5P_DATASET_CREATE_F, pid, ierr)
+  call h5pcreate_f(H5P_DATASET_CREATE_F, plist_id, ierr)
   if (check(ierr, self%filename)) error stop "h5fortran:h5pcreate: " // dname
 
-  call h5pset_layout_f(pid, H5D_COMPACT_F, ierr)
+  call h5pset_layout_f(plist_id, H5D_COMPACT_F, ierr)
   if (check(ierr, self%filename)) error stop "h5fortran:h5pset_layout: " // dname
 endif
 endif
@@ -93,12 +93,12 @@ endif
 if (check(ierr, self%filename, dname)) error stop "h5fortran:h5screate: " // dname
 
 !> create dataset
-if(pid == 0) then
+if(plist_id == H5P_DEFAULT_F) then
   call h5dcreate_f(self%lid, dname, dtype, space_id, ds_id, ierr)
 else
-  call h5dcreate_f(self%lid, dname, dtype, space_id, ds_id, ierr, pid)
+  call h5dcreate_f(self%lid, dname, dtype, space_id, ds_id, ierr, plist_id)
   if (check(ierr, self%filename, dname)) error stop "h5fortran:h5dcreate: " // dname
-  call h5pclose_f(pid, ierr)
+  call h5pclose_f(plist_id, ierr)
   if (check(ierr, self%filename, dname)) error stop "h5fortran:h5pclose: " // dname
 endif
 if (check(ierr, self%filename, dname)) error stop "h5fortran:h5dcreate: " // dname
@@ -128,16 +128,17 @@ if (check(ierr, self%filename)) return
 end procedure create_softlink
 
 
-subroutine set_deflate(self, dims, pid, ierr, chunk_size)
+subroutine set_deflate(self, dims, plist_id, ierr, chunk_size)
 class(hdf5_file), intent(inout) :: self
 integer(HSIZE_T), intent(in) :: dims(:)
-integer(HID_T), intent(out) :: pid
+integer(HID_T), intent(out) :: plist_id
 integer, intent(out) :: ierr
 integer, intent(in), optional :: chunk_size(:)
 
 integer(HSIZE_T) :: cs(size(dims))
 
-pid = 0
+ierr = 0
+plist_id = H5P_DEFAULT_F
 if (self%comp_lvl < 1 .or. self%comp_lvl > 9) return
 
 if (present(chunk_size)) then
@@ -153,20 +154,20 @@ if(any(cs < 1)) return
 
 if(self%debug) print *,'DEBUG:set_deflate: dims: ',dims,'chunk size: ', cs
 
-call h5pcreate_f(H5P_DATASET_CREATE_F, pid, ierr)
-if (check(ierr, self%filename)) return
+call h5pcreate_f(H5P_DATASET_CREATE_F, plist_id, ierr)
+if (check(ierr, "h5pcreate: " // self%filename)) return
 
-call h5pset_chunk_f(pid, size(dims), cs, ierr)
-if (check(ierr, self%filename)) return
+call h5pset_chunk_f(plist_id, size(dims), cs, ierr)
+if (check(ierr, "h5pset_chunk: " // self%filename)) return
 
-call h5pset_shuffle_f(pid, ierr)
-if (check(ierr, self%filename)) return
+call h5pset_shuffle_f(plist_id, ierr)
+if (check(ierr, "h5pset_shuffle: " // self%filename)) return
 
-call h5pset_fletcher32_f(pid, ierr)
-if (check(ierr, self%filename)) return
+call h5pset_fletcher32_f(plist_id, ierr)
+if (check(ierr, "h5pset_fletcher32: " // self%filename)) return
 
-call h5pset_deflate_f(pid, self%comp_lvl, ierr)
-if (check(ierr, self%filename)) return
+call h5pset_deflate_f(plist_id, self%comp_lvl, ierr)
+if (check(ierr, "h5pset_deflate: " // self%filename)) return
 
 if(self%debug) print *,'TRACE:set_deflate done'
 
