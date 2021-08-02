@@ -93,8 +93,8 @@ if(HDF5_IS_PARALLEL)
   if(Fortran IN_LIST HDF5_FIND_COMPONENTS)
     list(APPEND mpi_comp Fortran)
   endif()
-
   find_package(MPI COMPONENTS ${mpi_comp})
+
   if(MPI_FOUND)
     set(HDF5_parallel_FOUND true PARENT_SCOPE)
   endif()
@@ -168,6 +168,8 @@ endif()
 
 find_program(HDF5_Fortran_COMPILER_EXECUTABLE
   NAMES ${wrapper_names}
+  PATHS ${_binpref}
+  PATH_SUFFIXES ${_binsuf}
 )
 
 find_library(HDF5_Fortran_LIBRARY
@@ -210,9 +212,10 @@ find_path(HDF5_Fortran_INCLUDE_DIR
   NAMES hdf5.mod
   HINTS ${pc_hdf5_INCLUDE_DIRS}
   PATH_SUFFIXES ${_msuf}
-  PATHS /usr/lib64
+  PATHS ${_binpref}
   DOC "HDF5 Fortran modules")
-  # CentOS: /usr/lib64/gfortran/modules/hdf5.mod
+# CentOS: /usr/lib64/gfortran/modules/hdf5.mod
+
 if(NOT HDF5_Fortran_INCLUDE_DIR)
   return()
 endif()
@@ -229,6 +232,8 @@ function(find_hdf5_cxx)
 
 find_program(HDF5_CXX_COMPILER_EXECUTABLE
   NAMES h5c++ h5c++-64
+  PATHS ${_binpref}
+  PATH_SUFFIXES ${_binsuf}
 )
 
 find_library(HDF5_CXX_LIBRARY
@@ -274,6 +279,8 @@ endif()
 
 find_program(HDF5_C_COMPILER_EXECUTABLE
   NAMES ${wrapper_names}
+  PATHS ${_binpref}
+  PATH_SUFFIXES ${_binsuf}
 )
 
 find_library(HDF5_C_LIBRARY
@@ -449,6 +456,9 @@ if(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
     list(PREPEND _msuf gfortran/modules/openmpi gfortran/modules/mpich)
   endif()
 endif()
+
+set(_binpref /usr/lib64)
+set(_binsuf bin openmpi/bin mpich/bin)
 # Not immediately clear the benefits of this, as we'd have to foreach()
 # a priori names, kind of like we already do with find_library()
 # find_package(hdf5 CONFIG)
@@ -507,6 +517,14 @@ if(HDF5_FOUND)
 
     if(UNIX)
       target_link_libraries(HDF5::HDF5 INTERFACE m)
+    endif()
+
+    if(HDF5_parallel_FOUND)
+      if(HDF5_Fortran_FOUND)
+        target_link_libraries(HDF5::HDF5 INTERFACE MPI::MPI_Fortran MPI::MPI_C)
+      else()
+        target_link_libraries(HDF5::HDF5 INTERFACE MPI::MPI_C)
+      endif()
     endif()
   endif()
 endif()
