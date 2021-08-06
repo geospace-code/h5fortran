@@ -293,9 +293,17 @@ if(NOT MPI_VERSION)
     LINK_OPTIONS ${MPI_C_LINK_FLAGS}
     LINK_LIBRARIES ${MPI_C_LIBRARY}
     RUN_OUTPUT_VARIABLE MPI_VERSION_STRING
+    COMPILE_OUTPUT_VARIABLE mpi_vers_build_out
   )
 
-  if(mpi_build_code AND mpi_run_code EQUAL 0)
+  if(NOT mpi_build_code)
+    message(CHECK_FAIL "MPI_VERSION test failed to build:
+    ${mpi_vers_build_out}"
+    )
+    return()
+  endif()
+
+  if(mpi_run_code EQUAL 0)
     if("${MPI_VERSION_STRING}" MATCHES "CMAKE_MPI_VERSION ([0-9]+\\.[0-9]+)")
       set(MPI_VERSION ${CMAKE_MATCH_1} CACHE STRING "MPI API level")
       message(CHECK_PASS "${MPI_VERSION}")
@@ -306,7 +314,9 @@ if(NOT MPI_VERSION)
     message(CHECK_FAIL "MPI API not detected with:
       MPI_C_LIBRARY: ${MPI_C_LIBRARY}
       MPI_C_INCLUDE_DIR: ${MPI_C_INCLUDE_DIR}
-      MPI_C_LINK_FLAGS: ${MPI_C_LINK_FLAGS}"
+      MPI_C_LINK_FLAGS: ${MPI_C_LINK_FLAGS}
+      Run output: ${MPI_VERSION_STRING}
+      "
     )
     return()
   endif()
