@@ -59,6 +59,9 @@ if(hdf5_parallel)
     -DHDF5_ENABLE_PARALLEL:BOOL=true
     -DHDF5_BUILD_TOOLS:BOOL=false)
     # https://github.com/HDFGroup/hdf5/issues/818  for broken ph5diff
+  if(MPI_ROOT)
+    list(APPEND hdf5_cmake_args -DMPI_ROOT:PATH=${MPI_ROOT})
+  endif()
 else()
   list(APPEND hdf5_cmake_args
     -DHDF5_ENABLE_PARALLEL:BOOL=false
