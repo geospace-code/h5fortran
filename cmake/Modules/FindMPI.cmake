@@ -303,12 +303,13 @@ if(NOT MPI_VERSION)
     return()
   endif()
 
-  if(mpi_run_code EQUAL 0)
-    if("${MPI_VERSION_STRING}" MATCHES "CMAKE_MPI_VERSION ([0-9]+\\.[0-9]+)")
-      set(MPI_VERSION ${CMAKE_MATCH_1} CACHE STRING "MPI API level")
-      message(CHECK_PASS "${MPI_VERSION}")
-    endif()
+  # We don't if(mpi_run_code EQUAL 0) as some platforms / MPI libs don't precisely
+  # return 0. The regex should be enough.
+  if("${MPI_VERSION_STRING}" MATCHES "CMAKE_MPI_VERSION ([0-9]+\\.[0-9]+)")
+    set(MPI_VERSION ${CMAKE_MATCH_1} CACHE STRING "MPI API level")
+    message(CHECK_PASS "${MPI_VERSION}")
   endif()
+
 
   if(NOT MPI_VERSION)
     message(CHECK_FAIL "MPI API not detected with:
@@ -316,9 +317,9 @@ if(NOT MPI_VERSION)
       MPI_C_INCLUDE_DIR: ${MPI_C_INCLUDE_DIR}
       MPI_C_LINK_FLAGS: ${MPI_C_LINK_FLAGS}
       Run output: ${MPI_VERSION_STRING}
+      Run return code: ${mpi_run_code}
       "
     )
-    return()
   endif()
 endif()
 
