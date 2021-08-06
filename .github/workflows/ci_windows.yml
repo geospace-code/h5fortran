@@ -52,7 +52,7 @@ jobs:
 
     - uses: actions/checkout@v2
 
-    - run: cmake --preset multi -DCMAKE_INSTALL_PREFIX=~
+    - run: cmake --preset multi --install-prefix ~
     - run: cmake --build --preset debug
     - run: ctest --preset debug
 

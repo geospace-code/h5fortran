@@ -31,7 +31,7 @@ jobs:
         sudo apt update -yq
         sudo apt install -yq --no-install-recommends ninja-build gfortran libhdf5-dev
 
-    - run: cmake --preset multi -DCMAKE_INSTALL_PREFIX=~
+    - run: cmake --preset multi --install-prefix ~
     - run: cmake --build --preset debug
     - run: ctest --preset debug --output-junit test-debug.xml
 
@@ -99,31 +99,6 @@ jobs:
       - run: ctest --preset default
 
 
-  linuxCmake315:
-    needs: linux
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: install hdf5
-      run: |
-        sudo apt update -yq
-        sudo apt install -yq --no-install-recommends gfortran libhdf5-dev
-
-    - name: get CMake 3.15
-      run: |
-        curl -L -O https://github.com/Kitware/CMake/releases/download/v3.15.5/cmake-3.15.5-Linux-x86_64.tar.gz
-        tar xf cmake-3.15.5-Linux-x86_64.tar.gz
-        echo "${GITHUB_WORKSPACE}/cmake-3.15.5-Linux-x86_64/bin" >> $GITHUB_PATH
-
-    - run: cmake -B build
-    - run: cmake --build build
-    - run: ctest --parallel 2 --output-on-failure
-      working-directory: build
-
-
   mac:
     needs: linux
     runs-on: macos-latest
@@ -131,14 +106,13 @@ jobs:
     env:
       HOMEBREW_NO_INSTALL_CLEANUP: 1
       FC: gfortran-11
-      CTEST_SITE: GitHub_MacOS
 
     steps:
     - uses: actions/checkout@v2
 
     - run: brew install hdf5 ninja
 
-    - run: cmake --preset multi -DCMAKE_INSTALL_PREFIX=~
+    - run: cmake --preset multi --install-prefix ~
     - run: cmake --build --preset debug
     - run: ctest --preset debug
 
