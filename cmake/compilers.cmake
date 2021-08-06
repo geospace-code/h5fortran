@@ -1,5 +1,4 @@
-include(CheckFortranCompilerFlag)
-include(CheckFortranSourceCompiles)
+include(CheckSourceCompiles)
 
 # check C and Fortran compiler ABI compatibility
 
@@ -35,10 +34,10 @@ elseif(CMAKE_Fortran_COMPILER_ID STREQUAL NAG)
   string(APPEND CMAKE_Fortran_FLAGS " -f2018 -u -C=all")
 endif()
 
-check_fortran_source_compiles(
+check_source_compiles(Fortran
 "program test
 block
 end block
 end program
 "
-f08block SRC_EXT f90)
+f08block)
