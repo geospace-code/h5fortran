@@ -228,6 +228,7 @@ find_program(MPI_C_COMPILER
   NAMES_PER_DIR
   PATHS ${_binpref}
   PATH_SUFFIXES ${mpi_binsuf}
+  DOC "MPI C compiler wrapper"
   )
 if(MPI_C_COMPILER)
   cmake_path(GET MPI_C_COMPILER PARENT_PATH mpi_root)
@@ -381,6 +382,7 @@ find_program(MPI_CXX_COMPILER
   NAMES_PER_DIR
   PATHS ${_binpref}
   PATH_SUFFIXES ${mpi_binsuf}
+  DOC "MPI C++ compiler wrapper"
   )
 if(MPI_CXX_COMPILER)
   cmake_path(GET MPI_CXX_COMPILER PARENT_PATH mpi_root)
@@ -483,6 +485,7 @@ find_program(MPI_Fortran_COMPILER
   NAMES_PER_DIR
   PATHS ${_binpref}
   PATH_SUFFIXES ${mpi_binsuf}
+  DOC "MPI Fortran compiler wrapper"
   )
 if(MPI_Fortran_COMPILER)
   cmake_path(GET MPI_Fortran_COMPILER PARENT_PATH mpi_root)
@@ -615,6 +618,7 @@ find_program(MPIEXEC_EXECUTABLE
   HINTS ${pc_mpi_c_PREFIX} ${_hints}
   PATHS ${_binpref}
   PATH_SUFFIXES ${mpi_binsuf}
+  DOC "Runs an MPI program"
 )
 
 # like factory FindMPI, always find MPI_C
