@@ -204,12 +204,16 @@ find_program(HDF5_Fortran_COMPILER_EXECUTABLE
 
 if(HDF5_Fortran_COMPILER_EXECUTABLE)
   get_flags(${HDF5_Fortran_COMPILER_EXECUTABLE} f_raw)
-  pop_flag(${f_raw} -L lib_dirs)
-  pop_flag(${f_raw} -I inc_dirs)
-  if(NOT inc_dirs AND parallel IN_LIST HDF5_FIND_COMPONENTS)
-    get_flags(${MPI_Fortran_COMPILER} f_raw)
+  if(f_raw)
+    pop_flag(${f_raw} -L lib_dirs)
     pop_flag(${f_raw} -I inc_dirs)
-  endif()
+    if(NOT inc_dirs AND parallel IN_LIST HDF5_FIND_COMPONENTS)
+      get_flags(${MPI_Fortran_COMPILER} f_raw)
+      if(f_raw)
+        pop_flag(${f_raw} -I inc_dirs)
+      endif(f_raw)
+    endif()
+  endif(f_raw)
 endif()
 
 find_library(HDF5_Fortran_LIBRARY
@@ -273,8 +277,10 @@ find_program(HDF5_CXX_COMPILER_EXECUTABLE
 
 if(HDF5_CXX_COMPILER_EXECUTABLE)
   get_flags(${HDF5_CXX_COMPILER_EXECUTABLE} cxx_raw)
-  pop_flag(${cxx_raw} -L lib_dirs)
-  pop_flag(${cxx_raw} -I inc_dirs)
+  if(cxx_raw)
+    pop_flag(${cxx_raw} -L lib_dirs)
+    pop_flag(${cxx_raw} -I inc_dirs)
+  endif(cxx_raw)
 endif()
 
 find_library(HDF5_CXX_LIBRARY
@@ -326,12 +332,16 @@ find_program(HDF5_C_COMPILER_EXECUTABLE
 
 if(HDF5_C_COMPILER_EXECUTABLE)
   get_flags(${HDF5_C_COMPILER_EXECUTABLE} c_raw)
-  pop_flag(${c_raw} -L lib_dirs)
-  pop_flag(${c_raw} -I inc_dirs)
-  if(NOT inc_dirs AND parallel IN_LIST HDF5_FIND_COMPONENTS)
-    get_flags(${MPI_C_COMPILER} c_raw)
+  if(c_raw)
+    pop_flag(${c_raw} -L lib_dirs)
     pop_flag(${c_raw} -I inc_dirs)
-  endif()
+    if(NOT inc_dirs AND parallel IN_LIST HDF5_FIND_COMPONENTS)
+      get_flags(${MPI_C_COMPILER} c_raw)
+      if(c_raw)
+        pop_flag(${c_raw} -I inc_dirs)
+      endif(c_raw)
+    endif()
+  endif(c_raw)
 endif()
 
 find_library(HDF5_C_LIBRARY
