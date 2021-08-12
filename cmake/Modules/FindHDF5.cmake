@@ -39,7 +39,8 @@ Components
   Fortran is an optional feature that not all HDF5 library installs are built with
 
 ``parallel``
-  checks that the optional MPI parallel HDF5 layer is enabled
+  checks that the optional MPI parallel HDF5 layer is enabled. NOTE: if HDF5_parallel_FOUND is true,
+  the user program MUST link MPI::MPI_C and/or MPI::MPI_Fortran.
 
 ``HL``
   always implied and silently accepted to keep compatibility with factory FindHDF5.cmake
@@ -169,11 +170,8 @@ endif()
 
 list(APPEND CMAKE_REQUIRED_LIBRARIES ${CMAKE_DL_LIBS})
 
-set(THREADS_PREFER_PTHREAD_FLAG true)
 find_package(Threads)
-if(Threads_FOUND)
-  list(APPEND CMAKE_REQUIRED_LIBRARIES Threads::Threads)
-endif()
+list(APPEND CMAKE_REQUIRED_LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
 
 if(UNIX)
   list(APPEND CMAKE_REQUIRED_LIBRARIES m)
@@ -455,7 +453,9 @@ if(HDF5_parallel_FOUND)
 
   end program")
 
-  message(CHECK_START "Checking Fortran HDF5 MPI h5pset_fapl_mpio_f")
+  if(NOT DEFINED HDF5_Fortran_links)
+    message(STATUS "Checking Fortran HDF5 MPI h5pset_fapl_mpio_f")
+  endif()
 else()
   set(src "program test_minimal
   use hdf5, only : h5open_f, h5close_f
@@ -465,16 +465,13 @@ else()
   call h5open_f(i)
   call h5close_f(i)
   end program")
-  message(CHECK_START "Checking Fortran HDF5 serial h5open_f")
 endif()
 
-check_source_compiles(Fortran ${src} HDF5_Fortran_links SRC_EXT f90)
+check_source_compiles(Fortran ${src} HDF5_Fortran_links)
 
 if(NOT HDF5_Fortran_links)
-  message(CHECK_FAIL "not found")
   return()
 endif()
-message(CHECK_PASS "found")
 
 endif(HDF5_Fortran_FOUND)
 
@@ -580,17 +577,9 @@ if(HDF5_FOUND)
 
     if(UNIX)
       target_link_libraries(HDF5::HDF5 INTERFACE m)
-    endif()
-
-    if(HDF5_parallel_FOUND)
-      if(HDF5_Fortran_FOUND)
-        target_link_libraries(HDF5::HDF5 INTERFACE MPI::MPI_Fortran MPI::MPI_C)
-      else()
-        target_link_libraries(HDF5::HDF5 INTERFACE MPI::MPI_C)
-      endif()
-    endif()
+    endif(UNIX)
   endif()
-endif()
+endif(HDF5_FOUND)
 
 mark_as_advanced(HDF5_Fortran_LIBRARY HDF5_Fortran_HL_LIBRARY
 HDF5_C_LIBRARY HDF5_C_HL_LIBRARY
