@@ -51,7 +51,8 @@ ${zlib_root}
 -DHDF5_BUILD_CPP_LIB:BOOL=false
 -DBUILD_TESTING:BOOL=false
 -DHDF5_BUILD_EXAMPLES:BOOL=false
--DUSE_LIBAEC:bool=true)
+-DUSE_LIBAEC:bool=true
+)
 
 if(hdf5_parallel)
   find_package(MPI REQUIRED COMPONENTS C)
@@ -93,11 +94,8 @@ add_dependencies(HDF5::HDF5 HDF5)
 
 target_link_libraries(HDF5::HDF5 INTERFACE ZLIB::ZLIB)
 
-set(THREADS_PREFER_PTHREAD_FLAG true)
 find_package(Threads)
-if(Threads_FOUND)
-  target_link_libraries(HDF5::HDF5 INTERFACE Threads::Threads)
-endif(Threads_FOUND)
+target_link_libraries(HDF5::HDF5 INTERFACE ${CMAKE_THREAD_LIBS_INIT})
 
 # libdl and libm are needed on some systems--don't remove
 target_link_libraries(HDF5::HDF5 INTERFACE ${CMAKE_DL_LIBS})
