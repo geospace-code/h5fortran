@@ -162,10 +162,12 @@ if(hdf5_have_zlib)
     # If system HDF5 dynamically links libhdf5 with szip, our builds will fail if we don't also link szip.
     # however, we don't require SZIP for this case as other HDF5 libraries may statically link SZIP.
     find_package(SZIP)
-    list(APPEND CMAKE_REQUIRED_LIBRARIES SZIP::SZIP)
+    list(APPEND CMAKE_REQUIRED_INCLUDES ${SZIP_INCLUDE_DIRS})
+    list(APPEND CMAKE_REQUIRED_LIBRARIES ${SZIP_LIBRARIES})
   endif()
 
-  list(APPEND CMAKE_REQUIRED_LIBRARIES ZLIB::ZLIB)
+  list(APPEND CMAKE_REQUIRED_INCLUDES ${ZLIB_INCLUDE_DIRS})
+  list(APPEND CMAKE_REQUIRED_LIBRARIES ${ZLIB_LIBRARIES})
 endif()
 
 list(APPEND CMAKE_REQUIRED_LIBRARIES ${CMAKE_DL_LIBS})
@@ -382,7 +384,8 @@ list(PREPEND CMAKE_REQUIRED_LIBRARIES ${HDF5_C_LIBRARIES})
 set(CMAKE_REQUIRED_INCLUDES ${HDF5_C_INCLUDE_DIR})
 
 if(HDF5_parallel_FOUND)
-  list(APPEND CMAKE_REQUIRED_LIBRARIES MPI::MPI_C)
+  list(APPEND CMAKE_REQUIRED_INCLUDES ${MPI_C_INCLUDE_DIRS})
+  list(APPEND CMAKE_REQUIRED_LIBRARIES ${MPI_C_LIBRARIES})
 
   check_symbol_exists(H5Pset_fapl_mpio hdf5.h HAVE_H5Pset_fapl_mpio)
   if(NOT HAVE_H5Pset_fapl_mpio)
@@ -431,7 +434,8 @@ list(PREPEND CMAKE_REQUIRED_LIBRARIES ${HDF5_Fortran_LIBRARIES})
 set(CMAKE_REQUIRED_INCLUDES ${HDF5_Fortran_INCLUDE_DIR} ${HDF5_C_INCLUDE_DIR})
 
 if(HDF5_parallel_FOUND)
-  list(APPEND CMAKE_REQUIRED_LIBRARIES MPI::MPI_Fortran)
+  list(APPEND CMAKE_REQUIRED_INCLUDES ${MPI_Fortran_INCLUDE_DIRS})
+  list(APPEND CMAKE_REQUIRED_LIBRARIES ${MPI_Fortran_LIBRARIES})
 
   set(src "program test_fortran_mpi
   use hdf5
