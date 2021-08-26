@@ -343,10 +343,9 @@ function(hdf5_fortran_wrap lib_var inc_var)
 set(lib_dirs)
 set(inc_dirs)
 
-if(parallel IN_LIST HDF5_FIND_COMPONENTS)
-  set(wrapper_names h5pfc)
-else()
-  set(wrapper_names h5fc h5fc-64)
+set(wrapper_names h5pfc)
+if(NOT parallel IN_LIST HDF5_FIND_COMPONENTS)
+  list(PREPEND wrapper_names h5fc h5fc-64)
 endif()
 
 find_program(HDF5_Fortran_COMPILER_EXECUTABLE
@@ -417,10 +416,9 @@ function(hdf5_c_wrap lib_var inc_var)
 set(lib_dirs)
 set(inc_dirs)
 
-if(parallel IN_LIST HDF5_FIND_COMPONENTS)
-  set(wrapper_names h5pcc)
-else()
-  set(wrapper_names h5cc h5cc-64)
+set(wrapper_names h5pcc)
+if(NOT parallel IN_LIST HDF5_FIND_COMPONENTS)
+  list(PREPEND wrapper_names h5cc h5cc-64)
 endif()
 
 find_program(HDF5_C_COMPILER_EXECUTABLE
