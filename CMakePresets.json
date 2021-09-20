@@ -5,9 +5,9 @@
 {
   "name": "default",
   "binaryDir": "${sourceDir}/build",
+  "installDir": "${sourceDir}/build",
   "cacheVariables": {
-    "CMAKE_BUILD_TYPE": "Release",
-    "CMAKE_INSTALL_PREFIX": "${sourceDir}/build"
+    "CMAKE_BUILD_TYPE": "Release"
   }
 },
 {
@@ -34,9 +34,7 @@
   "name": "intel", "inherits": "default",
   "displayName": "Intel oneAPI LLVM",
   "binaryDir": "${sourceDir}/build-intel",
-  "cacheVariables": {
-    "CMAKE_INSTALL_PREFIX": "${sourceDir}/build-intel"
-  },
+  "installDir": "${sourceDir}/build-intel",
   "environment": {
     "CC": "icx",
     "FC": "ifx"

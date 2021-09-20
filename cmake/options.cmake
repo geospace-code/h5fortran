@@ -8,9 +8,6 @@ option(matlab "check HDF5 file writes with Matlab" off)
 option(concepts "conceptual testing, for devs only" off)
 
 option(zlib_legacy "use unmaintained ZLIB 1.x")
-if(zlib_legacy AND CMAKE_VERSION VERSION_LESS 3.19)
-  message(FATAL_ERROR "Zlib 1.x requires CMake >= 3.19")
-endif()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS true)
 

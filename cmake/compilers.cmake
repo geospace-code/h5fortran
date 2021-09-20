@@ -15,24 +15,14 @@ endif()
 # --- compiler options
 # we left off "-std=f2018" type flags as they tend to issue false warnings
 
-if(CMAKE_Fortran_COMPILER_ID MATCHES Intel)
-  if(WIN32)
-    # add_compile_options(/Qdiag-error-limit:3)
-    string(APPEND CMAKE_Fortran_FLAGS " /QxHost /warn /heap-arrays")
-    string(APPEND CMAKE_Fortran_FLAGS_DEBUG " /traceback /check:bounds /debug:all")
-  else()
-    # add_compile_options(-diag-error-limit=3)
-    string(APPEND CMAKE_Fortran_FLAGS " -xHost -warn -heap-arrays")
-    string(APPEND CMAKE_Fortran_FLAGS_DEBUG " -traceback -check all -debug extended")
-  endif()
-elseif(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
-  string(APPEND CMAKE_Fortran_FLAGS " -mtune=native -Wall -fimplicit-none")
-  string(APPEND CMAKE_Fortran_FLAGS_RELEASE " -fno-backtrace -Wno-maybe-uninitialized")
-  string(APPEND CMAKE_Fortran_FLAGS_RELWITHDEBINFO " -Wno-maybe-uninitialized")
-  string(APPEND CMAKE_Fortran_FLAGS_DEBUG " -Wextra -fcheck=all -Werror=array-bounds")
-elseif(CMAKE_Fortran_COMPILER_ID STREQUAL NAG)
-  string(APPEND CMAKE_Fortran_FLAGS " -f2018 -u -C=all")
-endif()
+add_compile_options(
+"$<$<COMPILE_LANG_AND_ID:Fortran,Intel,IntelLLVM>:-xHost;-warn;-heap-arrays>"
+"$<$<AND:$<COMPILE_LANG_AND_ID:Fortran,Intel,IntelLLVM>,$<CONFIG:Debug>>:-traceback;-check all;-debug extended>"
+"$<$<COMPILE_LANG_AND_ID:Fortran,GNU>:-mtune=native;-Wall;-fimplicit-none>"
+"$<$<AND:$<COMPILE_LANG_AND_ID:Fortran,GNU>,$<CONFIG:Debug>>:-Wextra;-fcheck=all;-Werror=array-bounds>"
+"$<$<AND:$<COMPILE_LANG_AND_ID:Fortran,GNU>,$<CONFIG:Release>>:-fno-backtrace;-Wno-maybe-uninitialized>"
+"$<$<AND:$<COMPILE_LANG_AND_ID:Fortran,GNU>,$<CONFIG:RelWithDebInfo>>:-Wno-maybe-uninitialized>"
+)
 
 check_source_compiles(Fortran
 "program test
