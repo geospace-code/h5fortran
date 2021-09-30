@@ -83,6 +83,12 @@ for more details see [Install.md](./Install.md).
 
 For general use with non-CMake build systems, "h5fortran.pc" pkg-config file is also generated / installed.
 
+To save time, if not intended to use self-tests, you can skip the build of the test suite:
+
+```sh
+cmake -B build -DBUILD_TESTING=off
+```
+
 ### Autobuild HDF5
 
 h5fortran will automatically build the HDF5 and ZLIB libraries if needed.

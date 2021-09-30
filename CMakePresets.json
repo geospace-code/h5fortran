@@ -16,13 +16,6 @@
   "generator": "Ninja Multi-Config"
 },
 {
-  "name": "notest", "inherits": "default",
-  "displayName": "omit self-tests",
-  "cacheVariables": {
-    "BUILD_TESTING": false
-  }
-},
-{
   "name": "build", "inherits": "default",
   "displayName": "build all libraries",
   "description": "Build all external libraries without searching for existing libraries.",
