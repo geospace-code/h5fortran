@@ -44,7 +44,7 @@ jobs:
     - name: Configure CMake
       env:
         CC: icx
-        FC: ifort
+        FC: ifx
       run: cmake --preset intel
 
     - name: print config log
