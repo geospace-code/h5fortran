@@ -26,9 +26,7 @@ endif()
 
 add_executable(test_${name} test_${name}.f90)
 target_link_libraries(test_${name} PRIVATE h5fortran::h5fortran)
-if(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
-  target_compile_options(test_${name} PRIVATE -Wno-compare-reals -Wno-conversion)
-endif()
+target_compile_options(test_${name} PRIVATE "$<$<Fortran_COMPILER_ID:GNU>:-Wno-compare-reals;-Wno-conversion>")
 set_target_properties(test_${name} PROPERTIES LABELS unit)
 
 add_test(NAME h5fortran:${name}
