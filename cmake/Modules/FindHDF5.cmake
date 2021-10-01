@@ -92,14 +92,6 @@ endfunction(pop_flag)
 
 function(detect_config)
 
-if(Fortran IN_LIST HDF5_FIND_COMPONENTS AND NOT HDF5_Fortran_FOUND)
-  return()
-endif()
-
-if(CXX IN_LIST HDF5_FIND_COMPONENTS AND NOT HDF5_CXX_FOUND)
-  return()
-endif()
-
 set(CMAKE_REQUIRED_INCLUDES ${HDF5_C_INCLUDE_DIR})
 
 find_file(h5_conf
@@ -238,12 +230,23 @@ if(HDF5_Fortran_HL_stub AND HDF5_Fortran_stub)
   list(APPEND HDF5_Fortran_LIBRARIES ${HDF5_Fortran_HL_stub} ${HDF5_Fortran_stub})
 endif()
 
-find_path(HDF5_Fortran_INCLUDE_DIR
-  NAMES hdf5.mod
-  HINTS ${hdf5_inc_dirs} ${pc_hdf5_INCLUDE_DIRS}
-  PATH_SUFFIXES ${hdf5_msuf}
-  PATHS ${hdf5_binpref}
-  DOC "HDF5 Fortran modules")
+if(HDF5_ROOT OR DEFINED ENV{HDF5_ROOT})
+  find_path(HDF5_Fortran_INCLUDE_DIR
+    NAMES hdf5.mod
+    NO_DEFAULT_PATH
+    HINTS ${HDF5_ROOT} ENV HDF5_ROOT
+    PATH_SUFFIXES ${hdf5_msuf}
+    DOC "HDF5 Fortran module path"
+  )
+else()
+  find_path(HDF5_Fortran_INCLUDE_DIR
+    NAMES hdf5.mod
+    HINTS ${HDF5_C_INCLUDE_DIR} ${hdf5_inc_dirs} ${pc_hdf5_INCLUDE_DIRS}
+    PATHS ${hdf5_binpref}
+    PATH_SUFFIXES ${hdf5_msuf}
+    DOC "HDF5 Fortran module path"
+  )
+endif()
 
 if(HDF5_Fortran_LIBRARY AND HDF5_Fortran_HL_LIBRARY AND HDF5_Fortran_INCLUDE_DIR)
   set(HDF5_Fortran_LIBRARIES ${HDF5_Fortran_LIBRARIES} PARENT_SCOPE)
@@ -653,14 +656,6 @@ endif()
 # find_package(hdf5 CONFIG)
 # message(STATUS "hdf5 found ${hdf5_FOUND}")
 
-if(Fortran IN_LIST HDF5_FIND_COMPONENTS)
-  find_hdf5_fortran()
-endif()
-
-if(CXX IN_LIST HDF5_FIND_COMPONENTS)
-  find_hdf5_cxx()
-endif()
-
 # C is always needed
 find_hdf5_c()
 
@@ -668,6 +663,14 @@ find_hdf5_c()
 if(HDF5_C_FOUND)
   detect_config()
 endif(HDF5_C_FOUND)
+
+if(HDF5_C_FOUND AND CXX IN_LIST HDF5_FIND_COMPONENTS)
+  find_hdf5_cxx()
+endif()
+
+if(HDF5_C_FOUND AND Fortran IN_LIST HDF5_FIND_COMPONENTS)
+  find_hdf5_fortran()
+endif()
 
 # --- configure time checks
 # these checks avoid messy, confusing errors at build time
