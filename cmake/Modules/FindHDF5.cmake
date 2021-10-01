@@ -234,8 +234,8 @@ if(HDF5_ROOT OR DEFINED ENV{HDF5_ROOT})
   find_path(HDF5_Fortran_INCLUDE_DIR
     NAMES hdf5.mod
     NO_DEFAULT_PATH
-    HINTS ${HDF5_ROOT} ENV HDF5_ROOT
-    PATH_SUFFIXES ${hdf5_msuf}
+    HINTS ${HDF5_C_INCLUDE_DIR} ${HDF5_ROOT} ENV HDF5_ROOT
+    PATH_SUFFIXES include
     DOC "HDF5 Fortran module path"
   )
 else()
