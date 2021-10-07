@@ -628,7 +628,9 @@ if(NOT HDF5_ROOT AND NOT HDF5_FOUND)
 endif()
 
 set(hdf5_lsuf hdf5)
-if(NOT parallel IN_LIST HDF5_FIND_COMPONENTS)
+if(parallel IN_LIST HDF5_FIND_COMPONENTS)
+  list(PREPEND hdf5_lsuf hdf5/openmpi hdf5/mpich)
+else()
   list(PREPEND hdf5_lsuf hdf5/serial)
 endif()
 
