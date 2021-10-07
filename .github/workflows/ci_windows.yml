@@ -3,6 +3,7 @@ env:
   CMAKE_GENERATOR: Ninja
   CTEST_SITE: GitHub_Windows
   CTEST_PARALLEL_LEVEL: 2
+  CMAKE_BUILD_TYPE: Release
 
 on:
   push:
