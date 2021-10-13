@@ -35,7 +35,7 @@ jobs:
 
     - name: Install Intel oneAPI
       timeout-minutes: 5
-      run: sudo apt-get install intel-oneapi-compiler-fortran intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic
+      run: sudo apt-get install ninja-build intel-oneapi-compiler-fortran intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic
 
     - name: Setup Intel oneAPI environment
       run: |
