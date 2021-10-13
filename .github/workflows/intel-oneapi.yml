@@ -45,14 +45,18 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Configure CMake
-      run: cmake -B build
+      run: cmake --preset multi
 
     - name: print config log
       if: ${{ failure() }}
       run: cat build/CMakeFiles/CMakeError.log
 
     - name: Release build
-      run: cmake --build build
-
+      run: cmake --build --preset release
     - name: Release unit test
-      run: ctest --test-dir build --output-junit test-release-oneapi.xml
+      run: ctest --preset release --output-junit test-release-oneapi.xml
+
+    - name: debug build
+      run: cmake --build --preset debug
+    - name: debug unit test
+      run: ctest --preset debug --output-junit test-debug-oneapi.xml

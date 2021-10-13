@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20...3.21)
+cmake_minimum_required(VERSION 3.20...3.22)
 # builds HDF5 library from scratch
 # note: the use of "lib" vs. CMAKE_STATIC_LIBRARY_PREFIX is deliberate based on the particulars of these libraries
 # across Intel Fortran on Windows vs. Gfortran on Windows vs. Linux.
@@ -73,6 +73,7 @@ ExternalProject_Add(HDF5
 URL ${hdf5_url}
 URL_HASH SHA256=${hdf5_sha256}
 CMAKE_ARGS ${hdf5_cmake_args}
+CMAKE_GENERATOR ${EXTPROJ_GENERATOR}
 BUILD_BYPRODUCTS ${HDF5_LIBRARIES}
 DEPENDS ZLIB
 CONFIGURE_HANDLED_BY_BUILD ON
