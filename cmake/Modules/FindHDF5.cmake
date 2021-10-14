@@ -699,22 +699,15 @@ if(HDF5_FOUND)
     set_target_properties(HDF5::HDF5 PROPERTIES
       INTERFACE_LINK_LIBRARIES "${HDF5_LIBRARIES}"
       INTERFACE_INCLUDE_DIRECTORIES "${HDF5_INCLUDE_DIRS}")
-    if(hdf5_have_zlib)
-      target_link_libraries(HDF5::HDF5 INTERFACE ZLIB::ZLIB)
-    endif()
-    if(hdf5_have_szip)
-      target_link_libraries(HDF5::HDF5 INTERFACE SZIP::SZIP)
-    endif()
 
-    if(Threads_FOUND)
-      target_link_libraries(HDF5::HDF5 INTERFACE Threads::Threads)
-    endif()
+    target_link_libraries(HDF5::HDF5 INTERFACE
+    $<$<BOOL:${hdf5_have_zlib}>:ZLIB::ZLIB>
+    $<$<BOOL:${hdf5_have_szip}>:SZIP::SZIP>
+    ${CMAKE_THREAD_LIBS_INIT}
+    ${CMAKE_DL_LIBS}
+    $<$<BOOL:${UNIX}>:m>
+    )
 
-    target_link_libraries(HDF5::HDF5 INTERFACE ${CMAKE_DL_LIBS})
-
-    if(UNIX)
-      target_link_libraries(HDF5::HDF5 INTERFACE m)
-    endif(UNIX)
   endif()
 endif(HDF5_FOUND)
 

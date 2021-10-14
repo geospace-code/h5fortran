@@ -99,8 +99,4 @@ find_package(Threads)
 target_link_libraries(HDF5::HDF5 INTERFACE ${CMAKE_THREAD_LIBS_INIT})
 
 # libdl and libm are needed on some systems--don't remove
-target_link_libraries(HDF5::HDF5 INTERFACE ${CMAKE_DL_LIBS})
-
-if(UNIX)
-  target_link_libraries(HDF5::HDF5 INTERFACE m)
-endif(UNIX)
+target_link_libraries(HDF5::HDF5 INTERFACE ${CMAKE_DL_LIBS} $<$<BOOL:${UNIX}>:m>)
