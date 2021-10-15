@@ -1,5 +1,7 @@
-cmake_minimum_required(VERSION 3.20...3.21)
-project(HDF5_build LANGUAGES C Fortran)
+cmake_minimum_required(VERSION 3.20...3.22)
+project(HDF5_build
+LANGUAGES C Fortran
+)
 
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   message(FATAL_ERROR "please specify where to install HDF5 under, like

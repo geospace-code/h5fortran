@@ -11,11 +11,7 @@ set(hdf5_external true CACHE BOOL "autobuild HDF5")
 
 # need to be sure _ROOT isn't empty, defined is not enough
 if(NOT HDF5_ROOT)
-  if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-    set(HDF5_ROOT ${PROJECT_BINARY_DIR} CACHE PATH "HDF5_ROOT")
-  else()
-    set(HDF5_ROOT ${CMAKE_INSTALL_PREFIX})
-  endif()
+  set(HDF5_ROOT ${CMAKE_INSTALL_PREFIX})
 endif()
 
 set(HDF5_LIBRARIES)
@@ -77,7 +73,8 @@ CMAKE_GENERATOR ${EXTPROJ_GENERATOR}
 BUILD_BYPRODUCTS ${HDF5_LIBRARIES}
 DEPENDS ZLIB
 CONFIGURE_HANDLED_BY_BUILD ON
-INACTIVITY_TIMEOUT 15)
+INACTIVITY_TIMEOUT 15
+)
 
 # --- imported target
 
@@ -92,11 +89,13 @@ target_link_libraries(HDF5::HDF5 INTERFACE "${HDF5_LIBRARIES}")
 add_dependencies(HDF5::HDF5 HDF5)
 
 # --- external deps
-
-target_link_libraries(HDF5::HDF5 INTERFACE ZLIB::ZLIB)
-
 find_package(Threads)
-target_link_libraries(HDF5::HDF5 INTERFACE ${CMAKE_THREAD_LIBS_INIT})
 
-# libdl and libm are needed on some systems--don't remove
-target_link_libraries(HDF5::HDF5 INTERFACE ${CMAKE_DL_LIBS} $<$<BOOL:${UNIX}>:m>)
+target_link_libraries(HDF5::HDF5 INTERFACE
+ZLIB::ZLIB
+${CMAKE_THREAD_LIBS_INIT}
+${CMAKE_DL_LIBS}
+$<$<BOOL:${UNIX}>:m>
+)
+
+# libdl and libm are needed on some systems
