@@ -1,6 +1,7 @@
 submodule (h5fortran:read) reader
 !! This submodule is for reading 0-D..7-D data
 
+use, intrinsic :: iso_c_binding, only : c_null_char
 use hdf5, only : h5dread_f
 use h5lt, only : h5ltread_dataset_string_f
 
@@ -11,13 +12,15 @@ contains
 
 module procedure hdf_read_scalar_char
 
-integer :: ier
+integer :: ier, i
 character(len(value)) :: buf
 
 call hdf_rank_check(self, dname, rank(value))
 
 call h5ltread_dataset_string_f(self%lid, dname, buf, ier)
-value = buf
+i = index(buf, c_null_char) - 1
+if (i == -1) i = len_trim(buf)
+value = buf(:i)
 
 if (present(ierr)) ierr = ier
 if (check(ier, self%filename, dname) .and. .not.present(ierr)) error stop
