@@ -27,8 +27,7 @@ jobs:
   #   - run: cmake --preset=makewin
   #   - run: cmake --build build --parallel
 
-  #   - run: ctest --parallel 2 --output-on-failure
-  #     working-directory: build
+  #   - run: ctest --test-dir build --parallel 2 --output-on-failure
 
   msys2:
     timeout-minutes: 20
@@ -64,8 +63,7 @@ jobs:
 
     - run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=${HOME}
     - run: cmake --build Examples/build
-    - run: ctest --parallel 2 --output-on-failure
-      working-directory: Examples/build
+    - run: ctest --test-dir Examples/build --parallel 2 --output-on-failure
 
     - name: create package
       if: github.event.action == 'published'

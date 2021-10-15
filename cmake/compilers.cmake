@@ -1,5 +1,3 @@
-include(CheckSourceCompiles)
-
 # check C and Fortran compiler ABI compatibility
 
 if(NOT abi_ok)
@@ -24,11 +22,3 @@ $<$<C_COMPILER_ID:Intel,IntelLLVM>:$<IF:$<BOOL:${WIN32}>,/QxHost,-xHost>>
 "$<$<AND:$<COMPILE_LANG_AND_ID:Fortran,GNU>,$<CONFIG:Release>>:-fno-backtrace;-Wno-maybe-uninitialized>"
 "$<$<AND:$<COMPILE_LANG_AND_ID:Fortran,GNU>,$<CONFIG:RelWithDebInfo>>:-Wno-maybe-uninitialized>"
 )
-
-check_source_compiles(Fortran
-"program test
-block
-end block
-end program
-"
-f08block)
