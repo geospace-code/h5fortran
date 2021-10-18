@@ -55,6 +55,10 @@ fail_read_size_mismatch fail_read_rank_mismatch fail_nonexist_variable)
 
 setup_test("${testnames}")
 
+set_tests_properties(h5fortran:shape PROPERTIES
+FIXTURES_SETUP h5shape
+)
+
 set(shape_file ${CMAKE_CURRENT_BINARY_DIR}/test_shape.h5)
 # --- Python h5py
 
@@ -70,16 +74,15 @@ if(NOT DEFINED h5py_ok)
   endif()
 endif()
 
-if(h5py_ok)
-  add_test(NAME h5fortran:PythonShape
-    COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test_shape.py ${shape_file})
+add_test(NAME h5fortran:PythonShape
+  COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test_shape.py ${shape_file})
 
-    set_tests_properties(h5fortran:PythonShape PROPERTIES
-    DEPENDS h5fortran:shape
-    REQUIRED_FILES ${shape_file}
-    FIXTURES_REQUIRED h5lib
-    TIMEOUT 15)
-endif(h5py_ok)
+set_tests_properties(h5fortran:PythonShape PROPERTIES
+REQUIRED_FILES ${shape_file}
+FIXTURES_REQUIRED "h5lib;h5shape"
+TIMEOUT 15
+DISABLED $<NOT:$<BOOL:${h5py_ok}>>
+)
 
 # --- Matlab HDF5
 
