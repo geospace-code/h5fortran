@@ -16,14 +16,6 @@ set(CI $ENV{CI})
 
 foreach(name IN LISTS names)
 
-if(${name} MATCHES ".*fail.*")
-  if(CI)
-    continue()
-  elseif(NOT test_shaky)
-    continue()
-  endif()
-endif()
-
 add_executable(test_${name} test_${name}.f90)
 target_link_libraries(test_${name} PRIVATE h5fortran::h5fortran)
 target_compile_options(test_${name} PRIVATE "$<$<Fortran_COMPILER_ID:GNU>:-Wno-compare-reals;-Wno-conversion>")
@@ -39,10 +31,13 @@ set_tests_properties(h5fortran:${name} PROPERTIES
 if(${name} MATCHES ".*fail.*")
   set_tests_properties(h5fortran:${name} PROPERTIES
     WILL_FAIL true
-    LABELS shaky)
+    LABELS shaky
+    DISABLED $<OR:$<BOOL:${CI}>,$<NOT:$<BOOL:test_shaky>>>
+    )
 else()
   set_tests_properties(h5fortran:${name} PROPERTIES
-    LABELS unit)
+    LABELS unit
+    )
 endif()
 
 endforeach()
