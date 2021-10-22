@@ -1,4 +1,3 @@
-cmake_minimum_required(VERSION 3.20...3.22)
 # build Zlib to ensure compatibility.
 # We use Zlib 2.x for speed and robustness.
 

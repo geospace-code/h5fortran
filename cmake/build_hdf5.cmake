@@ -1,11 +1,8 @@
-cmake_minimum_required(VERSION 3.20...3.22)
 # builds HDF5 library from scratch
 # note: the use of "lib" vs. CMAKE_STATIC_LIBRARY_PREFIX is deliberate based on the particulars of these libraries
 # across Intel Fortran on Windows vs. Gfortran on Windows vs. Linux.
 
 include(ExternalProject)
-
-include(${CMAKE_CURRENT_LIST_DIR}/libraries.cmake)
 
 set(hdf5_external true CACHE BOOL "autobuild HDF5")
 
