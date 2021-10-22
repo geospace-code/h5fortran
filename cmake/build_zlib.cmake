@@ -4,11 +4,8 @@ cmake_minimum_required(VERSION 3.20...3.22)
 
 include(ExternalProject)
 
-if(MSVC OR (zlib_legacy AND WIN32))
-  set(ZLIB_name ${CMAKE_STATIC_LIBRARY_PREFIX}zlibstatic${CMAKE_STATIC_LIBRARY_SUFFIX})
-else()
-  set(ZLIB_name ${CMAKE_STATIC_LIBRARY_PREFIX}z${CMAKE_STATIC_LIBRARY_SUFFIX})
-endif()
+set(zlib_mangle $<OR:$<BOOL:${MSVC}>,$<AND:$<BOOL:${zlib_legacy}>,$<BOOL:${WIN32}>>>)
+set(ZLIB_name ${CMAKE_STATIC_LIBRARY_PREFIX}$<IF:${zlib_mangle},zlibstatic,z>${CMAKE_STATIC_LIBRARY_SUFFIX})
 
 # need to be sure _ROOT isn't empty, defined is not enough
 if(NOT ZLIB_ROOT)
