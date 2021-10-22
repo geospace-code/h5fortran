@@ -101,14 +101,13 @@ endif(matlab)
 # --- h5ls
 
 find_program(h5ls NAMES h5ls)
-if(h5ls)
-  add_test(NAME h5fortran:h5ls COMMAND ${h5ls} ${shape_file}/d7)
+add_test(NAME h5fortran:h5ls COMMAND ${h5ls} ${shape_file}/d7)
 
-  set_tests_properties(h5fortran:h5ls PROPERTIES
-   TIMEOUT 10
-   REQUIRED_FILES ${shape_file}
-   FIXTURES_REQUIRED h5lib
-   DEPENDS h5fortran:shape
-   PASS_REGULAR_EXPRESSION "{5, 6, 7, 4, 3, 1, 2}")
-
-endif(h5ls)
+set_tests_properties(h5fortran:h5ls PROPERTIES
+TIMEOUT 10
+REQUIRED_FILES ${shape_file}
+FIXTURES_REQUIRED h5lib
+DEPENDS h5fortran:shape
+PASS_REGULAR_EXPRESSION "{5, 6, 7, 4, 3, 1, 2}"
+DISABLED $<NOT:$<BOOL:${h5ls}>>
+)
