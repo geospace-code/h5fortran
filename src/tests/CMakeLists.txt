@@ -6,9 +6,13 @@ set_target_properties(test_minimal PROPERTIES LABELS unit)
 add_test(NAME h5fortran:minimal
   COMMAND $<TARGET_FILE:test_minimal>)
 set_tests_properties(h5fortran:minimal PROPERTIES
-  FIXTURES_SETUP h5lib
-  TIMEOUT 5
-  LABELS core)
+FIXTURES_SETUP h5lib
+TIMEOUT 5
+LABELS core
+)
+if(dll_path)
+  set_tests_properties(h5fortran:minimal ENVIRONMENT "PATH=${dll_path}")
+endif()
 
 function(setup_test names)
 
@@ -22,10 +26,16 @@ target_compile_options(test_${name} PRIVATE "$<$<Fortran_COMPILER_ID:GNU>:-Wno-c
 set_target_properties(test_${name} PROPERTIES LABELS unit)
 
 add_test(NAME h5fortran:${name}
-  COMMAND $<TARGET_FILE:test_${name}>)
+COMMAND $<TARGET_FILE:test_${name}>
+WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+)
 set_tests_properties(h5fortran:${name} PROPERTIES
-  FIXTURES_REQUIRED h5lib
-  TIMEOUT 10)
+FIXTURES_REQUIRED h5lib
+TIMEOUT 10
+)
+if(dll_path)
+  set_tests_properties(h5fortran:${name} ENVIRONMENT "PATH=${dll_path}")
+endif()
 
 
 if(${name} MATCHES ".*fail.*")
@@ -54,7 +64,7 @@ set_tests_properties(h5fortran:shape PROPERTIES
 FIXTURES_SETUP h5shape
 )
 
-set(shape_file ${CMAKE_CURRENT_BINARY_DIR}/test_shape.h5)
+set(shape_file ${PROJECT_BINARY_DIR}/test_shape.h5)
 # --- Python h5py
 
 find_package(Python3 COMPONENTS Interpreter)

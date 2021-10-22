@@ -32,8 +32,6 @@ jobs:
   msys2:
     timeout-minutes: 20
     runs-on: windows-latest
-    env:
-      CMAKE_GENERATOR: Ninja
 
     defaults:
       run:
@@ -91,3 +89,43 @@ jobs:
         asset_path: build/package/h5fortran-${{ steps.get_version.outputs.VERSION }}-win64.tar.zst
         asset_name:  h5fortran-${{ steps.get_version.outputs.VERSION }}-win64.tar.zst
         asset_content_type: application/zip
+
+
+  msys2-build:
+    timeout-minutes: 20
+    runs-on: windows-latest
+
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+    - uses: msys2/setup-msys2@v2
+      with:
+        update: true
+        install: >-
+          git
+          mingw-w64-x86_64-cmake
+          mingw-w64-x86_64-ninja
+          mingw-w64-x86_64-gcc-fortran
+    # cmake install needed because of default to msys2 shell
+
+    - uses: actions/checkout@v2
+
+    - run: cmake -B build --preset build --install-prefix=${HOME}/static
+    - run: cmake --build build
+    - run: ctest --test-dir build --preset default
+    - run: cmake --install build
+
+    - run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=${HOME}/static
+    - run: cmake --build Examples/build
+    - run: ctest --test-dir Examples/build --parallel 2 --output-on-failure
+
+    # shared build (saving time rather than use new CI image)
+    - run: cmake --preset build-shared -DBUILD_SHARED_LIBS:BOOL=true --install-prefix=${HOME}/shared
+    - run: cmake --build build-shared
+    - run: ctest --test-dir build-shared --preset default
+    - run: cmake --install build-shared
+
+    - run: cmake -S Examples -B Examples/build-shared -Dh5fortran_ROOT=${HOME}/shared
+    - run: cmake --build Examples/build-shared
+    - run: ctest --test-dir Examples/build-shared --parallel 2 --output-on-failure

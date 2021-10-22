@@ -634,9 +634,15 @@ else()
   list(PREPEND hdf5_lsuf hdf5/serial)
 endif()
 
-set(_psuf static)
+if(BUILD_SHARED_LIBS)
+  set(_psuf shared)
+  set(hdf5_msuf shared)
+else()
+  set(_psuf static)
+  set(hdf5_msuf static)
+endif()
 
-set(hdf5_msuf static)
+
 if(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
   list(APPEND hdf5_msuf gfortran/modules)
   if(NOT HDF5_ROOT AND parallel IN_LIST HDF5_FIND_COMPONENTS)

@@ -1,10 +1,13 @@
 # builds HDF5 library from scratch
-# note: the use of "lib" vs. CMAKE_STATIC_LIBRARY_PREFIX is deliberate based on the particulars of these libraries
-# across Intel Fortran on Windows vs. Gfortran on Windows vs. Linux.
+# note: the use of "lib" vs. CMAKE_*_LIBRARY_PREFIX is deliberate based on HDF5
+# across Intel Fortran on Windows (MSVC-like) vs. Gfortran on Windows vs. Linux.
 
 include(ExternalProject)
 
 set(hdf5_external true CACHE BOOL "autobuild HDF5")
+
+set(CMAKE_INSTALL_NAME_DIR ${CMAKE_INSTALL_PREFIX}/lib)
+# MacOS:shared: HDF5 package is mistaken RPATH otherwise
 
 if(hdf5_parallel)
   find_package(MPI REQUIRED COMPONENTS C)
@@ -17,7 +20,11 @@ endif()
 
 set(HDF5_LIBRARIES)
 foreach(_name hdf5_hl_fortran hdf5_hl_f90cstub hdf5_fortran hdf5_f90cstub hdf5_hl hdf5)
-  list(APPEND HDF5_LIBRARIES ${HDF5_ROOT}/lib/lib${_name}${CMAKE_STATIC_LIBRARY_SUFFIX})
+  if(BUILD_SHARED_LIBS)
+    list(APPEND HDF5_LIBRARIES ${HDF5_ROOT}/lib/lib${_name}$<IF:$<BOOL:${MSVC}>,${CMAKE_STATIC_LIBRARY_SUFFIX},${CMAKE_SHARED_LIBRARY_SUFFIX}>$<$<BOOL:${MINGW}>:.a>)
+  else()
+    list(APPEND HDF5_LIBRARIES ${HDF5_ROOT}/lib/lib${_name}${CMAKE_STATIC_LIBRARY_SUFFIX})
+  endif()
 endforeach()
 
 set(HDF5_INCLUDE_DIRS ${HDF5_ROOT}/include)
@@ -39,8 +46,8 @@ ${zlib_root}
 -DCMAKE_MODULE_PATH:PATH=${CMAKE_MODULE_PATH}
 -DHDF5_GENERATE_HEADERS:BOOL=false
 -DHDF5_DISABLE_COMPILER_WARNINGS:BOOL=true
--DBUILD_STATIC_LIBS:BOOL=true
--DBUILD_SHARED_LIBS:BOOL=false
+-DBUILD_STATIC_LIBS:BOOL=$<NOT:$<BOOL:${BUILD_SHARED_LIBS}>>
+-DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS}
 -DCMAKE_BUILD_TYPE=Release
 -DHDF5_BUILD_FORTRAN:BOOL=true
 -DHDF5_BUILD_CPP_LIB:BOOL=false

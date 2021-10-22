@@ -3,8 +3,13 @@
 
 include(ExternalProject)
 
-set(zlib_mangle $<OR:$<BOOL:${MSVC}>,$<AND:$<BOOL:${zlib_legacy}>,$<BOOL:${WIN32}>>>)
-set(ZLIB_name ${CMAKE_STATIC_LIBRARY_PREFIX}$<IF:${zlib_mangle},zlibstatic,z>${CMAKE_STATIC_LIBRARY_SUFFIX})
+if(BUILD_SHARED_LIBS)
+  # zlib library naming on Windows is more complex than Unix-like
+  set(ZLIB_name ${CMAKE_SHARED_LIBRARY_PREFIX}z$<$<BOOL:${WIN32}>:lib>$<IF:$<BOOL:${MSVC}>,${CMAKE_STATIC_LIBRARY_SUFFIX},${CMAKE_SHARED_LIBRARY_SUFFIX}>$<$<BOOL:${MINGW}>:.a>)
+else()
+  set(zlib_mangle $<OR:$<BOOL:${MSVC}>,$<AND:$<BOOL:${zlib_legacy}>,$<BOOL:${WIN32}>>>)
+  set(ZLIB_name ${CMAKE_STATIC_LIBRARY_PREFIX}z$<${zlib_mangle}:libstatic>${CMAKE_STATIC_LIBRARY_SUFFIX})
+endif()
 
 # need to be sure _ROOT isn't empty, defined is not enough
 if(NOT ZLIB_ROOT)
@@ -17,7 +22,7 @@ set(ZLIB_LIBRARY ${ZLIB_ROOT}/lib/${ZLIB_name})
 set(zlib_cmake_args
 -DZLIB_COMPAT:BOOL=on
 -DZLIB_ENABLE_TESTS:BOOL=off
--DBUILD_SHARED_LIBS:BOOL=off
+-DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS}
 -DCMAKE_BUILD_TYPE=Release
 -DCMAKE_INSTALL_PREFIX:PATH=${ZLIB_ROOT}
 )

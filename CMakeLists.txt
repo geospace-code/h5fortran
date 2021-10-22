@@ -29,6 +29,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
 
 include(cmake/options.cmake)
 include(cmake/compilers.cmake)
+include(cmake/libraries.cmake)
 
 # --- find or build HDF5 library
 
@@ -52,6 +53,9 @@ if(hdf5_parallel OR HDF5_HAVE_PARALLEL)
   find_package(MPI COMPONENTS Fortran REQUIRED)
   target_link_libraries(HDF5::HDF5 INTERFACE MPI::MPI_Fortran)
 endif()
+
+# Put DLL on PATH (must be after build_{zlib,hdf5}.cmake)
+include(cmake/dll_path.cmake)
 
 # --- h5fortran library
 

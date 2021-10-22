@@ -23,7 +23,7 @@ For NetCDF4 see [nc4fortran](https://github.com/geospace-code/nc4fortran/).
 h5fortran is designed for "serial" HDF5 read/write.
 We don't yet implement the interface for "parallel" HDF5.
 
-h5fortran is designed for easy use using **static** or **shared** linking from your project via:
+h5fortran is designed for easy use using static or shared linking from your project via:
 
 * `cmake --install`
 * CMake ExternalProject
@@ -58,7 +58,7 @@ Tested on systems with HDF5 1.8, 1.10 and 1.12 including:
 Compilers known to work include:
 
 * GCC (gfortran) &ge; 7
-* Intel oneAPI HPC compiler &ge; 2021
+* Intel oneAPI HPC compiler &ge; 2021 (on Windows, use static linking)
 
 ---
 
