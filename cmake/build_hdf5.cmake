@@ -9,7 +9,11 @@ include(${CMAKE_CURRENT_LIST_DIR}/libraries.cmake)
 
 set(hdf5_external true CACHE BOOL "autobuild HDF5")
 
-# need to be sure _ROOT isn't empty, defined is not enough
+if(hdf5_parallel)
+  find_package(MPI REQUIRED COMPONENTS C)
+endif()
+
+# need to be sure _ROOT isn't empty, DEFINED is not enough
 if(NOT HDF5_ROOT)
   set(HDF5_ROOT ${CMAKE_INSTALL_PREFIX})
 endif()
@@ -26,9 +30,7 @@ set(zlib_root
 -DHDF5_ENABLE_Z_LIB_SUPPORT:BOOL=ON
 -DZLIB_USE_EXTERNAL:BOOL=OFF)
 
-if(TARGET ZLIB::ZLIB)
-  add_custom_target(ZLIB)
-else()
+if(NOT TARGET ZLIB::ZLIB)
   include(${CMAKE_CURRENT_LIST_DIR}/build_zlib.cmake)
 endif()
 # --- HDF5
@@ -48,22 +50,11 @@ ${zlib_root}
 -DBUILD_TESTING:BOOL=false
 -DHDF5_BUILD_EXAMPLES:BOOL=false
 -DUSE_LIBAEC:bool=true
+-DHDF5_BUILD_TOOLS:BOOL=$<NOT:$<BOOL:${hdf5_parallel}>>
+-DHDF5_ENABLE_PARALLEL:BOOL=$<BOOL:${hdf5_parallel}>
+-DMPI_ROOT:PATH=${MPI_ROOT}
 )
-
-if(hdf5_parallel)
-  find_package(MPI REQUIRED COMPONENTS C)
-  list(APPEND hdf5_cmake_args
-    -DHDF5_ENABLE_PARALLEL:BOOL=true
-    -DHDF5_BUILD_TOOLS:BOOL=false)
-    # https://github.com/HDFGroup/hdf5/issues/818  for broken ph5diff
-  if(MPI_ROOT)
-    list(APPEND hdf5_cmake_args -DMPI_ROOT:PATH=${MPI_ROOT})
-  endif()
-else()
-  list(APPEND hdf5_cmake_args
-    -DHDF5_ENABLE_PARALLEL:BOOL=false
-    -DHDF5_BUILD_TOOLS:BOOL=true)
-endif()
+# https://github.com/HDFGroup/hdf5/issues/818  for broken ph5diff
 
 ExternalProject_Add(HDF5
 URL ${hdf5_url}
@@ -71,7 +62,7 @@ URL_HASH SHA256=${hdf5_sha256}
 CMAKE_ARGS ${hdf5_cmake_args}
 CMAKE_GENERATOR ${EXTPROJ_GENERATOR}
 BUILD_BYPRODUCTS ${HDF5_LIBRARIES}
-DEPENDS ZLIB
+DEPENDS ZLIB::ZLIB
 CONFIGURE_HANDLED_BY_BUILD ON
 INACTIVITY_TIMEOUT 15
 )

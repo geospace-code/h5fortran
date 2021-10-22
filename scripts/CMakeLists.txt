@@ -23,7 +23,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL Linux AND MPI_ROOT)
 
   if(NOT "${ld_path}" MATCHES "${MPI_ROOT}/lib")
     message(STATUS "${MPI_ROOT}/lib not found in LD_LIBRARY_PATH: $ENV{LD_LIBRARY_PATH}
-    HDF5 build may fail due to bugs in their CMake scripts.
+    HDF5 build may fail due to bugs in HDF5 package CMake scripts.
     Fix this by adding to ~/.bashrc or similar:
       export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${MPI_ROOT}")
   endif()
@@ -31,7 +31,7 @@ endif()
 
 include(${PROJECT_SOURCE_DIR}/../cmake/libraries.cmake)
 
-set(EP_UPDATE_DISCONNECTED true)
+set_directory_properties(PROPERTIES EP_UPDATE_DISCONNECTED true)
 
 message(STATUS "Building and installing HDF5 to ${CMAKE_INSTALL_PREFIX}")
 
@@ -41,4 +41,4 @@ include(FeatureSummary)
 
 add_feature_info(HDF5parallel hdf5_parallel "HDF5 MPI layer")
 
-feature_summary(WHAT ALL)
+feature_summary(WHAT ENABLED_FEATURES DISABLED_FEATURES)
