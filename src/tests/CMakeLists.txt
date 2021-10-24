@@ -10,8 +10,9 @@ FIXTURES_SETUP h5lib
 TIMEOUT 5
 LABELS core
 )
-if(dll_path)
-  set_tests_properties(h5fortran:minimal ENVIRONMENT "PATH=${dll_path}")
+if(DLL_PATH)
+  set_tests_properties(h5fortran:minimal PROPERTIES ENVIRONMENT "Path=${DLL_PATH}")
+  # set_tests_properties(h5fortran:minimal PROPERTIES ENVIRONMENT_MODIFICATION "Path=path_list_prepend:${DLL_PATH}")
 endif()
 
 function(setup_test names)
@@ -33,8 +34,9 @@ set_tests_properties(h5fortran:${name} PROPERTIES
 FIXTURES_REQUIRED h5lib
 TIMEOUT 10
 )
-if(dll_path)
-  set_tests_properties(h5fortran:${name} ENVIRONMENT "PATH=${dll_path}")
+if(DLL_PATH)
+  set_tests_properties(h5fortran:${name} PROPERTIES ENVIRONMENT "Path=${DLL_PATH}")
+  # set_tests_properties(h5fortran:${name} PROPERTIES ENVIRONMENT_MODIFICATION "Path=path_list_prepend:${DLL_PATH}")
 endif()
 
 

@@ -121,7 +121,7 @@ jobs:
     - run: ctest --test-dir Examples/build --parallel 2 --output-on-failure
 
     # shared build (saving time rather than use new CI image)
-    - run: cmake --preset build-shared -DBUILD_SHARED_LIBS:BOOL=true --install-prefix=${HOME}/shared
+    - run: cmake -B build --preset build-shared -DBUILD_SHARED_LIBS:BOOL=true --install-prefix=${HOME}/shared
     - run: cmake --build build-shared
     - run: ctest --test-dir build-shared --preset default
     - run: cmake --install build-shared
