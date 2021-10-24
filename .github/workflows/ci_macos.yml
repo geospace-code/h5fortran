@@ -1,4 +1,4 @@
-name: ci
+name: ci_macos
 
 env:
   CTEST_PARALLEL_LEVEL: 3
@@ -17,6 +17,7 @@ on:
   release:
     types: [published]
 
+jobs:
 
   mac-static:
     runs-on: macos-latest
