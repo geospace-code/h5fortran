@@ -5,11 +5,7 @@ LANGUAGES C CXX Fortran)
 
 include(CTest)
 
-if(NOT h5fortran_ROOT AND NOT DEFINED ENV{h5fortran_ROOT})
-  set(h5fortran_ROOT ${PROJECT_SOURCE_DIR}/../build)
-endif()
-
-find_package(h5fortran REQUIRED)
+find_package(h5fortran CONFIG REQUIRED)
 
 # --- Fortran interface for examples
 add_library(fortran_interface fortran_interface.f90)
@@ -42,3 +38,7 @@ target_compile_features(example3 PRIVATE cxx_std_11)
 # https://en.cppreference.com/w/cpp/types/integer
 add_test(NAME h5fortran:Example4 COMMAND $<TARGET_FILE:example4>
 WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+
+set_tests_properties(h5fortran:Example1 h5fortran:Example2 h5fortran:Example3 h5fortran:Example4 PROPERTIES
+TIMEOUT 10
+)
