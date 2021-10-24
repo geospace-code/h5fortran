@@ -111,10 +111,11 @@ jobs:
     - name: build examples
       run: cmake --build Examples/build --parallel
     - name: Test examples
-      run: ctest --test-dir Examples/build --output-on-failure
+      run: ctest --test-dir Examples/build -V
 
 
   linux-build-static:
+    needs: linux-static
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -123,7 +124,7 @@ jobs:
 
     - run: cmake -B build --preset build --install-prefix=${HOME}
     - run: cmake --build build
-    - run: ctest --test-dir build --output-on-failure
+    - run: ctest --test-dir build --preset default
     - run: cmake --install build
 
     - name: configure examples
@@ -135,6 +136,7 @@ jobs:
 
 
   linux-build-shared:
+    needs: [linux-shared, linux-build-static]
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -143,7 +145,7 @@ jobs:
 
     - run: cmake -B build --preset build -DBUILD_SHARED_LIBS:BOOL=true --install-prefix=${HOME}
     - run: cmake --build build
-    - run: ctest --test-dir build --output-on-failure
+    - run: ctest --test-dir build --preset default
     - run: cmake --install build
 
     - name: configure examples
@@ -151,7 +153,7 @@ jobs:
     - name: build examples
       run: cmake --build Examples/build --parallel
     - name: Test examples
-      run: ctest --test-dir Examples/build --output-on-failure
+      run: ctest --test-dir Examples/build -V
 
 
   linux-gcc7:
@@ -169,84 +171,3 @@ jobs:
       - run: cmake -B build
       - run: cmake --build build
       - run: ctest --test-dir build --preset default
-
-
-  mac-static:
-    needs: linux-static
-    runs-on: macos-latest
-    timeout-minutes: 20
-    env:
-      HOMEBREW_NO_INSTALL_CLEANUP: 1
-      FC: gfortran-11
-
-    steps:
-    - uses: actions/checkout@v2
-
-    - run: brew install hdf5 ninja
-
-    - run: cmake --preset multi --install-prefix=${HOME}
-    - run: cmake --build --preset debug
-    - run: ctest --preset debug
-
-    - run: cmake --build --preset release
-    - run: ctest --preset release
-
-    - run: cmake --install build
-
-    - run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=~
-    - run: cmake --build Examples/build
-    - run: ctest --test-dir Examples/build --output-on-failure
-
-    - name: create package
-      if: github.event.action == 'published'
-      run: cpack --config build/CPackConfig.cmake
-
-    - name: Upload artifact
-      if: github.event.action == 'published'
-      uses: actions/upload-artifact@v1
-      with:
-        name: binary-archive
-        path: build/package
-
-    - name: get version
-      if: github.event.action == 'published'
-      id: get_version
-      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\/v/}
-
-    - name: Upload release asset
-      if: github.event.action == 'published'
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: build/package/h5fortran-${{ steps.get_version.outputs.VERSION }}-Darwin.tar.zst
-        asset_name:  h5fortran-${{ steps.get_version.outputs.VERSION }}-Darwin.tar.zst
-        asset_content_type: application/zip
-
-
-  mac-shared:
-    needs: linux-shared
-    runs-on: macos-latest
-    timeout-minutes: 20
-    env:
-      HOMEBREW_NO_INSTALL_CLEANUP: 1
-      FC: gfortran-11
-
-    steps:
-    - uses: actions/checkout@v2
-
-    - run: brew install hdf5 ninja
-
-    - run: cmake --preset multi -DBUILD_SHARED_LIBS:BOOL=true --install-prefix=${HOME}
-    - run: cmake --build --preset debug
-    - run: ctest --preset debug
-
-    - run: cmake --build --preset release
-    - run: ctest --preset release
-
-    - run: cmake --install build
-
-    - run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=~
-    - run: cmake --build Examples/build
-    - run: ctest --test-dir Examples/build --output-on-failure

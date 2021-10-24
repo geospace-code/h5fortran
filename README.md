@@ -4,6 +4,7 @@
 [![DOI](https://zenodo.org/badge/128736984.svg)](https://zenodo.org/badge/latestdoi/128736984)
 [![CDash](./archive/cdash.png)](https://my.cdash.org/index.php?project=h5fortran)
 ![ci_linux](https://github.com/geospace-code/h5fortran/workflows/ci/badge.svg)
+![ci_macos](https://github.com/geospace-code/h5fortran/workflows/ci_macos/badge.svg)
 ![ci_windows](https://github.com/geospace-code/h5fortran/workflows/ci_windows/badge.svg)
 ![ci_meson](https://github.com/geospace-code/h5fortran/workflows/ci_meson/badge.svg)
 [![intel-oneapi](https://github.com/geospace-code/h5fortran/actions/workflows/intel-oneapi.yml/badge.svg)](https://github.com/geospace-code/h5fortran/actions/workflows/intel-oneapi.yml)
