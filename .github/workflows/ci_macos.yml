@@ -106,6 +106,10 @@ jobs:
     - run: ctest --test-dir build --preset default
     - run: cmake --install build
 
+    - run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=~
+    - run: cmake --build Examples/build
+    - run: ctest --test-dir Examples/build -V
+
 
   mac-build-shared:
     needs: [mac-shared, mac-build-static]
@@ -119,3 +123,7 @@ jobs:
     - run: cmake --build build
     - run: ctest --test-dir build --preset default
     - run: cmake --install build
+
+    - run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=~
+    - run: cmake --build Examples/build
+    - run: ctest --test-dir Examples/build -V

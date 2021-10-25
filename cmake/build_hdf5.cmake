@@ -6,9 +6,6 @@ include(ExternalProject)
 
 set(hdf5_external true CACHE BOOL "autobuild HDF5")
 
-set(CMAKE_INSTALL_NAME_DIR ${CMAKE_INSTALL_PREFIX}/lib)
-# MacOS:shared: HDF5 package is mistaken RPATH otherwise
-
 if(hdf5_parallel)
   find_package(MPI REQUIRED COMPONENTS C)
 endif()

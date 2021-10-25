@@ -3,6 +3,10 @@
 
 set(DLL_PATH)
 
+if(NOT (MSVC OR BUILD_SHARED_LIBS))
+  return()
+endif()
+
 if(MSVC OR (MINGW AND BUILD_SHARED_LIBS))
 
   if(hdf5_external)
@@ -26,16 +30,8 @@ if(MSVC OR (MINGW AND BUILD_SHARED_LIBS))
 
   # this is the vital line, without it CMake set_tests_properties mangles the ENVIRONMENT
   string(REPLACE ";" "\\;" DLL_PATH "${DLL_PATH}")
-elseif(APPLE AND BUILD_SHARED_LIBS)
-
-  if(hdf5_external)
-    set(DLL_PATH "${ZLIB_ROOT}/lib:$ENV{DYLD_FALLBACK_LIBRARY_PATH}")
-  endif()
-
-elseif(UNIX AND BUILD_SHARED_LIBS)
-
-  if(hdf5_external)
-    set(DLL_PATH "${ZLIB_ROOT}/lib:$ENV{LD_LIBRARY_PATH}")
-  endif()
-
+elseif(APPLE AND hdf5_external)
+  set(CMAKE_INSTALL_NAME_DIR ${CMAKE_INSTALL_PREFIX}/lib)
+elseif(UNIX AND hdf5_external)
+  set(DLL_PATH "${ZLIB_ROOT}/lib:$ENV{LD_LIBRARY_PATH}")
 endif()
