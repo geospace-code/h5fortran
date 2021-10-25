@@ -11,14 +11,8 @@ TIMEOUT 5
 LABELS core
 )
 if(DLL_PATH)
-  if(WIN32)
-    set_tests_properties(h5fortran:minimal PROPERTIES ENVIRONMENT "Path=${DLL_PATH}")
-    # set_tests_properties(h5fortran:minimal PROPERTIES ENVIRONMENT_MODIFICATION "Path=path_list_prepend:${DLL_PATH}")
-  elseif(APPLE)
-
-  elseif(UNIX)
-    set_tests_properties(h5fortran:minimal PROPERTIES ENVIRONMENT "LD_LIBRARY_PATH=${DLL_PATH}")
-  endif()
+  set_tests_properties(h5fortran:minimal PROPERTIES ENVIRONMENT "Path=${DLL_PATH}")
+  # set_tests_properties(h5fortran:minimal PROPERTIES ENVIRONMENT_MODIFICATION "Path=path_list_prepend:${DLL_PATH}")
 endif()
 
 function(setup_test names)
@@ -41,14 +35,8 @@ FIXTURES_REQUIRED h5lib
 TIMEOUT 10
 )
 if(DLL_PATH)
-  if(WIN32)
-    set_tests_properties(h5fortran:${name} PROPERTIES ENVIRONMENT "Path=${DLL_PATH}")
-    # set_tests_properties(h5fortran:${name} PROPERTIES ENVIRONMENT_MODIFICATION "Path=path_list_prepend:${DLL_PATH}")
-  elseif(APPLE)
-
-  elseif(UNIX)
-    set_tests_properties(h5fortran:minimal PROPERTIES ENVIRONMENT "LD_LIBRARY_PATH=${DLL_PATH}")
-  endif()
+  set_tests_properties(h5fortran:${name} PROPERTIES ENVIRONMENT "Path=${DLL_PATH}")
+  # set_tests_properties(h5fortran:${name} PROPERTIES ENVIRONMENT_MODIFICATION "Path=path_list_prepend:${DLL_PATH}")
 endif()
 
 

@@ -30,8 +30,7 @@ if(MSVC OR (MINGW AND BUILD_SHARED_LIBS))
 
   # this is the vital line, without it CMake set_tests_properties mangles the ENVIRONMENT
   string(REPLACE ";" "\\;" DLL_PATH "${DLL_PATH}")
-elseif(APPLE AND hdf5_external)
-  set(CMAKE_INSTALL_NAME_DIR ${CMAKE_INSTALL_PREFIX}/lib)
 elseif(UNIX AND hdf5_external)
-  set(DLL_PATH "${ZLIB_ROOT}/lib:$ENV{LD_LIBRARY_PATH}")
+  set(CMAKE_INSTALL_NAME_DIR ${CMAKE_INSTALL_PREFIX}/lib)
+  set(CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/lib)
 endif()
