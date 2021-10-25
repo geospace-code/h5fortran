@@ -122,3 +122,5 @@ jobs:
     - run: cmake --build build-shared
     - run: ctest --test-dir build-shared --preset default
     - run: cmake --install build-shared
+
+    # Example to come when CMake 3.22 released

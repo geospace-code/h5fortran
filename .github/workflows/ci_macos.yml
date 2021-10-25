@@ -106,8 +106,11 @@ jobs:
     - run: ctest --test-dir build --preset default
     - run: cmake --install build
 
-    - run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=~
-    - run: cmake --build Examples/build
+    - name: configure examples
+      run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=~
+    - name: build Examples
+      run: cmake --build Examples/build
+    - name: Test Examples
     - run: ctest --test-dir Examples/build -V
 
 
@@ -124,6 +127,9 @@ jobs:
     - run: ctest --test-dir build --preset default
     - run: cmake --install build
 
-    - run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=~
-    - run: cmake --build Examples/build
+    - name: configure examples
+      run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=~
+    - name: build Examples
+      run: cmake --build Examples/build
+    - name: Test Examples
     - run: ctest --test-dir Examples/build -V
