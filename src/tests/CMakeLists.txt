@@ -10,9 +10,13 @@ FIXTURES_SETUP h5lib
 TIMEOUT 5
 LABELS core
 )
-if(DLL_PATH)
-  set_tests_properties(h5fortran:minimal PROPERTIES ENVIRONMENT "Path=${DLL_PATH}")
-  # set_tests_properties(h5fortran:minimal PROPERTIES ENVIRONMENT_MODIFICATION "Path=path_list_prepend:${DLL_PATH}")
+if(WIN32 AND BUILD_SHARED_LIBS AND CMAKE_VERSION VERSION_GREATER_EQUAL 3.21 AND HDF5_DLLS AND ZLIB_DLL)
+add_custom_command(TARGET test_minimal POST_BUILD
+COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:test_minimal> $<TARGET_FILE_DIR:test_minimal>
+COMMAND ${CMAKE_COMMAND} -E copy ${HDF5_DLLS} $<TARGET_FILE_DIR:test_minimal>
+COMMAND ${CMAKE_COMMAND} -E copy ${ZLIB_DLL} $<TARGET_FILE_DIR:test_minimal>
+COMMAND_EXPAND_LISTS
+)
 endif()
 
 function(setup_test names)
@@ -28,16 +32,12 @@ set_target_properties(test_${name} PROPERTIES LABELS unit)
 
 add_test(NAME h5fortran:${name}
 COMMAND $<TARGET_FILE:test_${name}>
-WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 )
 set_tests_properties(h5fortran:${name} PROPERTIES
 FIXTURES_REQUIRED h5lib
 TIMEOUT 10
 )
-if(DLL_PATH)
-  set_tests_properties(h5fortran:${name} PROPERTIES ENVIRONMENT "Path=${DLL_PATH}")
-  # set_tests_properties(h5fortran:${name} PROPERTIES ENVIRONMENT_MODIFICATION "Path=path_list_prepend:${DLL_PATH}")
-endif()
 
 
 if(${name} MATCHES ".*fail.*")
@@ -66,7 +66,7 @@ set_tests_properties(h5fortran:shape PROPERTIES
 FIXTURES_SETUP h5shape
 )
 
-set(shape_file ${PROJECT_BINARY_DIR}/test_shape.h5)
+set(shape_file ${CMAKE_CURRENT_BINARY_DIR}/test_shape.h5)
 # --- Python h5py
 
 find_package(Python3 COMPONENTS Interpreter)

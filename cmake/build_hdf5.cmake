@@ -16,9 +16,11 @@ if(NOT HDF5_ROOT)
 endif()
 
 set(HDF5_LIBRARIES)
+set(HDF5_DLLS)
 foreach(_name hdf5_hl_fortran hdf5_hl_f90cstub hdf5_fortran hdf5_f90cstub hdf5_hl hdf5)
   if(BUILD_SHARED_LIBS)
     list(APPEND HDF5_LIBRARIES ${HDF5_ROOT}/lib/lib${_name}$<IF:$<BOOL:${MSVC}>,${CMAKE_STATIC_LIBRARY_SUFFIX},${CMAKE_SHARED_LIBRARY_SUFFIX}>$<$<BOOL:${MINGW}>:.a>)
+    list(APPEND HDF5_DLLS $<$<BOOL:${WIN32}>:${HDF5_ROOT}/bin/lib${_name}.dll>)
   else()
     list(APPEND HDF5_LIBRARIES ${HDF5_ROOT}/lib/lib${_name}${CMAKE_STATIC_LIBRARY_SUFFIX})
   endif()
@@ -89,5 +91,9 @@ ${CMAKE_THREAD_LIBS_INIT}
 ${CMAKE_DL_LIBS}
 $<$<BOOL:${UNIX}>:m>
 )
-
 # libdl and libm are needed on some systems
+
+# --- dynamic shared HDF5
+
+set(CMAKE_INSTALL_NAME_DIR ${CMAKE_INSTALL_PREFIX}/lib)
+set(CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/lib)
