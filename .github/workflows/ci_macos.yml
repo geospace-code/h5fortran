@@ -37,9 +37,12 @@ jobs:
 
     - run: cmake --install build
 
-    - run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=~
-    - run: cmake --build Examples/build
-    - run: ctest --test-dir Examples/build --output-on-failure
+    - name: configure examples
+      run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=~
+    - name: build Examples
+      run: cmake --build Examples/build
+    - name: Test Examples
+      run: ctest --test-dir Examples/build -V
 
     - name: create package
       if: github.event.action == 'published'
@@ -88,9 +91,12 @@ jobs:
 
     - run: cmake --install build
 
-    - run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=~
-    - run: cmake --build Examples/build
-    - run: ctest --test-dir Examples/build --output-on-failure
+    - name: configure examples
+      run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=~
+    - name: build Examples
+      run: cmake --build Examples/build
+    - name: Test Examples
+      run: ctest --test-dir Examples/build -V
 
 
   mac-build-static:
@@ -111,7 +117,7 @@ jobs:
     - name: build Examples
       run: cmake --build Examples/build
     - name: Test Examples
-    - run: ctest --test-dir Examples/build -V
+      run: ctest --test-dir Examples/build -V
 
 
   mac-build-shared:
@@ -132,4 +138,4 @@ jobs:
     - name: build Examples
       run: cmake --build Examples/build
     - name: Test Examples
-    - run: ctest --test-dir Examples/build -V
+      run: ctest --test-dir Examples/build -V

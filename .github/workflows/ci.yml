@@ -79,6 +79,7 @@ jobs:
         asset_name:  h5fortran-${{ steps.get_version.outputs.VERSION }}-Linux.tar.zst
         asset_content_type: application/zip
 
+
   linux-shared:
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -132,7 +133,7 @@ jobs:
     - name: build Examples
       run: cmake --build Examples/build
     - name: Test Examples
-    - run: ctest --test-dir Examples/build -V
+      run: ctest --test-dir Examples/build -V
 
   linux-build-shared:
     needs: [linux-shared, linux-build-static]
@@ -152,7 +153,7 @@ jobs:
     - name: build Examples
       run: cmake --build Examples/build
     - name: Test Examples
-    - run: ctest --test-dir Examples/build -V
+      run: ctest --test-dir Examples/build -V
 
 
   linux-gcc7:
