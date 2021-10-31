@@ -126,6 +126,14 @@ If you have a problem with Zlib-ng on your system, try the unmaintained Zlib 1.x
 cmake -B build -Dzlib_legacy=on
 ```
 
+The user can request a specific HDF5 version like:
+
+```sh
+cmake -B build -DHDF5_VERSION=1.12.1
+```
+
+Only the HDF5 versions in cmake/libraries.json would work.
+
 ## Usage
 
 The simplest [example](./Examples/) h5fortran usage is like:

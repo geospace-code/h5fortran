@@ -39,7 +39,6 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
 
 include(cmake/options.cmake)
 include(cmake/compilers.cmake)
-include(cmake/libraries.cmake)
 
 # --- find or build HDF5 library
 
@@ -52,6 +51,7 @@ if(NOT hdf5_external)
 endif()
 
 if(NOT HDF5_FOUND OR hdf5_external)
+  include(cmake/libraries.cmake)
   include(cmake/build_hdf5.cmake)
 endif()
 

@@ -8,6 +8,9 @@ else()
   string(JSON zlib_sha256 GET ${_libj} zlib2 sha256)
 endif()
 
-string(JSON hdf5_url GET ${_libj} hdf5 url)
-string(JSON hdf5_sha256 GET ${_libj} hdf5 sha256)
-string(JSON HDF5_VERSION GET ${_libj} hdf5 version)
+if(NOT HDF5_VERSION)
+  set(HDF5_VERSION 1.12.1 CACHE STRING "HDF5 version built")
+endif()
+
+string(JSON hdf5_url GET ${_libj} hdf5 ${HDF5_VERSION} url)
+string(JSON hdf5_sha256 GET ${_libj} hdf5 ${HDF5_VERSION} sha256)
