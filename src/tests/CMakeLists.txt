@@ -10,14 +10,7 @@ FIXTURES_SETUP h5lib
 TIMEOUT 5
 LABELS core
 )
-if(WIN32 AND BUILD_SHARED_LIBS AND CMAKE_VERSION VERSION_GREATER_EQUAL 3.21 AND HDF5_DLLS AND ZLIB_DLL)
-add_custom_command(TARGET test_minimal POST_BUILD
-COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:test_minimal> $<TARGET_FILE_DIR:test_minimal>
-COMMAND ${CMAKE_COMMAND} -E copy ${HDF5_DLLS} $<TARGET_FILE_DIR:test_minimal>
-COMMAND ${CMAKE_COMMAND} -E copy ${ZLIB_DLL} $<TARGET_FILE_DIR:test_minimal>
-COMMAND_EXPAND_LISTS
-)
-endif()
+
 
 function(setup_test names)
 
@@ -67,6 +60,21 @@ FIXTURES_SETUP h5shape
 )
 
 set(shape_file ${CMAKE_CURRENT_BINARY_DIR}/test_shape.h5)
+
+# --- Windows shared DLLs
+if(WIN32 AND BUILD_SHARED_LIBS AND CMAKE_VERSION VERSION_GREATER_EQUAL 3.21)
+  add_custom_command(TARGET test_shape POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:test_shape> $<TARGET_FILE_DIR:test_shape>
+  COMMAND_EXPAND_LISTS
+  )
+  if(HDF5_DLLS AND ZLIB_DLL)
+    add_custom_command(TARGET test_shape POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy ${HDF5_DLLS} ${ZLIB_DLL} $<TARGET_FILE_DIR:test_shape>
+    COMMAND_EXPAND_LISTS
+    )
+  endif()
+endif()
+
 # --- Python h5py
 
 find_package(Python3 COMPONENTS Interpreter)
