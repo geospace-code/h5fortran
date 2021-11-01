@@ -47,7 +47,7 @@ jobs:
 
     - run: cmake --install build
 
-    - name: configure examples
+    - name: configure examples (static)
       run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=${HOME}
     - name: build Examples
       run: cmake --build Examples/build
@@ -60,7 +60,7 @@ jobs:
     - run: ctest --test-dir build-shared --preset default
     - run: cmake --install build-shared
 
-    - name: configure examples
+    - name: configure examples (shared)
       run: cmake -S Examples -B Examples/build-shared -Dh5fortran_ROOT=${HOME}/shared
     - name: build Examples
       run: cmake --build Examples/build-shared
