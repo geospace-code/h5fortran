@@ -84,7 +84,7 @@ target_link_libraries(h5fortran::h5fortran INTERFACE h5fortran)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/h5fortran.mod TYPE INCLUDE)
 
-install(TARGETS h5fortran EXPORT ${PROJECT_NAME}Targets)
+install(TARGETS h5fortran EXPORT ${PROJECT_NAME}-targets)
 
 add_subdirectory(src)
 
@@ -96,7 +96,7 @@ endif()
 install(FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindHDF5.cmake
   ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindSZIP.cmake
-  DESTINATION lib/cmake/Modules)
+  DESTINATION cmake)
 
 include(cmake/pkgconf.cmake)
 include(cmake/install.cmake)

@@ -2,25 +2,22 @@
 
 include(CMakePackageConfigHelpers)
 
-configure_package_config_file(${CMAKE_CURRENT_LIST_DIR}/Config.cmake.in
-  ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${PROJECT_NAME}Config.cmake
-  INSTALL_DESTINATION lib)
+configure_package_config_file(${CMAKE_CURRENT_LIST_DIR}/config.cmake.in
+  ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${PROJECT_NAME}-config.cmake
+  INSTALL_DESTINATION cmake)
 
 write_basic_package_version_file(
-  ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${PROJECT_NAME}ConfigVersion.cmake
+  ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${PROJECT_NAME}-config-version.cmake
   COMPATIBILITY SameMinorVersion)
 
-install(EXPORT ${PROJECT_NAME}Targets
+install(EXPORT ${PROJECT_NAME}-targets
   NAMESPACE ${PROJECT_NAME}::
-  DESTINATION lib/cmake/${PROJECT_NAME})
+  DESTINATION cmake)
 
 install(FILES
-  ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${PROJECT_NAME}Config.cmake
-  ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${PROJECT_NAME}ConfigVersion.cmake
-  DESTINATION lib/cmake/${PROJECT_NAME})
-
-# instead of export() which would need duplicates everywhere of install() calls,
-# just default install to build dir.
+  ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${PROJECT_NAME}-config.cmake
+  ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${PROJECT_NAME}-config-version.cmake
+  DESTINATION cmake)
 
 # --- CPack
 
