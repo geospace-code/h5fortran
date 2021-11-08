@@ -9,10 +9,11 @@ file(STRINGS ${CMAKE_CURRENT_SOURCE_DIR}/VERSION PROJECT_VERSION
   REGEX "^([0-9]+\.[0-9]+\.[0-9]+)" LIMIT_INPUT 16 LENGTH_MAXIMUM 16 LIMIT_COUNT 1)
 
 project(h5fortran
-  LANGUAGES C Fortran
-  VERSION ${PROJECT_VERSION}
-  DESCRIPTION "thin, light object-oriented HDF5 Fortran interface"
-  HOMEPAGE_URL https://github.com/geospace-code/h5fortran)
+LANGUAGES C Fortran
+VERSION ${PROJECT_VERSION}
+DESCRIPTION "thin, light object-oriented HDF5 Fortran interface"
+HOMEPAGE_URL https://github.com/geospace-code/h5fortran
+)
 
 include(CTest)
 if(NOT DEFINED ${PROJECT_NAME}_BUILD_TESTING)
@@ -68,15 +69,16 @@ endif()
 
 add_library(h5fortran)
 target_include_directories(h5fortran
-  PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/include  # for IBM XL
-  INTERFACE
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
-  $<INSTALL_INTERFACE:include>)
+PUBLIC
+$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
+$<INSTALL_INTERFACE:include>
+)
 target_link_libraries(h5fortran PUBLIC HDF5::HDF5)
 set_target_properties(h5fortran PROPERTIES
-  Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include
-  LABELS core
-  VERSION ${PROJECT_VERSION})
+Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include
+LABELS core
+VERSION ${PROJECT_VERSION}
+)
 
 # GLOBAL needed for use by FetchContent
 add_library(h5fortran::h5fortran INTERFACE IMPORTED GLOBAL)
@@ -94,9 +96,10 @@ endif()
 
 # additional Find*.cmake necessary
 install(FILES
-  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindHDF5.cmake
-  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindSZIP.cmake
-  DESTINATION cmake)
+${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindHDF5.cmake
+${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/FindSZIP.cmake
+DESTINATION cmake
+)
 
 include(cmake/pkgconf.cmake)
 include(cmake/install.cmake)
