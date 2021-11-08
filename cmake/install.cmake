@@ -3,21 +3,25 @@
 include(CMakePackageConfigHelpers)
 
 configure_package_config_file(${CMAKE_CURRENT_LIST_DIR}/config.cmake.in
-  ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${PROJECT_NAME}-config.cmake
-  INSTALL_DESTINATION cmake)
+${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${PROJECT_NAME}-config.cmake
+INSTALL_DESTINATION cmake
+)
 
 write_basic_package_version_file(
-  ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${PROJECT_NAME}-config-version.cmake
-  COMPATIBILITY SameMinorVersion)
+${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${PROJECT_NAME}-config-version.cmake
+COMPATIBILITY SameMinorVersion
+)
 
 install(EXPORT ${PROJECT_NAME}-targets
-  NAMESPACE ${PROJECT_NAME}::
-  DESTINATION cmake)
+NAMESPACE ${PROJECT_NAME}::
+DESTINATION cmake
+)
 
 install(FILES
-  ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${PROJECT_NAME}-config.cmake
-  ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${PROJECT_NAME}-config-version.cmake
-  DESTINATION cmake)
+${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${PROJECT_NAME}-config.cmake
+${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/${PROJECT_NAME}-config-version.cmake
+DESTINATION cmake
+)
 
 # --- CPack
 
@@ -37,6 +41,7 @@ string(REGEX REPLACE "\n" ";" _cpack_ignore ${_cpack_ignore})
 set(CPACK_SOURCE_IGNORE_FILES "${_cpack_ignore}")
 
 install(FILES ${CPACK_RESOURCE_FILE_README} ${CPACK_RESOURCE_FILE_LICENSE}
-  DESTINATION share/docs/${PROJECT_NAME})
+DESTINATION share/docs/${PROJECT_NAME}
+)
 
 include(CPack)

@@ -80,8 +80,9 @@ endif()
 find_package(Python3 COMPONENTS Interpreter)
 if(NOT DEFINED h5py_ok)
   execute_process(COMMAND ${Python3_EXECUTABLE} -c "import h5py"
-    RESULT_VARIABLE h5py_code
-    TIMEOUT 15)
+  RESULT_VARIABLE h5py_code
+  TIMEOUT 15
+  )
   if(h5py_code EQUAL 0)
     set(h5py_ok true CACHE BOOL "h5py OK")
   else()
@@ -90,7 +91,8 @@ if(NOT DEFINED h5py_ok)
 endif()
 
 add_test(NAME h5fortran:PythonShape
-  COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test_shape.py ${shape_file})
+COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test_shape.py ${shape_file}
+)
 
 set_tests_properties(h5fortran:PythonShape PROPERTIES
 REQUIRED_FILES ${shape_file}
@@ -109,11 +111,12 @@ if(Matlab_FOUND)
   add_test(NAME h5fortran:MatlabShape COMMAND ${Matlab_MAIN_PROGRAM} -batch ${matlab_cmd})
 
   set_tests_properties(h5fortran:MatlabShape PROPERTIES
-    TIMEOUT 90
-    LABELS shaky
-    DEPENDS h5fortran:shape
-    REQUIRED_FILES ${shape_file}
-    FIXTURES_REQUIRED h5lib)
+  TIMEOUT 90
+  LABELS shaky
+  DEPENDS h5fortran:shape
+  REQUIRED_FILES ${shape_file}
+  FIXTURES_REQUIRED h5lib
+  )
 
 endif(Matlab_FOUND)
 endif(matlab)
