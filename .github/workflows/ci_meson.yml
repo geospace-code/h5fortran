@@ -1,0 +1,53 @@
+name: ci_meson
+
+on:
+  push:
+    paths:
+      - "**/meson.build"
+      - ".github/workflows/ci_meson.yml"
+
+
+jobs:
+
+  linux:
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - run: pip install meson
+    - run: |
+        sudo apt update -yq
+        sudo apt install -yq --no-install-recommends gfortran ninja-build libhdf5-dev
+
+    - run: meson setup build
+    - run: meson compile -C build
+
+    - run: meson test -C build -v
+
+  mac:
+    if: false
+    # need to update Meson itself to find HDF5 on MacOS better
+    timeout-minutes: 20
+    env:
+      HOMEBREW_NO_INSTALL_CLEANUP: 1
+      FC: gfortran-11
+
+    needs: linux
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - run: pip install meson
+    - run: brew install gcc hdf5 ninja
+
+    - run: meson setup build
+    - run: meson compile -C build
+
+    - run: meson test -C build -v

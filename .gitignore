@@ -1,7 +1,8 @@
-app/
-.cache/
-kind.txt
-cmake_install.cmake
+CMakeUserPresets.json
+
+*.pdf
+build*/
+.cache
 
 *.pyd
 __pycache__/
@@ -23,6 +24,7 @@ __pycache__/
 
 # Fortran module files
 *.mod
+*.smod
 
 # Compiled Static libraries
 *.lai

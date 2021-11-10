@@ -1,0 +1,3 @@
+[codespell]
+skip = */.git,*/build,*/.mypy_cache
+ignore-words-list = inout

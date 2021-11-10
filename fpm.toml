@@ -1,0 +1,10 @@
+name = "h5fortran"
+description = "Lightweight object-oriented HDF5 interface"
+categories = "io"
+version = "3.6.6"
+
+[build]
+link = ["z", "hdf5"]
+
+[test]
+source-dir = "src/tests"

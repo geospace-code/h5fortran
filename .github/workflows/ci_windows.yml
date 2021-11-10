@@ -1,0 +1,131 @@
+name: ci_windows
+env:
+  CMAKE_GENERATOR: Ninja
+  CTEST_PARALLEL_LEVEL: 4
+  CMAKE_BUILD_TYPE: Release
+
+on:
+  push:
+    paths:
+      - "**/CMakeLists.txt"
+      - "**.cmake"
+      - ".github/workflows/ci_windows.yml"
+  pull_request:
+  release:
+    types: [published]
+
+
+jobs:
+
+  msys2:
+    timeout-minutes: 30
+    runs-on: windows-latest
+
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+    - uses: msys2/setup-msys2@v2
+      with:
+        update: true
+        install: >-
+          git
+          mingw-w64-x86_64-cmake
+          mingw-w64-x86_64-ninja
+          mingw-w64-x86_64-gcc-fortran
+          mingw-w64-x86_64-hdf5
+    # cmake install needed because of default to msys2 shell
+
+    - uses: actions/checkout@v2
+
+    - run: cmake --preset multi --install-prefix=${HOME}
+    - run: cmake --build --preset debug
+    - run: ctest --preset debug
+
+    - run: cmake --build --preset release
+    - run: ctest --preset release
+
+    - run: cmake --install build
+
+    - name: configure examples (static)
+      run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=${HOME}
+    - name: build Examples (static)
+      run: cmake --build Examples/build
+    - name: Test Examples (static)
+      run: ctest --test-dir Examples/build -V
+
+   # shared build (saving time rather than use new CI image)
+    - run: cmake -B build-shared -DBUILD_SHARED_LIBS:BOOL=true --install-prefix=${HOME}/shared
+    - run: cmake --build build-shared
+    - run: ctest --test-dir build-shared --preset default
+    - run: cmake --install build-shared
+
+    - name: configure examples (shared)
+      run: cmake -S Examples -B Examples/build-shared -Dh5fortran_ROOT=${HOME}/shared
+    - name: build Examples (shared)
+      run: cmake --build Examples/build-shared
+  # this works on my Windows computers but not on CI.
+  # FIXME: use CMake 3.22 ENVIRONMENT_MODIFICATION
+    # - name: Test Examples (shared)
+    #   run: ctest --test-dir Examples/build-shared -V
+
+# --- package
+    - name: create package
+      if: github.event.action == 'published'
+      run: cpack --config build/CPackConfig.cmake
+
+    - name: Upload artifact
+      if: github.event.action == 'published'
+      uses: actions/upload-artifact@v1
+      with:
+        name: binary-archive
+        path: build/package
+
+    - name: get version
+      if: github.event.action == 'published'
+      id: get_version
+      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\/v/}
+
+    - name: Upload release asset
+      if: github.event.action == 'published'
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: build/package/h5fortran-${{ steps.get_version.outputs.VERSION }}-win64.tar.zst
+        asset_name:  h5fortran-${{ steps.get_version.outputs.VERSION }}-win64.tar.zst
+        asset_content_type: application/zip
+
+
+  msys2-build:
+    timeout-minutes: 30
+    runs-on: windows-latest
+
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+    - uses: msys2/setup-msys2@v2
+      with:
+        update: true
+        install: >-
+          git
+          mingw-w64-x86_64-cmake
+          mingw-w64-x86_64-ninja
+          mingw-w64-x86_64-gcc-fortran
+    # cmake install needed because of default to msys2 shell
+
+    - uses: actions/checkout@v2
+
+    # static build
+    - run: cmake -B build --preset build --install-prefix=${HOME}/static
+    - run: cmake --build build
+    - run: ctest --test-dir build --preset default
+    - run: cmake --install build
+
+    # shared build (saving time rather than use new CI image)
+    - run: cmake -B build-shared --preset build -DBUILD_SHARED_LIBS:BOOL=true --install-prefix=${HOME}/shared
+    - run: cmake --build build-shared
+    - run: ctest --test-dir build-shared --preset default
+    - run: cmake --install build-shared

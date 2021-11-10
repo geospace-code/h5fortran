@@ -1,0 +1,62 @@
+name: intel-oneapi
+
+env:
+  CMAKE_BUILD_PARALLEL_LEVEL: 2
+  CTEST_PARALLEL_LEVEL: 2
+  CMAKE_BUILD_TYPE: Release
+  CC: icx
+  FC: ifx
+
+on:
+  push:
+    paths:
+      - "**.f90"
+      - "**.F90"
+      - "**.cmake"
+      - "**/CMakeLists.txt"
+      - ".github/workflows/intel-oneapi.yml"
+
+
+jobs:
+
+  linux-intel-oneapi:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+    - name: Intel Apt repository
+      timeout-minutes: 1
+      run: |
+        wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
+        sudo apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
+        rm GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
+        echo "deb https://apt.repos.intel.com/oneapi all main" | sudo tee /etc/apt/sources.list.d/oneAPI.list
+        sudo apt-get update
+
+    - name: Install Intel oneAPI
+      timeout-minutes: 5
+      run: sudo apt-get install ninja-build intel-oneapi-compiler-fortran intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic
+
+    - name: Setup Intel oneAPI environment
+      run: |
+        source /opt/intel/oneapi/setvars.sh
+        printenv >> $GITHUB_ENV
+
+    - uses: actions/checkout@v2
+
+    - name: Configure CMake
+      run: cmake --preset multi
+
+    - name: print config log
+      if: ${{ failure() }}
+      run: cat build/CMakeFiles/CMakeError.log
+
+    - name: Release build
+      run: cmake --build --preset release
+    - name: Release unit test
+      run: ctest --preset release --output-junit test-release-oneapi.xml
+
+    - name: debug build
+      run: cmake --build --preset debug
+    - name: debug unit test
+      run: ctest --preset debug --output-junit test-debug-oneapi.xml

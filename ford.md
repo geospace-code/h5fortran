@@ -1,13 +1,27 @@
-# Object-oriented Fortran HDF5 interface
+src_dir: ./src
+output_dir: ./docs
+project: Object-oriented Fortran HDF5 interface
+project_github: https://github.com/geospace-code/h5fortran
+project_website: https://geospace-code.github.io/h5fortran
+summary: Object-oriented Fortran HDF5 interface
+author: Michael Hirsch, Ph.D.
+github: https://github.com/geospace-code
+license: by
+exclude: CMakeFortranCompilerId.F
+         reader_lt_template.in.f90
+         writer_lt_template.in.f90
+         writer_template.in.f90
+         writer_template_i32.in.f90
+         writer_template_r64.in.f90
+         writer_template_r32.in.f90
+         writer_template_i64.in.f90
+display: public
+         protected
+         private
+source: false
+graph: true
+search: true
 
-[![DOI](https://joss.theoj.org/papers/10.21105/joss.02842/status.svg)](https://doi.org/10.21105/joss.02842)
-[![DOI](https://zenodo.org/badge/128736984.svg)](https://zenodo.org/badge/latestdoi/128736984)
-[![CDash](./archive/cdash.png)](https://my.cdash.org/index.php?project=h5fortran)
-![ci_linux](https://github.com/geospace-code/h5fortran/workflows/ci/badge.svg)
-![ci_macos](https://github.com/geospace-code/h5fortran/workflows/ci_macos/badge.svg)
-![ci_windows](https://github.com/geospace-code/h5fortran/workflows/ci_windows/badge.svg)
-![ci_meson](https://github.com/geospace-code/h5fortran/workflows/ci_meson/badge.svg)
-[![intel-oneapi](https://github.com/geospace-code/h5fortran/actions/workflows/intel-oneapi.yml/badge.svg)](https://github.com/geospace-code/h5fortran/actions/workflows/intel-oneapi.yml)
 
 Simple, robust, thin HDF5 polymorphic Fortran read/write interface.
 Reading or writing {real64,real32,int32,int64} from scalar to 7d is as simple as
@@ -24,7 +38,7 @@ For NetCDF4 see [nc4fortran](https://github.com/geospace-code/nc4fortran/).
 h5fortran is designed for "serial" HDF5 read/write.
 We don't yet implement the interface for "parallel" HDF5.
 
-h5fortran is designed for easy use using static or shared linking from your project via:
+h5fortran is designed for easy use using **static** or **shared** linking from your project via:
 
 * `cmake --install`
 * CMake ExternalProject
@@ -59,7 +73,7 @@ Tested on systems with HDF5 1.8, 1.10 and 1.12 including:
 Compilers known to work include:
 
 * GCC (gfortran) &ge; 7
-* Intel oneAPI HPC compiler &ge; 2021 (on Windows, use static linking)
+* Intel oneAPI HPC compiler &ge; 2021
 
 ---
 
@@ -83,12 +97,6 @@ cmake --build build
 for more details see [Install.md](./Install.md).
 
 For general use with non-CMake build systems, "h5fortran.pc" pkg-config file is also generated / installed.
-
-To save time, if not intended to use self-tests, you can skip the build of the test suite:
-
-```sh
-cmake -B build -DBUILD_TESTING=off
-```
 
 ### Autobuild HDF5
 
@@ -125,14 +133,6 @@ If you have a problem with Zlib-ng on your system, try the unmaintained Zlib 1.x
 ```sh
 cmake -B build -Dzlib_legacy=on
 ```
-
-The user can request a specific HDF5 version like:
-
-```sh
-cmake -B build -DHDF5_VERSION=1.12.1
-```
-
-Only the HDF5 versions in cmake/libraries.json would work.
 
 ## Usage
 

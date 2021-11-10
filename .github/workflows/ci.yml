@@ -1,0 +1,173 @@
+name: ci
+
+env:
+  CTEST_PARALLEL_LEVEL: 4
+  CMAKE_BUILD_PARALLEL_LEVEL: 4
+  CMAKE_BUILD_TYPE: Release
+
+on:
+  push:
+    paths:
+      - "**/CMakeLists.txt"
+      - "**.cmake"
+      - "**.f90"
+      - ".github/workflows/ci.yml"
+  release:
+    types: [published]
+
+
+jobs:
+
+  linux-static:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: install hdf5
+      run: |
+        sudo apt update -yq
+        sudo apt install -yq --no-install-recommends ninja-build libhdf5-dev
+
+    - run: cmake --preset multi --install-prefix=${HOME}
+    - run: cmake --build --preset debug
+    - run: ctest --preset debug --output-junit test-debug.xml
+
+    - run: cmake --build --preset release
+    - run: ctest --preset release --output-junit test-release.xml
+
+    - name: Publish Unit Test Results
+      uses: EnricoMi/publish-unit-test-result-action@v1
+      if: always()
+      with:
+        files: build/test-*.xml
+
+    - run: cmake --install build
+
+    - name: configure examples
+      run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=~
+    - name: build examples
+      run: cmake --build Examples/build
+    - name: Test examples
+      run: ctest --test-dir Examples/build --output-on-failure
+
+    - name: create package
+      if: github.event.action == 'published'
+      run: cpack --config build/CPackConfig.cmake
+
+    - name: Upload artifact
+      if: github.event.action == 'published'
+      uses: actions/upload-artifact@v1
+      with:
+        name: binary-archive
+        path: build/package
+
+    - name: get version
+      if: github.event.action == 'published'
+      id: get_version
+      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\/v/}
+
+    - name: Upload release asset
+      if: github.event.action == 'published'
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: build/package/h5fortran-${{ steps.get_version.outputs.VERSION }}-Linux.tar.zst
+        asset_name:  h5fortran-${{ steps.get_version.outputs.VERSION }}-Linux.tar.zst
+        asset_content_type: application/zip
+
+
+  linux-shared:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: install hdf5
+      run: |
+        sudo apt update -yq
+        sudo apt install -yq --no-install-recommends ninja-build libhdf5-dev
+
+    - run: cmake --preset multi -DBUILD_SHARED_LIBS:BOOL=true --install-prefix=${HOME}
+    - run: cmake --build --preset debug
+    - run: ctest --preset debug --output-junit test-debug.xml
+
+    - run: cmake --build --preset release
+    - run: ctest --preset release --output-junit test-release.xml
+
+    - name: Publish Unit Test Results
+      uses: EnricoMi/publish-unit-test-result-action@v1
+      if: always()
+      with:
+        files: build/test-*.xml
+
+    - run: cmake --install build
+
+    - name: configure examples
+      run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=~
+    - name: build examples
+      run: cmake --build Examples/build
+    - name: Test examples
+      run: ctest --test-dir Examples/build -V
+
+
+  linux-build-static:
+    needs: linux-static
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - run: cmake -B build --preset build --install-prefix=${HOME}
+    - run: cmake --build build
+    - run: ctest --test-dir build --preset default
+    - run: cmake --install build
+
+    - name: configure examples
+      run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=~
+    - name: build Examples
+      run: cmake --build Examples/build
+    - name: Test Examples
+      run: ctest --test-dir Examples/build -V
+
+  linux-build-shared:
+    needs: [linux-shared, linux-build-static]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - run: cmake -B build --preset build -DBUILD_SHARED_LIBS:BOOL=true --install-prefix=${HOME}
+    - run: cmake --build build
+    - run: ctest --test-dir build --preset default
+    - run: cmake --install build
+
+    - name: configure examples
+      run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=~
+    - name: build Examples
+      run: cmake --build Examples/build
+    - name: Test Examples
+      run: ctest --test-dir Examples/build -V
+
+
+  linux-gcc7:
+      runs-on: ubuntu-18.04
+      timeout-minutes: 15
+
+      steps:
+      - uses: actions/checkout@v2
+
+      - name: install libs
+        run: |
+          sudo apt update -yq
+          sudo apt install -yq --no-install-recommends gfortran libhdf5-dev
+
+      - run: cmake -B build
+      - run: cmake --build build
+      - run: ctest --test-dir build --preset default
