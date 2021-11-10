@@ -112,7 +112,7 @@ character(*), intent(in) :: dname
 ```fortran
 call h%chunks(dname, chunk_size)
 character(*), intent(in) :: dname
-integer(hsize_t), intent(out) :: chunk_size(:)
+integer, intent(out) :: chunk_size(:)
 ```
 
 ## create dataset softlink
