@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: Hirsch
+    given-names: Michael
+    orcid: https://orcid.org/0000-0002-1637-6526
+title: h5fortran
+version: 4.2.10
+doi: 10.5281/zenodo.3562521
+date-released: 2021-11-08
