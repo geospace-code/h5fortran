@@ -64,15 +64,9 @@ set(shape_file ${CMAKE_CURRENT_BINARY_DIR}/test_shape.h5)
 # --- Windows shared DLLs
 if(WIN32 AND BUILD_SHARED_LIBS AND CMAKE_VERSION VERSION_GREATER_EQUAL 3.21)
   add_custom_command(TARGET test_shape POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:test_shape> $<TARGET_FILE_DIR:test_shape>
+  COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:test_shape> "$<$<BOOL:${HDF5_DLLS}>:${HDF5_DLLS}>" $<$<BOOL:${ZLIB_DLL}>:${ZLIB_DLL}> $<TARGET_FILE_DIR:test_shape>
   COMMAND_EXPAND_LISTS
   )
-  if(HDF5_DLLS AND ZLIB_DLL)
-    add_custom_command(TARGET test_shape POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy ${HDF5_DLLS} ${ZLIB_DLL} $<TARGET_FILE_DIR:test_shape>
-    COMMAND_EXPAND_LISTS
-    )
-  endif()
 endif()
 
 # --- Python h5py
