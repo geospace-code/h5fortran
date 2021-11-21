@@ -3,8 +3,7 @@ add_executable(test_minimal test_minimal.f90)
 # as part of h5fortran
 target_link_libraries(test_minimal PRIVATE h5fortran::h5fortran)
 set_target_properties(test_minimal PROPERTIES LABELS unit)
-add_test(NAME h5fortran:minimal
-  COMMAND $<TARGET_FILE:test_minimal>)
+add_test(NAME h5fortran:minimal COMMAND test_minimal)
 set_tests_properties(h5fortran:minimal PROPERTIES
 FIXTURES_SETUP h5lib
 TIMEOUT 5
@@ -24,7 +23,7 @@ target_compile_options(test_${name} PRIVATE "$<$<Fortran_COMPILER_ID:GNU>:-Wno-c
 set_target_properties(test_${name} PROPERTIES LABELS unit)
 
 add_test(NAME h5fortran:${name}
-COMMAND $<TARGET_FILE:test_${name}>
+COMMAND test_${name}
 WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 )
 set_tests_properties(h5fortran:${name} PROPERTIES
@@ -35,14 +34,14 @@ TIMEOUT 10
 
 if(${name} MATCHES ".*fail.*")
   set_tests_properties(h5fortran:${name} PROPERTIES
-    WILL_FAIL true
-    LABELS shaky
-    DISABLED $<OR:$<BOOL:${CI}>,$<NOT:$<BOOL:test_shaky>>>
-    )
+  WILL_FAIL true
+  LABELS shaky
+  DISABLED $<OR:$<BOOL:${CI}>,$<NOT:$<BOOL:test_shaky>>>
+  )
 else()
   set_tests_properties(h5fortran:${name} PROPERTIES
-    LABELS unit
-    )
+  LABELS unit
+  )
 endif()
 
 endforeach()

@@ -1,14 +1,13 @@
 option(autobuild "auto-build HDF5 if missing/broken" on)
 
 option(ENABLE_COVERAGE "Code coverage tests")
+
 option(dev "developer mode")
 
 option(matlab "check HDF5 file writes with Matlab" off)
 option(concepts "conceptual testing, for devs only" off)
 
 option(zlib_legacy "use old ZLIB 1.x")
-
-set(CMAKE_EXPORT_COMPILE_COMMANDS true)
 
 set(CMAKE_TLS_VERIFY true)
 
