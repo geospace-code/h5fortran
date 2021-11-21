@@ -137,21 +137,6 @@ end interface h5read_attr
 
 !> Submodules
 
-interface !< pathlib.f90
-module subroutine std_unlink(filename)
-character(*), intent(in) :: filename
-end subroutine std_unlink
-
-module logical function is_absolute_path(path)
-character(*), intent(in) :: path
-end function is_absolute_path
-
-module function get_tempdir()
-character(:), allocatable :: get_tempdir
-end function
-
-end interface
-
 interface !< write.f90
 module subroutine hdf_create(self, dname, dtype, dims, sid, did, chunk_size, istart, iend, stride, compact)
 class(hdf5_file), intent(inout) :: self

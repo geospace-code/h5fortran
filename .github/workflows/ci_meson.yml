@@ -18,10 +18,10 @@ jobs:
       with:
         python-version: '3.x'
 
-    - run: pip install meson
+    - run: pip install meson ninja
     - run: |
         sudo apt update -yq
-        sudo apt install -yq --no-install-recommends gfortran ninja-build libhdf5-dev
+        sudo apt install -yq --no-install-recommends libhdf5-dev
 
     - run: meson setup build
     - run: meson compile -C build
