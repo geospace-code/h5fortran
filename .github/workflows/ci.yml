@@ -122,11 +122,17 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
 
     - name: install hdf5
       run: |
         sudo apt update -yq
         sudo apt install -yq --no-install-recommends libhdf5-dev
+
+    - name: install Gcovr
+      run: pip install gcovr
 
     - run: cmake --preset coverage
     - run: cmake --build --preset coverage
@@ -137,7 +143,7 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: coverage-report-html
-        path: build/coverage/
+        path: build-coverage/coverage/
 
 
   linux-build-static:
