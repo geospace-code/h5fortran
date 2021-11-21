@@ -27,3 +27,10 @@ add_compile_options(
 "$<$<AND:$<COMPILE_LANGUAGE:Fortran>,$<CONFIG:RelWithDebInfo>>:-Wno-maybe-uninitialized>"
 )
 endif()
+
+# --- code coverage
+if(ENABLE_COVERAGE)
+include(CodeCoverage)
+append_coverage_compiler_flags()
+set(COVERAGE_EXCLUDES ${PROJECT_SOURCE_DIR}/src/tests)
+endif()
