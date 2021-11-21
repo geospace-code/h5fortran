@@ -116,6 +116,30 @@ jobs:
       run: ctest --test-dir Examples/build -V
 
 
+  linux-coverage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: install hdf5
+      run: |
+        sudo apt update -yq
+        sudo apt install -yq --no-install-recommends libhdf5-dev
+
+    - run: cmake --preset coverage
+    - run: cmake --build --preset coverage
+
+    - name: Code coverage
+      run: cmake --build --preset run-coverage
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: coverage-report-html
+        path: build/coverage/
+
+
   linux-build-static:
     needs: linux-static
     runs-on: ubuntu-latest

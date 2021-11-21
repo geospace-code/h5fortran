@@ -76,10 +76,10 @@ jobs:
 
     - name: Upload artifact
       if: github.event.action == 'published'
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v2
       with:
         name: binary-archive
-        path: build/package
+        path: build/package/
 
     - name: get version
       if: github.event.action == 'published'

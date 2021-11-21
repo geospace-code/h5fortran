@@ -53,10 +53,10 @@ endforeach()
 endfunction(setup_test)
 
 # --- setup unit tests
-set(testnames array attributes deflate destructor error exist module layout lt scalar shape string
+set(test_names array attributes deflate destructor error exist module layout lt scalar shape string
 fail_read_size_mismatch fail_read_rank_mismatch fail_nonexist_variable)
 
-setup_test("${testnames}")
+setup_test("${test_names}")
 
 set_tests_properties(shape PROPERTIES
 FIXTURES_SETUP h5shape

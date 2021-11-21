@@ -13,7 +13,18 @@
   "displayName": "build all libraries",
   "description": "Build all external libraries without searching for existing libraries.",
   "cacheVariables": {
-    "hdf5_external": "on"
+    "hdf5_external": true
+  }
+},
+{
+  "name": "coverage",
+  "binaryDir": "${sourceDir}/build-coverage",
+  "displayName": "Code Coverage",
+  "description": "Build with code coverage enabled.",
+  "cacheVariables": {
+    "CMAKE_BUILD_TYPE": "Debug",
+    "ENABLE_COVERAGE": true,
+    "autobuild": false
   }
 },
 {
@@ -35,6 +46,15 @@
     "name": "debug",
     "configurePreset": "multi",
     "configuration": "Debug"
+  },
+  {
+    "name": "coverage",
+    "configurePreset": "coverage"
+  },
+  {
+    "name": "run-coverage",
+    "configurePreset": "coverage",
+    "targets": "coverage"
   }
 ],
 "testPresets": [
