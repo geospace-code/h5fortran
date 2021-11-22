@@ -112,7 +112,7 @@ character(*), intent(in) :: dname
 ```fortran
 call h%chunks(dname, chunk_size)
 character(*), intent(in) :: dname
-integer(hsize_t), intent(out) :: chunk_size(:)
+integer, intent(out) :: chunk_size(:)
 ```
 
 ## create dataset softlink
@@ -132,7 +132,7 @@ call h%write(dname,value, ierr, chunk_size, istart, iend, stride, compact)
 !! write 0d..7d dataset
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:)  !< array to write
-integer, intent(in), optional :: chunk_size(1)
+integer, intent(in), optional :: chunk_size(rank(value))
 integer, intent(in), optional, dimension(:) :: istart, iend, stride  !< array slicing
 logical, intent(in), optional :: compact  !< faster I/O for sub-64 kB datasets
 integer, intent(out), optional :: ierr  !< 0 if OK
