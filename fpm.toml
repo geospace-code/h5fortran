@@ -1,7 +1,7 @@
 name = "h5fortran"
 description = "Lightweight object-oriented HDF5 interface"
 categories = "io"
-version = "3.6.6"
+version = "4.2.11"
 
 [build]
 link = ["z", "hdf5"]
