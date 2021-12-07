@@ -25,7 +25,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL Linux AND MPI_ROOT)
     message(STATUS "${MPI_ROOT}/lib not found in LD_LIBRARY_PATH: $ENV{LD_LIBRARY_PATH}
     HDF5 build may fail due to bugs in HDF5 package CMake scripts.
     Fix this by adding to ~/.bashrc or similar:
-      export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${MPI_ROOT}")
+      export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${MPI_ROOT}/lib")
   endif()
 endif()
 
