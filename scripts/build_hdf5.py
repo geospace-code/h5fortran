@@ -10,6 +10,7 @@ Use the full compiler path if it's not getting the right compiler.
 * CC: C compiler name or path
 """
 
+from __future__ import annotations
 import typing as T
 import os
 import subprocess
@@ -23,10 +24,6 @@ import urllib.error
 import socket
 import tarfile
 import json
-import sys
-
-if sys.version_info < (3, 6, 2):
-    raise RuntimeError("Python >= 3.6.2 required")
 
 # ========= user parameters ======================
 BUILDDIR = "build"
@@ -76,6 +73,16 @@ def cli():
         "workdir": Path(P.workdir).expanduser(),
     }
 
+    # HDF5 install fails to link if prior HDF5 library version mixed in
+    if (dirs["prefix"] / "include/hdf5.h").is_file():
+        raise FileExistsError(
+            f"""
+HDF5 library already installed under:
+{dirs['prefix']}
+Please pick a new install location or completely remove the old HDF5 install directory.
+Otherwise, HDF5 will fail to link correctly with prior version and this version mixed."""
+        )
+
     urls = json.loads(JSON_FILE.read_text())
 
     dirs["zlib"] = zlib(dirs, urls["zlib2"], env=env, debug=P.debug)
@@ -91,8 +98,8 @@ def cli():
 
 
 def zlib(
-    dirs: T.Dict[str, Path],
-    urls: T.Dict[str, str],
+    dirs: dict[str, Path],
+    urls: dict[str, str],
     *,
     env: T.Mapping[str, str],
     debug: bool = False,
@@ -106,7 +113,7 @@ def zlib(
     build_dir = source_dir / BUILDDIR
 
     zlib_archive = dirs["workdir"] / zlib_filename
-    url_retrieve(urls["url"], zlib_archive, filehash=["sha256", urls["sha256"]])
+    url_retrieve(urls["url"], zlib_archive, filehash=("sha256", urls["sha256"]))
 
     if not (source_dir / "CMakeLists.txt").is_file():
         with tarfile.open(zlib_archive) as z:
@@ -116,7 +123,7 @@ def zlib(
         "cmake",
         f"-S{source_dir}",
         f"-B{build_dir}",
-        f"-DCMAKE_INSTALL_PREFIX={install_dir}",
+        f"--install-prefix={install_dir}",
         "-DCMAKE_BUILD_TYPE=Release",
         "-DZLIB_COMPAT:BOOL=true",
         "-DBUILD_SHARED_LIBS:BOOL=off",
@@ -138,9 +145,9 @@ def zlib(
 
 
 def hdf5(
-    dirs: T.Dict[str, Path],
-    urls: T.Dict[str, str],
-    env: T.Dict[str, str],
+    dirs: dict[str, Path],
+    urls: dict[str, str],
+    env: dict[str, str],
     *,
     download_git: bool = False,
     parallel: bool = False,
@@ -169,7 +176,7 @@ def hdf5(
         source_dir = source_dir.with_name(name)
 
         archive = dirs["workdir"] / url.split("/")[-1]
-        url_retrieve(url, archive, filehash=["sha256", urls["sha256"]])
+        url_retrieve(url, archive, filehash=("sha256", urls["sha256"]))
 
         if not (source_dir / "CMakeLists.txt").is_file():
             with tarfile.open(archive) as z:
@@ -185,7 +192,7 @@ def hdf5(
         cmd0 = [
             "cmake",
             f"-S{source_dir}",
-            f"-DCMAKE_INSTALL_PREFIX={install_dir}",
+            f"--install-prefix={install_dir}",
             "-DHDF5_GENERATE_HEADERS:BOOL=false",
             "-DHDF5_DISABLE_COMPILER_WARNINGS:BOOL=true",
             "-DBUILD_STATIC_LIBS:BOOL=true",
@@ -278,7 +285,7 @@ def git_download(path: Path, repo: str, tag: str):
 
 
 def url_retrieve(
-    url: str, outfile: Path, filehash: T.Sequence[str] = None, overwrite: bool = False
+    url: str, outfile: Path, filehash: tuple[str, str] = None, overwrite: bool = False
 ):
     """
     Parameters
