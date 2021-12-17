@@ -74,7 +74,7 @@ endif
 if(present(compact)) then
 ! print *, "TRACE1: COMPACT", compact
 !! don't set COMPACT after CHUNKED, will fail. And it's either or anyway.
-if(compact .and. plist_id == 0 .and. product(dims) * 8 < 60000)  then
+if(compact .and. plist_id == H5P_DEFAULT_F .and. product(dims) * 8 < 60000)  then
 !! 64000 byte limit, here we assumed 8 bytes / element
   call h5pcreate_f(H5P_DATASET_CREATE_F, plist_id, ierr)
   if (check(ierr, self%filename)) error stop "h5fortran:h5pcreate: " // dname
@@ -93,15 +93,10 @@ endif
 if (check(ierr, self%filename, dname)) error stop "h5fortran:h5screate: " // dname
 
 !> create dataset
-if(plist_id == H5P_DEFAULT_F) then
-  call h5dcreate_f(self%lid, dname, dtype, space_id, ds_id, ierr)
-else
-  call h5dcreate_f(self%lid, dname, dtype, space_id, ds_id, ierr, plist_id)
-  if (check(ierr, self%filename, dname)) error stop "h5fortran:h5dcreate: " // dname
-  call h5pclose_f(plist_id, ierr)
-  if (check(ierr, self%filename, dname)) error stop "h5fortran:h5pclose: " // dname
-endif
+call h5dcreate_f(self%lid, dname, dtype, space_id, ds_id, ierr, plist_id)
 if (check(ierr, self%filename, dname)) error stop "h5fortran:h5dcreate: " // dname
+call h5pclose_f(plist_id, ierr)
+if (check(ierr, self%filename, dname)) error stop "h5fortran:h5pclose: " // dname
 
 if(.not.(present(did) .and. present(sid))) then
   if(self%debug) print *, 'h5fortran:TRACE:create: closing dataset ', dname
