@@ -32,9 +32,9 @@ if(CMAKE_SYSTEM_NAME STREQUAL Linux AND MPI_ROOT)
 endif()
 
 # HDF5 install fails to work (link) if prior HDF5 library is installed there
-find_library(_hdf5_libprior NAMES hdf5 PATHS ${CMAKE_INSTALL_PREFIX} PATH_SUFFIXES lib NO_DEFAULT_PATH)
-find_path(_hdf5_incprior NAMES hdf5.h PATHS ${CMAKE_INSTALL_PREFIX} PATH_SUFFIXES include NO_DEFAULT_PATH)
-find_program(_hdf5_binprior NAMES h5cc PATHS ${CMAKE_INSTALL_PREFIX} PATH_SUFFIXES bin NO_DEFAULT_PATH)
+find_library(_hdf5_libprior NAMES hdf5 PATHS ${CMAKE_INSTALL_PREFIX} PATH_SUFFIXES lib NO_DEFAULT_PATH NO_CACHE)
+find_path(_hdf5_incprior NAMES hdf5.h PATHS ${CMAKE_INSTALL_PREFIX} PATH_SUFFIXES include NO_DEFAULT_PATH NO_CACHE)
+find_program(_hdf5_binprior NAMES h5cc PATHS ${CMAKE_INSTALL_PREFIX} PATH_SUFFIXES bin NO_DEFAULT_PATH NO_CACHE)
 if(_hdf5_binprior)
   cmake_path(GET _hdf5_binprior PARENT_PATH _hdf5_binprior)
 else()
