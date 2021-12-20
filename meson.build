@@ -34,9 +34,9 @@ endif
 subdir('src')
 
 ooh5 = library('h5fortran',
-  sources: hdf5_src,
-  dependencies: hdf5,
-  install: true)
+sources: hdf5_src,
+dependencies: hdf5,
+install: true)
 
 hdf5_interface = declare_dependency(link_with: ooh5, dependencies: hdf5)
 
