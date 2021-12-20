@@ -45,10 +45,9 @@ call h%read("/compact_r32", r64)
 if(r64 /= w32) error stop "read real32 => real64"
 call h%read("/compact_r64", r32)
 if(r32 /= w64) error stop "read real64 => real32"
-call h%read("/compact_i32", r32)
-if(r32 /= wi32) error stop "read int32 => real32"
-call h%read("/compact_r32", ri32)
-if(ri32 /= w32) error stop "real real32 => int32"
+call h%read("/compact_i32", ri32)
+if(r32 /= wi32) error stop "read int32 => int32"
+
 
 call h%read("/compact7d_32", r7_64)
 if (any(r7_64 /= d7_32)) error stop "read real32 => real64"

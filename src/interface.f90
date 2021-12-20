@@ -85,9 +85,8 @@ generic, public :: writeattr => writeattr_char, writeattr_num
 generic, public :: readattr => readattr_char, readattr_num
 
 !> read dataset
-generic, public :: read => &
-hdf_read_scalar_char, hdf_read_scalar_r32, hdf_read_scalar_r64, hdf_read_scalar_i32, hdf_read_scalar_i64, &
-hdf_read_1d, hdf_read_2d, hdf_read_3d, hdf_read_4d,hdf_read_5d, hdf_read_6d, hdf_read_7d
+generic, public :: read => h5read_scalar, &
+h5read_1d, hdf_read_2d, hdf_read_3d, hdf_read_4d,hdf_read_5d, hdf_read_6d, hdf_read_7d
 
 !> private methods
 !! each method must be declared here, and above as a generic, public
@@ -100,8 +99,8 @@ hdf_write_4d_r32, hdf_write_4d_r64, hdf_write_4d_i32, hdf_write_4d_i64, &
 hdf_write_5d_r32, hdf_write_5d_r64, hdf_write_5d_i32, hdf_write_5d_i64, &
 hdf_write_6d_r32, hdf_write_6d_r64, hdf_write_6d_i32, hdf_write_6d_i64, &
 hdf_write_7d_r32, hdf_write_7d_r64, hdf_write_7d_i32, hdf_write_7d_i64, &
-hdf_read_scalar_char, hdf_read_scalar_r32, hdf_read_scalar_r64, hdf_read_scalar_i32, hdf_read_scalar_i64, &
-hdf_read_1d, hdf_read_2d, hdf_read_3d, hdf_read_4d, hdf_read_5d, hdf_read_6d, hdf_read_7d, &
+h5read_scalar, &
+h5read_1d, hdf_read_2d, hdf_read_3d, hdf_read_4d, hdf_read_5d, hdf_read_6d, hdf_read_7d, &
 writeattr_char, writeattr_num, readattr_char, readattr_num
 
 !> flush file to disk and close file if user forgets to do so.
@@ -819,50 +818,20 @@ end interface
 
 interface !< reader.f90
 
-module subroutine hdf_read_scalar_char(self, dname, value, ierr)
+module subroutine h5read_scalar(self, dname, value, ierr)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-character(*), intent(inout)      :: value
-!! intent(inout) for character
+class(*), intent(inout)        :: value
 integer, intent(out), optional :: ierr
-end subroutine hdf_read_scalar_char
+end subroutine h5read_scalar
 
-module subroutine hdf_read_scalar_r32(self, dname, value, ierr)
-class(hdf5_file), intent(in)     :: self
-character(*), intent(in)         :: dname
-real(real32), intent(out)        :: value
-!! intent(inout) for character
-integer, intent(out), optional :: ierr
-end subroutine hdf_read_scalar_r32
-
-module subroutine hdf_read_scalar_r64(self, dname, value, ierr)
-class(hdf5_file), intent(in)     :: self
-character(*), intent(in)         :: dname
-real(real64), intent(out)        :: value
-integer, intent(out), optional :: ierr
-end subroutine hdf_read_scalar_r64
-
-module subroutine hdf_read_scalar_i32(self, dname, value, ierr)
-class(hdf5_file), intent(in)     :: self
-character(*), intent(in)         :: dname
-integer(int32), intent(out)        :: value
-integer, intent(out), optional :: ierr
-end subroutine hdf_read_scalar_i32
-
-module subroutine hdf_read_scalar_i64(self, dname, value, ierr)
-class(hdf5_file), intent(in)     :: self
-character(*), intent(in)         :: dname
-integer(int64), intent(out)        :: value
-integer, intent(out), optional :: ierr
-end subroutine hdf_read_scalar_i64
-
-module subroutine hdf_read_1d(self, dname, value, ierr, istart, iend, stride)
+module subroutine h5read_1d(self, dname, value, ierr, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout) :: value(:)
 integer, intent(out), optional :: ierr
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
-end subroutine hdf_read_1d
+end subroutine h5read_1d
 
 module subroutine hdf_read_2d(self, dname, value, ierr, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self

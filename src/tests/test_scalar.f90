@@ -10,6 +10,7 @@ implicit none (type, external)
 type(hdf5_file) :: h
 real(real32), allocatable :: rr1(:)
 real(real32) :: rt, r1(4)
+real(real64) :: r64
 
 integer(int32) :: it, i1(4)
 integer(int32), allocatable :: i1t(:)
@@ -56,7 +57,8 @@ call h%write('/1d_int64', i1_64)
 
 print *, 'PASSED: vector write'
 !> test rewrite
-call h%write('/scalar_real32', 42.)
+call h%write('/scalar_real32', 42._real32)
+call h%write('/scalar_real64', 42._real64)
 call h%write('/scalar_int32', 42_int32)
 call h%write('/scalar_int64', 42_int64)
 call h%close()
@@ -75,13 +77,15 @@ if (.not.(rt==it .and. it==42)) then
 endif
 print *, 'PASSED: scalar read/write'
 
-!> read casting -- real to int and int to real
-call h%read('/scalar_real32', it)
-if(it/=42) error stop 'scalar cast real => int'
-call h%read('/scalar_int32', rt)
-if(rt/=42) error stop 'scalar cast int32 => real'
-call h%read('/scalar_int64', rt)
-if(rt/=42) error stop 'scalar cast int64 => real'
+!> read casting -- real32 to real64 and int32 to int64
+call h%read('/scalar_real32', r64)
+if(r64 /= 42) error stop 'scalar cast real32 => real64'
+call h%read('/scalar_real64', rt)
+if(rt /= 42) error stop 'scalar cast real64 => real32'
+call h%read('/scalar_int32', it_64)
+if(it_64 /= 42) error stop 'scalar cast int32 => int64'
+call h%read('/scalar_int64', it)
+if(it /= 42) error stop 'scalar cast int64 => int32'
 print *, 'PASSED: scalar cast on read'
 
 !> read vector length 1 as scalar
