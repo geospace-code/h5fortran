@@ -8,9 +8,9 @@ use hdf5, only: HSIZE_T, H5T_NATIVE_INTEGER, H5T_STD_I64LE
 implicit none (type, external)
 
 type(hdf5_file) :: h
-real(real32), allocatable :: rr1(:)
+real(real32), allocatable :: rr1_32(:)
 real(real32) :: rt, r1(4)
-real(real64) :: r64
+real(real64) :: r64, r1_64(4)
 
 integer(int32) :: it, i1(4)
 integer(int32), allocatable :: i1t(:)
@@ -97,10 +97,10 @@ if(rt/=37) error stop 'vector_scalar: 1d length 1 => scalar'
 
 !> 1D vector read write
 call h%shape('/1d_real', dims)
-allocate(rr1(dims(1)))
+allocate(rr1_32(dims(1)))
 print *, "OK: 1d shape read real32"
-call h%read('/1d_real', rr1)
-if (.not.all(r1 == rr1)) error stop 'real 1-D: read does not match write'
+call h%read('/1d_real', rr1_32)
+if (.not.all(r1 == rr1_32)) error stop 'real 1-D: read does not match write'
 print *, "OK: 1d read real32"
 
 call h%shape('/1d_int32',dims)
@@ -115,14 +115,10 @@ if (.not.all(i1_64==i1t_64)) error stop 'int64 1-D: read does not match write'
 print *, 'PASSED: 1D read/write'
 
 !> 1D vector read casting -- real to int and int to real
-call h%read('/1d_real', i1t)
-if (.not.all(r1==i1t)) error stop '1Dcast real => int32'
-call h%read('/1d_real', i1t_64)
-if (.not.all(r1==i1t_64)) error stop '1Dcast real => int64'
-call h%read('/1d_int32', rr1)
-if (.not.all(i1==rr1)) error stop '1D cast int32 => real'
-call h%read('/1d_int64', rr1)
-if (.not.all(i1_64==rr1)) error stop '1D cast int64 => real'
+call h%read('/1d_real', r1_64)
+if (.not.all(r1==r1_64)) error stop '1D cast real32 => real64'
+call h%read('/1d_int32', i1t_64)
+if (.not.all(i1==i1t_64)) error stop '1D cast int32 => int64'
 
 !> check filename property
 if (.not. h%filename == fn) error stop h%filename // ' mismatch filename'

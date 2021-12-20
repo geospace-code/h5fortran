@@ -86,7 +86,7 @@ generic, public :: readattr => readattr_char, readattr_num
 
 !> read dataset
 generic, public :: read => h5read_scalar, &
-h5read_1d, hdf_read_2d, hdf_read_3d, hdf_read_4d,hdf_read_5d, hdf_read_6d, hdf_read_7d
+h5read_1d, h5read_2d, h5read_3d, h5read_4d, h5read_5d, h5read_6d, h5read_7d
 
 !> private methods
 !! each method must be declared here, and above as a generic, public
@@ -100,7 +100,7 @@ hdf_write_5d_r32, hdf_write_5d_r64, hdf_write_5d_i32, hdf_write_5d_i64, &
 hdf_write_6d_r32, hdf_write_6d_r64, hdf_write_6d_i32, hdf_write_6d_i64, &
 hdf_write_7d_r32, hdf_write_7d_r64, hdf_write_7d_i32, hdf_write_7d_i64, &
 h5read_scalar, &
-h5read_1d, hdf_read_2d, hdf_read_3d, hdf_read_4d, hdf_read_5d, hdf_read_6d, hdf_read_7d, &
+h5read_1d, h5read_2d, h5read_3d, h5read_4d, h5read_5d, h5read_6d, h5read_7d, &
 writeattr_char, writeattr_num, readattr_char, readattr_num
 
 !> flush file to disk and close file if user forgets to do so.
@@ -833,53 +833,53 @@ integer, intent(out), optional :: ierr
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
 end subroutine h5read_1d
 
-module subroutine hdf_read_2d(self, dname, value, ierr, istart, iend, stride)
+module subroutine h5read_2d(self, dname, value, ierr, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout) :: value(:,:)
 integer, intent(out), optional :: ierr
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
-end subroutine hdf_read_2d
+end subroutine h5read_2d
 
-module subroutine hdf_read_3d(self, dname, value, ierr, istart, iend, stride)
+module subroutine h5read_3d(self, dname, value, ierr, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout) :: value(:,:,:)
 integer, intent(out), optional :: ierr
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
-end subroutine hdf_read_3d
+end subroutine h5read_3d
 
-module subroutine hdf_read_4d(self, dname, value, ierr, istart, iend, stride)
+module subroutine h5read_4d(self, dname, value, ierr, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout) :: value(:,:,:,:)
 integer, intent(out), optional :: ierr
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
-end subroutine hdf_read_4d
+end subroutine h5read_4d
 
-module subroutine hdf_read_5d(self, dname, value, ierr, istart, iend, stride)
+module subroutine h5read_5d(self, dname, value, ierr, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout) :: value(:,:,:,:,:)
 integer, intent(out), optional :: ierr
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
-end subroutine hdf_read_5d
+end subroutine h5read_5d
 
-module subroutine hdf_read_6d(self, dname, value, ierr, istart, iend, stride)
+module subroutine h5read_6d(self, dname, value, ierr, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout) :: value(:,:,:,:,:,:)
 integer, intent(out), optional :: ierr
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
-end subroutine hdf_read_6d
+end subroutine h5read_6d
 
-module subroutine hdf_read_7d(self, dname, value, ierr, istart, iend, stride)
+module subroutine h5read_7d(self, dname, value, ierr, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout) :: value(:,:,:,:,:,:,:)
 integer, intent(out), optional :: ierr
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
-end subroutine hdf_read_7d
+end subroutine h5read_7d
 end interface
 
 
