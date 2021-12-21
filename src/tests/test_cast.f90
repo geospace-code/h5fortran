@@ -2,6 +2,7 @@ program test_cast
 !! test HDF5 built-in casting
 
 use h5fortran, only : hdf5_file, &
+ H5T_INTEGER_F, H5T_FLOAT_F, H5T_STRING_F, &
  H5T_NATIVE_REAL, H5T_NATIVE_DOUBLE, H5T_NATIVE_INTEGER, H5T_NATIVE_CHARACTER, H5T_STD_I64LE
 use, intrinsic :: iso_fortran_env, only : real32, real64, int32, int64
 
@@ -28,6 +29,13 @@ call h%write('/1d_real32', r1_32)
 i1_32 = [2_int32, 4_int32]
 call h%write('/1d_int32', i1_32)
 call h%write('/char', "hello")
+
+!> %class method
+if (h%class("/scalar_int32") /= H5T_INTEGER_F) error stop "int32 not integer"
+if (h%class("/scalar_int64") /= H5T_INTEGER_F) error stop "int64 not integer"
+if (h%class("/scalar_real32") /= H5T_FLOAT_F) error stop "real32 not float"
+if (h%class("/scalar_real64") /= H5T_FLOAT_F) error stop "real64 not float"
+if (h%class("/char") /= H5T_STRING_F) error stop "char not string"
 
 !> %dtype method
 if (h%dtype('/scalar_int32') /= H5T_NATIVE_INTEGER) error stop "int32 type"

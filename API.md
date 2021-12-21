@@ -68,6 +68,15 @@ character(*), intent(in) :: dataset_name
 integer(HSIZE_T), intent(out), allocatable :: dims(:)
 ```
 
+Dataset "dname" data class (i.e. integer, float, string, ...)
+
+```fortran
+integer :: class
+!! H5T_INTEGER_F, H5T_FLOAT_F, H5T_STRING_F
+class = h%class(dname)
+character(*), intent(in) :: dname
+```
+
 Dataset "dname" datatype
 
 ```fortran
