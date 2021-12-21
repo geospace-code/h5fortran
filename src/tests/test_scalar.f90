@@ -10,7 +10,6 @@ implicit none (type, external)
 type(hdf5_file) :: h
 real(real32), allocatable :: rr1_32(:)
 real(real32) :: rt, r1(4)
-real(real64) :: r64, r1_64(4)
 
 integer(int32) :: it, i1(4)
 integer(int32), allocatable :: i1t(:)
@@ -33,11 +32,8 @@ i1_64 = i1
 call h%open(fn, action='w')
 !> scalar tests
 call h%write('/scalar_int32', 42_int32)
-
 call h%write('/scalar_int64', 42_int64)
-
 call h%write('/scalar_real32', -1._real32)
-
 call h%write('/scalar_real64', -1._real64)
 
 !> vector
@@ -73,17 +69,6 @@ if (.not.(rt==it .and. it==42)) then
 endif
 print *, 'PASSED: scalar read/write'
 
-!> read casting -- real32 to real64 and int32 to int64
-call h%read('/scalar_real32', r64)
-if(r64 /= 42) error stop 'scalar cast real32 => real64'
-call h%read('/scalar_real64', rt)
-if(rt /= 42) error stop 'scalar cast real64 => real32'
-call h%read('/scalar_int32', it_64)
-if(it_64 /= 42) error stop 'scalar cast int32 => int64'
-call h%read('/scalar_int64', it)
-if(it /= 42) error stop 'scalar cast int64 => int32'
-print *, 'PASSED: scalar cast on read'
-
 !> read vector length 1 as scalar
 call h%shape('/vector_scalar_real', dims)
 if (any(dims /= [1])) error stop "vector_scalar: expected vector length 1"
@@ -109,12 +94,6 @@ call h%read('/1d_int64',i1t_64)
 if (.not.all(i1_64==i1t_64)) error stop 'int64 1-D: read does not match write'
 
 print *, 'PASSED: 1D read/write'
-
-!> 1D vector read casting -- real to int and int to real
-call h%read('/1d_real', r1_64)
-if (.not.all(r1==r1_64)) error stop '1D cast real32 => real64'
-call h%read('/1d_int32', i1t_64)
-if (.not.all(i1==i1t_64)) error stop '1D cast int32 => int64'
 
 !> check filename property
 if (.not. h%filename == fn) error stop h%filename // ' mismatch filename'

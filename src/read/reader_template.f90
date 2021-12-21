@@ -20,7 +20,7 @@ else
   if(ier/=0) error stop 'h5fortran:reader: setup read ' // dname // ' from ' // self%filename
 endif
 
-native_dtype = get_native_dtype(ds_id, dname, self%filename)
+native_dtype = get_native_dtype(self, dname, ds_id)
 
 !> casting is handled by HDF5 library internally
 !! select case doesn't allow H5T_*

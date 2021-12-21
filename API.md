@@ -60,17 +60,31 @@ rank = h%ndims(dataset_name)
 character(*), intent(in) :: dataset_name
 ```
 
+Get disk dataset shape (1D vector)
+
 ```fortran
 call h%shape(dataset_name, dims)
 character(*), intent(in) :: dataset_name
 integer(HSIZE_T), intent(out), allocatable :: dims(:)
 ```
 
+Dataset "dname" datatype
+
 ```fortran
-exists = h%exist(dname)
-!! does dataset "dname" exist in this file
+integer(HID_T) :: dtype
+!! H5T_NATIVE_REAL, H5T_NATIVE_DOUBLE, H5T_NATIVE_INTEGER, H5T_NATIVE_CHARACTER, H5T_STD_I64LE
+dtype = h%dtype(dname)
 character(*), intent(in) :: dname
 ```
+
+Does dataset "dname" exist in this HDF5 file?
+
+```fortran
+exists = h%exist(dname)
+character(*), intent(in) :: dname
+```
+
+Is dataset "dname" contiguous on disk?
 
 ```fortran
 tf = h%is_contig(dname)
@@ -78,17 +92,23 @@ tf = h%is_contig(dname)
 character(*), intent(in) :: dname
 ```
 
+Is dataset compact (< 64K)
+
 ```fortran
 tf = h%is_compact(dname)
 !! is dataset compact layout
 character(*), intent(in) :: dname
 ```
 
+Is dataset chunked?
+
 ```fortran
 tf = h%is_chunked(dname)
 !! is dataset chunked
 character(*), intent(in) :: dname
 ```
+
+Is this an HDF5 file?
 
 ```fortran
 use h5fortran, only: is_hdf5

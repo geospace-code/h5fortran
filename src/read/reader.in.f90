@@ -47,7 +47,7 @@ endif
 call h5dopen_f(self%lid, dname, ds_id, ier)
 if(ier/=0) error stop 'h5fortran:reader: ' // dname // ' could not be opened in ' // self%filename
 
-native_dtype = get_native_dtype(ds_id, dname, self%filename)
+native_dtype = get_native_dtype(self, dname, ds_id)
 
 !> cast the dataset read from disk to the variable type presented by user h5f%read("/my_dataset", x)
 !> We only cast when needed to save memory.

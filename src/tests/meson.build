@@ -6,7 +6,7 @@ test('minimal', test_minimal,
   priority: 100,
   timeout: 10)
 
-foreach t : ['array', 'attributes', 'deflate', 'destructor', 'error', 'exist', 'module', 'layout', 'lt', 'scalar', 'shape', 'string',
+foreach t : ['array', 'attributes', 'cast', 'deflate', 'destructor', 'error', 'exist', 'module', 'layout', 'lt', 'scalar', 'shape', 'string',
 'fail_read_size_mismatch', 'fail_read_rank_mismatch', 'fail_nonexist_variable']
 
   e = executable('test_'+t, 'test_' + t + '.f90', dependencies: hdf5_interface)

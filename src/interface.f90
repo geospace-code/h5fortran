@@ -5,7 +5,8 @@ use, intrinsic :: iso_fortran_env, only : real32, real64, int64, int32, stderr=>
 use hdf5, only : HID_T, SIZE_T, HSIZE_T, H5F_ACC_RDONLY_F, H5F_ACC_RDWR_F, H5F_ACC_TRUNC_F, &
   H5S_ALL_F, H5S_SELECT_SET_F, &
   H5D_CONTIGUOUS_F, H5D_CHUNKED_F, H5D_COMPACT_F, &
-  H5T_NATIVE_DOUBLE, H5T_NATIVE_REAL, H5T_NATIVE_INTEGER, H5T_NATIVE_CHARACTER, H5F_SCOPE_GLOBAL_F, &
+  H5T_NATIVE_DOUBLE, H5T_NATIVE_REAL, H5T_NATIVE_INTEGER, H5T_NATIVE_CHARACTER, H5T_STD_I64LE, &
+  H5F_SCOPE_GLOBAL_F, &
   h5open_f, h5close_f, &
   h5dopen_f, h5dclose_f, h5dget_space_f, &
   h5gcreate_f, h5gclose_f, &
@@ -17,9 +18,11 @@ use h5lt, only : h5ltget_dataset_ndims_f, h5ltget_dataset_info_f
 
 implicit none (type, external)
 private
-public :: hdf5_file, hdf5_close, h5write, h5read, h5exist, is_hdf5, h5write_attr, h5read_attr, &
-  check, hdf_shape_check, hdf_rank_check, hdf_get_slice, hdf_wrapup, & !< for submodules only
-  HSIZE_T, HID_T, H5T_NATIVE_DOUBLE, H5T_NATIVE_REAL, H5T_NATIVE_INTEGER !< HDF5 types for end users
+public :: hdf5_file, hdf5_close, h5write, h5read, h5exist, is_hdf5, h5write_attr, h5read_attr
+public :: check, hdf_shape_check, hdf_rank_check, hdf_get_slice, hdf_wrapup
+!! for submodules only
+public :: HSIZE_T, HID_T, H5T_NATIVE_DOUBLE, H5T_NATIVE_REAL, H5T_NATIVE_INTEGER, H5T_NATIVE_CHARACTER, H5T_STD_I64LE
+!! HDF5 types for end users
 
 !> main type
 type :: hdf5_file
@@ -47,6 +50,7 @@ procedure, public :: initialize => hdf_initialize, open => hdf_initialize, &
   flush => hdf_flush, &
   ndims => hdf_get_ndims, &
   shape => hdf_get_shape, layout => hdf_get_layout, chunks => hdf_get_chunk, &
+  dtype => get_native_dtype, &
   exist => hdf_check_exist, exists => hdf_check_exist, &
   is_contig => hdf_is_contig, is_chunked => hdf_is_chunked, is_compact => hdf_is_compact, &
   softlink => create_softlink
@@ -299,6 +303,13 @@ end subroutine h5write_7d
 end interface
 
 interface !< read.f90
+
+module integer(hid_t) function get_native_dtype(self, dname, ds_id)
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: dname
+integer(hid_t), intent(in), optional :: ds_id
+end function get_native_dtype
+
 module integer function hdf_get_ndims(self, dname) result (drank)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
@@ -322,7 +333,7 @@ character(*), intent(in) :: dname
 integer(hsize_t), intent(out) :: chunk_size(:)
 end subroutine hdf_get_chunk
 
-module logical function hdf_check_exist(self, dname) result(exists)
+module logical function hdf_check_exist(self, dname)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
 end function hdf_check_exist

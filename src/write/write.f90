@@ -25,7 +25,6 @@ if(.not.self%is_open) error stop 'h5fortran:write: file handle is not open: ' //
 
 call h5ltpath_valid_f(self%lid, dname, .true., exists, ierr)
 !! h5lexists_f can false error with groups--just use h5ltpath_valid
-
 !! stricter than self%exists() since we're creating and/or writing variable
 if (ierr /= 0) error stop 'ERROR:h5fortran:create: variable path invalid: ' // dname // ' in ' // self%filename
 
