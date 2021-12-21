@@ -89,6 +89,20 @@ set(${outvar} ${_v} PARENT_SCOPE)
 
 endfunction(pop_flag)
 
+macro(find_mpi)
+# non-cache set by FindMPI are visible outside function -- need macro just to see within that function
+set(mpi_comp C)
+if(Fortran IN_LIST HDF5_FIND_COMPONENTS)
+  list(APPEND mpi_comp Fortran)
+endif()
+if(HDF5_FIND_REQUIRED)
+  find_package(MPI COMPONENTS ${mpi_comp} REQUIRED)
+else()
+  find_package(MPI COMPONENTS ${mpi_comp})
+endif()
+
+endmacro(find_mpi)
+
 
 function(detect_config)
 
@@ -115,15 +129,12 @@ check_symbol_exists(H5_HAVE_PARALLEL ${h5_conf} HDF5_HAVE_PARALLEL)
 set(HDF5_parallel_FOUND false PARENT_SCOPE)
 
 if(HDF5_HAVE_PARALLEL)
-  set(mpi_comp C)
-  if(Fortran IN_LIST HDF5_FIND_COMPONENTS)
-    list(APPEND mpi_comp Fortran)
+  find_mpi()
+  if(NOT MPI_FOUND)
+    return()
   endif()
-  find_package(MPI COMPONENTS ${mpi_comp})
 
-  if(MPI_FOUND)
-    set(HDF5_parallel_FOUND true PARENT_SCOPE)
-  endif()
+  set(HDF5_parallel_FOUND true PARENT_SCOPE)
 endif()
 
 # get version
@@ -500,6 +511,8 @@ list(PREPEND CMAKE_REQUIRED_LIBRARIES ${HDF5_C_LIBRARIES})
 set(CMAKE_REQUIRED_INCLUDES ${HDF5_C_INCLUDE_DIR})
 
 if(HDF5_parallel_FOUND)
+  find_mpi()
+
   list(APPEND CMAKE_REQUIRED_INCLUDES ${MPI_C_INCLUDE_DIRS})
   list(APPEND CMAKE_REQUIRED_LIBRARIES ${MPI_C_LIBRARIES})
 
