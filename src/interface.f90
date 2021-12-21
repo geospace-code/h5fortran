@@ -462,12 +462,11 @@ end interface
 contains
 
 
-subroutine hdf_initialize(self,filename,ierr, action,comp_lvl,verbose,debug)
+subroutine hdf_initialize(self, filename, action, comp_lvl, verbose, debug)
 !! Opens hdf5 file
 
 class(hdf5_file), intent(inout)    :: self
 character(*), intent(in) :: filename
-integer, intent(out), optional :: ierr  !< 0 if OK
 character(*), intent(in), optional :: action !< r, r+, rw, w, a
 integer, intent(in), optional      :: comp_lvl  !< 0: no compression. 1-9: ZLIB compression, higher is more compressior
 logical, intent(in), optional      :: verbose, debug
@@ -500,11 +499,7 @@ if(self%verbose) then
 else
   call h5eset_auto_f(0, ier)
 endif
-if(present(ierr)) ierr = ier
-if (check(ier, 'ERROR:h5fortran: HDF5 library set traceback')) then
-  if (present(ierr)) return
-  error stop
-endif
+if (check(ier, 'ERROR:h5fortran: HDF5 library set traceback')) error stop
 
 laction = 'rw'
 if(present(action)) laction = action
@@ -526,11 +521,7 @@ case default
   error stop 'h5fortran: Unsupported action: ' // laction
 end select
 
-if (present(ierr)) ierr = ier
-if (check(ier, filename)) then
-  if (present(ierr)) return
-  error stop
-endif
+if (check(ier, filename)) error stop
 
 self%is_open = .true.
 
