@@ -5,6 +5,10 @@ LANGUAGES C Fortran
 
 option(hdf5_parallel "build HDF5 parallel MPI")
 
+if(NOT HDF5_VERSION)
+  set(HDF5_VERSION 1.12.1)  # default version to build
+endif()
+
 # --- system checks
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   message(FATAL_ERROR "please specify where to install HDF5 under, like
@@ -57,10 +61,11 @@ include(${PROJECT_SOURCE_DIR}/../cmake/libraries.cmake)
 
 set_directory_properties(PROPERTIES EP_UPDATE_DISCONNECTED true)
 
-message(STATUS "Building and installing HDF5 to ${CMAKE_INSTALL_PREFIX}")
+message(STATUS "Build / install HDF5 ${HDF5_VERSION} to ${CMAKE_INSTALL_PREFIX}")
 
 include(${PROJECT_SOURCE_DIR}/../cmake/build_hdf5.cmake)
 
+# --- features
 include(FeatureSummary)
 
 add_feature_info(HDF5parallel hdf5_parallel "HDF5 MPI layer")
