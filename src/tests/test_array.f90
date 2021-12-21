@@ -153,7 +153,6 @@ call h%write('/int32a-1d', [1,3], istart=[1], iend=[2])
 print *, 'PASSED: create dataset and write slice 1D'
 
 call h%write('/int32-1d', [35, 70], istart=[2], iend=[3], stride=[1])
-call h%write_i32('/int32-1d', [35, 70], istart=[2], iend=[3], stride=[1])
 
 call h%read('/int32-1d', i1t)
 if (.not.all(i1t==[1,35,70,4])) then

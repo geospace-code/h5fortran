@@ -15,7 +15,6 @@ character(*), parameter :: path='test_string.h5'
 call h%open(path, action='w')
 
 call h%write('/little', '42')
-call h%write_char('/little_char', '42')
 call h%write('/MySentence', 'this is a little sentence.')
 
 call h%close()

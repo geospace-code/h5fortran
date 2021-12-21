@@ -7,7 +7,7 @@ implicit none (type, external)
 contains
 
 
-module procedure hdf_write_scalar_r32
+module procedure hdf_write_scalar
 
 integer(HID_T)  :: sid, did
 integer(HSIZE_T), allocatable :: dims(:)
@@ -17,100 +17,34 @@ if(.not.self%is_open) error stop 'h5fortran:write: file handle is not open'
 
 allocate(dims(0))
 
-call hdf_create(self, dname, H5T_NATIVE_REAL, dims, sid, did, compact=compact)
-call h5dwrite_f(did, H5T_NATIVE_REAL, value, dims, ier)
+select type (value)
+type is (real(real32))
+  call hdf_create(self, dname, H5T_NATIVE_REAL, dims, sid, did, compact=compact)
+  call h5dwrite_f(did, H5T_NATIVE_REAL, value, dims, ier)
+type is (real(real64))
+  call hdf_create(self, dname, H5T_NATIVE_DOUBLE, dims, sid, did, compact=compact)
+  call h5dwrite_f(did, H5T_NATIVE_DOUBLE, value, dims, ier)
+type is (integer(int32))
+  call hdf_create(self, dname, H5T_NATIVE_INTEGER, dims, sid, did, compact=compact)
+  call h5dwrite_f(did, H5T_NATIVE_INTEGER, value, dims, ier)
+type is (integer(int64))
+  call hdf_create(self, dname, H5T_STD_I64LE, dims, sid, did, compact=compact)
+  call h5dwrite_f(did, H5T_STD_I64LE, value, dims, ier)
+type is (character(*))
+  call h5ltmake_dataset_string_f(self%lid, dname, value, ier)
+class default
+  error stop "h5fortran:write: unknown type"
+end select
 
-if (ier/=0) error stop 'h5fortran:write: could not write ' // dname // ' to ' // self%filename
+if (ier /= 0) error stop 'h5fortran:write: could not write ' // dname // ' to ' // self%filename
 
-call hdf_wrapup(did, sid)
+select type (value)
+type is (character(*))
+class default
+  call hdf_wrapup(did, sid)
+end select
 
-if (present(ierr)) ierr = ier
-if (check(ier, self%filename, dname) .and. .not.present(ierr)) error stop "h5fortran:write:wrapup: " // dname
-
-end procedure hdf_write_scalar_r32
-
-
-module procedure hdf_write_scalar_r64
-
-integer(HID_T)  :: sid, did
-integer(HSIZE_T), allocatable :: dims(:)
-integer :: ier
-
-if(.not.self%is_open) error stop 'h5fortran:write: file handle is not open'
-
-allocate(dims(0))
-
-call hdf_create(self, dname, H5T_NATIVE_DOUBLE, dims, sid, did, compact=compact)
-call h5dwrite_f(did, H5T_NATIVE_DOUBLE, value, dims, ier)
-
-if (ier/=0) error stop 'h5fortran:write: could not write ' // dname // ' to ' // self%filename
-
-call hdf_wrapup(did, sid)
-
-if (present(ierr)) ierr = ier
-if (check(ier, self%filename, dname) .and. .not.present(ierr)) error stop "h5fortran:write:wrapup: " // dname
-
-end procedure hdf_write_scalar_r64
-
-
-module procedure hdf_write_scalar_i32
-
-integer(HID_T)  :: sid, did
-integer(HSIZE_T), allocatable :: dims(:)
-integer :: ier
-
-if(.not.self%is_open) error stop 'h5fortran:write: file handle is not open'
-
-allocate(dims(0))
-
-call hdf_create(self, dname, H5T_NATIVE_INTEGER, dims, sid, did, compact=compact)
-call h5dwrite_f(did, H5T_NATIVE_INTEGER, value, dims, ier)
-
-if (ier/=0) error stop 'h5fortran:write: could not write ' // dname // ' to ' // self%filename
-
-call hdf_wrapup(did, sid)
-
-if (present(ierr)) ierr = ier
-if (check(ier, self%filename, dname) .and. .not.present(ierr)) error stop "h5fortran:write:wrapup: " // dname
-
-end procedure hdf_write_scalar_i32
-
-
-module procedure hdf_write_scalar_i64
-
-integer(HID_T)  :: sid, did
-integer(HSIZE_T), allocatable :: dims(:)
-integer :: ier
-
-if(.not.self%is_open) error stop 'h5fortran:write: file handle is not open'
-
-allocate(dims(0))
-
-call hdf_create(self, dname, H5T_STD_I64LE, dims, sid, did, compact=compact)
-call h5dwrite_f(did, H5T_STD_I64LE, value, dims, ier)
-
-if (ier/=0) error stop 'h5fortran:write: could not write ' // dname // ' to ' // self%filename
-
-call hdf_wrapup(did, sid)
-
-if (present(ierr)) ierr = ier
-if (check(ier, self%filename, dname) .and. .not.present(ierr)) error stop "h5fortran:write:wrapup: " // dname
-
-end procedure hdf_write_scalar_i64
-
-
-module procedure hdf_write_scalar_char
-
-integer :: ier
-
-if(.not.self%is_open) error stop 'h5fortran:write: file handle is not open'
-
-call h5ltmake_dataset_string_f(self%lid, dname, value, ier)
-
-if (present(ierr)) ierr = ier
-if (check(ier, self%filename, dname) .and. .not.present(ierr)) error stop "h5fortran:write:wrapup: " // dname
-
-end procedure hdf_write_scalar_char
+end procedure hdf_write_scalar
 
 
 module procedure hdf_write_1d_r32

@@ -33,16 +33,12 @@ i1_64 = i1
 call h%open(fn, action='w')
 !> scalar tests
 call h%write('/scalar_int32', 42_int32)
-call h%write_i32('/scalar_i32', 42_int32)
 
 call h%write('/scalar_int64', 42_int64)
-call h%write_i64('/scalar_i64', 42_int64)
 
 call h%write('/scalar_real32', -1._real32)
-call h%write_r32("/scalar_r32", -1._real32)
 
 call h%write('/scalar_real64', -1._real64)
-call h%write_r64("/scalar_r64", -1._real64)
 
 !> vector
 call h%write('/1d_real', r1)
