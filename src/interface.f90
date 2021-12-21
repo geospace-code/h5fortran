@@ -19,7 +19,7 @@ use h5lt, only : h5ltget_dataset_ndims_f, h5ltget_dataset_info_f
 
 implicit none (type, external)
 private
-public :: hdf5_file, hdf5_close, h5write, h5read, h5exist, is_hdf5, h5write_attr, h5read_attr
+public :: hdf5_file, hdf5_close, h5write, h5read, h5exist, is_hdf5, h5write_attr, h5read_attr, hdf5version
 public :: check, hdf_shape_check, hdf_rank_check, hdf_get_slice, hdf_wrapup
 !! for submodules only
 public :: HSIZE_T, HID_T, H5T_NATIVE_DOUBLE, H5T_NATIVE_REAL, H5T_NATIVE_INTEGER, H5T_NATIVE_CHARACTER, H5T_STD_I64LE
@@ -38,7 +38,6 @@ integer :: comp_lvl = 0 !< compression level (1-9)  0: disable compression
 logical :: verbose=.true.
 logical :: debug=.false.
 logical :: is_open = .false.
-integer :: libversion(3)  !< major, minor, rel
 
 logical :: use_mpi = .false. !< MPI or serial HDF5
 
@@ -489,11 +488,6 @@ if (present(debug)) self%debug = debug
 call h5open_f(ier)
 if (ier /= 0) error stop 'h5fortran:open: HDF5 library initialize'
 
-!> get library version
-call h5get_libversion_f(self%libversion(1), self%libversion(2), self%libversion(3), ier)
-if (self%debug) print '(a,i0,a1,i0,a1,i0)', 'HDF5 version: ',self%libversion(1),'.',self%libversion(2),'.',self%libversion(3)
-if (check(ier, 'ERROR:h5fortran: HDF5 library get version')) error stop
-
 if(self%verbose) then
   call h5eset_auto_f(1, ier)
 else
@@ -577,6 +571,17 @@ print *, "auto-closing " // self%filename
 call self%close()
 
 end subroutine destructor
+
+
+function hdf5version() result(v)
+!! tell HDF5 library version (major, minor, release)
+integer :: v(3), ierr
+
+!> get library version
+call h5get_libversion_f(v(1), v(2), v(3), ierr)
+if (check(ierr, 'ERROR:h5fortran: HDF5 library get version')) error stop
+
+end function hdf5version
 
 
 subroutine hdf_flush(self)

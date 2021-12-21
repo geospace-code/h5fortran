@@ -7,7 +7,7 @@
     "downloadUrl": "https://github.com/scivision/h5fortran/releases",
     "issueTracker": "https://github.com/scivision/h5fortran/issues",
     "name": "h5fortran",
-    "version": "4.4.1",
+    "version": "4.4.2",
     "identifier": "10.5281/zenodo.3757269",
     "description": "Lightweight object-oriented HDF5 Fortran interface",
     "applicationCategory": "file I/O",

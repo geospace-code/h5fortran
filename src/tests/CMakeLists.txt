@@ -53,7 +53,7 @@ endforeach()
 endfunction(setup_test)
 
 # --- setup unit tests
-set(test_names array attributes cast deflate destructor exist module layout lt scalar shape string
+set(test_names array attributes cast deflate destructor exist module layout lt scalar shape string version
 fail_read_size_mismatch fail_read_rank_mismatch fail_nonexist_variable)
 
 setup_test("${test_names}")
@@ -61,6 +61,11 @@ setup_test("${test_names}")
 set_tests_properties(shape PROPERTIES
 FIXTURES_SETUP h5shape
 )
+
+set_tests_properties(version PROPERTIES
+PASS_REGULAR_EXPRESSION ${HDF5_VERSION}
+)
+
 
 set(shape_file ${CMAKE_CURRENT_BINARY_DIR}/test_shape.h5)
 

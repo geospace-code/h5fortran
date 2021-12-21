@@ -11,6 +11,13 @@ use hdf5, only: HSIZE_T, HID_T
 type(hdf5_file) :: h
 ```
 
+Query HDF5 library version:
+
+```fortran
+use h5fortran, only : hdf5version
+print *, hdf5version()
+```
+
 ## Open / close HDF5 file reference
 
 More than one HDF5 file can be open in a program, by declaring unique file handle (variable) like:
@@ -20,11 +27,10 @@ type(hdf5_file) :: h1, h2, h3
 ```
 
 ```fortran
-call h%open(filename,ierr, action,comp_lvl,verbose,debug)
+call h%open(filename,action,comp_lvl,verbose,debug)
 !! Opens hdf5 file
 
 character(*), intent(in) :: filename
-integer, intent(out), optional :: ierr  !< 0 if OK
 character(*), intent(in), optional :: action  !< r, w, rw
 integer, intent(in), optional      :: comp_lvl  !< 0: no compression. 1-9: ZLIB compression, higher is more compressior
 logical, intent(in), optional      :: verbose, debug
