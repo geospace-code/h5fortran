@@ -27,13 +27,15 @@ target_link_libraries(test_${name} PRIVATE h5fortran::h5fortran)
 target_compile_options(test_${name} PRIVATE "$<$<Fortran_COMPILER_ID:GNU>:-Wno-compare-reals;-Wno-conversion>")
 set_target_properties(test_${name} PROPERTIES LABELS unit)
 
-add_test(NAME ${name}
-COMMAND test_${name}
-WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-)
+if(${name} STREQUAL version)
+  add_test(NAME ${name} COMMAND test_${name} ${HDF5_VERSION})
+else()
+  add_test(NAME ${name} COMMAND test_${name})
+endif()
 set_tests_properties(${name} PROPERTIES
 FIXTURES_REQUIRED h5lib
 TIMEOUT 10
+WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 )
 
 if(${name} MATCHES ".*fail.*")
@@ -61,11 +63,6 @@ setup_test("${test_names}")
 set_tests_properties(shape PROPERTIES
 FIXTURES_SETUP h5shape
 )
-
-set_tests_properties(version PROPERTIES
-PASS_REGULAR_EXPRESSION ${HDF5_VERSION}
-)
-
 
 set(shape_file ${CMAKE_CURRENT_BINARY_DIR}/test_shape.h5)
 
