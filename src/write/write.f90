@@ -58,9 +58,7 @@ if(self%debug) print *, 'h5fortran:TRACE1: ' // dname
 
 !> Only new datasets go past this point
 
-call self%write_group(dname, ierr)
-if (ierr /= 0) error stop 'ERROR:h5fortran:create: could not create group for ' // dname // ' in ' // self%filename
-
+call self%write_group(dname)
 
 !> create properties
 plist_id = H5P_DEFAULT_F
@@ -228,12 +226,7 @@ integer :: ier
 if(.not.self%is_open) error stop 'h5fortran:open_group: file handle is not open: ' // self%filename
 
 call h5gopen_f(self%lid, gname, self%gid, ier)
-
-if (present(ierr)) ierr = ier
-if (check(ier, self%filename, gname)) then
-  if (present(ierr)) return
-  error stop
-endif
+if (check(ier, self%filename, gname)) error stop
 
 self%glid = self%lid
 self%lid  = self%gid
@@ -248,12 +241,7 @@ integer :: ier
 if(.not.self%is_open) error stop 'h5fortran:close_group: file handle is not open: ' // self%filename
 
 call h5gclose_f(self%gid, ier)
-
-if (present(ierr)) ierr = ier
-if (check(ier, self%filename)) then
-  if (present(ierr)) return
-  error stop
-endif
+if (check(ier, self%filename)) error stop
 
 self%lid = self%glid
 

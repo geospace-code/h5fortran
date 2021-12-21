@@ -12,10 +12,6 @@ type(hdf5_file) :: h5f
 * string attributes may be applied to any variable at time of writing or later.
 * h5f%open(..., `comp_lvl=1`) option enables GZIP compression., where comp_lvl is from 1 to 9. bigger comp_lvl gives more compression but isslower to write.
 
-`integer, intent(out) :: ierr` is an optional parameter. It will be non-zero if error detected.
-This value should be checked, particularly for write operations to avoid missing error conditions.
-If `ierr` is omitted, then h5fortran will raise `error stop` if an error occurs.
-
 ## Create new HDF5 file, with variable "value1"
 
 ```fortran
@@ -125,7 +121,7 @@ call h5f%open('test.h5', action='rw')
 
 call h5f%write('/value1', 123.)
 
-call h5f%close(ierr)
+call h5f%close()
 ```
 
 ## Add gzip compressed 3-D array "value2" to existing HDF5 file "test.h5"
@@ -137,7 +133,7 @@ call h5f%open('test.h5', comp_lvl=1)
 
 call h5f%write('/value2', val2)
 
-call h5f%close(ierr)
+call h5f%close()
 ```
 
 chunk_size may optionally be set in the `%write()` method for 2-d to 7-d arrays.

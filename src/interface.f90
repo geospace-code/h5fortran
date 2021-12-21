@@ -54,14 +54,7 @@ procedure, public :: initialize => hdf_initialize, open => hdf_initialize, &
 !> below are procedure that need generic mapping (type or rank agnostic)
 
 !> write group or dataset integer/real
-generic, public :: write => hdf_write_scalar, &
-hdf_write_1d_r32, hdf_write_1d_r64, hdf_write_1d_i32, hdf_write_1d_i64, &
-hdf_write_2d_r32, hdf_write_2d_r64, hdf_write_2d_i32, hdf_write_2d_i64, &
-hdf_write_3d_r32, hdf_write_3d_r64, hdf_write_3d_i32, hdf_write_3d_i64, &
-hdf_write_4d_r32, hdf_write_4d_r64, hdf_write_4d_i32, hdf_write_4d_i64, &
-hdf_write_5d_r32, hdf_write_5d_r64, hdf_write_5d_i32, hdf_write_5d_i64, &
-hdf_write_6d_r32, hdf_write_6d_r64, hdf_write_6d_i32, hdf_write_6d_i64, &
-hdf_write_7d_r32, hdf_write_7d_r64, hdf_write_7d_i32, hdf_write_7d_i64
+generic, public :: write => h5write_scalar, h5write_1d, h5write_2d, h5write_3d, h5write_4d, h5write_5d, h5write_6d, h5write_7d
 
 !> write attributes
 generic, public :: writeattr => writeattr_char, writeattr_num
@@ -75,16 +68,9 @@ h5read_1d, h5read_2d, h5read_3d, h5read_4d, h5read_5d, h5read_6d, h5read_7d
 
 !> private methods
 !! each method must be declared here, and above as a generic, public
-procedure,private :: hdf_write_scalar, &
-hdf_write_1d_r32, hdf_write_1d_r64, hdf_write_1d_i32, hdf_write_1d_i64, &
-hdf_write_2d_r32, hdf_write_2d_r64, hdf_write_2d_i32, hdf_write_2d_i64, &
-hdf_write_3d_r32, hdf_write_3d_r64, hdf_write_3d_i32, hdf_write_3d_i64, &
-hdf_write_4d_r32, hdf_write_4d_r64, hdf_write_4d_i32, hdf_write_4d_i64, &
-hdf_write_5d_r32, hdf_write_5d_r64, hdf_write_5d_i32, hdf_write_5d_i64, &
-hdf_write_6d_r32, hdf_write_6d_r64, hdf_write_6d_i32, hdf_write_6d_i64, &
-hdf_write_7d_r32, hdf_write_7d_r64, hdf_write_7d_i32, hdf_write_7d_i64, &
-h5read_scalar, &
-h5read_1d, h5read_2d, h5read_3d, h5read_4d, h5read_5d, h5read_6d, h5read_7d, &
+procedure,private :: h5write_scalar, &
+h5write_1d, h5write_2d, h5write_3d, h5write_4d, h5write_5d, h5write_6d, h5write_7d, &
+h5read_scalar, h5read_1d, h5read_2d, h5read_3d, h5read_4d, h5read_5d, h5read_6d, h5read_7d, &
 writeattr_char, writeattr_num, readattr_char, readattr_num
 
 !> flush file to disk and close file if user forgets to do so.
@@ -94,19 +80,11 @@ end type hdf5_file
 
 
 interface h5write
-procedure lt0write_r32, lt0write_r64, lt0write_i32, lt0write_i64, lt0write_char, &
-lt1write_r32, lt1write_r64, lt1write_i32, lt1write_i64, &
-lt2write_r32, lt2write_r64, lt2write_i32, lt2write_i64, &
-lt3write_r32, lt3write_r64, lt3write_i32, lt3write_i64, &
-lt4write_r32, lt4write_r64, lt4write_i32, lt4write_i64, &
-lt5write_r32, lt5write_r64, lt5write_i32, lt5write_i64, &
-lt6write_r32, lt6write_r64, lt6write_i32, lt6write_i64, &
-lt7write_r32, lt7write_r64, lt7write_i32, lt7write_i64
+procedure lt0write, lt1write, lt2write, lt3write, lt4write, lt5write, lt6write, lt7write
 end interface h5write
 
 interface h5read
-procedure lt0read_r32, lt0read_r64, lt0read_i32, lt0read_i64, lt0read_char, &
-lt1read, lt2read, lt3read, lt4read, lt5read, lt6read, lt7read
+procedure lt0read, lt1read, lt2read, lt3read, lt4read, lt5read, lt6read, lt7read
 end interface h5read
 
 interface h5write_attr
@@ -132,15 +110,13 @@ logical, intent(in), optional :: compact
 !! keep istart, iend, stride for future slice shape check
 end subroutine hdf_create
 
-module subroutine hdf_open_group(self, gname, ierr)
+module subroutine hdf_open_group(self, gname)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in)        :: gname
-integer, intent(out), optional :: ierr
 end subroutine hdf_open_group
 
-module subroutine hdf_close_group(self, ierr)
+module subroutine hdf_close_group(self)
 class(hdf5_file), intent(inout) :: self
-integer, intent(out), optional :: ierr
 end subroutine hdf_close_group
 
 module subroutine create_softlink(self, target, link)
@@ -157,583 +133,169 @@ character(*), intent(in) :: filename, dname
 end function h5exist
 
 
-module subroutine lt0write_r32(filename, dname, value, ierr)
+module subroutine lt0write(filename, dname, value)
 character(*), intent(in) :: filename, dname
-real(real32), intent(in) :: value
-integer, intent(out), optional :: ierr
-end subroutine lt0write_r32
+class(*), intent(in) :: value
+end subroutine lt0write
 
-module subroutine lt0write_r64(filename, dname, value, ierr)
+
+module subroutine lt1write(filename, dname, value)
 character(*), intent(in) :: filename, dname
-real(real64), intent(in) :: value
-integer, intent(out), optional :: ierr
-end subroutine lt0write_r64
+class(*), intent(in) :: value(:)
+end subroutine lt1write
 
-module subroutine lt0write_i32(filename, dname, value, ierr)
+
+module subroutine lt2write(filename, dname, value)
 character(*), intent(in) :: filename, dname
-integer(int32), intent(in) :: value
-integer, intent(out), optional :: ierr
-end subroutine lt0write_i32
+class(*), intent(in) :: value(:,:)
+end subroutine lt2write
 
-module subroutine lt0write_i64(filename, dname, value, ierr)
+
+module subroutine lt3write(filename, dname, value)
 character(*), intent(in) :: filename, dname
-integer(int64), intent(in) :: value
-integer, intent(out), optional :: ierr
-end subroutine lt0write_i64
+class(*), intent(in) :: value(:,:,:)
+end subroutine lt3write
 
-module subroutine lt0write_char(filename, dname, value, ierr)
+
+module subroutine lt4write(filename, dname, value)
 character(*), intent(in) :: filename, dname
-character(*), intent(in) :: value
-integer, intent(out), optional :: ierr
-end subroutine lt0write_char
+class(*), intent(in) :: value(:,:,:,:)
+end subroutine lt4write
 
 
-module subroutine lt1write_r32(filename, dname, value, ierr)
+module subroutine lt5write(filename, dname, value)
 character(*), intent(in) :: filename, dname
-real(real32), intent(in) :: value(:)
-integer, intent(out), optional :: ierr
-end subroutine lt1write_r32
+class(*), intent(in) :: value(:,:,:,:,:)
+end subroutine lt5write
 
-module subroutine lt1write_r64(filename, dname, value, ierr)
+module subroutine lt6write(filename, dname, value)
 character(*), intent(in) :: filename, dname
-real(real64), intent(in) :: value(:)
-integer, intent(out), optional :: ierr
-end subroutine lt1write_r64
+class(*), intent(in) :: value(:,:,:,:,:,:)
+end subroutine lt6write
 
-module subroutine lt1write_i32(filename, dname, value, ierr)
+module subroutine lt7write(filename, dname, value)
 character(*), intent(in) :: filename, dname
-integer(int32), intent(in) :: value(:)
-integer, intent(out), optional :: ierr
-end subroutine lt1write_i32
-
-module subroutine lt1write_i64(filename, dname, value, ierr)
-character(*), intent(in) :: filename, dname
-integer(int64), intent(in) :: value(:)
-integer, intent(out), optional :: ierr
-end subroutine lt1write_i64
-
-
-module subroutine lt2write_r32(filename, dname, value, ierr)
-character(*), intent(in) :: filename, dname
-real(real32), intent(in) :: value(:,:)
-integer, intent(out), optional :: ierr
-end subroutine lt2write_r32
-
-module subroutine lt2write_r64(filename, dname, value, ierr)
-character(*), intent(in) :: filename, dname
-real(real64), intent(in) :: value(:,:)
-integer, intent(out), optional :: ierr
-end subroutine lt2write_r64
-
-module subroutine lt2write_i32(filename, dname, value, ierr)
-character(*), intent(in) :: filename, dname
-integer(int32), intent(in) :: value(:,:)
-integer, intent(out), optional :: ierr
-end subroutine lt2write_i32
-
-module subroutine lt2write_i64(filename, dname, value, ierr)
-character(*), intent(in) :: filename, dname
-integer(int64), intent(in) :: value(:,:)
-integer, intent(out), optional :: ierr
-end subroutine lt2write_i64
-
-
-module subroutine lt3write_r32(filename, dname, value, ierr)
-character(*), intent(in) :: filename, dname
-real(real32), intent(in) :: value(:,:,:)
-integer, intent(out), optional :: ierr
-end subroutine lt3write_r32
-
-module subroutine lt3write_r64(filename, dname, value, ierr)
-character(*), intent(in) :: filename, dname
-real(real64), intent(in) :: value(:,:,:)
-integer, intent(out), optional :: ierr
-end subroutine lt3write_r64
-
-module subroutine lt3write_i32(filename, dname, value, ierr)
-character(*), intent(in) :: filename, dname
-integer(int32), intent(in) :: value(:,:,:)
-integer, intent(out), optional :: ierr
-end subroutine lt3write_i32
-
-module subroutine lt3write_i64(filename, dname, value, ierr)
-character(*), intent(in) :: filename, dname
-integer(int64), intent(in) :: value(:,:,:)
-integer, intent(out), optional :: ierr
-end subroutine lt3write_i64
-
-
-module subroutine lt4write_r32(filename, dname, value, ierr)
-character(*), intent(in) :: filename, dname
-real(real32), intent(in) :: value(:,:,:,:)
-integer, intent(out), optional :: ierr
-end subroutine lt4write_r32
-
-module subroutine lt4write_r64(filename, dname, value, ierr)
-character(*), intent(in) :: filename, dname
-real(real64), intent(in) :: value(:,:,:,:)
-integer, intent(out), optional :: ierr
-end subroutine lt4write_r64
-
-module subroutine lt4write_i32(filename, dname, value, ierr)
-character(*), intent(in) :: filename, dname
-integer(int32), intent(in) :: value(:,:,:,:)
-integer, intent(out), optional :: ierr
-end subroutine lt4write_i32
-
-module subroutine lt4write_i64(filename, dname, value, ierr)
-character(*), intent(in) :: filename, dname
-integer(int64), intent(in) :: value(:,:,:,:)
-integer, intent(out), optional :: ierr
-end subroutine lt4write_i64
-
-
-module subroutine lt5write_r32(filename, dname, value, ierr)
-character(*), intent(in) :: filename, dname
-real(real32), intent(in) :: value(:,:,:,:,:)
-integer, intent(out), optional :: ierr
-end subroutine lt5write_r32
-
-module subroutine lt5write_r64(filename, dname, value, ierr)
-character(*), intent(in) :: filename, dname
-real(real64), intent(in) :: value(:,:,:,:,:)
-integer, intent(out), optional :: ierr
-end subroutine lt5write_r64
-
-module subroutine lt5write_i32(filename, dname, value, ierr)
-character(*), intent(in) :: filename, dname
-integer(int32), intent(in) :: value(:,:,:,:,:)
-integer, intent(out), optional :: ierr
-end subroutine lt5write_i32
-
-module subroutine lt5write_i64(filename, dname, value, ierr)
-character(*), intent(in) :: filename, dname
-integer(int64), intent(in) :: value(:,:,:,:,:)
-integer, intent(out), optional :: ierr
-end subroutine lt5write_i64
-
-
-module subroutine lt6write_r32(filename, dname, value, ierr)
-character(*), intent(in) :: filename, dname
-real(real32), intent(in) :: value(:,:,:,:,:,:)
-integer, intent(out), optional :: ierr
-end subroutine lt6write_r32
-
-module subroutine lt6write_r64(filename, dname, value, ierr)
-character(*), intent(in) :: filename, dname
-real(real64), intent(in) :: value(:,:,:,:,:,:)
-integer, intent(out), optional :: ierr
-end subroutine lt6write_r64
-
-module subroutine lt6write_i32(filename, dname, value, ierr)
-character(*), intent(in) :: filename, dname
-integer(int32), intent(in) :: value(:,:,:,:,:,:)
-integer, intent(out), optional :: ierr
-end subroutine lt6write_i32
-
-module subroutine lt6write_i64(filename, dname, value, ierr)
-character(*), intent(in) :: filename, dname
-integer(int64), intent(in) :: value(:,:,:,:,:,:)
-integer, intent(out), optional :: ierr
-end subroutine lt6write_i64
-
-
-module subroutine lt7write_r32(filename, dname, value, ierr)
-character(*), intent(in) :: filename, dname
-real(real32), intent(in) :: value(:,:,:,:,:,:,:)
-integer, intent(out), optional :: ierr
-end subroutine lt7write_r32
-
-module subroutine lt7write_r64(filename, dname, value, ierr)
-character(*), intent(in) :: filename, dname
-real(real64), intent(in) :: value(:,:,:,:,:,:,:)
-integer, intent(out), optional :: ierr
-end subroutine lt7write_r64
-
-module subroutine lt7write_i32(filename, dname, value, ierr)
-character(*), intent(in) :: filename, dname
-integer(int32), intent(in) :: value(:,:,:,:,:,:,:)
-integer, intent(out), optional :: ierr
-end subroutine lt7write_i32
-
-module subroutine lt7write_i64(filename, dname, value, ierr)
-character(*), intent(in) :: filename, dname
-integer(int64), intent(in) :: value(:,:,:,:,:,:,:)
-integer, intent(out), optional :: ierr
-end subroutine lt7write_i64
+class(*), intent(in) :: value(:,:,:,:,:,:,:)
+end subroutine lt7write
 
 end interface
 
 interface !< reader_lt.f90
-module subroutine lt0read_r32(filename, dname, value, ierr)
+module subroutine lt0read(filename, dname, value)
 character(*), intent(in) :: filename, dname
-real(real32), intent(out) :: value
-integer, intent(out), optional :: ierr
-end subroutine lt0read_r32
+class(*), intent(out) :: value
+end subroutine lt0read
 
-module subroutine lt0read_r64(filename, dname, value, ierr)
-character(*), intent(in) :: filename, dname
-real(real64), intent(out) :: value
-integer, intent(out), optional :: ierr
-end subroutine lt0read_r64
-
-module subroutine lt0read_i32(filename, dname, value, ierr)
-character(*), intent(in) :: filename, dname
-integer(int32), intent(out) :: value
-integer, intent(out), optional :: ierr
-end subroutine lt0read_i32
-
-module subroutine lt0read_i64(filename, dname, value, ierr)
-character(*), intent(in) :: filename, dname
-integer(int64), intent(out) :: value
-integer, intent(out), optional :: ierr
-end subroutine lt0read_i64
-
-module subroutine lt0read_char(filename, dname, value, ierr)
-character(*), intent(in) :: filename, dname
-character(*), intent(out) :: value
-integer, intent(out), optional :: ierr
-end subroutine lt0read_char
-
-
-
-!! NOTE: intent(inout) for non-scalar read is avoid reallocation and segfault with allocatable arrays in user programs,
+!! NOTE: intent(inout) for non-scalar read is avoid reallocation and
+!! segfault with allocatable arrays in user programs,
 !! even when the array was already allocated before the h5fortran interface was called.
-module subroutine lt1read(filename, dname, value, ierr)
+module subroutine lt1read(filename, dname, value)
 character(*), intent(in) :: filename, dname
 class(*), intent(inout) :: value(:)
-integer, intent(out), optional :: ierr
 end subroutine lt1read
 
-module subroutine lt2read(filename, dname, value, ierr)
+module subroutine lt2read(filename, dname, value)
 character(*), intent(in) :: filename, dname
 class(*), intent(inout) :: value(:,:)
-integer, intent(out), optional :: ierr
 end subroutine lt2read
 
-module subroutine lt3read(filename, dname, value, ierr)
+module subroutine lt3read(filename, dname, value)
 character(*), intent(in) :: filename, dname
 class(*), intent(inout) :: value(:,:,:)
-integer, intent(out), optional :: ierr
 end subroutine lt3read
 
-module subroutine lt4read(filename, dname, value, ierr)
+module subroutine lt4read(filename, dname, value)
 character(*), intent(in) :: filename, dname
 class(*), intent(inout) :: value(:,:,:,:)
-integer, intent(out), optional :: ierr
 end subroutine lt4read
 
-module subroutine lt5read(filename, dname, value, ierr)
+module subroutine lt5read(filename, dname, value)
 character(*), intent(in) :: filename, dname
 class(*), intent(inout) :: value(:,:,:,:,:)
-integer, intent(out), optional :: ierr
 end subroutine lt5read
 
-module subroutine lt6read(filename, dname, value, ierr)
+module subroutine lt6read(filename, dname, value)
 character(*), intent(in) :: filename, dname
 class(*), intent(inout) :: value(:,:,:,:,:,:)
-integer, intent(out), optional :: ierr
 end subroutine lt6read
 
-module subroutine lt7read(filename, dname, value, ierr)
+module subroutine lt7read(filename, dname, value)
 character(*), intent(in) :: filename, dname
 class(*), intent(inout) :: value(:,:,:,:,:,:,:)
-integer, intent(out), optional :: ierr
 end subroutine lt7read
 end interface
 
 interface !< writer.f90
-module subroutine hdf_write_scalar(self, dname, value, ierr, compact)
+module subroutine h5write_scalar(self, dname, value, compact)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value
 logical, intent(in), optional :: compact
-integer, intent(out), optional :: ierr
-end subroutine hdf_write_scalar
+end subroutine h5write_scalar
 
-module subroutine hdf_write_1d_r32(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
+module subroutine h5write_1d(self, dname, value, chunk_size, istart, iend, stride, compact)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
-real(real32), intent(in) :: value(:)
+class(*), intent(in) :: value(:)
 integer, intent(in), optional :: chunk_size(1)
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
 logical, intent(in), optional :: compact
-integer, intent(out), optional :: ierr
-end subroutine hdf_write_1d_r32
+end subroutine h5write_1d
 
-module subroutine hdf_write_1d_r64(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
+module subroutine h5write_2d(self, dname, value, chunk_size, istart, iend, stride, compact)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
-real(real64), intent(in) :: value(:)
-integer, intent(in), optional :: chunk_size(1)
-integer, intent(in), optional, dimension(:) :: istart, iend, stride
-logical, intent(in), optional :: compact
-integer, intent(out), optional :: ierr
-end subroutine hdf_write_1d_r64
-
-module subroutine hdf_write_1d_i32(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
-class(hdf5_file), intent(inout) :: self
-character(*), intent(in) :: dname
-integer(int32), intent(in) :: value(:)
-integer, intent(in), optional :: chunk_size(1)
-integer, intent(in), optional, dimension(:) :: istart, iend, stride
-logical, intent(in), optional :: compact
-integer, intent(out), optional :: ierr
-end subroutine hdf_write_1d_i32
-
-module subroutine hdf_write_1d_i64(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
-class(hdf5_file), intent(inout) :: self
-character(*), intent(in) :: dname
-integer(int64), intent(in) :: value(:)
-integer, intent(in), optional :: chunk_size(1)
-integer, intent(in), optional, dimension(:) :: istart, iend, stride
-logical, intent(in), optional :: compact
-integer, intent(out), optional :: ierr
-end subroutine hdf_write_1d_i64
-
-
-module subroutine hdf_write_2d_r32(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
-class(hdf5_file), intent(inout) :: self
-character(*), intent(in) :: dname
-real(real32), intent(in) :: value(:,:)
+class(*), intent(in) :: value(:,:)
 integer, intent(in), optional :: chunk_size(2)
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
 logical, intent(in), optional :: compact
-integer, intent(out), optional :: ierr
-end subroutine hdf_write_2d_r32
+end subroutine h5write_2d
 
-module subroutine hdf_write_2d_r64(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
+module subroutine h5write_3d(self, dname, value, chunk_size, istart, iend, stride, compact)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
-real(real64), intent(in) :: value(:,:)
-integer, intent(in), optional :: chunk_size(2)
-integer, intent(in), optional, dimension(:) :: istart, iend, stride
-logical, intent(in), optional :: compact
-integer, intent(out), optional :: ierr
-end subroutine hdf_write_2d_r64
-
-module subroutine hdf_write_2d_i32(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
-class(hdf5_file), intent(inout) :: self
-character(*), intent(in) :: dname
-integer(int32), intent(in) :: value(:,:)
-integer, intent(in), optional :: chunk_size(2)
-integer, intent(in), optional, dimension(:) :: istart, iend, stride
-logical, intent(in), optional :: compact
-integer, intent(out), optional :: ierr
-end subroutine hdf_write_2d_i32
-
-module subroutine hdf_write_2d_i64(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
-class(hdf5_file), intent(inout) :: self
-character(*), intent(in) :: dname
-integer(int64), intent(in) :: value(:,:)
-integer, intent(in), optional :: chunk_size(2)
-integer, intent(in), optional, dimension(:) :: istart, iend, stride
-logical, intent(in), optional :: compact
-integer, intent(out), optional :: ierr
-end subroutine hdf_write_2d_i64
-
-
-
-module subroutine hdf_write_3d_r32(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
-class(hdf5_file), intent(inout) :: self
-character(*), intent(in) :: dname
-real(real32), intent(in) :: value(:,:,:)
+class(*), intent(in) :: value(:,:,:)
 integer, intent(in), optional :: chunk_size(3)
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
 logical, intent(in), optional :: compact
-integer, intent(out), optional :: ierr
-end subroutine hdf_write_3d_r32
+end subroutine h5write_3d
 
-module subroutine hdf_write_3d_r64(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
+module subroutine h5write_4d(self, dname, value, chunk_size, istart, iend, stride, compact)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
-real(real64), intent(in) :: value(:,:,:)
-integer, intent(in), optional :: chunk_size(3)
-integer, intent(in), optional, dimension(:) :: istart, iend, stride
-logical, intent(in), optional :: compact
-integer, intent(out), optional :: ierr
-end subroutine hdf_write_3d_r64
-
-module subroutine hdf_write_3d_i32(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
-class(hdf5_file), intent(inout) :: self
-character(*), intent(in) :: dname
-integer(int32), intent(in) :: value(:,:,:)
-integer, intent(in), optional :: chunk_size(3)
-integer, intent(in), optional, dimension(:) :: istart, iend, stride
-logical, intent(in), optional :: compact
-integer, intent(out), optional :: ierr
-end subroutine hdf_write_3d_i32
-
-module subroutine hdf_write_3d_i64(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
-class(hdf5_file), intent(inout) :: self
-character(*), intent(in) :: dname
-integer(int64), intent(in) :: value(:,:,:)
-integer, intent(in), optional :: chunk_size(3)
-integer, intent(in), optional, dimension(:) :: istart, iend, stride
-logical, intent(in), optional :: compact
-integer, intent(out), optional :: ierr
-end subroutine hdf_write_3d_i64
-
-
-module subroutine hdf_write_4d_r32(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
-class(hdf5_file), intent(inout) :: self
-character(*), intent(in) :: dname
-real(real32), intent(in) :: value(:,:,:,:)
+class(*), intent(in) :: value(:,:,:,:)
 integer, intent(in), optional :: chunk_size(4)
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
 logical, intent(in), optional :: compact
-integer, intent(out), optional :: ierr
-end subroutine hdf_write_4d_r32
+end subroutine h5write_4d
 
-module subroutine hdf_write_4d_r64(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
+module subroutine h5write_5d(self, dname, value, chunk_size, istart, iend, stride, compact)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
-real(real64), intent(in) :: value(:,:,:,:)
-integer, intent(in), optional :: chunk_size(4)
-integer, intent(in), optional, dimension(:) :: istart, iend, stride
-logical, intent(in), optional :: compact
-integer, intent(out), optional :: ierr
-end subroutine hdf_write_4d_r64
-
-module subroutine hdf_write_4d_i32(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
-class(hdf5_file), intent(inout) :: self
-character(*), intent(in) :: dname
-integer(int32), intent(in) :: value(:,:,:,:)
-integer, intent(in), optional :: chunk_size(4)
-integer, intent(in), optional, dimension(:) :: istart, iend, stride
-logical, intent(in), optional :: compact
-integer, intent(out), optional :: ierr
-end subroutine hdf_write_4d_i32
-
-module subroutine hdf_write_4d_i64(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
-class(hdf5_file), intent(inout) :: self
-character(*), intent(in) :: dname
-integer(int64), intent(in) :: value(:,:,:,:)
-integer, intent(in), optional :: chunk_size(4)
-integer, intent(in), optional, dimension(:) :: istart, iend, stride
-logical, intent(in), optional :: compact
-integer, intent(out), optional :: ierr
-end subroutine hdf_write_4d_i64
-
-module subroutine hdf_write_5d_r32(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
-class(hdf5_file), intent(inout) :: self
-character(*), intent(in) :: dname
-real(real32), intent(in) :: value(:,:,:,:,:)
+class(*), intent(in) :: value(:,:,:,:,:)
 integer, intent(in), optional :: chunk_size(5)
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
 logical, intent(in), optional :: compact
-integer, intent(out), optional :: ierr
-end subroutine hdf_write_5d_r32
+end subroutine h5write_5d
 
-module subroutine hdf_write_5d_r64(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
+module subroutine h5write_6d(self, dname, value, chunk_size, istart, iend, stride, compact)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
-real(real64), intent(in) :: value(:,:,:,:,:)
-integer, intent(in), optional :: chunk_size(5)
-integer, intent(in), optional, dimension(:) :: istart, iend, stride
-logical, intent(in), optional :: compact
-integer, intent(out), optional :: ierr
-end subroutine hdf_write_5d_r64
-
-module subroutine hdf_write_5d_i32(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
-class(hdf5_file), intent(inout) :: self
-character(*), intent(in) :: dname
-integer(int32), intent(in) :: value(:,:,:,:,:)
-integer, intent(in), optional :: chunk_size(5)
-integer, intent(in), optional, dimension(:) :: istart, iend, stride
-logical, intent(in), optional :: compact
-integer, intent(out), optional :: ierr
-end subroutine hdf_write_5d_i32
-
-module subroutine hdf_write_5d_i64(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
-class(hdf5_file), intent(inout) :: self
-character(*), intent(in) :: dname
-integer(int64), intent(in) :: value(:,:,:,:,:)
-integer, intent(in), optional :: chunk_size(5)
-integer, intent(in), optional, dimension(:) :: istart, iend, stride
-logical, intent(in), optional :: compact
-integer, intent(out), optional :: ierr
-end subroutine hdf_write_5d_i64
-
-module subroutine hdf_write_6d_r32(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
-class(hdf5_file), intent(inout) :: self
-character(*), intent(in) :: dname
-real(real32), intent(in) :: value(:,:,:,:,:,:)
+class(*), intent(in) :: value(:,:,:,:,:,:)
 integer, intent(in), optional :: chunk_size(6)
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
 logical, intent(in), optional :: compact
-integer, intent(out), optional :: ierr
-end subroutine hdf_write_6d_r32
+end subroutine h5write_6d
 
-module subroutine hdf_write_6d_r64(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
+module subroutine h5write_7d(self,dname,value, chunk_size, istart, iend, stride, compact)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
-real(real64), intent(in) :: value(:,:,:,:,:,:)
-integer, intent(in), optional :: chunk_size(6)
-integer, intent(in), optional, dimension(:) :: istart, iend, stride
-logical, intent(in), optional :: compact
-integer, intent(out), optional :: ierr
-end subroutine hdf_write_6d_r64
-
-module subroutine hdf_write_6d_i32(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
-class(hdf5_file), intent(inout) :: self
-character(*), intent(in) :: dname
-integer(int32), intent(in) :: value(:,:,:,:,:,:)
-integer, intent(in), optional :: chunk_size(6)
-integer, intent(in), optional, dimension(:) :: istart, iend, stride
-logical, intent(in), optional :: compact
-integer, intent(out), optional :: ierr
-end subroutine hdf_write_6d_i32
-
-module subroutine hdf_write_6d_i64(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
-class(hdf5_file), intent(inout) :: self
-character(*), intent(in) :: dname
-integer(int64), intent(in) :: value(:,:,:,:,:,:)
-integer, intent(in), optional :: chunk_size(6)
-integer, intent(in), optional, dimension(:) :: istart, iend, stride
-logical, intent(in), optional :: compact
-integer, intent(out), optional :: ierr
-end subroutine hdf_write_6d_i64
-
-module subroutine hdf_write_7d_r32(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
-class(hdf5_file), intent(inout) :: self
-character(*), intent(in) :: dname
-real(real32), intent(in) :: value(:,:,:,:,:,:,:)
+class(*), intent(in) :: value(:,:,:,:,:,:,:)
 integer, intent(in), optional :: chunk_size(7)
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
 logical, intent(in), optional :: compact
-integer, intent(out), optional :: ierr
-end subroutine hdf_write_7d_r32
+end subroutine h5write_7d
 
-module subroutine hdf_write_7d_r64(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
-class(hdf5_file), intent(inout) :: self
-character(*), intent(in) :: dname
-real(real64), intent(in) :: value(:,:,:,:,:,:,:)
-integer, intent(in), optional :: chunk_size(7)
-integer, intent(in), optional, dimension(:) :: istart, iend, stride
-logical, intent(in), optional :: compact
-integer, intent(out), optional :: ierr
-end subroutine hdf_write_7d_r64
-
-module subroutine hdf_write_7d_i32(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
-class(hdf5_file), intent(inout) :: self
-character(*), intent(in) :: dname
-integer(int32), intent(in) :: value(:,:,:,:,:,:,:)
-integer, intent(in), optional :: chunk_size(7)
-integer, intent(in), optional, dimension(:) :: istart, iend, stride
-logical, intent(in), optional :: compact
-integer, intent(out), optional :: ierr
-end subroutine hdf_write_7d_i32
-
-module subroutine hdf_write_7d_i64(self,dname,value, ierr, chunk_size, istart, iend, stride, compact)
-class(hdf5_file), intent(inout) :: self
-character(*), intent(in) :: dname
-integer(int64), intent(in) :: value(:,:,:,:,:,:,:)
-integer, intent(in), optional :: chunk_size(7)
-integer, intent(in), optional, dimension(:) :: istart, iend, stride
-logical, intent(in), optional :: compact
-integer, intent(out), optional :: ierr
-end subroutine hdf_write_7d_i64
 end interface
 
 interface !< read.f90
@@ -742,11 +304,10 @@ class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
 end function hdf_get_ndims
 
-module subroutine hdf_get_shape(self, dname, dims, ierr)
+module subroutine hdf_get_shape(self, dname, dims)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
 integer(HSIZE_T), intent(out), allocatable :: dims(:)
-integer, intent(out), optional :: ierr
 end subroutine hdf_get_shape
 
 module integer function hdf_get_layout(self, dname) result(layout)
@@ -769,66 +330,58 @@ end interface
 
 interface !< reader.f90
 
-module subroutine h5read_scalar(self, dname, value, ierr)
+module subroutine h5read_scalar(self, dname, value)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout)        :: value
-integer, intent(out), optional :: ierr
 end subroutine h5read_scalar
 
-module subroutine h5read_1d(self, dname, value, ierr, istart, iend, stride)
+module subroutine h5read_1d(self, dname, value, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout) :: value(:)
-integer, intent(out), optional :: ierr
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
 end subroutine h5read_1d
 
-module subroutine h5read_2d(self, dname, value, ierr, istart, iend, stride)
+module subroutine h5read_2d(self, dname, value, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout) :: value(:,:)
-integer, intent(out), optional :: ierr
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
 end subroutine h5read_2d
 
-module subroutine h5read_3d(self, dname, value, ierr, istart, iend, stride)
+module subroutine h5read_3d(self, dname, value, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout) :: value(:,:,:)
-integer, intent(out), optional :: ierr
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
 end subroutine h5read_3d
 
-module subroutine h5read_4d(self, dname, value, ierr, istart, iend, stride)
+module subroutine h5read_4d(self, dname, value,  istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout) :: value(:,:,:,:)
-integer, intent(out), optional :: ierr
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
 end subroutine h5read_4d
 
-module subroutine h5read_5d(self, dname, value, ierr, istart, iend, stride)
+module subroutine h5read_5d(self, dname, value, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout) :: value(:,:,:,:,:)
-integer, intent(out), optional :: ierr
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
 end subroutine h5read_5d
 
-module subroutine h5read_6d(self, dname, value, ierr, istart, iend, stride)
+module subroutine h5read_6d(self, dname, value, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout) :: value(:,:,:,:,:,:)
-integer, intent(out), optional :: ierr
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
 end subroutine h5read_6d
 
-module subroutine h5read_7d(self, dname, value, ierr, istart, iend, stride)
+module subroutine h5read_7d(self, dname, value, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout) :: value(:,:,:,:,:,:,:)
-integer, intent(out), optional :: ierr
 integer, intent(in), optional, dimension(:) :: istart, iend, stride
 end subroutine h5read_7d
 end interface
@@ -836,62 +389,54 @@ end interface
 
 interface  !< attributes.f90
 
-module subroutine readattr_char(self, dname, attr, attrval, ierr)
+module subroutine readattr_char(self, dname, attr, attrval)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname, attr
 character(*), intent(inout) :: attrval
 !! intent(inout) for character
-integer, intent(out), optional :: ierr
 end subroutine readattr_char
 
-module subroutine readattr_num(self, dname, attr, attrval, ierr)
+module subroutine readattr_num(self, dname, attr, attrval)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname, attr
 class(*), intent(out) :: attrval(:)
-integer, intent(out), optional :: ierr
 end subroutine readattr_num
 
-module subroutine writeattr_char(self, dname, attr, attrval, ierr)
+module subroutine writeattr_char(self, dname, attr, attrval)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname, attr
 character(*), intent(in) :: attrval
-integer, intent(out), optional :: ierr
 end subroutine writeattr_char
 
-module subroutine writeattr_num(self, dname, attr, attrval, ierr)
+module subroutine writeattr_num(self, dname, attr, attrval)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname, attr
 class(*), intent(in) :: attrval(:)
-integer, intent(out), optional :: ierr
 end subroutine writeattr_num
 
-module subroutine writeattr_char_lt(filename, dname, attr, attrval, ierr)
+module subroutine writeattr_char_lt(filename, dname, attr, attrval)
 character(*), intent(in) :: filename
 character(*), intent(in) :: dname, attr
 character(*), intent(in) :: attrval
-integer, intent(out), optional :: ierr
 end subroutine writeattr_char_lt
 
-module subroutine writeattr_num_lt(filename, dname, attr, attrval, ierr)
+module subroutine writeattr_num_lt(filename, dname, attr, attrval)
 character(*), intent(in) :: filename
 character(*), intent(in) :: dname, attr
 class(*), intent(in) :: attrval(:)
-integer, intent(out), optional :: ierr
 end subroutine writeattr_num_lt
 
-module subroutine readattr_char_lt(filename, dname, attr, attrval, ierr)
+module subroutine readattr_char_lt(filename, dname, attr, attrval)
 character(*), intent(in) :: filename
 character(*), intent(in) :: dname, attr
 character(*), intent(inout) :: attrval
 !! intent(inout) for character
-integer, intent(out), optional :: ierr
 end subroutine readattr_char_lt
 
-module subroutine readattr_num_lt(filename, dname, attr, attrval, ierr)
+module subroutine readattr_num_lt(filename, dname, attr, attrval)
 character(*), intent(in) :: filename
 character(*), intent(in) :: dname, attr
 class(*), intent(out) :: attrval(:)
-integer, intent(out), optional :: ierr
 end subroutine readattr_num_lt
 
 end interface
@@ -899,13 +444,12 @@ end interface
 contains
 
 
-subroutine hdf_initialize(self,filename,ierr, status,action,comp_lvl,verbose,debug)
+subroutine hdf_initialize(self,filename,ierr, action,comp_lvl,verbose,debug)
 !! Opens hdf5 file
 
 class(hdf5_file), intent(inout)    :: self
 character(*), intent(in) :: filename
 integer, intent(out), optional :: ierr  !< 0 if OK
-character(*), intent(in), optional :: status  !< DEPRECATED
 character(*), intent(in), optional :: action !< r, r+, rw, w, a
 integer, intent(in), optional      :: comp_lvl  !< 0: no compression. 1-9: ZLIB compression, higher is more compressior
 logical, intent(in), optional      :: verbose, debug
@@ -944,8 +488,6 @@ if (check(ier, 'ERROR:h5fortran: HDF5 library set traceback')) then
   error stop
 endif
 
-if(present(status)) write(stderr,*) "h5fortran:open: WARNING: status argument is deprecated. use action instead."
-
 laction = 'rw'
 if(present(action)) laction = action
 
@@ -977,7 +519,7 @@ self%is_open = .true.
 end subroutine hdf_initialize
 
 
-subroutine hdf_finalize(self, ierr, close_hdf5_interface)
+subroutine hdf_finalize(self, close_hdf5_interface)
 !! This must be called on each HDF5 file to flush buffers to disk
 !! data loss can occur if program terminates before this procedure
 !!
@@ -988,7 +530,7 @@ subroutine hdf_finalize(self, ierr, close_hdf5_interface)
 
 class(hdf5_file), intent(inout) :: self
 logical, intent(in), optional :: close_hdf5_interface
-integer, intent(out), optional :: ierr
+
 integer :: ier
 
 if (.not. self%is_open) then
@@ -998,20 +540,12 @@ endif
 
 !> close hdf5 file
 call h5fclose_f(self%lid, ier)
-if (present(ierr)) ierr = ier
-if (check(ier, 'ERROR:h5fortran:close: HDF5 file close: ' // self%filename)) then
-  if (present(ierr)) return
-  error stop
-endif
+if (check(ier, 'ERROR:h5fortran:close: HDF5 file close: ' // self%filename)) error stop
 
 if (present(close_hdf5_interface)) then
   if (close_hdf5_interface) then
     call h5close_f(ier)
-    if (present(ierr)) ierr = ier
-    if (check(ier, 'ERROR:h5fortran: HDF5 library close')) then
-      if (present(ierr)) return
-      error stop
-    endif
+    if (check(ier, 'ERROR:h5fortran: HDF5 library close')) error stop
   endif
 endif
 !> sentinel lid
@@ -1036,34 +570,29 @@ call self%close()
 end subroutine destructor
 
 
-subroutine hdf_flush(self, ierr)
+subroutine hdf_flush(self)
 !! request operating system flush data to disk.
 !! The operating system can do this when it desires, which might be a while.
 class(hdf5_file), intent(in) :: self
-integer, intent(out), optional :: ierr
 integer :: ier
 
 call h5fflush_f(self%lid, H5F_SCOPE_GLOBAL_F, ier)
 
-if (present(ierr)) ierr = ier
-if (check(ier, 'ERROR: HDF5 flush ' // self%filename) .and. .not.present(ierr)) error stop
+if (check(ier, 'ERROR: HDF5 flush ' // self%filename)) error stop
 
 end subroutine hdf_flush
 
 
-subroutine hdf5_close(ierr)
+subroutine hdf5_close()
 !! this subroutine will close ALL existing file handles
 !! only call it at end of your program
 !! "Flushes all data to disk, closes all open identifiers, and cleans up memory."
 !! "Should be called by all HDF5 Fortran programs"
 
-integer, intent(out), optional :: ierr
 integer :: ier
 
 call h5close_f(ier)
-
-if (present(ierr)) ierr = ier
-if (check(ier, 'ERROR: HDF5 library close') .and. .not.present(ierr)) error stop
+if (check(ier, 'ERROR: HDF5 library close')) error stop
 
 end subroutine hdf5_close
 
@@ -1105,11 +634,10 @@ if (ierr/=0) is_hdf5 = .false.
 end function is_hdf5
 
 
-subroutine write_group(self, gname, ierr)
+subroutine write_group(self, gname)
 
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: gname    !< relative path to group
-integer, intent(out), optional :: ierr
 
 integer(HID_T)  :: gid
 integer :: ier
@@ -1132,26 +660,14 @@ do
   ! check subgroup exists
   sp = sp + ep
   call h5lexists_f(self%lid, gname(1:sp-1), gexist, ier)
-  if (present(ierr)) ierr = ier
-  if (check(ier, self%filename, gname)) then
-    if (present(ierr)) return
-    error stop
-  endif
+  if (check(ier, self%filename, gname)) error stop
 
   if(.not.gexist) then
     call h5gcreate_f(self%lid, gname(1:sp-1), gid, ier)
-    if (present(ierr)) ierr = ier
-    if (check(ier, self%filename, gname)) then
-      if (present(ierr)) return
-      error stop
-    endif
+    if (check(ier, self%filename, gname)) error stop
 
     call h5gclose_f(gid, ier)
-    if (present(ierr)) ierr = ier
-    if (check(ier, self%filename, gname)) then
-      if (present(ierr)) return
-      error stop
-    endif
+    if (check(ier, self%filename, gname)) error stop
   endif
 end do
 

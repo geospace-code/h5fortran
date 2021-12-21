@@ -31,7 +31,7 @@ logical, intent(in), optional      :: verbose, debug
 ```
 
 ```fortran
-call h%close(ierr, close_hdf5_interface)
+call h%close(close_hdf5_interface)
 !! This must be called on each HDF5 file to flush buffers to disk
 !! data loss can occur if program terminates before this procedure
 !!
@@ -40,17 +40,14 @@ call h%close(ierr, close_hdf5_interface)
 !! close_hdf5_interface is when you know you have exactly one HDF5 file in your
 !! application, if true it closes ALL files, even those invoked directly from HDF5.
 
-integer, intent(out), optional :: ierr
 logical, intent(in), optional :: close_hdf5_interface
 ```
 
 To avoid memory leaks or corrupted files, always "finalize" all hDF5 files before STOPping the Fortran program.
 
 ```fortran
-call h%flush(ierr)
+call h%flush()
 !! request operating system flush data to disk.
-!! The operating system can do this when it desires, which might be a while.
-integer, intent(out), optional :: ierr
 ```
 
 ## Disk variable (dataset) inquiry
@@ -64,10 +61,9 @@ character(*), intent(in) :: dataset_name
 ```
 
 ```fortran
-call h%shape(dataset_name, dims, ierr)
+call h%shape(dataset_name, dims)
 character(*), intent(in) :: dataset_name
 integer(HSIZE_T), intent(out), allocatable :: dims(:)
-integer, intent(out), optional :: ierr
 ```
 
 ```fortran
@@ -128,20 +124,19 @@ character(*), intent(in) :: target, &  !< target path to link dataset
 ## file write operations
 
 ```fortran
-call h%write(dname,value, ierr, chunk_size, istart, iend, stride, compact)
+call h%write(dname,value, chunk_size, istart, iend, stride, compact)
 !! write 0d..7d dataset
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:)  !< array to write
 integer, intent(in), optional :: chunk_size(rank(value))
 integer, intent(in), optional, dimension(:) :: istart, iend, stride  !< array slicing
 logical, intent(in), optional :: compact  !< faster I/O for sub-64 kB datasets
-integer, intent(out), optional :: ierr  !< 0 if OK
 ```
 
 Write dataset attribute (e.g. units or instrument)
 
 ```fortran
-call h%writeattr(dname, attr, attrval, ierr)
+call h%writeattr(dname, attr, attrval)
 character(*), intent(in) :: dname, attr  !< dataset name, attribute name
 class(*), intent(in) :: attrval(:)  !< character, real, integer
 ```
@@ -151,17 +146,16 @@ class(*), intent(in) :: attrval(:)  !< character, real, integer
 Read data from disk to memory
 
 ```fortran
-call h%read(dname, value, ierr, istart, iend, stride)
+call h%read(dname, value, istart, iend, stride)
 character(*), intent(in)         :: dname
 class(*), intent(out) :: value(:)  !< read array to this ALLOCATED variable
-integer, intent(out), optional :: ierr  !< 0 if OK
 integer, intent(in), optional, dimension(:) :: istart, iend, stride !< array slicing
 ```
 
 Read dataset attribute into memory
 
 ```fortran
-call h%readattr(dname, attr, attrval, ierr)
+call h%readattr(dname, attr, attrval)
 character(*), intent(in) :: dname, attr  !< dataset name, attribute name
 class(*), intent(out) :: attrval(:)  !< character, real, integer
 ```

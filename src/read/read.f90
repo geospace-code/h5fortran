@@ -108,8 +108,7 @@ if (ier == 0) then
     type_class=type_class, type_size=type_size, errcode=ier)
 endif
 
-if (present(ierr)) ierr = ier
-if ((ier /= 0) .and. .not. present(ierr)) error stop
+if (ier /= 0) error stop "h5fortran:get_shape: could not get info: " // dname // ' from ' // self%filename
 
 end procedure hdf_get_shape
 

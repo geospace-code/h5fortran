@@ -19,8 +19,7 @@ if(.not.self%is_open) error stop 'h5fortran:readattr: file handle is not open'
 call h5ltget_attribute_string_f(self%lid, dname, attr, buf, ier)
 attrval = buf
 
-if (present(ierr)) ierr = ier
-if (check(ier, self%filename, dname) .and. .not. present(ierr)) error stop
+if (check(ier, self%filename, dname)) error stop
 
 end procedure readattr_char
 
@@ -46,8 +45,7 @@ class default
 end select
 endif
 
-if (present(ierr)) ierr = ier
-if (check(ier, self%filename, dname) .and. .not. present(ierr)) error stop
+if (check(ier, self%filename, dname)) error stop
 
 end procedure readattr_num
 
@@ -61,8 +59,7 @@ if(.not.self%is_open) error stop 'h5fortran:writeattr: file handle is not open'
 
 call h5ltset_attribute_string_f(self%lid, dname, attr, attrval, ier)
 
-if (present(ierr)) ierr = ier
-if (check(ier, self%filename, dname) .and. .not. present(ierr)) error stop
+if (check(ier, self%filename, dname)) error stop
 
 end procedure writeattr_char
 
@@ -87,8 +84,7 @@ class default
   ier = 6
 end select
 
-if (present(ierr)) ierr = ier
-if (check(ier, self%filename, dname) .and. .not. present(ierr)) error stop
+if (check(ier, self%filename, dname)) error stop
 
 end procedure writeattr_num
 
@@ -96,16 +92,10 @@ end procedure writeattr_num
 module procedure writeattr_char_lt
 
 type(hdf5_file) :: h
-integer :: ier
 
-call h%open(filename, ier, action='r+')
-
-call h%writeattr_char(dname, attr, attrval, ier)
-
-if (ier == 0) call h%close(ier)
-
-if (present(ierr)) ierr = ier
-if (check(ier, filename, dname) .and. .not. present(ierr)) error stop
+call h%open(filename, action='r+')
+call h%writeattr_char(dname, attr, attrval)
+call h%close()
 
 end procedure writeattr_char_lt
 
@@ -113,16 +103,10 @@ end procedure writeattr_char_lt
 module procedure writeattr_num_lt
 
 type(hdf5_file) :: h
-integer :: ier
 
-call h%open(filename, ier, action='r+')
-
-call h%writeattr_num(dname, attr, attrval, ier)
-
-if (ier == 0) call h%close(ier)
-
-if (present(ierr)) ierr = ier
-if (check(ier, filename, dname) .and. .not. present(ierr)) error stop
+call h%open(filename, action='r+')
+call h%writeattr_num(dname, attr, attrval)
+call h%close()
 
 end procedure writeattr_num_lt
 
@@ -130,16 +114,10 @@ end procedure writeattr_num_lt
 module procedure readattr_char_lt
 
 type(hdf5_file) :: h
-integer :: ier
 
-call h%open(filename, ier, action='r')
-
-call h%readattr_char(dname, attr, attrval, ier)
-
-if (ier == 0) call h%close(ier)
-
-if (present(ierr)) ierr = ier
-if (check(ier, filename, dname) .and. .not. present(ierr)) error stop
+call h%open(filename, action='r')
+call h%readattr_char(dname, attr, attrval)
+call h%close()
 
 end procedure readattr_char_lt
 
@@ -147,16 +125,10 @@ end procedure readattr_char_lt
 module procedure readattr_num_lt
 
 type(hdf5_file) :: h
-integer :: ier
 
-call h%open(filename, ier, action='r')
-
-call h%readattr_num(dname, attr, attrval, ier)
-
-if (ier == 0) call h%close(ier)
-
-if (present(ierr)) ierr = ier
-if (check(ier, filename, dname) .and. .not. present(ierr)) error stop
+call h%open(filename, action='r')
+call h%readattr_num(dname, attr, attrval)
+call h%close()
 
 end procedure readattr_num_lt
 

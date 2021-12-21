@@ -5,7 +5,7 @@ implicit none (type, external)
 
 contains
 
-module procedure hdf_write_8d
+module procedure h5write_8d
 
 integer(HID_T)  :: dtype, sid, did
 integer(HSIZE_T) :: dims(rank(value))
@@ -54,6 +54,6 @@ end select
 call hdf_wrapup(did, sid)
 if (check(ierr, 'ERROR:h5fortran: ' // dname // ' write ' // self%filename))  return
 
-end procedure hdf_write_8d
+end procedure h5write_8d
 
 end submodule writer_ND

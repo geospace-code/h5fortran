@@ -87,7 +87,6 @@ end subroutine test_softlink
 subroutine test_multifiles()
 
 type(hdf5_file) :: f,g,h
-integer :: ierr
 
 call f%open(filename='A.h5', action='w')
 call g%open(filename='B.h5', action='w')
@@ -96,13 +95,10 @@ call h%open(filename='C.h5', action='w')
 
 call f%flush()
 
-call f%close(ierr)
-if (ierr/=0) error stop 'close a.h5'
+call f%close()
 if (.not.g%is_open .or. .not. h%is_open) error stop 'is_open not isolated at destructor'
-call g%close(ierr)
-if (ierr/=0) error stop 'close b.h5'
-call h%close(ierr)
-if (ierr/=0) error stop 'close c.h5'
+call g%close()
+call h%close()
 
 call hdf5_close()
 

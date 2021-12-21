@@ -48,6 +48,3 @@ end if
 if(ier/=0) error stop 'h5fortran:reader: reading ' // dname // ' from ' // self%filename
 
 call hdf_wrapup(ds_id, space_id)
-
-if (present(ierr)) ierr = ier
-if (check(ier, self%filename, dname) .and. .not.present(ierr)) error stop
