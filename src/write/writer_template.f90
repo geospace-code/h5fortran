@@ -2,7 +2,7 @@ integer(HID_T) :: did, sid, mem_sid, dtype
 integer(HSIZE_T) :: dims(rank(value))
 integer :: ier
 
-dims = shape(value)
+dims = shape(value, HSIZE_T)
 
 select type (value)
 type is (real(real32))
@@ -17,7 +17,7 @@ class default
   error stop "unknown variable type for " // dname
 end select
 
-call hdf_create(self,dname, dtype, dims, sid, did, chunk_size, istart, iend, stride, compact)
+call hdf_create(self, dname, dtype, dims, sid, did, chunk_size, istart, iend, stride, compact)
 
 mem_sid = H5S_ALL_F !< default
 

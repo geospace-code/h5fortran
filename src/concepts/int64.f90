@@ -51,7 +51,7 @@ integer(hid_t) ::  dsid
 call h5dopen_f(fid, name, dsid, ierr)
 if (ierr/=0) error stop "dataset not opened: " // name // " in file: " // filename
 
-CALL h5dread_f(dsid, h5kind_to_type(int64, h5_integer_kind), i, int(shape(i), hsize_t), ierr)
+CALL h5dread_f(dsid, h5kind_to_type(int64, h5_integer_kind), i, shape(i, hsize_t), ierr)
 if (ierr/=0) error stop "dataset not read: " // name // " in file: " // filename
 
 call h5dclose_f(dsid, ierr)
@@ -95,7 +95,7 @@ call h5screate_f(h5s_scalar_f, sid, ierr)
 call h5dcreate_f(fid, name, h5_kind_int64, sid, dsid, ierr)
 
 !> write data
-call h5dwrite_f(dsid, h5_kind_int64, i, int(shape(i), hsize_t), ierr)
+call h5dwrite_f(dsid, h5_kind_int64, i, shape(i, hsize_t), ierr)
 
 !> close handles
 call h5dclose_f(dsid, ierr)

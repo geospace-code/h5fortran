@@ -69,7 +69,7 @@ integer :: ierr
 integer(hid_t) :: ds_id, prp_id, space_id
 integer(HSIZE_T) :: dims(rank(dat))
 
-dims = shape(dat)
+dims = shape(dat, HSIZE_T)
 
 !> create dataspace
 call h5screate_simple_f(size(dims), dims, space_id, ierr)
@@ -85,7 +85,7 @@ if (ierr /= 0) error stop "problem creating layout"
 
 if(layout == H5D_CHUNKED_F) then
    !! normally chunk size set more effectively for actual large datasets.
-   call h5pset_chunk_f(prp_id, size(dims), int(shape(dat), hsize_t), ierr)
+   call h5pset_chunk_f(prp_id, size(dims), shape(dat, hsize_t), ierr)
    if (ierr /= 0) error stop "problem setting chunk size"
 endif
 
@@ -165,7 +165,7 @@ character(6) :: name
 real, allocatable :: dbuf(:)
 
 allocate(dbuf(N))
-dims = shape(dbuf)
+dims = shape(dbuf, HSIZE_T)
 
 CALL h5fopen_f(file, H5F_ACC_RDONLY_F, file_id, ierr)
 if (ierr /= 0) error stop "problem opening " // file
