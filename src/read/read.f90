@@ -1,4 +1,4 @@
-submodule (h5fortran) read
+submodule (h5fortran) hdf5_read
 !! This submodule is for reading HDF5 via submodules
 use hdf5, only : h5dget_create_plist_f, &
   h5pget_layout_f, h5pget_chunk_f, &
@@ -224,4 +224,4 @@ end procedure hdf_check_exist
 
 
 
-end submodule read
+end submodule hdf5_read

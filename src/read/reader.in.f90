@@ -1,4 +1,4 @@
-submodule (h5fortran:read) reader
+submodule (h5fortran:hdf5_read) hdf5_reader
 !! This submodule is for reading 0-D..7-D data
 
 use, intrinsic :: iso_c_binding, only : c_null_char
@@ -125,4 +125,4 @@ module procedure h5read_7d
 @reader_template@
 end procedure h5read_7d
 
-end submodule reader
+end submodule hdf5_reader
