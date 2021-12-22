@@ -90,16 +90,16 @@ endif
 if (check(ierr, self%filename, dname)) error stop "h5fortran:h5screate: " // dname
 
 !> create dataset
-call h5dcreate_f(self%lid, dname, dtype, space_id, ds_id, ierr, plist_id)
-if (check(ierr, self%filename, dname)) error stop "h5fortran:h5dcreate: " // dname
+call h5dcreate_f(self%lid, dname, dtype, space_id=space_id, dset_id=ds_id, hdferr=ierr, dcpl_id=plist_id)
+if (ierr/=0) error stop "h5dcreate: " // dname // " " // self%filename
 call h5pclose_f(plist_id, ierr)
-if (check(ierr, self%filename, dname)) error stop "h5fortran:h5pclose: " // dname
+if (ierr/=0) error stop "h5fortran:h5pclose: " // dname // ' in ' // self%filename
 
 if(.not.(present(did) .and. present(sid))) then
   if(self%debug) print *, 'h5fortran:TRACE:create: closing dataset ', dname
   call hdf_wrapup(ds_id, space_id)
 endif
-if (check(ierr, self%filename, dname)) error stop "h5fortran:wrapup: " // dname
+if (ierr/=0) error stop "h5fortran:wrapup: " // dname // ' in ' // self%filename
 
 if(present(sid)) sid = space_id
 if(present(did)) did = ds_id
@@ -131,6 +131,7 @@ integer(HSIZE_T) :: cs(size(dims))
 
 ierr = 0
 plist_id = H5P_DEFAULT_F
+
 if (self%comp_lvl < 1 .or. self%comp_lvl > 9) return
 
 if (present(chunk_size)) then
@@ -161,7 +162,7 @@ if (check(ierr, "h5pset_fletcher32: " // self%filename)) return
 call h5pset_deflate_f(plist_id, self%comp_lvl, ierr)
 if (check(ierr, "h5pset_deflate: " // self%filename)) return
 
-if(self%debug) print *,'TRACE:set_deflate done'
+if(self%debug) print '(a,i0)','TRACE:set_deflate done, comp_lvl: ', self%comp_lvl
 
 end subroutine set_deflate
 
