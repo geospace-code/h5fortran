@@ -1,4 +1,4 @@
-submodule (h5fortran:read) reader_lt
+submodule (h5fortran:hdf5_read) reader_lt
 
 implicit none (type, external)
 

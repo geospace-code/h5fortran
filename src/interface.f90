@@ -8,6 +8,7 @@ use hdf5, only : HID_T, SIZE_T, HSIZE_T, H5F_ACC_RDONLY_F, H5F_ACC_RDWR_F, H5F_A
   H5T_NATIVE_DOUBLE, H5T_NATIVE_REAL, H5T_NATIVE_INTEGER, H5T_NATIVE_CHARACTER, H5T_STD_I64LE, &
   H5T_INTEGER_F, H5T_FLOAT_F, H5T_STRING_F, &
   H5F_SCOPE_GLOBAL_F, &
+  H5P_DEFAULT_F, &
   h5open_f, h5close_f, &
   h5dopen_f, h5dclose_f, h5dget_space_f, &
   h5gcreate_f, h5gclose_f, &
@@ -44,8 +45,7 @@ logical :: use_mpi = .false. !< MPI or serial HDF5
 
 contains
 !> define methods (procedures) that don't need generic procedure
-procedure, public :: initialize => hdf_initialize, open => hdf_initialize, &
-  finalize => hdf_finalize, close => hdf_finalize, &
+procedure, public :: open => hdf_initialize, close => hdf_finalize, &
   write_group, create => hdf_create, &
   open_group => hdf_open_group, close_group => hdf_close_group, &
   flush => hdf_flush, &

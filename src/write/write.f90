@@ -4,7 +4,7 @@ use hdf5, only: &
 h5screate_f, H5S_SCALAR_F, &
 h5dcreate_f, &
 h5pset_chunk_f, h5pset_layout_f, h5pset_deflate_f, h5pset_shuffle_f, h5pset_fletcher32_f, h5pcreate_f, h5pclose_f, &
-H5P_DATASET_CREATE_F, H5P_DEFAULT_F, &
+H5P_DATASET_CREATE_F, &
 h5gopen_f, &
 H5Lcreate_soft_f
 
