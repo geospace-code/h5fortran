@@ -1,6 +1,8 @@
-integer(HID_T) :: did, sid, mem_sid, dtype
+integer(HID_T) :: file_space_id, mem_space_id, dset_id, xfer_id, dtype
 integer(HSIZE_T) :: dims(rank(value))
 integer :: ier
+
+xfer_id = H5P_DEFAULT_F
 
 dims = shape(value, HSIZE_T)
 
@@ -17,31 +19,31 @@ class default
   error stop "unknown variable type for " // dname
 end select
 
-call hdf_create(self, dname, dtype, dims, sid, did, chunk_size, istart, iend, stride, compact)
+call hdf_create(self, dname, dtype, dims, file_space_id, dset_id, chunk_size, istart, iend, stride, compact)
 
-mem_sid = H5S_ALL_F !< default
+mem_space_id = H5S_ALL_F !< default
 
 if(present(istart) .and. present(iend)) then
   if(present(stride)) then
     !! necessary to use this present check for Intel and GCC
-    call hdf_get_slice(self, dname, did, sid, mem_sid, istart, iend, stride)
+    call hdf_get_slice(self, dname, dset_id, file_space_id, mem_space_id, istart, iend, stride)
   else
-    call hdf_get_slice(self, dname, did, sid, mem_sid, istart, iend)
+    call hdf_get_slice(self, dname, dset_id, file_space_id, mem_space_id, istart, iend)
   endif
 endif
 
 select type (value)
 type is (real(real32))
-  call h5dwrite_f(did, dtype, value, dims, ier, mem_sid, sid)
+  call h5dwrite_f(dset_id, dtype, value, dims, ier, file_space_id=file_space_id, mem_space_id=mem_space_id, xfer_prp=xfer_id)
 type is (real(real64))
-  call h5dwrite_f(did, dtype, value, dims, ier, mem_sid, sid)
+  call h5dwrite_f(dset_id, dtype, value, dims, ier, file_space_id=file_space_id, mem_space_id=mem_space_id, xfer_prp=xfer_id)
 type is (integer(int32))
-  call h5dwrite_f(did, dtype, value, dims, ier, mem_sid, sid)
+  call h5dwrite_f(dset_id, dtype, value, dims, ier, file_space_id=file_space_id, mem_space_id=mem_space_id, xfer_prp=xfer_id)
 type is (integer(int64))
-  call h5dwrite_f(did, dtype, value, dims, ier, mem_sid, sid)
+  call h5dwrite_f(dset_id, dtype, value, dims, ier, file_space_id=file_space_id, mem_space_id=mem_space_id, xfer_prp=xfer_id)
 class default
   error stop "unknown variable type for " // dname
 end select
 if (ier/=0) error stop 'h5fortran:ERROR: could not write ' // dname // ' to ' // self%filename
 
-call hdf_wrapup(did, sid)
+call hdf_wrapup(dset_id, file_space_id)
