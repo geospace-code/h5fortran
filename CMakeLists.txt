@@ -53,7 +53,7 @@ endif()
 
 if(NOT HDF5_FOUND OR hdf5_external)
   include(cmake/libraries.cmake)
-  include(cmake/build_hdf5.cmake)
+  include(cmake/hdf5.cmake)
 endif()
 
 if(HDF5_VERSION VERSION_LESS 1.8.7)

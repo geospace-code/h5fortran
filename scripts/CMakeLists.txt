@@ -63,7 +63,7 @@ set_directory_properties(PROPERTIES EP_UPDATE_DISCONNECTED true)
 
 message(STATUS "Build / install HDF5 ${HDF5_VERSION} to ${CMAKE_INSTALL_PREFIX}")
 
-include(${PROJECT_SOURCE_DIR}/../cmake/build_hdf5.cmake)
+include(${PROJECT_SOURCE_DIR}/../cmake/hdf5.cmake)
 
 # --- features
 include(FeatureSummary)

@@ -34,7 +34,7 @@ set(zlib_root
 -DZLIB_USE_EXTERNAL:BOOL=OFF)
 
 if(NOT TARGET ZLIB::ZLIB)
-  include(${CMAKE_CURRENT_LIST_DIR}/build_zlib.cmake)
+  include(${CMAKE_CURRENT_LIST_DIR}/zlib.cmake)
 endif()
 # --- HDF5
 # https://forum.hdfgroup.org/t/issues-when-using-hdf5-as-a-git-submodule-and-using-cmake-with-add-subdirectory/7189/2
