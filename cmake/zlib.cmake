@@ -3,7 +3,6 @@
 
 include(ExternalProject)
 
-# need to be sure _ROOT isn't empty, defined is not enough
 if(NOT ZLIB_ROOT)
   set(ZLIB_ROOT ${CMAKE_INSTALL_PREFIX})
 endif()

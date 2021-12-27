@@ -57,7 +57,7 @@ ${zlib_root}
 -DHDF5_ENABLE_PARALLEL:BOOL=$<BOOL:${hdf5_parallel}>
 -DMPI_ROOT:PATH=${MPI_ROOT}
 )
-# https://github.com/HDFGroup/hdf5/issues/818  for broken ph5diff
+# https://github.com/HDFGroup/hdf5/issues/818  for broken ph5diff in HDF5_BUILD_TOOLS
 
 ExternalProject_Add(HDF5
 URL ${hdf5_url}
@@ -81,6 +81,18 @@ target_include_directories(HDF5::HDF5 INTERFACE "${HDF5_INCLUDE_DIRS}")
 target_link_libraries(HDF5::HDF5 INTERFACE "${HDF5_LIBRARIES}")
 
 add_dependencies(HDF5::HDF5 HDF5)
+
+# --- HDF5 parallel compression support
+# this could be improved by making it an ExternalProject post-build step instead of assumptions made here
+if(hdf5_parallel)
+  if(MPI_VERSION VERSION_GREATER_EQUAL 3)
+    message(STATUS "Building HDF5-MPI: MPI-3 available, assuming HDF5 parallel compression enabled")
+    set(hdf5_parallel_compression ".true." CACHE STRING "configure variable for HDF5 parallel compression")
+  else()
+    message(STATUS "Building HDF5-MPI: MPI-3 NOT available => HDF5 parallel compression disabled")
+    set(hdf5_parallel_compression ".false." CACHE STRING "configure variable for HDF5 parallel compression")
+  endif()
+endif(hdf5_parallel)
 
 # --- external deps
 find_package(Threads)

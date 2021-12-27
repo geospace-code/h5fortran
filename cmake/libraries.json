@@ -5,8 +5,7 @@
 },
 "zlib2": {
     "url" : "https://github.com/zlib-ng/zlib-ng/archive/refs/tags/2.0.5.tar.gz",
-    "sha256": "eca3fe72aea7036c31d00ca120493923c4d5b99fe02e6d3322f7c88dbdcd0085",
-    "git": "https://github.com/zlib-ng/zlib-ng.git"
+    "sha256": "eca3fe72aea7036c31d00ca120493923c4d5b99fe02e6d3322f7c88dbdcd0085"
 },
 "hdf5": {
     "1.13.0": {

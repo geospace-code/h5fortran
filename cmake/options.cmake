@@ -1,4 +1,5 @@
 option(autobuild "auto-build HDF5 if missing/broken" on)
+option(hdf5_parallel "autobuild HDF5 parallel MPI")
 
 option(ENABLE_COVERAGE "Code coverage tests")
 
