@@ -110,7 +110,7 @@ character(*), intent(in) :: dname
 integer(HID_T), intent(in) :: dtype
 integer(HSIZE_T), intent(in) :: dims(:)
 integer(HID_T), intent(out), optional :: sid, did
-integer, intent(in), optional :: chunk_size(:), istart(:), iend(:), stride(:)
+integer, intent(in), dimension(size(dims)), optional :: chunk_size, istart, iend, stride
 logical, intent(in), optional :: compact
 !! keep istart, iend, stride for future slice shape check
 end subroutine hdf_create
@@ -137,36 +137,30 @@ module logical function h5exist(filename, dname)
 character(*), intent(in) :: filename, dname
 end function h5exist
 
-
 module subroutine lt0write(filename, dname, value)
 character(*), intent(in) :: filename, dname
 class(*), intent(in) :: value
 end subroutine lt0write
-
 
 module subroutine lt1write(filename, dname, value)
 character(*), intent(in) :: filename, dname
 class(*), intent(in) :: value(:)
 end subroutine lt1write
 
-
 module subroutine lt2write(filename, dname, value)
 character(*), intent(in) :: filename, dname
 class(*), intent(in) :: value(:,:)
 end subroutine lt2write
-
 
 module subroutine lt3write(filename, dname, value)
 character(*), intent(in) :: filename, dname
 class(*), intent(in) :: value(:,:,:)
 end subroutine lt3write
 
-
 module subroutine lt4write(filename, dname, value)
 character(*), intent(in) :: filename, dname
 class(*), intent(in) :: value(:,:,:,:)
 end subroutine lt4write
-
 
 module subroutine lt5write(filename, dname, value)
 character(*), intent(in) :: filename, dname
@@ -184,6 +178,7 @@ class(*), intent(in) :: value(:,:,:,:,:,:,:)
 end subroutine lt7write
 
 end interface
+
 
 interface !< reader_lt.f90
 module subroutine lt0read(filename, dname, value)
@@ -242,8 +237,7 @@ module subroutine h5write_1d(self, dname, value, chunk_size, istart, iend, strid
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:)
-integer, intent(in), optional :: chunk_size(1)
-integer, intent(in), optional, dimension(:) :: istart, iend, stride
+integer, intent(in), dimension(1), optional :: chunk_size, istart, iend, stride
 logical, intent(in), optional :: compact
 end subroutine h5write_1d
 
@@ -251,8 +245,7 @@ module subroutine h5write_2d(self, dname, value, chunk_size, istart, iend, strid
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:)
-integer, intent(in), optional :: chunk_size(2)
-integer, intent(in), optional, dimension(:) :: istart, iend, stride
+integer, intent(in), dimension(2), optional :: chunk_size, istart, iend, stride
 logical, intent(in), optional :: compact
 end subroutine h5write_2d
 
@@ -260,8 +253,7 @@ module subroutine h5write_3d(self, dname, value, chunk_size, istart, iend, strid
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:)
-integer, intent(in), optional :: chunk_size(3)
-integer, intent(in), optional, dimension(:) :: istart, iend, stride
+integer, intent(in), dimension(3), optional :: chunk_size, istart, iend, stride
 logical, intent(in), optional :: compact
 end subroutine h5write_3d
 
@@ -269,8 +261,7 @@ module subroutine h5write_4d(self, dname, value, chunk_size, istart, iend, strid
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:)
-integer, intent(in), optional :: chunk_size(4)
-integer, intent(in), optional, dimension(:) :: istart, iend, stride
+integer, intent(in), dimension(4), optional :: chunk_size, istart, iend, stride
 logical, intent(in), optional :: compact
 end subroutine h5write_4d
 
@@ -278,8 +269,7 @@ module subroutine h5write_5d(self, dname, value, chunk_size, istart, iend, strid
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:,:)
-integer, intent(in), optional :: chunk_size(5)
-integer, intent(in), optional, dimension(:) :: istart, iend, stride
+integer, intent(in), dimension(5), optional :: chunk_size, istart, iend, stride
 logical, intent(in), optional :: compact
 end subroutine h5write_5d
 
@@ -287,8 +277,7 @@ module subroutine h5write_6d(self, dname, value, chunk_size, istart, iend, strid
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:,:,:)
-integer, intent(in), optional :: chunk_size(6)
-integer, intent(in), optional, dimension(:) :: istart, iend, stride
+integer, intent(in), dimension(6), optional :: chunk_size, istart, iend, stride
 logical, intent(in), optional :: compact
 end subroutine h5write_6d
 
@@ -296,8 +285,7 @@ module subroutine h5write_7d(self,dname,value, chunk_size, istart, iend, stride,
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:,:,:,:)
-integer, intent(in), optional :: chunk_size(7)
-integer, intent(in), optional, dimension(:) :: istart, iend, stride
+integer, intent(in), dimension(7), optional :: chunk_size, istart, iend, stride
 logical, intent(in), optional :: compact
 end subroutine h5write_7d
 
@@ -357,49 +345,49 @@ module subroutine h5read_1d(self, dname, value, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout) :: value(:)
-integer, intent(in), optional, dimension(:) :: istart, iend, stride
+integer, intent(in), dimension(1), optional :: istart, iend, stride
 end subroutine h5read_1d
 
 module subroutine h5read_2d(self, dname, value, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout) :: value(:,:)
-integer, intent(in), optional, dimension(:) :: istart, iend, stride
+integer, intent(in), dimension(2), optional :: istart, iend, stride
 end subroutine h5read_2d
 
 module subroutine h5read_3d(self, dname, value, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout) :: value(:,:,:)
-integer, intent(in), optional, dimension(:) :: istart, iend, stride
+integer, intent(in), dimension(3), optional :: istart, iend, stride
 end subroutine h5read_3d
 
 module subroutine h5read_4d(self, dname, value,  istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout) :: value(:,:,:,:)
-integer, intent(in), optional, dimension(:) :: istart, iend, stride
+integer, intent(in), dimension(4), optional :: istart, iend, stride
 end subroutine h5read_4d
 
 module subroutine h5read_5d(self, dname, value, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout) :: value(:,:,:,:,:)
-integer, intent(in), optional, dimension(:) :: istart, iend, stride
+integer, intent(in), dimension(5), optional :: istart, iend, stride
 end subroutine h5read_5d
 
 module subroutine h5read_6d(self, dname, value, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout) :: value(:,:,:,:,:,:)
-integer, intent(in), optional, dimension(:) :: istart, iend, stride
+integer, intent(in), dimension(6), optional :: istart, iend, stride
 end subroutine h5read_6d
 
 module subroutine h5read_7d(self, dname, value, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
 class(*), intent(inout) :: value(:,:,:,:,:,:,:)
-integer, intent(in), optional, dimension(:) :: istart, iend, stride
+integer, intent(in), dimension(7), optional :: istart, iend, stride
 end subroutine h5read_7d
 end interface
 
@@ -736,16 +724,12 @@ class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
 integer(HID_T), intent(inout) :: did  !< inout for sentinel value
 integer(hid_t), intent(out) :: sid, mem_sid
-class(*), intent(in), dimension(:) :: i0, i1
-class(*), intent(in), optional, dimension(:) :: i2
+class(*), intent(in), dimension(:) :: i0
+class(*), intent(in), dimension(size(i0)) :: i1
+class(*), intent(in), dimension(size(i0)), optional :: i2
 
 integer(hsize_t), dimension(size(i0)) :: istart, iend, stride, mem_dims
 integer :: ierr
-
-if (size(i0) /= size(i1)) error stop "istart and iend must have equal length"
-if (present(i2)) then
-  if (size(i0) /= size(i2)) error stop "istride must be same length as istart and iend"
-endif
 
 if(.not.self%is_open) error stop 'h5fortran:slice: file handle is not open'
 

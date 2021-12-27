@@ -24,12 +24,7 @@ call hdf_create(self, dname, dtype, dims, file_space_id, dset_id, chunk_size, is
 mem_space_id = H5S_ALL_F !< default
 
 if(present(istart) .and. present(iend)) then
-  if(present(stride)) then
-    !! necessary to use this present check for Intel and GCC
-    call hdf_get_slice(self, dname, dset_id, file_space_id, mem_space_id, istart, iend, stride)
-  else
-    call hdf_get_slice(self, dname, dset_id, file_space_id, mem_space_id, istart, iend)
-  endif
+  call hdf_get_slice(self, dname, dset_id, file_space_id, mem_space_id, istart, iend, stride)
 endif
 
 select type (value)

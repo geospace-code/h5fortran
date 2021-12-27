@@ -9,12 +9,7 @@ xfer_id = H5P_DEFAULT_F
 dims = shape(value, HSIZE_T)
 
 if(present(istart) .and. present(iend)) then
-  if (present(stride)) then
-    !! necessary to use this present check for Intel and GCC
-    call hdf_get_slice(self, dname, dset_id, file_space_id, mem_space_id, istart, iend, stride)
-  else
-    call hdf_get_slice(self, dname, dset_id, file_space_id, mem_space_id, istart, iend)
-  endif
+  call hdf_get_slice(self, dname, dset_id, file_space_id, mem_space_id, istart, iend, stride)
 else
   call hdf_shape_check(self, dname, dims)
   call h5dopen_f(self%lid, dname, dset_id, ier)
