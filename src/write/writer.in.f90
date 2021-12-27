@@ -9,7 +9,7 @@ contains
 
 module procedure h5write_scalar
 
-integer(HID_T)  :: sid, did
+integer(HID_T)  :: filespace_id, dset_id
 integer(HSIZE_T), allocatable :: dims(:)
 integer :: ier
 
@@ -19,17 +19,17 @@ allocate(dims(0))
 
 select type (value)
 type is (real(real32))
-  call hdf_create(self, dname, H5T_NATIVE_REAL, dims, sid, did, compact=compact)
-  call h5dwrite_f(did, H5T_NATIVE_REAL, value, dims, ier)
+  call hdf_create(self, dname, H5T_NATIVE_REAL, dims, filespace_id, dset_id, compact=compact)
+  call h5dwrite_f(dset_id, H5T_NATIVE_REAL, value, dims, ier)
 type is (real(real64))
-  call hdf_create(self, dname, H5T_NATIVE_DOUBLE, dims, sid, did, compact=compact)
-  call h5dwrite_f(did, H5T_NATIVE_DOUBLE, value, dims, ier)
+  call hdf_create(self, dname, H5T_NATIVE_DOUBLE, dims, filespace_id, dset_id, compact=compact)
+  call h5dwrite_f(dset_id, H5T_NATIVE_DOUBLE, value, dims, ier)
 type is (integer(int32))
-  call hdf_create(self, dname, H5T_NATIVE_INTEGER, dims, sid, did, compact=compact)
-  call h5dwrite_f(did, H5T_NATIVE_INTEGER, value, dims, ier)
+  call hdf_create(self, dname, H5T_NATIVE_INTEGER, dims, filespace_id, dset_id, compact=compact)
+  call h5dwrite_f(dset_id, H5T_NATIVE_INTEGER, value, dims, ier)
 type is (integer(int64))
-  call hdf_create(self, dname, H5T_STD_I64LE, dims, sid, did, compact=compact)
-  call h5dwrite_f(did, H5T_STD_I64LE, value, dims, ier)
+  call hdf_create(self, dname, H5T_STD_I64LE, dims, filespace_id, dset_id, compact=compact)
+  call h5dwrite_f(dset_id, H5T_STD_I64LE, value, dims, ier)
 type is (character(*))
   call h5ltmake_dataset_string_f(self%lid, dname, value, ier)
 class default
@@ -41,7 +41,7 @@ if (ier /= 0) error stop 'h5fortran:write: could not write ' // dname // ' to ' 
 select type (value)
 type is (character(*))
 class default
-  call hdf_wrapup(did, sid)
+  call hdf_wrapup(dset_id, filespace_id)
 end select
 
 end procedure h5write_scalar

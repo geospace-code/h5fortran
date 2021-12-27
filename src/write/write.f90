@@ -45,9 +45,9 @@ if(exists) then
   call h5dopen_f(self%lid, dname, ds_id, ierr)
   if (ierr /= 0) error stop 'ERROR:h5fortran:create: could not open ' // dname // ' in ' // self%filename
 
-  if(present(did)) did = ds_id
-  if(present(sid)) then
-    call h5dget_space_f(ds_id, sid, ierr)
+  if(present(dset_id)) dset_id = ds_id
+  if(present(filespace_id)) then
+    call h5dget_space_f(ds_id, filespace_id, ierr)
     if(ierr /= 0) error stop 'h5fortran:create could not get dataset ' // dname // ' in ' // self%filename
   end if
   return
@@ -95,14 +95,14 @@ if (ierr/=0) error stop "h5dcreate: " // dname // " " // self%filename
 call h5pclose_f(plist_id, ierr)
 if (ierr/=0) error stop "h5fortran:h5pclose: " // dname // ' in ' // self%filename
 
-if(.not.(present(did) .and. present(sid))) then
+if(.not.(present(dset_id) .and. present(filespace_id))) then
   if(self%debug) print *, 'h5fortran:TRACE:create: closing dataset ', dname
   call hdf_wrapup(ds_id, space_id)
 endif
 if (ierr/=0) error stop "h5fortran:wrapup: " // dname // ' in ' // self%filename
 
-if(present(sid)) sid = space_id
-if(present(did)) did = ds_id
+if(present(filespace_id)) filespace_id = space_id
+if(present(dset_id)) dset_id = ds_id
 
 end procedure hdf_create
 

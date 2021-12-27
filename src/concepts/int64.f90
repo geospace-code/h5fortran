@@ -46,15 +46,15 @@ integer(int64) function read_int64(fid, name) result(i)
 integer(hid_t), intent(in) :: fid
 character(*), intent(in) :: name
 
-integer(hid_t) ::  dsid
+integer(hid_t) ::  dset_id
 
-call h5dopen_f(fid, name, dsid, ierr)
+call h5dopen_f(fid, name, dset_id, ierr)
 if (ierr/=0) error stop "dataset not opened: " // name // " in file: " // filename
 
-CALL h5dread_f(dsid, h5kind_to_type(int64, h5_integer_kind), i, shape(i, hsize_t), ierr)
+CALL h5dread_f(dset_id, h5kind_to_type(int64, h5_integer_kind), i, shape(i, hsize_t), ierr)
 if (ierr/=0) error stop "dataset not read: " // name // " in file: " // filename
 
-call h5dclose_f(dsid, ierr)
+call h5dclose_f(dset_id, ierr)
 
 end function read_int64
 
@@ -84,22 +84,22 @@ integer(hid_t) :: fid
 integer(int64), intent(in) :: i
 character(*), intent(in) :: name
 
-integer(hid_t) :: h5_kind_int64, sid, dsid
+integer(hid_t) :: h5_kind_int64, filespace_id, dset_id
 
 h5_kind_int64 = h5kind_to_type(int64, h5_integer_kind)
 
 !> dataspace
-call h5screate_f(h5s_scalar_f, sid, ierr)
+call h5screate_f(h5s_scalar_f, filespace_id, ierr)
 
 !> create the dataset.
-call h5dcreate_f(fid, name, h5_kind_int64, sid, dsid, ierr)
+call h5dcreate_f(fid, name, h5_kind_int64, filespace_id, dset_id, ierr)
 
 !> write data
-call h5dwrite_f(dsid, h5_kind_int64, i, shape(i, hsize_t), ierr)
+call h5dwrite_f(dset_id, h5_kind_int64, i, shape(i, hsize_t), ierr)
 
 !> close handles
-call h5dclose_f(dsid, ierr)
-call h5sclose_f(sid, ierr)
+call h5dclose_f(dset_id, ierr)
+call h5sclose_f(filespace_id, ierr)
 
 end subroutine write_int64
 

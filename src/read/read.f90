@@ -151,7 +151,7 @@ end procedure hdf_get_shape
 module procedure hdf_get_chunk
 
 integer :: ierr, drank
-integer(HID_T) :: pid, did
+integer(HID_T) :: pid, dset_id
 
 if(.not.self%is_open) error stop 'h5fortran:read: file handle is not open'
 
@@ -166,9 +166,9 @@ if(.not.self%is_chunked(dname)) return
 
 call h5ltget_dataset_ndims_f(self%lid, dname, drank, ierr)
 if (check(ierr, 'ERROR:get_chunk: get rank ' // dname // ' ' // self%filename)) return
-call h5dopen_f(self%lid, dname, did, ierr)
+call h5dopen_f(self%lid, dname, dset_id, ierr)
 if (check(ierr, 'ERROR:get_chunk: open dataset ' // dname // ' ' // self%filename)) return
-call h5dget_create_plist_f(did, pid, ierr)
+call h5dget_create_plist_f(dset_id, pid, ierr)
 if (check(ierr, 'ERROR:get_chunk: get property list ID ' // dname // ' ' // self%filename)) return
 
 call h5pget_chunk_f(pid, drank, chunk_size, ierr)
@@ -177,7 +177,7 @@ if (ierr /= drank) then
   return
 endif
 
-call h5dclose_f(did, ierr)
+call h5dclose_f(dset_id, ierr)
 if (check(ierr, 'ERROR:get_chunk: close dataset: ' // dname // ' ' // self%filename)) return
 
 end procedure hdf_get_chunk
@@ -185,7 +185,7 @@ end procedure hdf_get_chunk
 
 module procedure hdf_get_layout
 
-integer(HID_T) :: pid, did
+integer(HID_T) :: pid, dset_id
 integer :: ierr
 
 if(.not.self%is_open) error stop 'h5fortran:read: file handle is not open'
@@ -197,13 +197,13 @@ if (.not.self%exist(dname)) then
   return
 endif
 
-call h5dopen_f(self%lid, dname, did, ierr)
+call h5dopen_f(self%lid, dname, dset_id, ierr)
 if (check(ierr, 'ERROR:get_layout: open dataset ' // dname // ' ' // self%filename)) return
-call h5dget_create_plist_f(did, pid, ierr)
+call h5dget_create_plist_f(dset_id, pid, ierr)
 if (check(ierr, 'ERROR:get_layout: get property list ID ' // dname // ' ' // self%filename)) return
 call h5pget_layout_f(pid, layout, ierr)
 if (check(ierr, 'ERROR:get_layout read ' // dname //' ' // self%filename)) return
-call h5dclose_f(did, ierr)
+call h5dclose_f(dset_id, ierr)
 if (check(ierr, 'ERROR:get_layout: close dataset: ' // dname //' ' // self%filename)) return
 
 end procedure hdf_get_layout

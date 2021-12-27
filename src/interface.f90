@@ -104,12 +104,12 @@ end interface h5read_attr
 !> Submodules
 
 interface !< write.f90
-module subroutine hdf_create(self, dname, dtype, dims, sid, did, chunk_size, istart, iend, stride, compact)
+module subroutine hdf_create(self, dname, dtype, dims, filespace_id, dset_id, chunk_size, istart, iend, stride, compact)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 integer(HID_T), intent(in) :: dtype
 integer(HSIZE_T), intent(in) :: dims(:)
-integer(HID_T), intent(out), optional :: sid, did
+integer(HID_T), intent(out), optional :: filespace_id, dset_id
 integer, intent(in), dimension(size(dims)), optional :: chunk_size, istart, iend, stride
 logical, intent(in), optional :: compact
 !! keep istart, iend, stride for future slice shape check
@@ -718,12 +718,12 @@ endif
 end subroutine hdf_wrapup
 
 
-subroutine hdf_get_slice(self, dname, did, sid, mem_sid, i0, i1, i2)
+subroutine hdf_get_slice(self, dname, dset_id, filespace_id, memspace_id, i0, i1, i2)
 !! setup array slices for read and write
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
-integer(HID_T), intent(inout) :: did  !< inout for sentinel value
-integer(hid_t), intent(out) :: sid, mem_sid
+integer(HID_T), intent(inout) :: dset_id  !< inout for sentinel value
+integer(hid_t), intent(out) :: filespace_id, memspace_id
 class(*), intent(in), dimension(:) :: i0
 class(*), intent(in), dimension(size(i0)) :: i1
 class(*), intent(in), dimension(size(i0)), optional :: i2
@@ -777,15 +777,15 @@ istart = istart - 1
 mem_dims = iend - istart
 
 !> some callers have already opened the dataset. 0 is a sentinel saying not opened yet.
-if (did == 0) then
-  call h5dopen_f(self%lid, dname, did, ierr)
+if (dset_id == 0) then
+  call h5dopen_f(self%lid, dname, dset_id, ierr)
   if(ierr /= 0) error stop 'h5fortran:get_slice:H5Dopen: ' // dname // ' ' // self%filename
 endif
-call h5dget_space_f(did, sid, ierr)
+call h5dget_space_f(dset_id, filespace_id, ierr)
 if(ierr /= 0) error stop 'h5fortran:get_slice could not get dataset'
-call h5sselect_hyperslab_f(sid, H5S_SELECT_SET_F, istart, mem_dims, ierr, stride=stride)
+call h5sselect_hyperslab_f(filespace_id, H5S_SELECT_SET_F, istart, mem_dims, ierr, stride=stride)
 if(ierr /= 0) error stop 'h5fortran:get_slice could not assign hyperslab'
-call h5screate_simple_f(size(mem_dims), mem_dims, mem_sid, ierr)
+call h5screate_simple_f(size(mem_dims), mem_dims, memspace_id, ierr)
 if(ierr /= 0) error stop 'h5fortran:get_slice could not create dataspace'
 
 end subroutine hdf_get_slice
