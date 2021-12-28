@@ -723,12 +723,12 @@ subroutine hdf_get_slice(self, dname, dset_id, filespace_id, memspace_id, i0, i1
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
 integer(HID_T), intent(inout) :: dset_id  !< inout for sentinel value
-integer(hid_t), intent(out) :: filespace_id, memspace_id
+integer(HID_T), intent(out) :: filespace_id, memspace_id
 class(*), intent(in), dimension(:) :: i0
 class(*), intent(in), dimension(size(i0)) :: i1
 class(*), intent(in), dimension(size(i0)), optional :: i2
 
-integer(hsize_t), dimension(size(i0)) :: istart, iend, stride, mem_dims
+integer(HSIZE_T), dimension(size(i0)) :: istart, iend, stride, mem_dims
 integer :: ierr
 
 if(.not.self%is_open) error stop 'h5fortran:slice: file handle is not open'
