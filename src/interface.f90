@@ -724,51 +724,22 @@ class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
 integer(HID_T), intent(inout) :: dset_id  !< inout for sentinel value
 integer(HID_T), intent(out) :: filespace_id, memspace_id
-class(*), intent(in), dimension(:) :: i0
-class(*), intent(in), dimension(size(i0)) :: i1
-class(*), intent(in), dimension(size(i0)), optional :: i2
+integer, intent(in), dimension(:) :: i0
+integer, intent(in), dimension(size(i0)) :: i1
+integer, intent(in), dimension(size(i0)), optional :: i2
 
 integer(HSIZE_T), dimension(size(i0)) :: istart, iend, stride, mem_dims
 integer :: ierr
 
 if(.not.self%is_open) error stop 'h5fortran:slice: file handle is not open'
 
-!! istart
-select type (i0)
-type is (integer(int32))
-  istart = int(i0, int64)
-type is (integer(hsize_t))
-  istart = i0
-class default
-  error stop 'ERROR:h5fortran:slice: wrong type for istart: ' // dname // ' in ' // self%filename
-end select
-
-!! iend
-
-select type (i1)
-type is (integer(int32))
-  iend = int(i1, int64)
-type is (integer(hsize_t))
-  iend = i1
-class default
-  error stop 'ERROR:h5fortran:slice: wrong type for iend: ' // dname // ' in ' // self%filename
-end select
-
-!! stride
+istart = int(i0, HSIZE_T)
+iend = int(i1, HSIZE_T)
 
 if (present(i2)) then
-  select type (i2)
-  type is (integer(int32))
-    stride = int(i2, int64)
-  type is (integer(hsize_t))
-    stride = i2
-  class default
-    error stop 'ERROR:h5fortran:slice: wrong type for stride: ' // dname // ' in ' // self%filename
-  end select
-  if(self%debug) print *,'DEBUG: user-stride:',stride
+  stride = int(i2, HSIZE_T)
 else
   stride = 1
-  if(self%debug) print *, 'DEBUG: auto-stride',stride
 endif
 
 !! compensate for 0-based hyperslab vs. 1-based Fortran
