@@ -56,10 +56,10 @@ Tested on systems with HDF5 1.8, 1.10 and 1.12 including:
 * Windows MSYS2
 * IBM Power with Gfortran
 
-Compilers known to work include:
+Compilers known to work (tested on CI) include:
 
-* GCC (gfortran) &ge; 7
-* Intel oneAPI HPC compiler &ge; 2021 (on Windows, use static linking)
+* GCC (gfortran) &ge; 8
+* Intel oneAPI &ge; 2021
 
 ---
 
