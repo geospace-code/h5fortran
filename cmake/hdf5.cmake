@@ -10,6 +10,11 @@ if(hdf5_parallel)
   find_package(MPI REQUIRED COMPONENTS C)
 endif()
 
+# pass MPI hints to HDF5
+if(NOT MPI_ROOT AND DEFINED ENV{MPI_ROOT})
+  set(MPI_ROOT $ENV{MPI_ROOT})
+endif()
+
 # need to be sure _ROOT isn't empty, DEFINED is not enough
 if(NOT HDF5_ROOT)
   set(HDF5_ROOT ${CMAKE_INSTALL_PREFIX})
@@ -41,7 +46,7 @@ endif()
 
 set(hdf5_cmake_args
 ${zlib_root}
--DCMAKE_INSTALL_PREFIX:PATH=${HDF5_ROOT}
+--install-prefix=${HDF5_ROOT}
 -DCMAKE_MODULE_PATH:PATH=${CMAKE_MODULE_PATH}
 -DHDF5_GENERATE_HEADERS:BOOL=false
 -DHDF5_DISABLE_COMPILER_WARNINGS:BOOL=true
@@ -55,9 +60,11 @@ ${zlib_root}
 -DUSE_LIBAEC:bool=true
 -DHDF5_BUILD_TOOLS:BOOL=$<NOT:$<BOOL:${hdf5_parallel}>>
 -DHDF5_ENABLE_PARALLEL:BOOL=$<BOOL:${hdf5_parallel}>
--DMPI_ROOT:PATH=${MPI_ROOT}
 )
 # https://github.com/HDFGroup/hdf5/issues/818  for broken ph5diff in HDF5_BUILD_TOOLS
+if(MPI_ROOT)
+  list(APPEND hdf5_cmake_args -DMPI_ROOT:PATH=${MPI_ROOT})
+endif()
 
 ExternalProject_Add(HDF5
 URL ${hdf5_url}
@@ -90,7 +97,7 @@ if(hdf5_parallel)
     set(hdf5_parallel_compression ".true." CACHE STRING "configure variable for HDF5 parallel compression")
   else()
     message(STATUS "Building HDF5-MPI: MPI-3 NOT available => HDF5 parallel compression disabled")
-    set(hdf5_parallel_compression ".false." CACHE STRING "configure variable for HDF5 parallel compression")
+    set(hdf5_parallel_compression ".false." CACHE STRING "configure variable for HDF5 parallel compression: MPI < 3")
   endif()
 endif(hdf5_parallel)
 
