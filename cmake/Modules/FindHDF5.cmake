@@ -10,6 +10,9 @@ by Michael Hirsch www.scivision.dev
 
 Finds HDF5 library for C, CXX, Fortran. Serial or parallel HDF5.
 
+Environment variable ``HDF5MPI_ROOT`` or CMake variable HDF5MPI_ROOT can
+specify the location of the HDF5-MPI parallel library.
+
 
 Result Variables
 ^^^^^^^^^^^^^^^^
@@ -90,7 +93,7 @@ set(${outvar} ${_v} PARENT_SCOPE)
 endfunction(pop_flag)
 
 macro(find_mpi)
-# non-cache set by FindMPI are visible outside function -- need macro just to see within that function
+# non-cache set by FindMPI are not visible outside function -- need macro just to see within that function
 set(mpi_comp C)
 if(Fortran IN_LIST HDF5_FIND_COMPONENTS)
   list(APPEND mpi_comp Fortran)
@@ -250,7 +253,7 @@ if(HDF5_ROOT)
   find_path(HDF5_Fortran_INCLUDE_DIR
   NAMES hdf5.mod
   NO_DEFAULT_PATH
-  HINTS ${HDF5_C_INCLUDE_DIR} ${HDF5_ROOT} ENV HDF5_ROOT
+  HINTS ${HDF5_C_INCLUDE_DIR} ${HDF5_ROOT}
   PATH_SUFFIXES include
   DOC "HDF5 Fortran module path"
   )
@@ -406,7 +409,7 @@ if(HDF5_ROOT)
     NAMES ${wrapper_names}
     NAMES_PER_DIR
     NO_DEFAULT_PATH
-    HINTS ${HDF5_ROOT} ENV HDF5_ROOT
+    HINTS ${HDF5_ROOT}
     PATH_SUFFIXES ${hdf5_binsuf}
   )
 else()
@@ -456,7 +459,7 @@ if(HDF5_ROOT)
     NAMES ${wrapper_names}
     NAMES_PER_DIR
     NO_DEFAULT_PATH
-    HINTS ${HDF5_ROOT} ENV HDF5_ROOT
+    HINTS ${HDF5_ROOT}
     PATH_SUFFIXES ${hdf5_binsuf}
   )
 else()
@@ -503,7 +506,7 @@ if(HDF5_ROOT)
     NAMES ${wrapper_names}
     NAMES_PER_DIR
     NO_DEFAULT_PATH
-    HINTS ${HDF5_ROOT} ENV HDF5_ROOT
+    HINTS ${HDF5_ROOT}
     PATH_SUFFIXES ${hdf5_binsuf}
   )
 else()
@@ -601,33 +604,7 @@ if(HDF5_parallel_FOUND)
   list(APPEND CMAKE_REQUIRED_INCLUDES ${MPI_Fortran_INCLUDE_DIRS})
   list(APPEND CMAKE_REQUIRED_LIBRARIES ${MPI_Fortran_LIBRARIES})
 
-  set(src "program test_fortran_mpi
-  use hdf5
-  use mpi
-
-  integer :: ierr
-  integer(HID_T) :: plist_id, xfer_id, fid, dset_id
-
-  call mpi_init(ierr)
-
-  call h5open_f(ierr)
-
-  call h5pcreate_f(H5P_FILE_ACCESS_F, plist_id, ierr)
-  call h5pset_fapl_mpio_f(plist_id, MPI_COMM_WORLD, MPI_INFO_NULL, ierr)
-  call h5fopen_f('junk.h5', H5F_ACC_RDONLY_F, fid, ierr, access_prp=plist_id)
-  call h5pclose_f(plist_id, ierr)
-
-  call h5pcreate_f(H5P_DATASET_XFER_F, xfer_id, ierr)
-  call h5pset_dxpl_mpio_f(xfer_id, H5FD_MPIO_COLLECTIVE_F, ierr)
-
-  call h5fclose_f(fid, ierr)
-  call h5pclose_f(xfer_id, ierr)
-
-  call h5close_f(ierr)
-
-  call mpi_finalize(ierr)
-
-  end program")
+  file(READ ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/check_hdf5_mpi.f90 src)
 else()
   set(src "program test_minimal
   use hdf5, only : h5open_f, h5close_f
@@ -676,8 +653,16 @@ endfunction(check_hdf5_link)
 
 set(CMAKE_REQUIRED_LIBRARIES)
 
-if(NOT HDF5_ROOT AND DEFINED ENV{HDF5_ROOT})
-  set(HDF5_ROOT $ENV{HDF5_ROOT})
+if(NOT HDF5MPI_ROOT AND DEFINED ENV{HDF5MPI_ROOT})
+  set(HDF5MPI_ROOT $ENV{HDF5MPI_ROOT})
+endif()
+
+if(NOT HDF5_ROOT)
+  if(HDF5MPI_ROOT)
+    set(HDF5_ROOT ${HDF5MPI_ROOT})
+  elseif(DEFINED ENV{HDF5_ROOT})
+    set(HDF5_ROOT $ENV{HDF5_ROOT})
+  endif()
 endif()
 
 # Conda causes numerous problems with finding HDF5, so exclude from search
