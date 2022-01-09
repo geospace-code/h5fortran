@@ -58,6 +58,7 @@ endif
 !> Only new datasets go past this point
 
 call self%write_group(dname)
+!! write_group is needed for any dataset in a group e.g. /hi/there/var
 
 !> compression
 if(size(dims) >= 2) then
