@@ -10,12 +10,10 @@ contains
 module procedure h5write_scalar
 
 integer(HID_T)  :: filespace_id, dset_id
-integer(HSIZE_T), allocatable :: dims(:)
+integer(HSIZE_T) :: dims(0)
 integer :: ier
 
 if(.not.self%is_open) error stop 'h5fortran:write: file handle is not open'
-
-allocate(dims(0))
 
 select type (value)
 type is (real(real32))

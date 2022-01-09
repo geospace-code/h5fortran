@@ -21,6 +21,8 @@ logical :: exists
 integer :: ierr
 integer(HID_T) :: plist_id, space_id, ds_id
 
+plist_id = H5P_DEFAULT_F
+
 if(.not.self%is_open) error stop 'h5fortran:write: file handle is not open: ' // self%filename
 
 call h5ltpath_valid_f(self%lid, dname, .true., exists, ierr)
@@ -53,31 +55,27 @@ if(exists) then
   return
 endif
 
-if(self%debug) print *, 'h5fortran:TRACE1: ' // dname
-
 !> Only new datasets go past this point
 
 call self%write_group(dname)
 
-!> create properties
-plist_id = H5P_DEFAULT_F
-
+!> compression
 if(size(dims) >= 2) then
   if(self%debug) print *, 'h5fortran:TRACE:create: deflate: ' // dname
   call set_deflate(self, dims, plist_id, ierr, chunk_size)
   if (ierr/=0) error stop 'ERROR:h5fortran:create: problem setting deflate on ' // dname
 endif
 
+!> compact dataset (for very small datasets to increase I/O speed)
 if(present(compact)) then
-! print *, "TRACE1: COMPACT", compact
-!! don't set COMPACT after CHUNKED, will fail. And it's either or anyway.
+!! datasets are EITHER compact or chunked.
 if(compact .and. plist_id == H5P_DEFAULT_F .and. product(dims) * 8 < 60000)  then
 !! 64000 byte limit, here we assumed 8 bytes / element
   call h5pcreate_f(H5P_DATASET_CREATE_F, plist_id, ierr)
-  if (check(ierr, self%filename)) error stop "h5fortran:h5pcreate: " // dname
+  if (check(ierr, self%filename)) error stop "h5fortran:hdf_create:h5pcreate: " // dname
 
   call h5pset_layout_f(plist_id, H5D_COMPACT_F, ierr)
-  if (check(ierr, self%filename)) error stop "h5fortran:h5pset_layout: " // dname
+  if (check(ierr, self%filename)) error stop "h5fortran:hdf_create:h5pset_layout: " // dname
 endif
 endif
 
