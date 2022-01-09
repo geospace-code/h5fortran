@@ -111,7 +111,7 @@ endif
 end procedure get_native_dtype
 
 
-module procedure hdf_get_ndims
+module procedure hdf_get_ndim
 !! get rank or "ndims"
 integer :: ier
 
@@ -122,10 +122,10 @@ drank = -1
 if (self%exist(dname)) then
   call h5ltget_dataset_ndims_f(self%lid, dname, drank, ier)
 else
-  write(stderr, *) 'ERROR:get_ndims: ' // dname // ' does not exist in ' // self%filename
+  write(stderr, '(a)') 'ERROR:get_ndim: ' // dname // ' does not exist in ' // self%filename
 endif
 
-end procedure hdf_get_ndims
+end procedure hdf_get_ndim
 
 
 module procedure hdf_get_shape

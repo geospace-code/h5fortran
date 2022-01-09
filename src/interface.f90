@@ -49,7 +49,7 @@ procedure, public :: open => hdf_initialize, close => hdf_finalize, &
   write_group, create => hdf_create, &
   open_group => hdf_open_group, close_group => hdf_close_group, &
   flush => hdf_flush, &
-  ndims => hdf_get_ndims, &
+  ndim => hdf_get_ndim, ndims => hdf_get_ndim, &
   shape => hdf_get_shape, layout => hdf_get_layout, chunks => hdf_get_chunk, &
   class => get_class, dtype => get_native_dtype, &
   exist => hdf_check_exist, exists => hdf_check_exist, &
@@ -304,10 +304,10 @@ character(*), intent(in) :: dname
 integer(hid_t), intent(in), optional :: ds_id
 end function get_native_dtype
 
-module integer function hdf_get_ndims(self, dname) result (drank)
+module integer function hdf_get_ndim(self, dname) result (drank)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
-end function hdf_get_ndims
+end function hdf_get_ndim
 
 module subroutine hdf_get_shape(self, dname, dims)
 class(hdf5_file), intent(in) :: self

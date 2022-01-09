@@ -61,7 +61,7 @@ call h%flush()
 To allocate variables before reading data, inquire about dataset characteristics with these procedures.
 
 ```fortran
-rank = h%ndims(dataset_name)
+rank = h%ndim(dataset_name)
 
 character(*), intent(in) :: dataset_name
 ```
