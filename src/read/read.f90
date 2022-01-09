@@ -136,13 +136,11 @@ integer :: type_class, drank, ier
 if(.not. self%exist(dname)) error stop 'h5fortran:get_shape: ' // dname // ' does not exist in ' // self%filename
 
 call h5ltget_dataset_ndims_f(self%lid, dname, drank, ier)
+if (ier /= 0) error stop "h5fortran:get_shape: could not get rank of " // dname // " in " // self%filename
 
-if (ier == 0) then
-  allocate(dims(drank))
-  call h5ltget_dataset_info_f(self%lid, dname, dims=dims, &
-    type_class=type_class, type_size=type_size, errcode=ier)
-endif
-
+allocate(dims(drank))
+call h5ltget_dataset_info_f(self%lid, dname, dims=dims, &
+  type_class=type_class, type_size=type_size, errcode=ier)
 if (ier /= 0) error stop "h5fortran:get_shape: could not get info: " // dname // ' from ' // self%filename
 
 end procedure hdf_get_shape
