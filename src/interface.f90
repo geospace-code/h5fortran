@@ -124,18 +124,15 @@ module subroutine hdf_close_group(self)
 class(hdf5_file), intent(inout) :: self
 end subroutine hdf_close_group
 
-module subroutine create_softlink(self, target, link)
+module subroutine create_softlink(self, tgt, link)
 class(hdf5_file), intent(inout) :: self
-character(*), intent(in) :: target, &  !< target path to link
+character(*), intent(in) :: tgt, &  !< target path to link
                             link  !< soft link path to create
 end subroutine create_softlink
 
 end interface
 
 interface !< writer_lt.f90
-module logical function h5exist(filename, dname)
-character(*), intent(in) :: filename, dname
-end function h5exist
 
 module subroutine lt0write(filename, dname, value)
 character(*), intent(in) :: filename, dname
@@ -181,6 +178,11 @@ end interface
 
 
 interface !< reader_lt.f90
+
+module logical function h5exist(filename, dname)
+character(*), intent(in) :: filename, dname
+end function h5exist
+
 module subroutine lt0read(filename, dname, value)
 character(*), intent(in) :: filename, dname
 class(*), intent(out) :: value

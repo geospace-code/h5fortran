@@ -113,8 +113,8 @@ module procedure create_softlink
 
 integer :: ierr
 
-call H5Lcreate_soft_f(target, self%lid, link, ierr)
-if (check(ierr, self%filename)) return
+call H5Lcreate_soft_f(tgt, self%lid, link, ierr)
+if (ierr /= 0) error stop 'ERROR:h5fortran:create_softlink: ' // link // ' in ' // self%filename
 
 end procedure create_softlink
 
