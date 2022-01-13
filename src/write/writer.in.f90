@@ -30,17 +30,15 @@ type is (integer(int64))
   call h5dwrite_f(dset_id, H5T_STD_I64LE, value, dims, ier)
 type is (character(*))
   call h5ltmake_dataset_string_f(self%lid, dname, value, ier)
+  if (ier /= 0) error stop 'h5fortran:write: could not write CHARACTER ' // dname // ' to ' // self%filename
+  return
 class default
   error stop "h5fortran:write: unknown type"
 end select
 
 if (ier /= 0) error stop 'h5fortran:write: could not write ' // dname // ' to ' // self%filename
 
-select type (value)
-type is (character(*))
-class default
-  call hdf_wrapup(dset_id, filespace_id)
-end select
+call hdf_wrapup(dset_id, filespace_id)
 
 end procedure h5write_scalar
 

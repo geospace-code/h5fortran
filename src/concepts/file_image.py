@@ -4,9 +4,9 @@ Demonstrates low level h5py HDF5 file_image API
 
 from h5py source code.
 """
+
 from binascii import a2b_base64
 from zlib import decompress
-import pytest
 
 import h5py
 from h5py import h5f, h5p
@@ -37,7 +37,3 @@ def test_image():
     with h5py.File(fid) as f:
         assert (f["test"][:] == [1, 2, 3]).all()
         assert f["test"].dtype == "int64"
-
-
-if __name__ == "__main__":
-    pytest.main([__file__])

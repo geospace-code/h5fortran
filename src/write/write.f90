@@ -80,7 +80,7 @@ if(compact .and. plist_id == H5P_DEFAULT_F .and. product(dims) * 8 < 60000)  the
 endif
 endif
 
-!> create dataspace
+!> create dataset dataspace
 if(size(dims) == 0) then
   call h5screate_f(H5S_SCALAR_F, space_id, ierr)
 else
