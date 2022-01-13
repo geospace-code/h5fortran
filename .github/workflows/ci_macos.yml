@@ -38,7 +38,7 @@ jobs:
     - run: cmake --install build
 
     - name: configure examples
-      run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=~
+      run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=${HOME}
     - name: build Examples
       run: cmake --build Examples/build
     - name: Test Examples
@@ -92,7 +92,7 @@ jobs:
     - run: cmake --install build
 
     - name: configure examples
-      run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=~
+      run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=${HOME}
     - name: build Examples
       run: cmake --build Examples/build
     - name: Test Examples
@@ -113,7 +113,7 @@ jobs:
     - run: cmake --install build
 
     - name: configure examples
-      run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=~
+      run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=${HOME}
     - name: build Examples
       run: cmake --build Examples/build
     - name: Test Examples

@@ -1,7 +1,6 @@
 name: intel-oneapi
 
 env:
-  CMAKE_BUILD_PARALLEL_LEVEL: 2
   CTEST_PARALLEL_LEVEL: 2
   CMAKE_BUILD_TYPE: Release
   CC: icx
@@ -34,8 +33,12 @@ jobs:
         sudo apt-get update
 
     - name: Install Intel oneAPI
-      timeout-minutes: 5
-      run: sudo apt-get install ninja-build intel-oneapi-compiler-fortran intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic
+      timeout-minutes: 10
+      run: sudo apt-get install intel-oneapi-compiler-fortran intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic
+
+    - name: Install tools
+      timeout-minutes: 2
+      run: sudo apt install hdf5-tools ninja-build
 
     - name: Setup Intel oneAPI environment
       run: |
@@ -45,7 +48,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Configure CMake
-      run: cmake --preset multi
+      run: cmake --preset multi --install-prefix=${HOME}
 
     - name: print config log
       if: ${{ failure() }}
@@ -60,3 +63,13 @@ jobs:
       run: cmake --build --preset debug
     - name: debug unit test
       run: ctest --preset debug --output-junit test-debug-oneapi.xml
+
+    - name: Install our package
+      run: cmake --install build
+
+    - name: configure examples
+      run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=${HOME}
+    - name: build examples
+      run: cmake --build Examples/build
+    - name: Test examples
+      run: ctest --test-dir Examples/build -V
