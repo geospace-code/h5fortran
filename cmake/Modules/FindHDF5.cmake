@@ -628,7 +628,13 @@ if(HDF5_parallel_FOUND)
   list(APPEND CMAKE_REQUIRED_INCLUDES ${MPI_Fortran_INCLUDE_DIRS})
   list(APPEND CMAKE_REQUIRED_LIBRARIES ${MPI_Fortran_LIBRARIES})
 
-  file(READ ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/check_hdf5_mpi.f90 src)
+  set(test_h5fn ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/check_hdf5_mpi.f90)
+
+  if(NOT EXISTS ${test_h5fn})
+    message(WARNING "FindHDF5 could not find ${test_h5fn}")
+    return()
+  endif()
+  file(READ ${test_h5fn} src)
 else()
   set(src "program test_minimal
   use hdf5, only : h5open_f, h5close_f
