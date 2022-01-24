@@ -160,7 +160,7 @@ jobs:
     - run: cmake --install build
 
     - name: configure examples
-      run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=~
+      run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT:PATH=${HOME} -DHDF5_ROOT:PATH=${HOME}
     - name: build Examples
       run: cmake --build Examples/build
     - name: Test Examples
@@ -180,7 +180,7 @@ jobs:
     - run: cmake --install build
 
     - name: configure examples
-      run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=${HOME}
+      run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT:PATH=${HOME} -DHDF5_ROOT:PATH=${HOME}
     - name: build Examples
       run: cmake --build Examples/build --parallel
     - name: Test Examples

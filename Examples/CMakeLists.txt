@@ -11,8 +11,6 @@ endif()
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/../cmake/Modules)
 
-find_package(HDF5 COMPONENTS Fortran REQUIRED)
-
 include(${PROJECT_SOURCE_DIR}/../cmake/h5fortran.cmake)
 
 # --- Fortran interface for examples
