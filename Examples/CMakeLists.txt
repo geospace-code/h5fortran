@@ -5,7 +5,15 @@ LANGUAGES C CXX Fortran)
 
 include(CTest)
 
-find_package(h5fortran CONFIG REQUIRED)
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+  set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR} CACHE PATH "Install top-level directory" FORCE)
+endif()
+
+list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/../cmake/Modules)
+
+find_package(HDF5 COMPONENTS Fortran REQUIRED)
+
+include(${PROJECT_SOURCE_DIR}/../cmake/h5fortran.cmake)
 
 # --- Fortran interface for examples
 add_library(fortran_interface fortran_interface.f90)
