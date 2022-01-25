@@ -75,6 +75,7 @@ endif()
 
 set_target_properties(h5fortran::h5fortran PROPERTIES IMPORTED_LOCATION ${h5fortran_LIBRARIES})
 target_include_directories(h5fortran::h5fortran INTERFACE ${h5fortran_INCLUDE_DIRS})
+target_link_libraries(h5fortran::h5fortran INTERFACE HDF5::HDF5)
 
 # race condition for linking without this
 add_dependencies(h5fortran::h5fortran H5FORTRAN)
