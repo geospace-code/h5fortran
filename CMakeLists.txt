@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20...3.22)
+cmake_minimum_required(VERSION 3.20...3.23)
 
 get_property(is_multi_config GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
 if(NOT is_multi_config AND NOT (CMAKE_BUILD_TYPE OR DEFINED ENV{CMAKE_BUILD_TYPE}))
@@ -45,9 +45,9 @@ include(cmake/compilers.cmake)
 
 if(NOT hdf5_external)
   if(autobuild)
-    find_package(HDF5 1.8.7...2 COMPONENTS Fortran HL)
+    find_package(HDF5 1.8.7 COMPONENTS Fortran HL)
   else()
-    find_package(HDF5 1.8.7...2 REQUIRED COMPONENTS Fortran HL)
+    find_package(HDF5 1.8.7 REQUIRED COMPONENTS Fortran HL)
   endif()
 endif()
 
