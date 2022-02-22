@@ -20,29 +20,25 @@ if(NOT HDF5_FOUND OR hdf5_external)
   include(${CMAKE_CURRENT_LIST_DIR}/hdf5.cmake)
 endif()
 
-if(NOT h5fortran_ROOT)
-  set(h5fortran_ROOT ${CMAKE_INSTALL_PREFIX})
-endif()
-
 find_package(ZLIB)
 
-set(h5fortran_INCLUDE_DIRS ${h5fortran_ROOT}/include)
+set(h5fortran_INCLUDE_DIRS ${CMAKE_INSTALL_PREFIX}/include)
 
-set(h5fortran_implib)
+set(h5fortran_IMPLIB)
 if(BUILD_SHARED_LIBS)
   if(WIN32)
-    set(h5fortran_implib ${h5fortran_ROOT}/lib/${CMAKE_SHARED_LIBRARY_PREFIX}h5fortran${CMAKE_SHARED_LIBRARY_SUFFIX}${CMAKE_STATIC_LIBRARY_SUFFIX})
-    set(h5fortran_LIBRARIES ${h5fortran_ROOT}/bin/${CMAKE_SHARED_LIBRARY_PREFIX}h5fortran${CMAKE_SHARED_LIBRARY_SUFFIX})
+    set(h5fortran_IMPLIB ${CMAKE_INSTALL_PREFIX}/lib/${CMAKE_SHARED_LIBRARY_PREFIX}h5fortran${CMAKE_SHARED_LIBRARY_SUFFIX}${CMAKE_STATIC_LIBRARY_SUFFIX})
+    set(h5fortran_LIBRARIES ${CMAKE_INSTALL_PREFIX}/bin/${CMAKE_SHARED_LIBRARY_PREFIX}h5fortran${CMAKE_SHARED_LIBRARY_SUFFIX})
   else()
-    set(h5fortran_LIBRARIES ${h5fortran_ROOT}/lib/${CMAKE_SHARED_LIBRARY_PREFIX}h5fortran${CMAKE_SHARED_LIBRARY_SUFFIX})
+    set(h5fortran_LIBRARIES ${CMAKE_INSTALL_PREFIX}/lib/${CMAKE_SHARED_LIBRARY_PREFIX}h5fortran${CMAKE_SHARED_LIBRARY_SUFFIX})
   endif()
 else()
-  set(h5fortran_LIBRARIES ${h5fortran_ROOT}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}h5fortran${CMAKE_STATIC_LIBRARY_SUFFIX})
+  set(h5fortran_LIBRARIES ${CMAKE_INSTALL_PREFIX}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}h5fortran${CMAKE_STATIC_LIBRARY_SUFFIX})
 endif()
 
 set(h5fortran_cmake_args
--DCMAKE_INSTALL_PREFIX=${h5fortran_ROOT}
--DZLIB_ROOT:PATH=${ZLIB_ROOT}
+-DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
+-DCMAKE_PREFIX_PATH:PATH=${CMAKE_INSTALL_PREFIX}
 -DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS}
 -DCMAKE_BUILD_TYPE=Release
 -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
@@ -67,7 +63,7 @@ file(MAKE_DIRECTORY ${h5fortran_INCLUDE_DIRS})
 if(BUILD_SHARED_LIBS)
   add_library(h5fortran::h5fortran SHARED IMPORTED)
   if(WIN32)
-    set_target_properties(h5fortran::h5fortran PROPERTIES IMPORTED_IMPLIB ${h5fortran_implib})
+    set_target_properties(h5fortran::h5fortran PROPERTIES IMPORTED_IMPLIB ${h5fortran_IMPLIB})
   endif()
 else()
   add_library(h5fortran::h5fortran STATIC IMPORTED)
