@@ -10,7 +10,7 @@ set_target_properties(test_minimal PROPERTIES LABELS unit)
 add_test(NAME minimal COMMAND test_minimal)
 set_tests_properties(minimal PROPERTIES
 FIXTURES_SETUP h5lib
-TIMEOUT 5
+TIMEOUT 10
 LABELS core
 )
 
