@@ -24,10 +24,8 @@ find_package(ZLIB)
 
 set(h5fortran_INCLUDE_DIRS ${CMAKE_INSTALL_PREFIX}/include)
 
-set(h5fortran_IMPLIB)
 if(BUILD_SHARED_LIBS)
   if(WIN32)
-    set(h5fortran_IMPLIB ${CMAKE_INSTALL_PREFIX}/lib/${CMAKE_SHARED_LIBRARY_PREFIX}h5fortran${CMAKE_SHARED_LIBRARY_SUFFIX}${CMAKE_STATIC_LIBRARY_SUFFIX})
     set(h5fortran_LIBRARIES ${CMAKE_INSTALL_PREFIX}/bin/${CMAKE_SHARED_LIBRARY_PREFIX}h5fortran${CMAKE_SHARED_LIBRARY_SUFFIX})
   else()
     set(h5fortran_LIBRARIES ${CMAKE_INSTALL_PREFIX}/lib/${CMAKE_SHARED_LIBRARY_PREFIX}h5fortran${CMAKE_SHARED_LIBRARY_SUFFIX})
@@ -60,18 +58,9 @@ DEPENDS HDF5::HDF5
 
 file(MAKE_DIRECTORY ${h5fortran_INCLUDE_DIRS})
 
-if(BUILD_SHARED_LIBS)
-  add_library(h5fortran::h5fortran SHARED IMPORTED)
-  if(WIN32)
-    set_target_properties(h5fortran::h5fortran PROPERTIES IMPORTED_IMPLIB ${h5fortran_IMPLIB})
-  endif()
-else()
-  add_library(h5fortran::h5fortran STATIC IMPORTED)
-endif()
-
-set_target_properties(h5fortran::h5fortran PROPERTIES IMPORTED_LOCATION ${h5fortran_LIBRARIES})
+add_library(h5fortran::h5fortran INTERFACE IMPORTED GLOBAL)
 target_include_directories(h5fortran::h5fortran INTERFACE ${h5fortran_INCLUDE_DIRS})
-target_link_libraries(h5fortran::h5fortran INTERFACE HDF5::HDF5)
+target_link_libraries(h5fortran::h5fortran INTERFACE ${h5fortran_LIBRARIES} HDF5::HDF5)
 
 # race condition for linking without this
 add_dependencies(h5fortran::h5fortran H5FORTRAN)
