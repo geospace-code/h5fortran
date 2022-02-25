@@ -69,7 +69,7 @@ install(TARGETS h5fortran EXPORT ${PROJECT_NAME}-targets)
 add_subdirectory(src)
 
 if(${PROJECT_NAME}_BUILD_TESTING)
-  add_subdirectory(src/tests)
+  add_subdirectory(tests)
 endif()
 
 # additional Find*.cmake necessary

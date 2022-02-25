@@ -20,8 +20,6 @@ if(NOT HDF5_FOUND OR hdf5_external)
   include(${CMAKE_CURRENT_LIST_DIR}/hdf5.cmake)
 endif()
 
-find_package(ZLIB)
-
 set(h5fortran_INCLUDE_DIRS ${CMAKE_INSTALL_PREFIX}/include)
 
 if(BUILD_SHARED_LIBS)

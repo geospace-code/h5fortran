@@ -35,7 +35,7 @@ endif()
 set_tests_properties(${name} PROPERTIES
 FIXTURES_REQUIRED h5lib
 TIMEOUT 10
-WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
 )
 
 if(${name} MATCHES ".*fail.*")
@@ -75,11 +75,10 @@ endif()
 
 # --- Windows shared DLLs
 if(WIN32 AND CMAKE_VERSION VERSION_GREATER_EQUAL 3.22)
-  set_tests_properties(${test_names} PROPERTIES ENVIRONMENT_MODIFICATION "PATH=path_list_append:${ZLIB_INCLUDE_DIRS}/../bin")
+  set_tests_properties(${test_names} PROPERTIES ENVIRONMENT_MODIFICATION "PATH=path_list_append:${ZLIB_INCLUDE_DIRS}/../bin;PATH=path_list_append:${ZLIB_INCLUDE_DIR}/../bin")
 endif()
 
 # --- Python h5py
-
 find_package(Python3 COMPONENTS Interpreter)
 if(NOT DEFINED h5py_ok)
   execute_process(COMMAND ${Python3_EXECUTABLE} -c "import h5py"
