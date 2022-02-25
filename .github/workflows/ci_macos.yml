@@ -19,16 +19,20 @@ on:
 
 jobs:
 
-  mac-static:
+  macos:
     runs-on: macos-latest
     timeout-minutes: 20
+
+    strategy:
+      matrix:
+        shared: [true, false]
 
     steps:
     - uses: actions/checkout@v2
 
     - run: brew install hdf5 ninja
 
-    - run: cmake --preset multi --install-prefix=${HOME}
+    - run: cmake --preset multi --install-prefix=${HOME} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
     - run: cmake --build --preset debug
     - run: ctest --preset debug
 
@@ -38,103 +42,32 @@ jobs:
     - run: cmake --install build
 
     - name: configure examples
-      run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=${HOME}
-    - name: build Examples
-      run: cmake --build Examples/build --parallel
-    - name: Test Examples
-      run: ctest --test-dir Examples/build -V
-
-    - name: create package
-      if: github.event.action == 'published'
-      run: cpack --config build/CPackConfig.cmake
-
-    - name: Upload artifact
-      if: github.event.action == 'published'
-      uses: actions/upload-artifact@v2
-      with:
-        name: binary-archive
-        path: build/package/
-
-    - name: get version
-      if: github.event.action == 'published'
-      id: get_version
-      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\/v/}
-
-    - name: Upload release asset
-      if: github.event.action == 'published'
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: build/package/h5fortran-${{ steps.get_version.outputs.VERSION }}-Darwin.tar.zst
-        asset_name:  h5fortran-${{ steps.get_version.outputs.VERSION }}-Darwin.tar.zst
-        asset_content_type: application/zip
-
-
-  mac-shared:
-    needs: mac-static
-    runs-on: macos-latest
-    timeout-minutes: 20
-
-    steps:
-    - uses: actions/checkout@v2
-
-    - run: brew install hdf5 ninja
-
-    - run: cmake --preset multi -DBUILD_SHARED_LIBS:BOOL=true --install-prefix=${HOME}
-    - run: cmake --build --preset debug
-    - run: ctest --preset debug
-
-    - run: cmake --build --preset release
-    - run: ctest --preset release
-
-    - run: cmake --install build
-
-    - name: configure examples
-      run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT=${HOME}
+      run: cmake -S Examples -B Examples/build -DCMAKE_PREFIX_PATH:PATH=${HOME} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
     - name: build Examples
       run: cmake --build Examples/build --parallel
     - name: Test Examples
       run: ctest --test-dir Examples/build -V
 
 
-  mac-build-static:
-    needs: mac-static
+  macos-build:
+    needs: macos
     runs-on: macos-latest
     timeout-minutes: 20
+
+    strategy:
+      matrix:
+        shared: [true, false]
 
     steps:
     - uses: actions/checkout@v2
 
-    - run: cmake -B build --preset build --install-prefix=${HOME}
+    - run: cmake -B build --preset build --install-prefix=${HOME} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
     - run: cmake --build build --parallel
     - run: ctest --test-dir build --preset default
     - run: cmake --install build
 
     - name: configure examples
-      run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT:PATH=${HOME} -DHDF5_ROOT:PATH=${HOME}
-    - name: build Examples
-      run: cmake --build Examples/build --parallel
-    - name: Test Examples
-      run: ctest --test-dir Examples/build -V
-
-
-  mac-build-shared:
-    needs: [mac-shared, mac-build-static]
-    runs-on: macos-latest
-    timeout-minutes: 20
-
-    steps:
-    - uses: actions/checkout@v2
-
-    - run: cmake -B build --preset build -DBUILD_SHARED_LIBS=on --install-prefix=${HOME}
-    - run: cmake --build build --parallel
-    - run: ctest --test-dir build --preset default
-    - run: cmake --install build
-
-    - name: configure examples
-      run: cmake -S Examples -B Examples/build -Dh5fortran_ROOT:PATH=${HOME} -DHDF5_ROOT:PATH=${HOME}
+      run: cmake -S Examples -B Examples/build -DCMAKE_PREFIX_PATH:PATH=${HOME} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
     - name: build Examples
       run: cmake --build Examples/build --parallel
     - name: Test Examples
