@@ -1,6 +1,5 @@
 project('h5fortran', 'fortran',
-meson_version : '>=0.57.0',
-default_options : ['default_library=static', 'buildtype=release', 'warning_level=3']
+meson_version : '>=0.57.0'
 )
 
 fc = meson.get_compiler('fortran')
@@ -18,12 +17,12 @@ fs = import('fs')
 
 hdf5 = dependency('hdf5', language : 'fortran', required: false, disabler: true)  # , static: use_static
 
-if not fc.links(files('src/tests/test_minimal.f90'), dependencies: hdf5, name: 'HDF5')
+if not fc.links(files('tests/test_minimal.f90'), dependencies: hdf5, name: 'HDF5')
   hdf5 = disabler()
 endif
 
 # spills test file into source directory. Need to PR Meson to allow working dir spec or env:
-# if (fc.run(files('src/tests/test_minimal.f90'), dependencies: hdf5, name: 'HDF5').returncode() != 0)
+# if (fc.run(files('tests/test_minimal.f90'), dependencies: hdf5, name: 'HDF5').returncode() != 0)
 #  hdf5 = disabler()
 # endif
 
@@ -42,5 +41,5 @@ hdf5_interface = declare_dependency(link_with: ooh5, dependencies: hdf5)
 
 # --- testing
 if not meson.is_subproject()
-  subdir('src/tests')
+  subdir('tests')
 endif

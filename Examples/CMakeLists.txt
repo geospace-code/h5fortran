@@ -51,5 +51,5 @@ TIMEOUT 10
 
 if(WIN32 AND CMAKE_VERSION VERSION_GREATER_EQUAL 3.22)
   set_tests_properties(h5fortran:Example1 h5fortran:Example2 h5fortran:Example3 h5fortran:Example4 PROPERTIES
-  ENVIRONMENT_MODIFICATION "PATH=path_list_append:${ZLIB_INCLUDE_DIRS}/../bin")
+  ENVIRONMENT_MODIFICATION "PATH=path_list_append:${ZLIB_INCLUDE_DIRS}/../bin;PATH=path_list_append:${ZLIB_INCLUDE_DIR}/../bin;PATH=path_list_append:${PROJECT_BINARY_DIR}/bin;PATH=path_list_append:${h5fortran_DIR}/../bin")
 endif()

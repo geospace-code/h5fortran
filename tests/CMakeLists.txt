@@ -35,7 +35,7 @@ endif()
 set_tests_properties(${name} PROPERTIES
 FIXTURES_REQUIRED h5lib
 TIMEOUT 10
-WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+WORKING_DIRECTORY $<TARGET_FILE_DIR:h5fortran>
 )
 
 if(${name} MATCHES ".*fail.*")
@@ -64,7 +64,7 @@ set_tests_properties(shape PROPERTIES
 FIXTURES_SETUP h5shape
 )
 
-set(shape_file ${CMAKE_CURRENT_BINARY_DIR}/test_shape.h5)
+set(shape_file $<TARGET_FILE_DIR:h5fortran>/test_shape.h5)
 
 if(ENABLE_COVERAGE)
 setup_target_for_coverage_gcovr_html(
@@ -117,7 +117,7 @@ if(Matlab_FOUND)
   LABELS shaky
   DEPENDS shape
   REQUIRED_FILES ${shape_file}
-  FIXTURES_REQUIRED h5lib
+  FIXTURES_REQUIRED "h5lib;h5shape"
   )
 
 endif(Matlab_FOUND)
@@ -131,7 +131,7 @@ add_test(NAME h5ls COMMAND ${h5ls} ${shape_file}/d7)
 set_tests_properties(h5ls PROPERTIES
 TIMEOUT 10
 REQUIRED_FILES ${shape_file}
-FIXTURES_REQUIRED h5lib
+FIXTURES_REQUIRED "h5lib;h5shape"
 DEPENDS shape
 PASS_REGULAR_EXPRESSION "{5, 6, 7, 4, 3, 1, 2}"
 DISABLED $<NOT:$<BOOL:${h5ls}>>

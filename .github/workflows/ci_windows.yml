@@ -44,7 +44,7 @@ jobs:
 
     - run: cmake --preset multi --install-prefix=${HOME} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
     - run: cmake --build --preset debug
-    - run: ctest --preset debug
+    - run: ctest --preset debug -V
 
     - run: cmake --build --preset release
     - run: ctest --preset release
@@ -86,5 +86,5 @@ jobs:
     # static build
     - run: cmake -B build --preset build --install-prefix=${HOME} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
     - run: cmake --build build
-    - run: ctest --test-dir build --preset default
+    - run: ctest --test-dir build --preset default -V
     - run: cmake --install build
