@@ -74,11 +74,8 @@ EXECUTABLE ${CMAKE_CTEST_COMMAND}
 endif()
 
 # --- Windows shared DLLs
-if(WIN32 AND BUILD_SHARED_LIBS AND CMAKE_VERSION VERSION_GREATER_EQUAL 3.21)
-  add_custom_command(TARGET test_shape POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:test_shape> "$<$<BOOL:${HDF5_DLLS}>:${HDF5_DLLS}>" $<$<BOOL:${ZLIB_DLL}>:${ZLIB_DLL}> $<TARGET_FILE_DIR:test_shape>
-  COMMAND_EXPAND_LISTS
-  )
+if(WIN32 AND CMAKE_VERSION VERSION_GREATER_EQUAL 3.22)
+  set_tests_properties(${test_names} PROPERTIES ENVIRONMENT_MODIFICATION "PATH=path_list_append:${ZLIB_INCLUDE_DIRS}/../bin")
 endif()
 
 # --- Python h5py

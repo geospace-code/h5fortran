@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.21...3.23)
+cmake_minimum_required(VERSION 3.20...3.23)
 
 project(h5fortranExample
 LANGUAGES C CXX Fortran)
@@ -22,14 +22,6 @@ add_executable(example1 example1.f90)
 target_link_libraries(example1 h5fortran::h5fortran)
 add_test(NAME h5fortran:Example1 COMMAND $<TARGET_FILE:example1>
 WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-
-# --- Windows shared DLLs
-if(WIN32 AND BUILD_SHARED_LIBS)
-  add_custom_command(TARGET example1 POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:example1> $<TARGET_FILE_DIR:example1>
-  COMMAND_EXPAND_LISTS
-  )
-endif()
 
 # --- example 2
 add_executable(example2 example2.f90)
@@ -56,3 +48,8 @@ WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 set_tests_properties(h5fortran:Example1 h5fortran:Example2 h5fortran:Example3 h5fortran:Example4 PROPERTIES
 TIMEOUT 10
 )
+
+if(WIN32 AND CMAKE_VERSION VERSION_GREATER_EQUAL 3.22)
+  set_tests_properties(h5fortran:Example1 h5fortran:Example2 h5fortran:Example3 h5fortran:Example4 PROPERTIES
+  ENVIRONMENT_MODIFICATION "PATH=path_list_append:${ZLIB_INCLUDE_DIRS}/../bin")
+endif()
