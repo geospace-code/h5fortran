@@ -6,6 +6,14 @@ include(ExternalProject)
 
 set(hdf5_external true CACHE BOOL "autobuild HDF5")
 
+if(NOT HDF5_VERSION)
+  set(HDF5_VERSION 1.12.1 CACHE STRING "HDF5 version built")
+endif()
+
+string(JSON hdf5_url GET ${json} hdf5 ${HDF5_VERSION} url)
+string(JSON hdf5_sha256 GET ${json} hdf5 ${HDF5_VERSION} sha256)
+
+
 if(hdf5_parallel)
   find_package(MPI REQUIRED COMPONENTS C)
 endif()

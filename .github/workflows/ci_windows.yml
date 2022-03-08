@@ -1,6 +1,6 @@
 name: ci_windows
+
 env:
-  CMAKE_GENERATOR: Ninja
   CTEST_PARALLEL_LEVEL: 4
   CMAKE_BUILD_TYPE: Release
 
@@ -20,41 +20,41 @@ jobs:
   msys2:
     timeout-minutes: 30
     runs-on: windows-latest
+    env:
+      CMAKE_GENERATOR: Ninja
 
     strategy:
       matrix:
         shared: [true, false]
 
-    defaults:
-      run:
-        shell: msys2 {0}
     steps:
     - uses: msys2/setup-msys2@v2
       with:
         update: true
         install: >-
-          git
-          mingw-w64-x86_64-cmake
           mingw-w64-x86_64-ninja
           mingw-w64-x86_64-gcc-fortran
           mingw-w64-x86_64-hdf5
-    # cmake install needed because of default to msys2 shell
+
+    - name: Put MSYS2_MinGW64 on PATH
+      run: echo "D:/a/_temp/msys64/mingw64/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
     - uses: actions/checkout@v2
 
-    - run: cmake --preset multi --install-prefix=${HOME} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
-    - run: cmake --build --preset debug
+    - run: cmake --preset multi -DCMAKE_INSTALL_PREFIX=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+
+    - run: cmake --build --parallel --preset debug
     - run: ctest --preset debug -V
 
-    - run: cmake --build --preset release
+    - run: cmake --build --parallel --preset release
     - run: ctest --preset release
 
     - run: cmake --install build
 
     - name: configure examples
-      run: cmake -S Examples -B Examples/build -DCMAKE_PREFIX_PATH:PATH=${HOME} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+      run: cmake -S Examples -B Examples/build -DCMAKE_PREFIX_PATH:PATH=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
     - name: build Examples
-      run: cmake --build Examples/build
+      run: cmake --build Examples/build --parallel
     - name: Test Examples
       run: ctest --test-dir Examples/build -V
 
@@ -62,29 +62,26 @@ jobs:
   msys2-build:
     timeout-minutes: 30
     runs-on: windows-latest
+    env:
+      CMAKE_GENERATOR: MinGW Makefiles
 
     strategy:
       matrix:
         shared: [true, false]
 
-    defaults:
-      run:
-        shell: msys2 {0}
     steps:
     - uses: msys2/setup-msys2@v2
       with:
         update: true
         install: >-
-          git
-          mingw-w64-x86_64-cmake
-          mingw-w64-x86_64-ninja
           mingw-w64-x86_64-gcc-fortran
-    # cmake install needed because of default to msys2 shell
+
+    - name: Put MSYS2_MinGW64 on PATH
+      run: echo "D:/a/_temp/msys64/mingw64/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
     - uses: actions/checkout@v2
 
-    # static build
-    - run: cmake -B build --preset build --install-prefix=${HOME} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
-    - run: cmake --build build
+    - run: cmake -B build -DCMAKE_INSTALL_PREFIX=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+    - run: cmake --build build --parallel
     - run: ctest --test-dir build --preset default -V
     - run: cmake --install build

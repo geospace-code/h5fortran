@@ -2,7 +2,6 @@ name: ci_macos
 
 env:
   CTEST_PARALLEL_LEVEL: 4
-  CMAKE_BUILD_PARALLEL_LEVEL: 4
   CMAKE_BUILD_TYPE: Release
   HOMEBREW_NO_INSTALL_CLEANUP: 1
   FC: gfortran-11
@@ -28,11 +27,19 @@ jobs:
         shared: [true, false]
 
     steps:
-    - uses: actions/checkout@v2
+
+    - name: Setup cmake
+      uses: jwlawson/actions-setup-cmake@v1
+      with:
+        cmake-version: '3.20'
 
     - run: brew install hdf5 ninja
 
-    - run: cmake --preset multi --install-prefix=${HOME} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+    - uses: actions/checkout@v2
+
+
+    - run: cmake --preset multi -DCMAKE_INSTALL_PREFIX=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+
     - run: cmake --build --preset debug
     - run: ctest --preset debug
 
@@ -42,7 +49,7 @@ jobs:
     - run: cmake --install build
 
     - name: configure examples
-      run: cmake -S Examples -B Examples/build -DCMAKE_PREFIX_PATH:PATH=${HOME} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+      run: cmake -S Examples -B Examples/build -DCMAKE_PREFIX_PATH:PATH=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
     - name: build Examples
       run: cmake --build Examples/build --parallel
     - name: Test Examples
@@ -59,15 +66,21 @@ jobs:
         shared: [true, false]
 
     steps:
+
+    - name: Setup cmake
+      uses: jwlawson/actions-setup-cmake@v1
+      with:
+        cmake-version: '3.20'
+
     - uses: actions/checkout@v2
 
-    - run: cmake -B build --preset build --install-prefix=${HOME} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+    - run: cmake -B build -DCMAKE_INSTALL_PREFIX=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
     - run: cmake --build build --parallel
     - run: ctest --test-dir build --preset default
     - run: cmake --install build
 
     - name: configure examples
-      run: cmake -S Examples -B Examples/build -DCMAKE_PREFIX_PATH:PATH=${HOME} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+      run: cmake -S Examples -B Examples/build -DCMAKE_PREFIX_PATH:PATH=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
     - name: build Examples
       run: cmake --build Examples/build --parallel
     - name: Test Examples

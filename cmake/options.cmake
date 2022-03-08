@@ -8,7 +8,11 @@ option(concepts "conceptual testing, for devs only" off)
 
 option(zlib_legacy "use old ZLIB 1.x")
 
+message(STATUS "${PROJECT_NAME} ${PROJECT_VERSION}  CMake ${CMAKE_VERSION}")
+
 set(CMAKE_TLS_VERIFY true)
+
+file(READ ${CMAKE_CURRENT_LIST_DIR}/libraries.json json)
 
 if(CMAKE_GENERATOR STREQUAL "Ninja Multi-Config")
   set(EXTPROJ_GENERATOR "Ninja")

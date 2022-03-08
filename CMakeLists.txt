@@ -34,7 +34,6 @@ if(NOT hdf5_external)
 endif()
 
 if(NOT HDF5_FOUND OR hdf5_external)
-  include(cmake/libraries.cmake)
   include(cmake/hdf5.cmake)
 endif()
 

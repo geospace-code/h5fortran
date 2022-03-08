@@ -3,6 +3,15 @@
 
 include(ExternalProject)
 
+if(zlib_legacy)
+  string(JSON zlib_url GET ${json} zlib1 url)
+  string(JSON zlib_sha256 GET ${json} zlib1 sha256)
+else()
+  string(JSON zlib_url GET ${json} zlib2 url)
+  string(JSON zlib_sha256 GET ${json} zlib2 sha256)
+endif()
+
+
 set(ZLIB_INCLUDE_DIRS ${CMAKE_INSTALL_PREFIX}/include)
 
 if(BUILD_SHARED_LIBS)

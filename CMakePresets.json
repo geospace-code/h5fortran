@@ -1,23 +1,19 @@
 {
-  "version": 3,
+  "version": 2,
 
 "configurePresets": [
 {
-  "name": "multi",
+  "name": "default",
   "binaryDir": "${sourceDir}/build",
+  "generator": "Ninja"
+},
+{
+  "name": "multi", "inherits": "default",
   "displayName": "Ninja Multi-Config",
   "generator": "Ninja Multi-Config"
 },
 {
-  "name": "build",
-  "displayName": "build all libraries",
-  "description": "Build all external libraries without searching for existing libraries.",
-  "cacheVariables": {
-    "hdf5_external": true
-  }
-},
-{
-  "name": "coverage",
+  "name": "coverage", "inherits": "default",
   "binaryDir": "${sourceDir}/build-coverage",
   "displayName": "Code Coverage",
   "description": "Build with code coverage enabled.",
@@ -26,9 +22,6 @@
     "ENABLE_COVERAGE": true,
     "autobuild": false
   }
-},
-{
-  "name": "phony"
 }
 ],
 "buildPresets": [
@@ -60,7 +53,7 @@
 "testPresets": [
 {
   "name": "default",
-  "configurePreset": "phony",
+  "configurePreset": "default",
   "output": {
     "outputOnFailure": true,
     "verbosity": "default"

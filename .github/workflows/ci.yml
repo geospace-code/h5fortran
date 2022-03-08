@@ -2,7 +2,6 @@ name: ci
 
 env:
   CTEST_PARALLEL_LEVEL: 4
-  CMAKE_BUILD_PARALLEL_LEVEL: 4
   CMAKE_BUILD_TYPE: Release
 
 on:
@@ -32,20 +31,30 @@ jobs:
       FC: gfortran-${{ matrix.gcc }}
 
     steps:
-    - uses: actions/checkout@v2
+
+    - name: Setup cmake
+      uses: jwlawson/actions-setup-cmake@v1
+      with:
+        cmake-version: '3.20'
 
     - name: install hdf5
       run: |
-        sudo apt update -yq
-        sudo apt install -yq --no-install-recommends gcc-${{ matrix.gcc }} gfortran-${{ matrix.gcc}} ninja-build libhdf5-dev
+        sudo apt update
+        sudo apt install --no-install-recommends gcc-${{ matrix.gcc }} gfortran-${{ matrix.gcc}} ninja-build libhdf5-dev
 
-    - run: cmake --preset multi --install-prefix=${HOME} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+    - uses: actions/checkout@v2
 
-    - run: cmake --build --preset debug
-    - run: ctest --preset debug --output-junit test-debug.xml
+    - run: cmake --preset multi -DCMAKE_INSTALL_PREFIX=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
 
-    - run: cmake --build --preset release
-    - run: ctest --preset release --output-junit test-release.xml
+    - name: Build Debug
+      run: cmake --build --parallel --preset debug
+    - name: Test Debug
+      run: ctest --preset debug --output-junit test-debug.xml
+
+    - name: Build Release
+      run: cmake --build --parallel --preset release
+    - name: Test Release
+      run: ctest --preset release --output-junit test-release.xml
 
     - name: Publish Unit Test Results
       uses: EnricoMi/publish-unit-test-result-action@v1
@@ -56,7 +65,7 @@ jobs:
     - run: cmake --install build
 
     - name: configure examples
-      run: cmake -S Examples -B Examples/build -DCMAKE_PREFIX_PATH:PATH=${HOME} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+      run: cmake -S Examples -B Examples/build -DCMAKE_PREFIX_PATH:PATH=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
     - name: build examples
       run: cmake --build Examples/build --parallel
     - name: Test examples
@@ -76,17 +85,17 @@ jobs:
 
     - name: install hdf5
       run: |
-        sudo apt update -yq
-        sudo apt install -yq --no-install-recommends libhdf5-dev
+        sudo apt update
+        sudo apt install --no-install-recommends ninja-build libhdf5-dev
 
     - name: install Gcovr
       run: pip install gcovr
 
     - run: cmake --preset coverage
-    - run: cmake --build --preset coverage  --parallel
+    - run: cmake --build --parallel --preset coverage
 
     - name: Code coverage
-      run: cmake --build --preset run-coverage  --parallel
+      run: cmake --build --parallel --preset run-coverage
 
     - uses: actions/upload-artifact@v2
       with:
@@ -104,16 +113,22 @@ jobs:
         shared: [true, false]
 
     steps:
+
+    - name: Setup cmake
+      uses: jwlawson/actions-setup-cmake@v1
+      with:
+        cmake-version: '3.20'
+
     - uses: actions/checkout@v2
 
-    - run: cmake -B build --preset build --install-prefix=${HOME} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
-    - run: cmake --build build  --parallel
+    - run: cmake -B build -DCMAKE_INSTALL_PREFIX=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+    - run: cmake --build build --parallel
     - run: ctest --test-dir build --preset default
     - run: cmake --install build
 
     - name: configure examples
-      run: cmake -S Examples -B Examples/build -DCMAKE_PREFIX_PATH:PATH=${HOME} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+      run: cmake -S Examples -B Examples/build -DCMAKE_PREFIX_PATH:PATH=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
     - name: build Examples
-      run: cmake --build Examples/build  --parallel
+      run: cmake --build Examples/build --parallel
     - name: Test Examples
       run: ctest --test-dir Examples/build -V
