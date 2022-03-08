@@ -28,15 +28,9 @@ jobs:
 
     steps:
 
-    - name: Setup cmake
-      uses: jwlawson/actions-setup-cmake@v1
-      with:
-        cmake-version: '3.20'
-
     - run: brew install hdf5 ninja
 
     - uses: actions/checkout@v2
-
 
     - run: cmake --preset multi -DCMAKE_INSTALL_PREFIX=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
 
@@ -66,11 +60,6 @@ jobs:
         shared: [true, false]
 
     steps:
-
-    - name: Setup cmake
-      uses: jwlawson/actions-setup-cmake@v1
-      with:
-        cmake-version: '3.21'
 
     - uses: actions/checkout@v2
 
