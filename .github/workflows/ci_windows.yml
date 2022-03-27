@@ -59,41 +59,42 @@ jobs:
       run: ctest --test-dir Examples/build -V
 
 
-  msys2-build:
-    timeout-minutes: 30
-    runs-on: windows-latest
-    env:
-      CMAKE_GENERATOR: MinGW Makefiles
+# build works but takes a long time, so skip
+  # msys2-build:
+  #   timeout-minutes: 30
+  #   runs-on: windows-latest
+  #   env:
+  #     CMAKE_GENERATOR: MinGW Makefiles
 
-    strategy:
-      matrix:
-        shared: [true, false]
+  #   strategy:
+  #     matrix:
+  #       shared: [true, false]
 
-    steps:
-    - uses: msys2/setup-msys2@v2
-      with:
-        update: true
-        install: >-
-          mingw-w64-x86_64-gcc-fortran
+  #   steps:
+  #   - uses: msys2/setup-msys2@v2
+  #     with:
+  #       update: true
+  #       install: >-
+  #         mingw-w64-x86_64-gcc-fortran
 
-    - name: Put MSYS2_MinGW64 on PATH
-      run: echo "D:/a/_temp/msys64/mingw64/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+  #   - name: Put MSYS2_MinGW64 on PATH
+  #     run: echo "D:/a/_temp/msys64/mingw64/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
-    - uses: actions/checkout@v2
+  #   - uses: actions/checkout@v2
 
-    - name: Configure HDF5
-      run: cmake -S scripts -B scripts/build -DCMAKE_INSTALL_PREFIX=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+  #   - name: Configure HDF5
+  #     run: cmake -S scripts -B scripts/build -DCMAKE_INSTALL_PREFIX=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
 
-    - name: Build/install HDF5
-      run: cmake --build scripts/build --parallel
+  #   - name: Build/install HDF5
+  #     run: cmake --build scripts/build --parallel
 
-    - name: configure h5fortran
-      run: cmake -B build -DCMAKE_INSTALL_PREFIX=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }} -DCMAKE_PREFIX_PATH=${{ runner.temp }}
+  #   - name: configure h5fortran
+  #     run: cmake -B build -DCMAKE_INSTALL_PREFIX=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }} -DCMAKE_PREFIX_PATH=${{ runner.temp }}
 
-    - name: build h5fortran
-      run: cmake --build build --parallel
+  #   - name: build h5fortran
+  #     run: cmake --build build --parallel
 
-    - name: test h5fortran
-      run: ctest --test-dir build --preset default -V
+  #   - name: test h5fortran
+  #     run: ctest --test-dir build --preset default -V
 
-    - run: cmake --install build
+  #   - run: cmake --install build
