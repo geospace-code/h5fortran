@@ -28,7 +28,7 @@ jobs:
 
     steps:
 
-    - run: brew install hdf5 ninja
+    - run: brew install hdf5 ninja libaec
 
     - uses: actions/checkout@v2
 
