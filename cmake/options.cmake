@@ -1,18 +1,11 @@
-option(autobuild "auto-build HDF5 if missing/broken" on)
-option(hdf5_parallel "autobuild HDF5 parallel MPI")
-
 option(ENABLE_COVERAGE "Code coverage tests")
 
 option(matlab "check HDF5 file writes with Matlab" off)
 option(concepts "conceptual testing, for devs only" off)
 
-option(zlib_legacy "use old ZLIB 1.x")
-
 message(STATUS "${PROJECT_NAME} ${PROJECT_VERSION}  CMake ${CMAKE_VERSION}")
 
 set(CMAKE_TLS_VERIFY true)
-
-file(READ ${CMAKE_CURRENT_LIST_DIR}/libraries.json json)
 
 if(CMAKE_GENERATOR STREQUAL "Ninja Multi-Config")
   set(EXTPROJ_GENERATOR "Ninja")
@@ -31,8 +24,6 @@ if(BUILD_SHARED_LIBS)
 endif()
 
 cmake_path(SET CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/Modules)
-
-set_directory_properties(PROPERTIES EP_UPDATE_DISCONNECTED true)
 
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   # will not take effect without FORCE

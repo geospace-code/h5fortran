@@ -8,11 +8,7 @@ if(NOT hdf5_external)
     return()
   endif()
 
-  if(autobuild)
-    find_package(HDF5 COMPONENTS Fortran)
-  else()
-    find_package(HDF5 COMPONENTS Fortran REQUIRED)
-  endif()
+  find_package(HDF5 COMPONENTS Fortran REQUIRED)
 endif()
 
 if(NOT HDF5_FOUND OR hdf5_external)

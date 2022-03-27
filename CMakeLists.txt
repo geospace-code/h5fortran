@@ -24,17 +24,18 @@ include(cmake/options.cmake)
 include(cmake/compilers.cmake)
 
 # --- find or build HDF5 library
+find_package(HDF5 1.8.7 COMPONENTS Fortran HL)
+if(NOT HDF5_FOUND)
+  message(FATAL_ERROR "HDF5 not found or working on the system. First build HDF5 by:
 
-if(NOT hdf5_external)
-  if(autobuild)
-    find_package(HDF5 1.8.7 COMPONENTS Fortran HL)
-  else()
-    find_package(HDF5 1.8.7 REQUIRED COMPONENTS Fortran HL)
-  endif()
-endif()
+  cmake -S scripts -B scripts/build -DCMAKE_INSTALL_PREFIX=~/mylibs
+  cmake --build scripts/build
 
-if(NOT HDF5_FOUND OR hdf5_external)
-  include(cmake/hdf5.cmake)
+  Then build h5fortran:
+
+  cmake -B build -DCMAKE_PREFIX_PATH=~/mylibs
+  cmake --build build
+  ")
 endif()
 
 if(hdf5_parallel OR HDF5_HAVE_PARALLEL)
@@ -81,5 +82,3 @@ DESTINATION cmake
 
 include(cmake/pkgconf.cmake)
 include(cmake/install.cmake)
-
-include(cmake/summary.cmake)

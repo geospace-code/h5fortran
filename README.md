@@ -90,21 +90,20 @@ To save time, if not intended to use self-tests, you can skip the build of the t
 cmake -B build -DBUILD_TESTING=off
 ```
 
-### Autobuild HDF5
+## Build HDF5
 
-h5fortran will automatically build the HDF5 and ZLIB libraries if needed.
-This is useful as many HPC have broken or ABI-incompatible HDF5 libraries installed.
-Building HDF5 and ZLIB takes about a minute on a typical laptop.
-To disable this autobuild behavior, use option:
+To build the HDF5 and ZLIB libraries:
 
 ```sh
-cmake -B build -Dautobuild=off
+cmake -S scripts -B scripts/build -DCMAKE_INSTALL_PREFIX=~/mylibs
+
+cmake --build scripts/build
 ```
 
-To force building the HDF5 and ZLIB libraries, to gain better performance via optimizing for your system's CPU:
+Then build h5fortran:
 
 ```sh
-cmake -Dhdf5_external=on
+cmake -B build -DCMAKE_PREFIX_PATH=~/mylibs
 
 cmake --build build
 ```
@@ -112,21 +111,14 @@ cmake --build build
 NOTE: If using Intel oneAPI on Windows, ensure that environment variable CC=icl as set manually in the command prompt:
 
 ```posh
-set CC=icl
-set FC=ifort
+set CC=icx
+set FC=ifx
 ```
 
 This is necessary to workaround techniques used by HDF5 CMake files that don't pickup the CMake `set(ENV{CC})`.
 Otherwise, HDF5 build failures may result due to defaulting to icl-clang.
 
-By default we use Zlib 2.x a.k.a. zlib-ng.
-If you have a problem with Zlib-ng on your system, try the unmaintained Zlib 1.x by:
-
-```sh
-cmake -B build -Dzlib_legacy=on
-```
-
-The user can request a specific HDF5 version like:
+Request a specific HDF5 version like:
 
 ```sh
 cmake -B build -DHDF5_VERSION=1.12.1
@@ -163,13 +155,6 @@ For detailed [examples](./Examples/) see [Examples.md](./Examples.md).
 * The first character of the filename should be a character, NOT whitespace to avoid file open/creation errors.
 * Polymorphic array rank is implemented.
 
-### Getting HDF5 library
-
-Instead of auto-building HDF5 via H5Fortran, one may build and install the HDF5 library by:
-
-```sh
-python3 scripts/build_hdf5.py
-```
 
 ### h5fortran: missing Fortran datatypes
 

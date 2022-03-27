@@ -4,6 +4,7 @@ LANGUAGES C Fortran
 )
 
 option(hdf5_parallel "build HDF5 parallel MPI")
+option(zlib_legacy "use legacy zlib 1.x")
 
 if(NOT HDF5_VERSION)
   set(HDF5_VERSION 1.12.1)  # default version to build
@@ -57,7 +58,7 @@ if(_hdf5_libprior OR _hdf5_incprior OR _hdf5_binprior)
 endif()
 
 # --- commence HDF5 build/install
-include(${PROJECT_SOURCE_DIR}/../cmake/libraries.cmake)
+file(READ ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/libraries.json json)
 
 set_directory_properties(PROPERTIES EP_UPDATE_DISCONNECTED true)
 
