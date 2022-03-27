@@ -160,11 +160,18 @@ if(NOT ZLIB_ROOT)
   set(ZLIB_ROOT "${HDF5_ROOT};${zlib_dir}")
 endif()
 
+
+set(hdf5_prereqs true PARENT_SCOPE)
+
 if(hdf5_have_zlib)
   if(HDF5_FIND_REQUIRED)
     find_package(ZLIB REQUIRED)
   else()
     find_package(ZLIB)
+  endif()
+  if(NOT ZLIB_FOUND)
+    set(hdf5_prereqs false PARENT_SCOPE)
+    return()
   endif()
 
   if(hdf5_have_szip)
@@ -179,6 +186,11 @@ if(hdf5_have_zlib)
     else()
       find_package(SZIP)
     endif()
+    if(NOT SZIP_FOUND)
+      set(hdf5_prereqs false PARENT_SCOPE)
+      return()
+    endif()
+
     list(APPEND CMAKE_REQUIRED_INCLUDES ${SZIP_INCLUDE_DIRS})
     list(APPEND CMAKE_REQUIRED_LIBRARIES ${SZIP_LIBRARIES})
   endif()
@@ -664,7 +676,7 @@ endfunction(check_fortran_links)
 
 function(check_hdf5_link)
 
-if(NOT HDF5_C_FOUND)
+if(NOT (hdf5_prereqs AND HDF5_C_FOUND))
   return()
 endif()
 
@@ -785,11 +797,11 @@ if(HDF5_C_FOUND)
   detect_config()
 endif(HDF5_C_FOUND)
 
-if(HDF5_C_FOUND AND CXX IN_LIST HDF5_FIND_COMPONENTS)
+if(hdf5_prereqs AND HDF5_C_FOUND AND CXX IN_LIST HDF5_FIND_COMPONENTS)
   find_hdf5_cxx()
 endif()
 
-if(HDF5_C_FOUND AND Fortran IN_LIST HDF5_FIND_COMPONENTS)
+if(hdf5_prereqs AND HDF5_C_FOUND AND Fortran IN_LIST HDF5_FIND_COMPONENTS)
   find_hdf5_fortran()
 endif()
 
@@ -803,9 +815,10 @@ set(CMAKE_REQUIRED_INCLUDES)
 # pop off ignored paths so rest of script can find Python
 list(REMOVE_ITEM CMAKE_IGNORE_PATH ${h5_ignore_path})
 
+
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(HDF5
-REQUIRED_VARS HDF5_C_LIBRARIES HDF5_links
+REQUIRED_VARS HDF5_C_LIBRARIES HDF5_links hdf5_prereqs
 VERSION_VAR HDF5_VERSION
 HANDLE_COMPONENTS
 HANDLE_VERSION_RANGE
