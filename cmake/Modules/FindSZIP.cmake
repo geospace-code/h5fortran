@@ -27,23 +27,17 @@ Targets
   SZIP Imported Target
 #]=======================================================================]
 
-find_package(libaec CONFIG QUIET)
-# libaec sets SZIP_FOUND, SZIP_LIBRARIES, SZIP_INCLUDE_DIR
 
-if(NOT SZIP_FOUND)
+find_library(SZIP_LIBRARY
+NAMES szip sz
+NAMES_PER_DIR
+DOC "SZIP API"
+)
 
-  find_library(SZIP_LIBRARY
-  NAMES szip sz
-  NAMES_PER_DIR
-  DOC "SZIP API"
-  )
-
-  find_path(SZIP_INCLUDE_DIR
-  NAMES szlib.h
-  DOC "SZIP header"
-  )
-
-endif()
+find_path(SZIP_INCLUDE_DIR
+NAMES szlib.h
+DOC "SZIP header"
+)
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(SZIP
