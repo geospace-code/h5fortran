@@ -1,18 +1,8 @@
 include(ExternalProject)
 
-if(NOT hdf5_external)
-  # h5fortran inside if() because h5fortran config calls find_package(HDF5)
-  find_package(h5fortran CONFIG QUIET)
-  if(h5fortran_FOUND)
-    message(STATUS "Found h5fortran ${h5fortran_DIR}")
-    return()
-  endif()
-
-  find_package(HDF5 COMPONENTS Fortran REQUIRED)
-endif()
-
-if(NOT HDF5_FOUND OR hdf5_external)
-  include(${CMAKE_CURRENT_LIST_DIR}/hdf5.cmake)
+find_package(h5fortran CONFIG)
+if(h5fortran_FOUND)
+  return()
 endif()
 
 set(h5fortran_INCLUDE_DIRS ${CMAKE_INSTALL_PREFIX}/include)

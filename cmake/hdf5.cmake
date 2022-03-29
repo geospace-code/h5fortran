@@ -4,8 +4,6 @@
 
 include(ExternalProject)
 
-set(hdf5_external true CACHE BOOL "autobuild HDF5")
-
 if(NOT HDF5_VERSION)
   set(HDF5_VERSION 1.12.1 CACHE STRING "HDF5 version built")
 endif()
