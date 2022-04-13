@@ -55,6 +55,7 @@ Tested on systems with HDF5 1.8, 1.10 and 1.12 including:
 * Windows Subsystem for Linux
 * Windows MSYS2
 * IBM Power with Gfortran
+* Cray (using GCC or Intel backend)
 
 Compilers known to work (tested on CI) include:
 
