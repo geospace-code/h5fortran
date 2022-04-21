@@ -1,7 +1,6 @@
 #include <iostream>
 #include <cstdint>
-#include "fortran_interface.hpp"
-
+#include "fortran_interface.h"
 
 
 int main(void) {
