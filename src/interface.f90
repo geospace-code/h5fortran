@@ -462,6 +462,7 @@ logical, intent(in), optional      :: verbose, debug
 
 character(:), allocatable :: laction
 integer :: ier
+logical :: exists
 
 if(self%is_open) then
   write(stderr,*) 'h5fortran:open: file handle already open: '//self%filename
@@ -490,8 +491,12 @@ if(present(action)) laction = action
 
 select case(laction)
 case('r')
+  inquire(file=filename, exist=exists)
+  if(.not. exists) error stop "h5fortran:open: file does not exist: "//filename
   call h5fopen_f(filename, H5F_ACC_RDONLY_F, self%lid,ier)
 case('r+')
+  inquire(file=filename, exist=exists)
+  if(.not. exists) error stop "h5fortran:open: file does not exist: "//filename
   call h5fopen_f(filename, H5F_ACC_RDWR_F, self%lid, ier)
 case('rw', 'a')
   if(is_hdf5(filename)) then
