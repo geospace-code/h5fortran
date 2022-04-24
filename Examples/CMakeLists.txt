@@ -11,26 +11,25 @@ find_package(h5fortran CONFIG REQUIRED)
 add_library(fortran_interface fortran_interface.f90)
 target_link_libraries(fortran_interface PRIVATE h5fortran::h5fortran)
 
-# --- example 1
 add_executable(ex_fcn ex_fcn.f90)
-target_link_libraries(ex_fcn h5fortran::h5fortran)
+target_link_libraries(ex_fcn PRIVATE h5fortran::h5fortran)
 add_test(NAME Fortran_fcn COMMAND ex_fcn)
 
-# --- example 2
 add_executable(ex_oo ex_oo.f90)
-target_link_libraries(ex_oo h5fortran::h5fortran)
+target_link_libraries(ex_oo PRIVATE h5fortran::h5fortran)
 add_test(NAME Fortran_oo COMMAND ex_oo)
 
-# --- example 3
+add_executable(repeat_char_read char_repeat_read.f90)
+target_link_libraries(repeat_char_read PRIVATE h5fortran::h5fortran)
+
 add_executable(c_fcn ex_fcn.c)
-target_link_libraries(c_fcn fortran_interface)
+target_link_libraries(c_fcn PRIVATE fortran_interface)
 target_compile_features(c_fcn PRIVATE c_std_99)
 # https://en.cppreference.com/w/c/types/integer
 add_test(NAME C_fcn COMMAND c_fcn)
 
-# --- example 4
 add_executable(cpp_fcn ex_fcn.cpp)
-target_link_libraries(cpp_fcn fortran_interface)
+target_link_libraries(cpp_fcn PRIVATE fortran_interface)
 target_compile_features(cpp_fcn PRIVATE cxx_std_11)
 # https://en.cppreference.com/w/cpp/types/integer
 add_test(NAME CPP_fcn COMMAND cpp_fcn)
