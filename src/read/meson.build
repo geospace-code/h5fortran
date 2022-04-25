@@ -14,6 +14,6 @@ input: 'reader.in.f90',
 output: 'reader.f90',
 configuration: ct)
 
-read_src = files('read.f90',
+read_src = files('read.f90', 'scalar.f90',
 meson.current_build_dir() / 'reader_lt.f90',
 meson.current_build_dir() / 'reader.f90')

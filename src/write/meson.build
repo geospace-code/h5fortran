@@ -16,6 +16,6 @@ configure_file(
   output : 'writer_lt.f90',
   configuration : c)
 
-write_src = files('write.f90',
+write_src = files('write.f90', 'scalar.f90',
   meson.current_build_dir() /  'writer.f90',
   meson.current_build_dir() / 'writer_lt.f90')

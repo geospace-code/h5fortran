@@ -19,7 +19,8 @@ class default
   error stop "unknown variable type for " // dname
 end select
 
-call hdf_create(self, dname, dtype, dims, file_space_id, dset_id, chunk_size, istart, iend, stride, compact)
+call hdf_create(self, dname, dtype, dims, file_space_id, dset_id, &
+  chunk_size=chunk_size, istart=istart, iend=iend, stride=stride, compact=compact)
 
 mem_space_id = H5S_ALL_F !< default
 

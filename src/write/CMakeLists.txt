@@ -8,6 +8,6 @@ set_directory_properties(PROPERTIES CMAKE_CONFIGURE_DEPENDS
 "writer_template.f90;writer_lt_template.in.f90")
 
 target_sources(h5fortran PRIVATE
-  write.f90
+  write.f90 scalar.f90
   ${CMAKE_CURRENT_BINARY_DIR}/writer.f90
   ${CMAKE_CURRENT_BINARY_DIR}/writer_lt.f90)

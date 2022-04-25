@@ -6,9 +6,10 @@ h5dcreate_f, &
 h5pset_chunk_f, h5pset_layout_f, h5pset_deflate_f, h5pset_shuffle_f, h5pset_fletcher32_f, h5pcreate_f, h5pclose_f, &
 H5P_DATASET_CREATE_F, &
 h5gopen_f, &
-H5Lcreate_soft_f
+H5Lcreate_soft_f, &
+h5tcopy_f, h5tset_size_f
 
-use H5LT, only: h5ltmake_dataset_string_f, h5ltpath_valid_f
+use H5LT, only: h5ltpath_valid_f
 
 implicit none (type, external)
 
@@ -19,9 +20,14 @@ module procedure hdf_create
 
 logical :: exists
 integer :: ierr
-integer(HID_T) :: plist_id, space_id, ds_id
+integer(HID_T) :: plist_id, space_id, ds_id, type_id
 
 plist_id = H5P_DEFAULT_F
+
+if(dtype == H5T_NATIVE_CHARACTER) then
+  if(.not. present(charlen)) error stop "h5fortran:hdf_create: character type must specify charlen"
+  if(.not. present(dtype_id)) error stop "h5fortran:hdf_create: character type must specify dtype_id"
+endif
 
 if(.not.self%is_open) error stop 'h5fortran:write: file handle is not open: ' // self%filename
 
@@ -52,6 +58,17 @@ if(exists) then
     call h5dget_space_f(ds_id, filespace_id, ierr)
     if(ierr /= 0) error stop 'h5fortran:create could not get dataset ' // dname // ' in ' // self%filename
   end if
+
+  if(dtype == H5T_NATIVE_CHARACTER) then
+    call h5tcopy_f(dtype, type_id, ierr)
+    if(check(ierr, self%filename)) error stop "h5fortran:h5tcopy:character: " // dname
+
+    call h5tset_size_f(type_id, int(charlen, SIZE_T), ierr)
+    if(check(ierr, self%filename)) error stop "h5fortran:h5tset_size:character: " // dname
+
+    dtype_id = type_id
+  endif
+
   return
 endif
 
@@ -88,9 +105,24 @@ else
 endif
 if (check(ierr, self%filename, dname)) error stop "h5fortran:h5screate: " // dname
 
+!> datatype id and size
+if(dtype == H5T_NATIVE_CHARACTER) then
+  call h5tcopy_f(dtype, type_id, ierr)
+  if(check(ierr, self%filename)) error stop "h5fortran:h5tcopy:character: " // dname
+
+  call h5tset_size_f(type_id, int(charlen, SIZE_T), ierr)
+  if(check(ierr, self%filename)) error stop "h5fortran:h5tset_size:character: " // dname
+
+  dtype_id = type_id
+else
+  type_id = dtype
+endif
+
 !> create dataset
-call h5dcreate_f(self%lid, dname, dtype, space_id=space_id, dset_id=ds_id, hdferr=ierr, dcpl_id=plist_id)
-if (ierr/=0) error stop "h5dcreate: " // dname // " " // self%filename
+call h5dcreate_f(self%lid, dname, type_id=type_id, space_id=space_id, dset_id=ds_id, hdferr=ierr, dcpl_id=plist_id)
+if (ierr/=0) error stop "h5fortran:h5dcreate: " // dname // " in " // self%filename
+
+!> free resources
 call h5pclose_f(plist_id, ierr)
 if (ierr/=0) error stop "h5fortran:h5pclose: " // dname // ' in ' // self%filename
 

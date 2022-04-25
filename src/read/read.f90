@@ -2,7 +2,7 @@ submodule (h5fortran) hdf5_read
 !! This submodule is for reading HDF5 via submodules
 use hdf5, only : h5dget_create_plist_f, &
   h5pget_layout_f, h5pget_chunk_f, &
-  h5dget_type_f, h5tget_native_type_f, h5tget_class_f, H5Tget_order_f, h5tclose_f, h5tget_size_f, &
+  h5dget_type_f, h5tget_native_type_f, h5tget_class_f, H5Tget_order_f, h5tget_size_f, &
   H5T_DIR_ASCEND_F
 
 use H5LT, only : h5ltpath_valid_f

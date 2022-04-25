@@ -15,7 +15,8 @@ use hdf5, only : HID_T, SIZE_T, HSIZE_T, H5F_ACC_RDONLY_F, H5F_ACC_RDWR_F, H5F_A
   h5fopen_f, h5fcreate_f, h5fclose_f, h5fis_hdf5_f, &
   h5lexists_f, &
   h5sclose_f, h5sselect_hyperslab_f, h5screate_simple_f, &
-  h5get_libversion_f, h5eset_auto_f, h5fflush_f
+  h5get_libversion_f, h5eset_auto_f, h5fflush_f, &
+  h5tclose_f
 use h5lt, only : h5ltget_dataset_ndims_f, h5ltget_dataset_info_f
 
 implicit none (type, external)
@@ -104,14 +105,16 @@ end interface h5read_attr
 !> Submodules
 
 interface !< write.f90
-module subroutine hdf_create(self, dname, dtype, dims, filespace_id, dset_id, chunk_size, istart, iend, stride, compact)
+module subroutine hdf_create(self, dname, dtype, dims, filespace_id, dset_id, dtype_id, &
+  chunk_size, istart, iend, stride, compact, charlen)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 integer(HID_T), intent(in) :: dtype
 integer(HSIZE_T), intent(in) :: dims(:)
-integer(HID_T), intent(out), optional :: filespace_id, dset_id
+integer(HID_T), intent(out), optional :: filespace_id, dset_id, dtype_id
 integer, intent(in), dimension(size(dims)), optional :: chunk_size, istart, iend, stride
 logical, intent(in), optional :: compact
+integer, intent(in), optional :: charlen !< length of character scalar
 !! keep istart, iend, stride for future slice shape check
 end subroutine hdf_create
 
@@ -703,10 +706,10 @@ write(stderr,*) 'h5fortran:ERROR: ' // fn // ':' // dn // ' error code ', ierr
 end function check
 
 
-subroutine hdf_wrapup(dset_id, space_id)
+subroutine hdf_wrapup(dset_id, space_id, type_id)
 
 integer(HID_T), intent(in) :: dset_id
-integer(HID_T), intent(in), optional :: space_id
+integer(HID_T), intent(in), optional :: space_id, type_id
 
 integer :: ierr
 
@@ -714,12 +717,17 @@ ierr = 0
 
 if(present(space_id)) then
   if(space_id /= 0) call h5sclose_f(space_id, ierr)
-  if (ierr /= 0) error stop 'h5sclose dataspace'
+  if (ierr /= 0) error stop 'h5fortran:h5sclose dataspace'
 endif
 
 if(dset_id /= 0) then
   call h5dclose_f(dset_id, ierr)
-  if (ierr /= 0) error stop 'h5dclose dataset'
+  if (ierr /= 0) error stop 'h5fortran:h5dclose dataset'
+endif
+
+if(present(type_id)) then
+  call h5tclose_f(type_id, ierr)
+  if (ierr/=0) error stop "h5fortran:h5tclose type"
 endif
 
 end subroutine hdf_wrapup
