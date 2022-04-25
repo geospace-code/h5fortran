@@ -24,7 +24,6 @@ endif()
 
 if(CMAKE_Fortran_COMPILER_ID MATCHES "^Intel")
 add_compile_options(
-$<IF:$<BOOL:${WIN32}>,/QxHost,-xHost>
 "$<$<COMPILE_LANGUAGE:Fortran>:-warn;-heap-arrays>"
 "$<$<AND:$<COMPILE_LANGUAGE:Fortran>,$<CONFIG:Debug,RelWithDebInfo>>:-traceback;-check;-debug>"
 )
