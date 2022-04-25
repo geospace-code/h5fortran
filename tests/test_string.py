@@ -15,4 +15,5 @@ P = p.parse_args()
 fn = Path(P.file).expanduser()
 
 with h5py.File(fn, "w") as f:
-    f["/str"] = "Hello World!"
+    f["/variable"] = "Hello World!"
+    f.create_dataset("/nullpad", dtype="S40", data="Hello World!")
