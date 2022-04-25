@@ -13,7 +13,7 @@ module procedure h5read_scalar
 integer(HSIZE_T) :: dims(rank(value))
 integer(SIZE_T) :: dsize
 integer(hid_t) :: dset_id, type_id, space_id
-integer :: dclass, ier
+integer :: dclass, ier, i
 
 logical :: vector_scalar, vstatus
 
@@ -95,7 +95,10 @@ elseif(dclass == H5T_STRING_F) then
       call h5dread_vl_f(dset_id, type_id, buf_char, vldims, vlen, hdferr=ier, mem_space_id=space_id)
       if(ier/=0) error stop "h5fortran:read:h5dread_vl " // dname // " in " // self%filename
 
-      value = buf_char(1)
+      i = index(buf_char(1), c_null_char) - 1
+      if (i == -1) i = len_trim(buf_char(1))
+
+      value = buf_char(1)(:i)
 
       ! call h5dvlen_reclaim_f(type_id, H5S_ALL_F, H5P_DEFAULT_F, buf_char, ier)
       end block
@@ -116,7 +119,12 @@ elseif(dclass == H5T_STRING_F) then
       character(dsize) :: buf_char
 
       call h5ltread_dataset_string_f(self%lid, dname, buf_char, ier)
-      value = buf_char
+      if(ier/=0) error stop "h5fortran:read:h5l5read_dataset_string " // dname // " in " // self%filename
+
+      i = index(buf_char, c_null_char) - 1
+      if (i == -1) i = len_trim(buf_char)
+
+      value = buf_char(:i)
       end block
     endif
 
