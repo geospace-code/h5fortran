@@ -1,10 +1,5 @@
 include(ExternalProject)
 
-find_package(h5fortran CONFIG)
-if(h5fortran_FOUND)
-  return()
-endif()
-
 set(h5fortran_INCLUDE_DIRS ${CMAKE_INSTALL_PREFIX}/include)
 
 if(BUILD_SHARED_LIBS)
