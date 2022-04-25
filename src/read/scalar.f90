@@ -2,7 +2,7 @@ submodule (h5fortran:hdf5_read) read_scalar
 
 use, intrinsic :: iso_c_binding, only : c_null_char
 use h5lt, only : h5ltread_dataset_string_f
-use hdf5, only : h5dread_f
+use hdf5, only : h5dread_f, h5tis_variable_str_f, h5dvlen_get_max_len_f, h5dread_vl_f
 
 implicit none (type, external)
 
@@ -15,7 +15,7 @@ integer(SIZE_T) :: dsize
 integer(hid_t) :: dset_id, type_id
 integer :: dclass, ier
 
-logical :: vector_scalar
+logical :: vector_scalar, vstatus
 
 real(real32) :: buf_r32(1)
 real(real64) :: buf_r64(1)
@@ -75,6 +75,11 @@ elseif(dclass == H5T_STRING_F) then
   type is (character(*))
     call H5Dget_type_f(dset_id, type_id, ier)
     if(ier/=0) error stop "h5fortran:read:h5tget_type " // dname // " in " // self%filename
+    call h5tis_variable_str_f(type_id, vstatus, ier)
+    if(ier/=0) error stop "h5fortran:read:h5tis_variable_str " // dname // " in " // self%filename
+
+    if(vstatus) error stop "h5fortran:read:H5T_VARIABLE character is not supported yet"
+
     call H5Tget_size_f(type_id, dsize, ier)
     if(ier/=0) error stop "h5fortran:read:h5tget_size " // dname // " in " // self%filename
 
@@ -90,6 +95,7 @@ elseif(dclass == H5T_STRING_F) then
     call h5ltread_dataset_string_f(self%lid, dname, buf_char, ier)
     value = buf_char
     end block
+
   class default
     error stop "h5fortran:read: character disk dataset " // dname // " needs character memory variable"
   end select

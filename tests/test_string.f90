@@ -11,6 +11,7 @@ character(*), parameter :: path='test_string.h5'
 call test_rw(path)
 print *, "OK: string read/write"
 call test_overwrite(path)
+print *, "OK: string overwrite"
 
 print *,'PASSED: HDF5 string write/read'
 

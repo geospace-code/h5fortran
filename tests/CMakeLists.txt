@@ -29,6 +29,9 @@ set_target_properties(test_${name} PROPERTIES LABELS unit)
 
 if(${name} STREQUAL version)
   add_test(NAME ${name} COMMAND test_${name} ${HDF5_VERSION})
+elseif(${name} STREQUAL string_read)
+  add_test(NAME ${name} COMMAND test_${name} ${string_file})
+  set_tests_properties(${name} PROPERTIES WILL_FAIL true)
 else()
   add_test(NAME ${name} COMMAND test_${name})
 endif()
@@ -55,16 +58,17 @@ endforeach()
 endfunction(setup_test)
 
 # --- setup unit tests
-set(test_names array attributes cast deflate destructor exist module layout lt scalar shape string version
+
+set(shape_file $<TARGET_FILE_DIR:h5fortran>/test_shape.h5)
+set(string_file $<TARGET_FILE_DIR:h5fortran>/test_string_py.h5)
+
+set(test_names array attributes cast deflate destructor exist module layout lt scalar shape string string_read version
 fail_read_size_mismatch fail_read_rank_mismatch fail_nonexist_variable)
 
 setup_test("${test_names}")
 
-set_tests_properties(shape PROPERTIES
-FIXTURES_SETUP h5shape
-)
-
-set(shape_file $<TARGET_FILE_DIR:h5fortran>/test_shape.h5)
+set_tests_properties(shape PROPERTIES FIXTURES_SETUP h5shape)
+set_tests_properties(string_read PROPERTIES FIXTURES_REQUIRED h5str)
 
 if(ENABLE_COVERAGE)
 setup_target_for_coverage_gcovr_html(
@@ -79,9 +83,9 @@ if(WIN32 AND CMAKE_VERSION VERSION_GREATER_EQUAL 3.22)
 endif()
 
 # --- Python h5py
-find_package(Python3 COMPONENTS Interpreter)
+find_package(Python COMPONENTS Interpreter)
 if(NOT DEFINED h5py_ok)
-  execute_process(COMMAND ${Python3_EXECUTABLE} -c "import h5py"
+  execute_process(COMMAND ${Python_EXECUTABLE} -c "import h5py"
   RESULT_VARIABLE h5py_code
   TIMEOUT 15
   )
@@ -93,12 +97,23 @@ if(NOT DEFINED h5py_ok)
 endif()
 
 add_test(NAME PythonShape
-COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test_shape.py ${shape_file}
+COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test_shape.py ${shape_file}
 )
 
 set_tests_properties(PythonShape PROPERTIES
 REQUIRED_FILES ${shape_file}
 FIXTURES_REQUIRED "h5lib;h5shape"
+TIMEOUT 15
+DISABLED $<NOT:$<BOOL:${h5py_ok}>>
+)
+
+add_test(NAME PythonString
+COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test_string.py ${string_file}
+)
+
+set_tests_properties(PythonString PROPERTIES
+FIXTURES_REQUIRED h5lib
+FIXTURES_SETUP h5str
 TIMEOUT 15
 DISABLED $<NOT:$<BOOL:${h5py_ok}>>
 )
