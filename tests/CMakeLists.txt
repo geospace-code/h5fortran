@@ -31,7 +31,6 @@ if(${name} STREQUAL version)
   add_test(NAME ${name} COMMAND test_${name} ${HDF5_VERSION})
 elseif(${name} STREQUAL string_read)
   add_test(NAME ${name} COMMAND test_${name} ${string_file})
-  set_tests_properties(${name} PROPERTIES WILL_FAIL true)
 else()
   add_test(NAME ${name} COMMAND test_${name})
 endif()
@@ -68,7 +67,10 @@ fail_read_size_mismatch fail_read_rank_mismatch fail_nonexist_variable)
 setup_test("${test_names}")
 
 set_tests_properties(shape PROPERTIES FIXTURES_SETUP h5shape)
-set_tests_properties(string_read PROPERTIES FIXTURES_REQUIRED h5str)
+set_tests_properties(string_read PROPERTIES
+FIXTURES_REQUIRED h5str
+DISABLED $<NOT:$<BOOL:${h5py_ok}>>
+)
 
 if(ENABLE_COVERAGE)
 setup_target_for_coverage_gcovr_html(

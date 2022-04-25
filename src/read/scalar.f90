@@ -2,7 +2,7 @@ submodule (h5fortran:hdf5_read) read_scalar
 
 use, intrinsic :: iso_c_binding, only : c_null_char
 use h5lt, only : h5ltread_dataset_string_f
-use hdf5, only : h5dread_f, h5tis_variable_str_f, h5dvlen_get_max_len_f, h5dread_vl_f
+use hdf5, only : h5dread_f, h5tis_variable_str_f, h5dvlen_get_max_len_f, h5dread_vl_f, h5dvlen_reclaim_f
 
 implicit none (type, external)
 
@@ -12,7 +12,7 @@ module procedure h5read_scalar
 
 integer(HSIZE_T) :: dims(rank(value))
 integer(SIZE_T) :: dsize
-integer(hid_t) :: dset_id, type_id
+integer(hid_t) :: dset_id, type_id, space_id
 integer :: dclass, ier
 
 logical :: vector_scalar, vstatus
@@ -78,23 +78,50 @@ elseif(dclass == H5T_STRING_F) then
     call h5tis_variable_str_f(type_id, vstatus, ier)
     if(ier/=0) error stop "h5fortran:read:h5tis_variable_str " // dname // " in " // self%filename
 
-    if(vstatus) error stop "h5fortran:read:H5T_VARIABLE character is not supported yet"
+    if(vstatus) then
+      call H5Dget_space_f(dset_id, space_id, ier)
+      if(ier/=0) error stop "h5fortran:read:h5dget_space " // dname // " in " // self%filename
+      !call h5dvlen_get_max_len_f(dset_id, type_id, space_id, dsize, ier)
+      !if(ier/=0) error stop "h5fortran:read:h5dvlen_get_max_len " // dname // " in " // self%filename
 
-    call H5Tget_size_f(type_id, dsize, ier)
-    if(ier/=0) error stop "h5fortran:read:h5tget_size " // dname // " in " // self%filename
+      block
+      character(10000) :: buf_char(1)
+      !! TODO: dynamically determine buffer size
+      integer(HSIZE_T) :: vldims(2)
+      integer(SIZE_T) :: vlen(1)
 
-    if(dsize > len(value)) then
-      write(stderr,'(a,i0,a3,i0,1x,a)') "h5fortran:read:string: buffer too small: ", dsize, " > ", len(value), &
-          dname // " in " // self%filename
-      error stop
+      vldims = [len(buf_char), 1]
+
+      call h5dread_vl_f(dset_id, type_id, buf_char, vldims, vlen, hdferr=ier, mem_space_id=space_id)
+      if(ier/=0) error stop "h5fortran:read:h5dread_vl " // dname // " in " // self%filename
+
+      value = buf_char(1)
+
+      ! call h5dvlen_reclaim_f(type_id, H5S_ALL_F, H5P_DEFAULT_F, buf_char, ier)
+      end block
+
+      call h5sclose_f(space_id, ier)
+      if(ier/=0) error stop "h5fortran:read:h5sclose " // dname // " in " // self%filename
+    else
+      call H5Tget_size_f(type_id, dsize, ier) !< only for non-variable
+      if(ier/=0) error stop "h5fortran:read:h5tget_size " // dname // " in " // self%filename
+
+      if(dsize > len(value)) then
+        write(stderr,'(a,i0,a3,i0,1x,a)') "h5fortran:read:string: buffer too small: ", dsize, " > ", len(value), &
+            dname // " in " // self%filename
+        error stop
+      endif
+
+      block
+      character(dsize) :: buf_char
+
+      call h5ltread_dataset_string_f(self%lid, dname, buf_char, ier)
+      value = buf_char
+      end block
     endif
 
-    block
-    character(dsize) :: buf_char
-
-    call h5ltread_dataset_string_f(self%lid, dname, buf_char, ier)
-    value = buf_char
-    end block
+    call h5tclose_f(type_id, ier)
+    if(ier/=0) error stop "h5fortran:read:h5tclose " // dname // " in " // self%filename
 
   class default
     error stop "h5fortran:read: character disk dataset " // dname // " needs character memory variable"
@@ -106,6 +133,7 @@ if(ier/=0) error stop 'h5fortran:reader: reading ' // dname // ' from ' // self%
 
 call h5dclose_f(dset_id, ier)
 if (ier/=0) error stop 'h5fortran:reader: error closing dataset ' // dname // ' in ' // self%filename
+
 
 end procedure h5read_scalar
 

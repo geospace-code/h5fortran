@@ -4,7 +4,7 @@ use h5fortran, only : hdf5_file
 
 implicit none (type, external)
 
-character(1024) :: pyp, str
+character(1000) :: pyp, str
 integer :: i
 
 type(hdf5_file) :: h
@@ -18,9 +18,8 @@ call h%read("/str", str)
 
 call h%close()
 
-print *, len_trim(str), len(str)
+if(str /= "Hello World!") error stop "h5py read failed: " // trim(str)
 
-if(str /= "Hello There!") error stop "h5py read failed: " // trim(str)
-
+print *, "OK: variable length string read"
 
 end program
