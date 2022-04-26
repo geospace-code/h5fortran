@@ -150,7 +150,7 @@ endif()
 
 ctest_test(
 SCHEDULE_RANDOM ON
-OUTPUT_JUNIT ${CTEST_BINARY_DIRECTORY}/ctest_${build_id}.json
+OUTPUT_JUNIT ${CTEST_BINARY_DIRECTORY}/junit_${build_id}.xml
 RETURN_VALUE ret
 CAPTURE_CMAKE_ERROR err
 )
