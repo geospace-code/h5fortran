@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20...3.23)
+cmake_minimum_required(VERSION 3.20)
 
 set(CTEST_PROJECT_NAME "h5fortran")
 
@@ -6,20 +6,14 @@ set(CTEST_LABELS_FOR_SUBPROJECTS "unit;core;shaky")
 
 set(opts)
 
-# --- boilerplate follows
-
-if(NOT DEFINED CI AND DEFINED ENV{CI})
-  set(CI $ENV{CI})
-endif()
+# --- main script
 
 set(CTEST_NIGHTLY_START_TIME "01:00:00 UTC")
 set(CTEST_SUBMIT_URL "https://my.cdash.org/submit.php?project=${CTEST_PROJECT_NAME}")
 
 # --- Experimental, Nightly, Continuous
 # https://cmake.org/cmake/help/latest/manual/ctest.1.html#dashboard-client-modes
-if(NOT CTEST_MODEL AND CI)
-  set(CTEST_MODEL "Nightly")
-endif()
+
 if(NOT CTEST_MODEL)
   set(CTEST_MODEL "Experimental")
 endif()
