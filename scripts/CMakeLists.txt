@@ -7,7 +7,7 @@ option(hdf5_parallel "build HDF5 parallel MPI")
 option(zlib_legacy "use legacy zlib 1.x")
 
 if(NOT HDF5_VERSION)
-  set(HDF5_VERSION 1.12.1)  # default version to build
+  set(HDF5_VERSION 1.12.2)  # default version to build
 endif()
 
 # --- system checks
@@ -62,8 +62,6 @@ file(READ ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/libraries.json json)
 
 set_directory_properties(PROPERTIES EP_UPDATE_DISCONNECTED true)
 
-message(STATUS "Build / install HDF5 ${HDF5_VERSION} to ${CMAKE_INSTALL_PREFIX}")
-
 if(hdf5_parallel)
   find_package(MPI COMPONENTS C REQUIRED)
   include(${PROJECT_SOURCE_DIR}/../cmake/check_mpi.cmake)
@@ -71,6 +69,8 @@ if(hdf5_parallel)
 endif()
 
 include(${PROJECT_SOURCE_DIR}/../cmake/hdf5.cmake)
+
+message(STATUS "Build / install HDF5 ${HDF5_VERSION} to ${CMAKE_INSTALL_PREFIX}")
 
 # --- features
 include(FeatureSummary)

@@ -2,7 +2,6 @@ name: intel-oneapi
 
 env:
   CTEST_PARALLEL_LEVEL: 2
-  CMAKE_BUILD_TYPE: Release
   CMAKE_GENERATOR: Ninja
   CC: icx
   FC: ifx
@@ -77,6 +76,6 @@ jobs:
     - name: configure examples
       run: cmake -S Examples -B Examples/build -DCMAKE_PREFIX_PATH:PATH=${{ runner.temp }}
     - name: build examples
-      run: cmake --build Examples/build
+      run: cmake --build Examples/build --parallel
     - name: Test examples
       run: ctest --test-dir Examples/build -V

@@ -5,7 +5,7 @@
 include(ExternalProject)
 
 if(NOT HDF5_VERSION)
-  set(HDF5_VERSION 1.12.1 CACHE STRING "HDF5 version built")
+  message(FATAL_ERROR "Please set variable HDF5_VERSION to desired HDF5 version to build.")
 endif()
 
 string(JSON hdf5_url GET ${json} hdf5 ${HDF5_VERSION} url)
