@@ -119,13 +119,11 @@ set FC=ifx
 This is necessary to workaround techniques used by HDF5 CMake files that don't pickup the CMake `set(ENV{CC})`.
 Otherwise, HDF5 build failures may result due to defaulting to icl-clang.
 
-Request a specific HDF5 version like:
+Request a specific [HDF5 Git tag](https://github.com/HDFGroup/hdf5/tags) or commit hash like:
 
 ```sh
-cmake -B build -DHDF5_VERSION=1.12.1
+cmake -B build -Dhdf5_tag=hdf5-1_12_2
 ```
-
-Only the HDF5 versions in cmake/libraries.json would work.
 
 ## Usage
 

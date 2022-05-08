@@ -1,32 +1,14 @@
 {
   "zlib1": {
-    "url": "https://zlib.net/zlib1211.zip",
-    "sha256": "d7510a8ee1918b7d0cad197a089c0a2cd4d6df05fee22389f67f115e738b178d"
+    "url": "http://zlib.net/zlib-1.2.12.tar.xz",
+    "sha256": "7db46b8d7726232a621befaab4a1c870f00a90805511c0e0090441dac57def18"
   },
   "zlib2": {
-    "url" : "https://github.com/zlib-ng/zlib-ng/archive/refs/tags/2.0.6.tar.gz",
-    "sha256": "8258b75a72303b661a238047cb348203d88d9dddf85d480ed885f375916fcab6"
+    "url" : "https://github.com/zlib-ng/zlib-ng.git",
+    "tag": "2.0.6"
   },
   "hdf5": {
-    "1.13.0": {
-      "url": "https://github.com/HDFGroup/hdf5/archive/refs/tags/hdf5-1_13_0.tar.gz",
-      "sha256": "71ea4747e7362e27e925b67d1dea868bebedd599903f371ccd73949b6a805493"
-    },
-    "1.12.2": {
-    "url": "https://github.com/HDFGroup/hdf5/archive/refs/tags/hdf5-1_12_2.tar.gz",
-    "sha256": "1ca14cadff7bc4b61826eee591da1a330f44c107db66c9510ee95df3b2bc5f78"
-    },
-    "1.12.1": {
-    "url": "https://github.com/HDFGroup/hdf5/archive/refs/tags/hdf5-1_12_1.tar.gz",
-    "sha256": "e6dde173c2d243551922d23a0387a79961205b018502e6a742acb30b61bc2d5f"
-    },
-    "1.10.8": {
-     "url": "https://github.com/HDFGroup/hdf5/archive/refs/tags/hdf5-1_10_8.tar.gz",
-     "sha256": "6fcaf2e5f10bb758d2d5fafa7bd0fd560d4047faf6b397fe1278c06e4e9f3564"
-     },
-   "1.10.7": {
-    "url": "https://github.com/HDFGroup/hdf5/archive/refs/tags/hdf5-1_10_7.tar.gz",
-    "sha256": "a1b7c2a477090508365d79bb1356d995a90d5c75e9e3ff0f2bd09d54d8a225d0"
-    }
+    "url": "https://github.com/HDFGroup/hdf5.git",
+    "tag": "hdf5-1_12_2"
   }
 }
