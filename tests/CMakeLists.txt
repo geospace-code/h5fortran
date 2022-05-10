@@ -65,10 +65,6 @@ fail_read_size_mismatch fail_read_rank_mismatch fail_nonexist_variable)
 setup_test("${test_names}")
 
 set_tests_properties(shape PROPERTIES FIXTURES_SETUP h5shape)
-set_tests_properties(string_read PROPERTIES
-FIXTURES_REQUIRED h5str
-DISABLED $<NOT:$<BOOL:${h5py_ok}>>
-)
 
 if(ENABLE_COVERAGE)
 setup_target_for_coverage_gcovr_html(
@@ -95,6 +91,11 @@ if(NOT DEFINED h5py_ok)
     set(h5py_ok false CACHE BOOL "h5py not OK")
   endif()
 endif()
+
+set_tests_properties(string_read PROPERTIES
+FIXTURES_REQUIRED h5str
+DISABLED $<NOT:$<BOOL:${h5py_ok}>>
+)
 
 add_test(NAME PythonShape
 COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test_shape.py ${shape_file}
