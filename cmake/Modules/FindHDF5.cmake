@@ -224,15 +224,24 @@ endif()
 
 hdf5_fortran_wrap(hdf5_lib_dirs hdf5_inc_dirs)
 
+if(MSVC)
+  set(CMAKE_FIND_LIBRARY_PREFIXES lib)
+endif()
+
 set(_names hdf5_fortran)
 set(_hl_names hdf5_hl_fortran hdf5hl_fortran)
 set(_hl_stub_names hdf5_hl_f90cstub)
 set(_stub_names hdf5_f90cstub)
 if(MSVC)
-  list(APPEND _names libhdf5_fortran)
-  list(APPEND _hl_names libhdf5_hl_fortran libhdf5hl_fortran)
-  list(APPEND _hl_stub_names libhdf5_hl_f90cstub)
-  list(APPEND _stub_names libhdf5_f90cstub)
+  list(APPEND _names hdf5_fortran_D)
+  list(APPEND _hl_names hdf5_hl_fortran_D)
+  list(APPEND _hl_stub_names hdf5_hl_f90cstub_D)
+  list(APPEND _stub_names hdf5_f90cstub_D)
+else()
+  list(APPEND _names hdf5_fortran_debug)
+  list(APPEND _hl_names hdf5_hl_fortran_debug)
+  list(APPEND _hl_stub_names hdf5_hl_f90cstub_debug)
+  list(APPEND _stub_names hdf5_f90cstub_debug)
 endif()
 
 find_library(HDF5_Fortran_LIBRARY
@@ -342,11 +351,18 @@ function(find_hdf5_cxx)
 
 hdf5_cxx_wrap(hdf5_lib_dirs hdf5_inc_dirs)
 
+if(MSVC)
+  set(CMAKE_FIND_LIBRARY_PREFIXES lib)
+endif()
+
 set(_names hdf5_cpp)
 set(_hl_names hdf5_hl_cpp)
 if(MSVC)
-  list(APPEND _names libhdf5_cpp)
-  list(APPEND _hl_names libhdf5_hl_cpp)
+  list(APPEND _names hdf5_cpp_D)
+  list(APPEND _hl_names hdf5_hl_cpp_D)
+else()
+  list(APPEND _names hdf5_cpp_debug)
+  list(APPEND _hl_names hdf5_hl_cpp_debug)
 endif()
 
 find_library(HDF5_CXX_LIBRARY
@@ -385,12 +401,20 @@ function(find_hdf5_c)
 
 hdf5_c_wrap(hdf5_lib_dirs hdf5_inc_dirs)
 
+if(MSVC)
+  set(CMAKE_FIND_LIBRARY_PREFIXES lib)
+endif()
+
 set(_names hdf5)
 set(_hl_names hdf5_hl)
 
+# debug names
 if(MSVC)
-  list(APPEND _names libhdf5)
-  list(APPEND _hl_names libhdf5_hl)
+  list(APPEND _names hdf5_D)
+  list(APPEND _hl_names hdf5_hl_D)
+else()
+  list(APPEND _names hdf5_debug)
+  list(APPEND _hl_names hdf5_hl_debug)
 endif()
 
 # MUST have HDF5_ROOT in HINTS here since it was set in this script
