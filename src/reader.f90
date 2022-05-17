@@ -9,31 +9,31 @@ contains
 
 
 module procedure h5read_1d
-@reader_template@
+include "reader_template.inc"
 end procedure h5read_1d
 
 module procedure h5read_2d
-@reader_template@
+include "reader_template.inc"
 end procedure h5read_2d
 
 module procedure h5read_3d
-@reader_template@
+include "reader_template.inc"
 end procedure h5read_3d
 
 module procedure h5read_4d
-@reader_template@
+include "reader_template.inc"
 end procedure h5read_4d
 
 module procedure h5read_5d
-@reader_template@
+include "reader_template.inc"
 end procedure h5read_5d
 
 module procedure h5read_6d
-@reader_template@
+include "reader_template.inc"
 end procedure h5read_6d
 
 module procedure h5read_7d
-@reader_template@
+include "reader_template.inc"
 end procedure h5read_7d
 
 end submodule hdf5_reader
