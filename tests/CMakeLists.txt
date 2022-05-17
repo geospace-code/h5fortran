@@ -10,7 +10,6 @@ set_target_properties(test_minimal PROPERTIES LABELS unit)
 add_test(NAME minimal COMMAND test_minimal)
 set_tests_properties(minimal PROPERTIES
 FIXTURES_SETUP h5lib
-TIMEOUT 10
 LABELS core
 )
 
@@ -34,7 +33,6 @@ else()
 endif()
 set_tests_properties(${name} PROPERTIES
 FIXTURES_REQUIRED h5lib
-TIMEOUT 10
 WORKING_DIRECTORY $<TARGET_FILE_DIR:h5fortran>
 )
 
@@ -83,7 +81,6 @@ find_package(Python COMPONENTS Interpreter)
 if(NOT DEFINED h5py_ok)
   execute_process(COMMAND ${Python_EXECUTABLE} -c "import h5py"
   RESULT_VARIABLE h5py_code
-  TIMEOUT 15
   )
   if(h5py_code EQUAL 0)
     set(h5py_ok true CACHE BOOL "h5py OK")
@@ -104,7 +101,6 @@ COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test_shape.py ${shape_f
 set_tests_properties(PythonShape PROPERTIES
 REQUIRED_FILES ${shape_file}
 FIXTURES_REQUIRED "h5lib;h5shape"
-TIMEOUT 15
 DISABLED $<NOT:$<BOOL:${h5py_ok}>>
 )
 
@@ -115,7 +111,6 @@ COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test_string.py ${string
 set_tests_properties(PythonString PROPERTIES
 FIXTURES_REQUIRED h5lib
 FIXTURES_SETUP h5str
-TIMEOUT 15
 DISABLED $<NOT:$<BOOL:${h5py_ok}>>
 )
 
@@ -129,7 +124,6 @@ if(Matlab_FOUND)
   add_test(NAME MatlabShape COMMAND ${Matlab_MAIN_PROGRAM} -batch ${matlab_cmd})
 
   set_tests_properties(MatlabShape PROPERTIES
-  TIMEOUT 90
   LABELS shaky
   DEPENDS shape
   REQUIRED_FILES ${shape_file}
@@ -145,10 +139,14 @@ find_program(h5ls NAMES h5ls)
 add_test(NAME h5ls COMMAND ${h5ls} ${shape_file}/d7)
 
 set_tests_properties(h5ls PROPERTIES
-TIMEOUT 10
 REQUIRED_FILES ${shape_file}
 FIXTURES_REQUIRED "h5lib;h5shape"
 DEPENDS shape
 PASS_REGULAR_EXPRESSION "{5, 6, 7, 4, 3, 1, 2}"
 DISABLED $<NOT:$<BOOL:${h5ls}>>
 )
+
+
+get_property(test_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY TESTS)
+
+set_tests_properties(${test_names} PROPERTIES TIMEOUT 60)

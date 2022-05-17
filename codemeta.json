@@ -3,7 +3,7 @@
     "@type": "SoftwareSourceCode",
     "codeRepository": "https://github.com/geospace-code/h5fortran",
     "contIntegration": "https://github.com/geospace-code/h5fortran/actions",
-    "dateModified": "2022-05-12",
+    "dateModified": "2022-05-17",
     "downloadUrl": "https://github.com/geospace-code/h5fortran/releases",
     "issueTracker": "https://github.com/geospace-code/h5fortran/issues",
     "name": "h5fortran",
