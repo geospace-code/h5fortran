@@ -5,11 +5,6 @@ meson_version : '>=0.57.0'
 fc = meson.get_compiler('fortran')
 os = host_machine.system()
 
-fs = import('fs')
-
-# -- stub for future > 7-D
-# f08rank15 = fc.links('real, dimension(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1) :: x; end', name: 'f2008 rank 15')
-
 #== find HDF5
 
 # use_static = get_option('default_library') == 'static'

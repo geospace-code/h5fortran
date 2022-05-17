@@ -4,4 +4,5 @@ categories = "io"
 version = "4.6.3"
 
 [build]
-link = ["z", "hdf5"]
+external-modules = ["hdf5", "h5lt"]
+link = ["hdf5", "hdf5_hl", "hdf5_fortran", "hdf5hl_fortran"]
