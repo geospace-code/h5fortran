@@ -98,8 +98,6 @@ cmake -B build -DBUILD_TESTING=off
 
 ### Fortran Package Manager (fpm)
 
-FPM requires HDF5 &ge; 1.10.6.
-
 ```sh
 fpm build
 fpm test

@@ -152,23 +152,3 @@ jobs:
       run: cmake --build example/build --parallel
     - name: Test Examples
       run: ctest --test-dir example/build -V
-
-  linux-fpm:
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-
-    steps:
-
-    - uses: fortran-lang/setup-fpm@v4
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: install hdf5
-      run: |
-        sudo apt update
-        sudo apt install --no-install-recommends libhdf5-dev
-
-    - uses: actions/checkout@v2
-
-    - run: fpm build
-    - run: fpm test

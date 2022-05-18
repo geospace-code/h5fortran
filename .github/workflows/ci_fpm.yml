@@ -1,0 +1,33 @@
+name: ci_fpm
+
+
+on:
+  push:
+    paths:
+      - "fpm.toml"
+      - ".github/workflows/ci_fpm.yml"
+  release:
+    types: [published]
+
+
+jobs:
+
+  linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+
+    - uses: fortran-lang/setup-fpm@v4
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: install hdf5
+      run: |
+        sudo apt update
+        sudo apt install --no-install-recommends libhdf5-dev
+
+    - uses: actions/checkout@v2
+
+    - run: fpm fpm --flag -I/usr/include/hdf5/serial --link-flag -L/usr/lib/x86_64-linux-gnu/hdf5/serial build
+    - run: fpm test
