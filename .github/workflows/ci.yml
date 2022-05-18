@@ -72,11 +72,11 @@ jobs:
     - run: cmake --install build
 
     - name: configure examples
-      run: cmake -S Examples -B Examples/build -DCMAKE_PREFIX_PATH:PATH=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+      run: cmake -S example -B example/build -DCMAKE_PREFIX_PATH:PATH=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
     - name: build examples
-      run: cmake --build Examples/build --parallel
+      run: cmake --build example/build --parallel
     - name: Test examples
-      run: ctest --test-dir Examples/build -V
+      run: ctest --test-dir example/build -V
 
 
   linux-coverage:
@@ -147,8 +147,28 @@ jobs:
       run: cmake --install build
 
     - name: configure examples
-      run: cmake -S Examples -B Examples/build -DCMAKE_PREFIX_PATH:PATH=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+      run: cmake -S example -B example/build -DCMAKE_PREFIX_PATH:PATH=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
     - name: build Examples
-      run: cmake --build Examples/build --parallel
+      run: cmake --build example/build --parallel
     - name: Test Examples
-      run: ctest --test-dir Examples/build -V
+      run: ctest --test-dir example/build -V
+
+  linux-fpm:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+
+    - uses: fortran-lang/setup-fpm@v4
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: install hdf5
+      run: |
+        sudo apt update
+        sudo apt install --no-install-recommends libhdf5-dev
+
+    - uses: actions/checkout@v2
+
+    - run: fpm build
+    - run: fpm test
