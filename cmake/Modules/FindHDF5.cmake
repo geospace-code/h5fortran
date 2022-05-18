@@ -232,6 +232,17 @@ set(_names hdf5_fortran)
 set(_hl_names hdf5_hl_fortran hdf5hl_fortran)
 set(_hl_stub_names hdf5_hl_f90cstub)
 set(_stub_names hdf5_f90cstub)
+
+# distro names (Ubuntu)
+if(parallel IN_LIST HDF5_FIND_COMPONENTS)
+  list(APPEND _names hdf5_openmpi_fortran hdf5_mpich_fortran)
+  list(APPEND _hl_names hdf5_openmpihl_fortran hdf5_mpichhl_fortran)
+else()
+  list(APPEND _names hdf5_serial_fortran)
+  list(APPEND _hl_names hdf5_serialhl_fortran)
+endif()
+
+# Debug names
 if(MSVC)
   list(APPEND _names hdf5_fortran_D)
   list(APPEND _hl_names hdf5_hl_fortran_D)
@@ -357,6 +368,17 @@ endif()
 
 set(_names hdf5_cpp)
 set(_hl_names hdf5_hl_cpp)
+
+# distro names (Ubuntu)
+if(parallel IN_LIST HDF5_FIND_COMPONENTS)
+  list(APPEND _names hdf5_openmpi_cpp hdf5_mpich_cpp)
+  list(APPEND _hl_names hdf5_openmpi_hl_cpp hdf5_mpich_hl_cpp)
+else()
+  list(APPEND _names hdf5_serial_cpp)
+  list(APPEND _hl_names hdf5_serial_hl_cpp)
+endif()
+
+# Debug names
 if(MSVC)
   list(APPEND _names hdf5_cpp_D)
   list(APPEND _hl_names hdf5_hl_cpp_D)
@@ -407,6 +429,15 @@ endif()
 
 set(_names hdf5)
 set(_hl_names hdf5_hl)
+
+# distro names (Ubuntu)
+if(parallel IN_LIST HDF5_FIND_COMPONENTS)
+  list(APPEND _names hdf5_openmpi hdf5_mpich)
+  list(APPEND _hl_names hdf5_openmpi_hl hdf5_mpich_hl)
+else()
+  list(APPEND _names hdf5_serial)
+  list(APPEND _hl_names hdf5_serial_hl)
+endif()
 
 # debug names
 if(MSVC)
