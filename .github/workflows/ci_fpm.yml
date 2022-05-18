@@ -1,6 +1,5 @@
 name: ci_fpm
 
-
 on:
   push:
     paths:
@@ -16,6 +15,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
+    env:
+      FPM_FFLAGS: -I/usr/include/hdf5/serial
+      FPM_LDFLAGS: -L/usr/lib/x86_64-linux-gnu/hdf5/serial
+
     steps:
 
     - uses: fortran-lang/setup-fpm@v4
@@ -29,5 +32,5 @@ jobs:
 
     - uses: actions/checkout@v2
 
-    - run: fpm fpm --flag -I/usr/include/hdf5/serial --link-flag -L/usr/lib/x86_64-linux-gnu/hdf5/serial build
+    - run: fpm build
     - run: fpm test

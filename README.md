@@ -6,6 +6,7 @@
 ![ci_linux](https://github.com/geospace-code/h5fortran/workflows/ci/badge.svg)
 ![ci_macos](https://github.com/geospace-code/h5fortran/workflows/ci_macos/badge.svg)
 ![ci_windows](https://github.com/geospace-code/h5fortran/workflows/ci_windows/badge.svg)
+[![ci_fpm](https://github.com/geospace-code/h5fortran/actions/workflows/ci_fpm.yml/badge.svg)](https://github.com/geospace-code/h5fortran/actions/workflows/ci_fpm.yml)
 ![ci_meson](https://github.com/geospace-code/h5fortran/workflows/ci_meson/badge.svg)
 [![intel-oneapi](https://github.com/geospace-code/h5fortran/actions/workflows/intel-oneapi.yml/badge.svg)](https://github.com/geospace-code/h5fortran/actions/workflows/intel-oneapi.yml)
 
