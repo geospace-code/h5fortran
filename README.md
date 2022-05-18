@@ -30,6 +30,7 @@ h5fortran is designed for easy use using static or shared linking from your proj
 * CMake ExternalProject
 * CMake FetchContent
 * CMake + Git submodule
+* Fortran Package Manager (fpm)
 * Meson subproject
 
 Uses Fortran `submodule` for clean template structure.
@@ -69,6 +70,10 @@ In general we hold to the geospace-code [code of conduct](https://github.com/geo
 
 ## Build
 
+h5fortran can be built with any one of CMake, [fpm](https://fpm.fortran-lang.org/), or [Meson](https://mesonbuild.com/).
+
+### CMake
+
 Using CMake:
 
 ```sh
@@ -89,6 +94,25 @@ To save time, if not intended to use self-tests, you can skip the build of the t
 
 ```sh
 cmake -B build -DBUILD_TESTING=off
+```
+
+### Fortran Package Manager (fpm)
+
+FPM requires HDF5 &ge; 1.10.6.
+
+```sh
+fpm build
+fpm test
+fpm install
+```
+
+### Meson
+
+```sh
+meson build
+meson compile -C build
+meson test -C build
+meson install -C build
 ```
 
 ## Build HDF5
@@ -153,7 +177,6 @@ For detailed [examples](./Examples/) see [Examples.md](./Examples.md).
 
 * The first character of the filename should be a character, NOT whitespace to avoid file open/creation errors.
 * Polymorphic array rank is implemented.
-
 
 ### h5fortran: missing Fortran datatypes
 
