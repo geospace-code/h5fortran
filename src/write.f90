@@ -15,12 +15,21 @@ implicit none (type, external)
 
 contains
 
+module procedure hdf_create_user
+!! for user %create() method
+
+integer(HID_T) :: file_space_id, dset_id
+
+call hdf_create(self, dname, dtype, dims, file_space_id, dset_id)
+
+end procedure hdf_create_user
+
 
 module procedure hdf_create
 
 logical :: exists
 integer :: ierr
-integer(HID_T) :: plist_id, space_id, ds_id, type_id
+integer(HID_T) :: plist_id, type_id
 
 plist_id = H5P_DEFAULT_F
 
@@ -50,14 +59,11 @@ if(exists) then
   !! FIXME: read and write slice shape not checked; but should check in future versions
 
   !> open dataset
-  call h5dopen_f(self%lid, dname, ds_id, ierr)
+  call h5dopen_f(self%lid, dname, dset_id, ierr)
   if (ierr /= 0) error stop 'ERROR:h5fortran:create: could not open ' // dname // ' in ' // self%filename
 
-  if(present(dset_id)) dset_id = ds_id
-  if(present(filespace_id)) then
-    call h5dget_space_f(ds_id, filespace_id, ierr)
-    if(ierr /= 0) error stop 'h5fortran:create could not get dataset ' // dname // ' in ' // self%filename
-  end if
+  call h5dget_space_f(dset_id, filespace_id, ierr)
+  if(ierr /= 0) error stop 'h5fortran:create could not get dataset ' // dname // ' in ' // self%filename
 
   if(dtype == H5T_NATIVE_CHARACTER) then
     call h5tcopy_f(dtype, type_id, ierr)
@@ -99,9 +105,9 @@ endif
 
 !> create dataset dataspace
 if(size(dims) == 0) then
-  call h5screate_f(H5S_SCALAR_F, space_id, ierr)
+  call h5screate_f(H5S_SCALAR_F, filespace_id, ierr)
 else
-  call h5screate_simple_f(size(dims), dims, space_id, ierr)
+  call h5screate_simple_f(size(dims), dims, filespace_id, ierr)
 endif
 if (check(ierr, self%filename, dname)) error stop "h5fortran:h5screate: " // dname
 
@@ -119,21 +125,12 @@ else
 endif
 
 !> create dataset
-call h5dcreate_f(self%lid, dname, type_id=type_id, space_id=space_id, dset_id=ds_id, hdferr=ierr, dcpl_id=plist_id)
+call h5dcreate_f(self%lid, dname, type_id=type_id, space_id=filespace_id, dset_id=dset_id, hdferr=ierr, dcpl_id=plist_id)
 if (ierr/=0) error stop "h5fortran:h5dcreate: " // dname // " in " // self%filename
 
 !> free resources
 call h5pclose_f(plist_id, ierr)
 if (ierr/=0) error stop "h5fortran:h5pclose: " // dname // ' in ' // self%filename
-
-if(.not.(present(dset_id) .and. present(filespace_id))) then
-  if(self%debug) print *, 'h5fortran:TRACE:create: closing dataset ', dname
-  call hdf_wrapup(ds_id, space_id)
-endif
-if (ierr/=0) error stop "h5fortran:wrapup: " // dname // ' in ' // self%filename
-
-if(present(filespace_id)) filespace_id = space_id
-if(present(dset_id)) dset_id = ds_id
 
 end procedure hdf_create
 

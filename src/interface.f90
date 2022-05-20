@@ -22,7 +22,7 @@ use h5lt, only : h5ltget_dataset_ndims_f, h5ltget_dataset_info_f
 implicit none (type, external)
 private
 public :: hdf5_file, hdf5_close, h5write, h5read, h5exist, is_hdf5, h5write_attr, h5read_attr, hdf5version
-public :: check, hdf_shape_check, hdf_rank_check, hdf_get_slice, hdf_wrapup
+public :: check, hdf_shape_check, hdf_rank_check, hdf_get_slice
 !! for submodules only
 public :: HSIZE_T, HID_T, H5T_NATIVE_DOUBLE, H5T_NATIVE_REAL, H5T_NATIVE_INTEGER, H5T_NATIVE_CHARACTER, H5T_STD_I64LE
 public :: H5T_INTEGER_F, H5T_FLOAT_F, H5T_STRING_F
@@ -47,7 +47,7 @@ logical :: use_mpi = .false. !< MPI or serial HDF5
 contains
 !> define methods (procedures) that don't need generic procedure
 procedure, public :: open => hdf_initialize, close => hdf_finalize, &
-  write_group, create => hdf_create, &
+  write_group, create => hdf_create_user, &
   open_group => hdf_open_group, close_group => hdf_close_group, &
   flush => hdf_flush, &
   ndim => hdf_get_ndim, ndims => hdf_get_ndim, &
@@ -105,13 +105,24 @@ end interface h5read_attr
 !> Submodules
 
 interface !< write.f90
+
+module subroutine hdf_create_user(self, dname, dtype, dims, chunk_size, compact)
+class(hdf5_file), intent(inout) :: self
+character(*), intent(in) :: dname
+integer(HID_T), intent(in) :: dtype
+integer(HSIZE_T), intent(in) :: dims(:)
+integer, intent(in), dimension(size(dims)), optional :: chunk_size
+logical, intent(in), optional :: compact
+end subroutine hdf_create_user
+
 module subroutine hdf_create(self, dname, dtype, dims, filespace_id, dset_id, dtype_id, &
   chunk_size, istart, iend, stride, compact, charlen)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 integer(HID_T), intent(in) :: dtype
 integer(HSIZE_T), intent(in) :: dims(:)
-integer(HID_T), intent(out), optional :: filespace_id, dset_id, dtype_id
+integer(HID_T), intent(out) :: filespace_id, dset_id
+integer(HID_T), intent(out), optional :: dtype_id
 integer, intent(in), dimension(size(dims)), optional :: chunk_size, istart, iend, stride
 logical, intent(in), optional :: compact
 integer, intent(in), optional :: charlen !< length of character scalar
@@ -701,33 +712,6 @@ if (present(dname)) dn = dname
 write(stderr,*) 'h5fortran:ERROR: ' // fn // ':' // dn // ' error code ', ierr
 
 end function check
-
-
-subroutine hdf_wrapup(dset_id, space_id, type_id)
-
-integer(HID_T), intent(in) :: dset_id
-integer(HID_T), intent(in), optional :: space_id, type_id
-
-integer :: ierr
-
-ierr = 0
-
-if(present(space_id)) then
-  if(space_id /= 0) call h5sclose_f(space_id, ierr)
-  if (ierr /= 0) error stop 'h5fortran:h5sclose dataspace'
-endif
-
-if(dset_id /= 0) then
-  call h5dclose_f(dset_id, ierr)
-  if (ierr /= 0) error stop 'h5fortran:h5dclose dataset'
-endif
-
-if(present(type_id)) then
-  call h5tclose_f(type_id, ierr)
-  if (ierr/=0) error stop "h5fortran:h5tclose type"
-endif
-
-end subroutine hdf_wrapup
 
 
 subroutine hdf_get_slice(self, dname, dset_id, filespace_id, memspace_id, i0, i1, i2)

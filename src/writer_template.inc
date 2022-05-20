@@ -42,4 +42,11 @@ class default
 end select
 if (ier/=0) error stop 'h5fortran:ERROR: could not write ' // dname // ' to ' // self%filename
 
-call hdf_wrapup(dset_id, file_space_id)
+call h5dclose_f(dset_id, ier)
+if(ier /= 0) error stop "ERROR:h5fortran:writer: closing dataset: " // dname // " in " // self%filename
+
+if(mem_space_id /= H5S_ALL_F) call h5sclose_f(mem_space_id, ier)
+if(ier /= 0) error stop "ERROR:h5fortran:writer closing memory dataspace: " // dname // " in " // self%filename
+
+if(file_space_id /= H5S_ALL_F) call h5sclose_f(file_space_id, ier)
+if(ier /= 0) error stop "ERROR:h5fortran:writer closing file dataspace: " // dname // " in " // self%filename
