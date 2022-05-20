@@ -8,8 +8,6 @@ implicit none (type, external)
 
 character(*), parameter :: fn = 'test_layout.h5'
 
-call test_layout_write(fn)
-
 call test_layout_read(fn)
 
 call test_layout_props(fn)
@@ -17,37 +15,6 @@ call test_layout_props(fn)
 print *, "OK: test layout"
 
 contains
-
-
-subroutine test_layout_write(fn)
-
-character(*), intent(in) :: fn
-
-type(hdf5_file) :: h
-
-real(real32), dimension(1,1,1,1,1,1,1) :: d7_32
-real(real64), dimension(1,1,1,1,1,1,1) :: d7_64
-
-d7_32 = 42
-d7_64 = 42
-
-
-call h%open(fn, action="w")
-
-call h%write("/compact1d", [1,2,3], compact=.true.)
-call h%write("/contig1d", [1,2,3], compact=.false.)
-
-call h%write("/compact0d", 42, compact=.true.)
-call h%write("/compact7d_32", d7_32, compact=.true.)
-call h%write("/compact7d_64", d7_64, compact=.true.)
-
-call h%write('/compact_r32', 142._real32, compact=.true.)
-call h%write('/compact_r64', 142._real64, compact=.true.)
-call h%write('/compact_i32', 142_int32, compact=.true.)
-
-call h%close()
-
-end subroutine test_layout_write
 
 
 subroutine test_layout_read(fn)

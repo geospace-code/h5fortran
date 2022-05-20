@@ -57,12 +57,19 @@ endfunction(setup_test)
 set(shape_file $<TARGET_FILE_DIR:h5fortran>/test_shape.h5)
 set(string_file $<TARGET_FILE_DIR:h5fortran>/test_string_py.h5)
 
-set(test_names array attributes cast deflate destructor exist module layout lt scalar shape string string_read version
+set(test_names array attributes cast deflate destructor exist module layout lt scalar shape string string_read version write
 fail_read_size_mismatch fail_read_rank_mismatch fail_nonexist_variable)
 
 setup_test("${test_names}")
 
+set_tests_properties(write PROPERTIES FIXTURES_SETUP test_files)
+
 set_tests_properties(shape PROPERTIES FIXTURES_SETUP h5shape)
+
+set_tests_properties(layout PROPERTIES
+FIXTURES_REQUIRED test_files
+REQUIRED_FILES ${CMAKE_CURRENT_BINARY_DIR}/test_write.h5
+)
 
 if(ENABLE_COVERAGE)
 setup_target_for_coverage_gcovr_html(
