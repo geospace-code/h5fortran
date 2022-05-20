@@ -19,8 +19,15 @@ module procedure hdf_create_user
 !! for user %create() method
 
 integer(HID_T) :: file_space_id, dset_id
+integer :: ierr
 
 call hdf_create(self, dname, dtype, dims, file_space_id, dset_id)
+
+call h5dclose_f(dset_id, ierr)
+if(ierr /= 0) error stop "ERROR:h5fortran:write:create_user: closing dataset: " // dname // " in " // self%filename
+
+if(file_space_id /= H5S_ALL_F) call h5sclose_f(file_space_id, ierr)
+if(ierr /= 0) error stop "ERROR:h5fortran:write:create_user: closing file dataspace: " // dname // " in " // self%filename
 
 end procedure hdf_create_user
 

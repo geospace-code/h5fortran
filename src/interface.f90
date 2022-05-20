@@ -2,7 +2,9 @@ module h5fortran
 !! HDF5 object-oriented polymorphic interface
 use, intrinsic :: iso_c_binding, only : c_ptr, c_loc
 use, intrinsic :: iso_fortran_env, only : real32, real64, int64, int32, stderr=>error_unit
-use hdf5, only : HID_T, SIZE_T, HSIZE_T, H5F_ACC_RDONLY_F, H5F_ACC_RDWR_F, H5F_ACC_TRUNC_F, &
+use hdf5, only : HID_T, SIZE_T, HSIZE_T, &
+  H5F_ACC_RDONLY_F, H5F_ACC_RDWR_F, H5F_ACC_TRUNC_F, &
+  H5F_OBJ_FILE_F, H5F_OBJ_GROUP_F, H5F_OBJ_DATASET_F, H5F_OBJ_DATATYPE_F, H5F_OBJ_ALL_F, &
   H5S_ALL_F, H5S_SELECT_SET_F, &
   H5D_CONTIGUOUS_F, H5D_CHUNKED_F, H5D_COMPACT_F, &
   H5T_NATIVE_DOUBLE, H5T_NATIVE_REAL, H5T_NATIVE_INTEGER, H5T_NATIVE_CHARACTER, H5T_STD_I64LE, &
@@ -10,10 +12,11 @@ use hdf5, only : HID_T, SIZE_T, HSIZE_T, H5F_ACC_RDONLY_F, H5F_ACC_RDWR_F, H5F_A
   H5F_SCOPE_GLOBAL_F, &
   H5P_DEFAULT_F, &
   h5open_f, h5close_f, &
+  h5fopen_f, h5fcreate_f, h5fclose_f, h5fis_hdf5_f, &
+  h5fget_obj_count_f, h5fget_obj_ids_f, h5fget_name_f, &
   h5dopen_f, h5dclose_f, h5dget_space_f, &
   h5gcreate_f, h5gclose_f, &
-  h5fopen_f, h5fcreate_f, h5fclose_f, h5fis_hdf5_f, &
-  h5iis_valid_f, &
+  h5iis_valid_f, h5iget_type_f, h5iget_name_f, &
   h5lexists_f, &
   h5sclose_f, h5sselect_hyperslab_f, h5screate_simple_f, &
   h5get_libversion_f, h5eset_auto_f, h5fflush_f, &
@@ -571,21 +574,64 @@ subroutine hdf_finalize(self, close_hdf5_interface)
 class(hdf5_file), intent(inout) :: self
 logical, intent(in), optional :: close_hdf5_interface
 
-integer :: ier
+integer :: ierr, i
+integer(SIZE_T) :: Ngroup, Ndset, Ndtype, Nfile, Lf_name, Lds_name
+integer(HID_T), allocatable :: obj_ids(:)
+integer(SIZE_T), parameter :: L = 2048 !< arbitrary length
+character(L) :: file_name, dset_name
 
 if (.not. self%is_open()) then
   write(stderr,*) 'WARNING:h5fortran:close: file handle is already closed: '// self%filename
   return
 endif
 
+!> ref count for better error messages; this is more of a problem with HDF5-MPI programs
+call h5fget_obj_count_f(self%lid, H5F_OBJ_GROUP_F, Ngroup, ierr)
+if(ierr /= 0) error stop "ERROR:h5fortran:close:h5fget_obj_count: could not count open groups: " // self%filename
+if(Ngroup > 0) write(stderr,'(a,i0,a)') "ERROR:h5fortran:close: there are ", Ngroup, " groups open: " // self%filename
+
+
+call h5fget_obj_count_f(self%lid, H5F_OBJ_DATASET_F, Ndset, ierr)
+if(ierr /= 0) error stop "ERROR:h5fortran:close:h5fget_obj_count: could not count open datasets: " // self%filename
+if(Ndset > 0) then
+  write(stderr,'(a,i0,a)') "ERROR:h5fortran:close: there are ", Ndset, " datasets open: " // self%filename
+
+  allocate(obj_ids(Ndset))
+  call h5fget_obj_ids_f(self%lid, H5F_OBJ_DATASET_F, Ndset, obj_ids, ierr)
+  if(ierr /= 0) error stop "ERROR:h5fortran:close:h5fget_obj_ids: could not get open dataset ids: " // self%filename
+
+  do i = 1, int(Ndset)
+    call h5fget_name_f(obj_ids(i), file_name, Lf_name, ierr)
+    if(ierr /= 0) error stop "ERROR:h5fortran:close:h5fget_name: could not get filename of open dataset: " // self%filename
+
+    call h5iget_name_f(obj_ids(i), dset_name, L, Lds_name, ierr)
+
+    write(stderr,*) "h5fortran:close: open dataset: " // dset_name(:Lds_name) // " in file: " // file_name(:Lf_name)
+  end do
+endif
+
+call h5fget_obj_count_f(self%lid, H5F_OBJ_DATATYPE_F, Ndtype, ierr)
+if(ierr /= 0) error stop "ERROR:h5fortran:close:h5fget_obj_count: could not count open datatypes: " // self%filename
+if(Ndtype > 0) write(stderr,'(a,i0,a)') "ERROR:h5fortran:close: there are ", Ndtype, " datatypes open: " // self%filename
+
+call h5fget_obj_count_f(self%lid, H5F_OBJ_FILE_F, Nfile, ierr)
+if(ierr /= 0) error stop "ERROR:h5fortran:close:h5fget_obj_count: could not count open files: " // self%filename
+if(Nfile < 1) write(stderr,'(a,i0,a)') "ERROR:h5fortran:close: there are ", Nfile, " files open: " // self%filename
+
+if(Ngroup > 0 .or. Ndset > 0 .or. Ndtype > 0) error stop "ERROR:h5fortran:close: hanging HID handles open: " // self%filename
+
+
 !> close hdf5 file
-call h5fclose_f(self%lid, ier)
-if (check(ier, 'ERROR:h5fortran:close: HDF5 file close: ' // self%filename)) error stop
+call h5fclose_f(self%lid, ierr)
+if (ierr /= 0) then
+  write(stderr,'(a,i0)') 'ERROR:h5fortran:h5fclose: HDF5 file close: ' // self%filename
+  error stop
+endif
 
 if (present(close_hdf5_interface)) then
   if (close_hdf5_interface) then
-    call h5close_f(ier)
-    if (check(ier, 'ERROR:h5fortran: HDF5 library close')) error stop
+    call h5close_f(ierr)
+    if (ierr /= 0) error stop 'ERROR:h5fortran:h5close: HDF5 library close'
   endif
 endif
 !> sentinel lid
@@ -603,9 +649,9 @@ class(hdf5_file), intent(in) :: self
 integer :: ierr
 
 call h5iis_valid_f(self%lid, is_open, ierr)
-if(ierr /= 0) error stop "h5fortran:is_open:h5iis_valid: " // self%filename
+if(ierr /= 0) error stop "ERROR:h5fortran:is_open:h5iis_valid: " // self%filename
 
-! call h5iget_type_f(self%file_id, hid_type, ierr)
+! call h5iget_type_f(self%lid, hid_type, ierr)
 ! if(ierr /= 0 .or. hid_type /= H5I_FILE_F) is_open = .false.
 
 end function is_open
