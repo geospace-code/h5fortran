@@ -32,6 +32,8 @@ public :: HSIZE_T, HID_T, H5T_NATIVE_DOUBLE, H5T_NATIVE_REAL, H5T_NATIVE_INTEGER
 public :: H5T_INTEGER_F, H5T_FLOAT_F, H5T_STRING_F
 !! HDF5 types for end users
 
+! intrinsic :: size !< workaround for intel fortran
+
 !> main type
 type :: hdf5_file
 
@@ -128,8 +130,8 @@ module subroutine hdf_create_user(self, dname, dtype, dims, chunk_size, compact)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 integer(HID_T), intent(in) :: dtype
-integer(HSIZE_T), intent(in) :: dims(:)
-integer, intent(in), dimension(size(dims)), optional :: chunk_size
+integer(HSIZE_T), dimension(:), intent(in) :: dims
+integer, intent(in), dimension(:), optional :: chunk_size  !< (:) instead of size(dims) due to intel fortran quirk
 logical, intent(in), optional :: compact
 end subroutine hdf_create_user
 
@@ -141,7 +143,7 @@ integer(HID_T), intent(in) :: dtype
 integer(HSIZE_T), intent(in) :: dims(:)
 integer(HID_T), intent(out) :: filespace_id, dset_id
 integer(HID_T), intent(out), optional :: dtype_id
-integer, intent(in), dimension(size(dims)), optional :: chunk_size, istart, iend, stride
+integer, intent(in), dimension(:), optional :: chunk_size, istart, iend, stride
 logical, intent(in), optional :: compact
 integer, intent(in), optional :: charlen !< length of character scalar
 !! keep istart, iend, stride for future slice shape check

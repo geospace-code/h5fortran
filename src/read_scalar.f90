@@ -15,7 +15,7 @@ module procedure h5read_scalar
 
 integer(HSIZE_T) :: dims(0)
 integer(SIZE_T) :: dsize
-integer(hid_t) :: dset_id, type_id, space_id
+integer(HID_T) :: dset_id, type_id, space_id
 integer :: dclass, ier, i, pad_type
 
 logical :: vector_scalar, vstatus

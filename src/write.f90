@@ -170,6 +170,10 @@ integer :: ierr
 dcpl = H5P_DEFAULT_F
 
 if (present(chunk_size)) then
+  if(size(chunk_size) /= size(dims)) then
+    write(stderr,*) "ERROR:h5fortran:write:set_deflate: chunk_size length ", size(chunk_size), " /= dims length ", size(dims)
+    error stop
+  endif
   cs = chunk_size
   where (cs > dims) cs = dims
   if(self%debug) print *,'TRACE: user request chunk_size ',cs
