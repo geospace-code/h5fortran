@@ -126,7 +126,7 @@ if(dtype == H5T_NATIVE_CHARACTER) then
   if(ierr /= 0 ) error stop "h5fortran:h5tcopy:character: " // dname // " in " // self%filename
 
   call h5tset_size_f(type_id, int(charlen, SIZE_T), ierr)
-  if(check(ierr, self%filename)) error stop "h5fortran:h5tset_size:character: " // dname
+  if(ierr /= 0) error stop "h5fortran:h5tset_size:character: " // dname // " in " // self%filename
 
   dtype_id = type_id
 else
@@ -135,11 +135,11 @@ endif
 
 !> create dataset
 call h5dcreate_f(self%lid, dname, type_id=type_id, space_id=filespace_id, dset_id=dset_id, hdferr=ierr, dcpl_id=dcpl)
-if (ierr/=0) error stop "ERROR:h5fortran:hdf_create:h5dcreate: " // dname // " in " // self%filename
+if (ierr /= 0) error stop "ERROR:h5fortran:hdf_create:h5dcreate: " // dname // " in " // self%filename
 
 !> free resources
 call h5pclose_f(dcpl, ierr)
-if (ierr/=0) error stop "ERROR:h5fortran:h5pclose: " // dname // ' in ' // self%filename
+if (ierr /= 0) error stop "ERROR:h5fortran:h5pclose: " // dname // ' in ' // self%filename
 
 end procedure hdf_create
 

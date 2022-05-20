@@ -2,7 +2,9 @@ submodule (h5fortran:hdf5_read) read_scalar
 
 use, intrinsic :: iso_c_binding, only : c_null_char
 use h5lt, only : h5ltread_dataset_string_f
-use hdf5, only : h5dread_f, h5tis_variable_str_f, h5dvlen_get_max_len_f, h5dread_vl_f, h5dvlen_reclaim_f
+use hdf5, only : h5dread_f, h5dvlen_get_max_len_f, h5dread_vl_f, h5dvlen_reclaim_f,&
+h5tis_variable_str_f, h5tget_strpad_f, &
+H5T_STR_NULLTERM_F
 
 implicit none (type, external)
 
@@ -14,7 +16,7 @@ module procedure h5read_scalar
 integer(HSIZE_T) :: dims(0)
 integer(SIZE_T) :: dsize
 integer(hid_t) :: dset_id, type_id, space_id
-integer :: dclass, ier, i
+integer :: dclass, ier, i, pad_type
 
 logical :: vector_scalar, vstatus
 
@@ -107,8 +109,16 @@ elseif(dclass == H5T_STRING_F) then
       call h5sclose_f(space_id, ier)
       if(ier/=0) error stop "h5fortran:read:h5sclose " // dname // " in " // self%filename
     else
+      !! H5T_STR_NULLTERM  Null terminate (as C does).
+      !! H5T_STR_NULLPAD   Pad with zeros.
+      !! H5T_STR_SPACEPAD  Pad with spaces (as FORTRAN does).
+      call H5Tget_strpad_f(type_id, pad_type, ier)
+      if(ier/=0) error stop "h5fortran:read:h5tget_strpad " // dname // " in " // self%filename
+
       call H5Tget_size_f(type_id, dsize, ier) !< only for non-variable
       if(ier/=0) error stop "h5fortran:read:h5tget_size " // dname // " in " // self%filename
+
+      if(pad_type == H5T_STR_NULLTERM_F) dsize = dsize + 1  !< for the trailing C_NULL_CHAR
 
       if(dsize > len(value)) then
         write(stderr,'(a,i0,a3,i0,1x,a)') "h5fortran:read:string: buffer too small: ", dsize, " > ", len(value), &
