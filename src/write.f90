@@ -205,7 +205,9 @@ if(self%debug) print '(a,i0)','TRACE:set_deflate done, comp_lvl: ', self%comp_lv
 end subroutine set_deflate
 
 
-subroutine guess_chunk_size(dims, chunk_size)
+pure subroutine guess_chunk_size(dims, chunk_size)
+!! if array is too small to chunk, returns 0.
+
 !! based on https://github.com/h5py/h5py/blob/master/h5py/_hl/filters.py
 !! refer to https://support.hdfgroup.org/HDF5/Tutor/layout.html
 integer(HSIZE_T), intent(in) :: dims(:)
@@ -218,6 +220,7 @@ CHUNK_MAX = 1000000, &   !< upper limit: 1 Mbyte
 TYPESIZE = 8             !< bytes, assume real64 for simplicity
 
 integer(hsize_t) :: dset_size, target_size, chunk_bytes, i, j, ndims
+
 
 chunk_size = 0
 
@@ -248,7 +251,7 @@ do
   if (product(chunk_size) == 1) exit
   !! Element size larger than CHUNK_MAX
   j = int(modulo(i, ndims), hsize_t) + 1
-  if (j < 1 .or. j > ndims) error stop 'h5fortran: auto index bounds error'
+  if (j < 1 .or. j > ndims) error stop 'ERROR:h5fortran:guess_chunk_size: auto index bounds error'
   chunk_size(j) = ceiling(real(chunk_size(j)) / 2.0)
   i = i+1
 end do
