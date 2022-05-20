@@ -8,14 +8,23 @@ use, intrinsic :: iso_fortran_env, only : real32, real64, int32, int64
 
 implicit none (type, external)
 
-type(hdf5_file) :: h
-
-real(real64) :: r64, r1_64(2)
-real(real32) :: r32, r1_32(2)
-integer(int32) :: i32, i1_32(2)
-integer(int64) :: i64, i1_64(2)
-
 character(*), parameter :: fn = 'test_cast.h5'
+
+call test_cast_write(fn)
+print "(A)", "OK: cast write"
+
+call test_cast_read(fn)
+print "(A)", "OK: cast read"
+
+
+contains
+
+
+subroutine test_cast_write(fn)
+
+character(*), intent(in) :: fn
+
+type(hdf5_file) :: h
 
 call h%open(fn, action='w')
 
@@ -24,11 +33,27 @@ call h%write('/scalar_int32', 42_int32)
 call h%write('/scalar_int64', 42_int64)
 call h%write('/scalar_real32', 42._real32)
 call h%write('/scalar_real64', 42._real64)
-r1_32 = [1._real32, 32._real32]
-call h%write('/1d_real32', r1_32)
-i1_32 = [2_int32, 4_int32]
-call h%write('/1d_int32', i1_32)
+call h%write('/1d_real32', [1._real32, 32._real32])
+call h%write('/1d_int32', [2_int32, 4_int32])
 call h%write('/char', "hello")
+
+call h%close()
+
+end subroutine test_cast_write
+
+
+subroutine test_cast_read(fn)
+
+character(*), intent(in) :: fn
+
+type(hdf5_file) :: h
+
+real(real64) :: r64, r1_64(2)
+real(real32) :: r32
+integer(int32) :: i32
+integer(int64) :: i64, i1_64(2)
+
+call h%open(fn, action='r')
 
 !> %class method
 if (h%class("/scalar_int32") /= H5T_INTEGER_F) error stop "int32 not integer"
@@ -57,12 +82,14 @@ print *, 'PASSED: scalar cast on read'
 
 !> 1D vector read casting -- real to int and int to real
 call h%read('/1d_real32', r1_64)
-if (.not.all(r1_32 == r1_64)) error stop '1D cast real32 => real64'
+if (.not.all([1., 32.] == r1_64)) error stop '1D cast real32 => real64'
 call h%read('/1d_int32', i1_64)
-if (.not.all(i1_32 == i1_64)) error stop '1D cast int32 => int64'
+if (.not.all([2, 4] == i1_64)) error stop '1D cast int32 => int64'
 
 call h%close()
 
 print "(A)", "OK: cast"
+
+end subroutine test_cast_read
 
 end program

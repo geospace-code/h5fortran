@@ -65,13 +65,13 @@ call h%readattr('/x', 'note', attr_str)
 if (attr_str /= 'this is just a little number') error stop 'readattr value note'
 
 call h%readattr('/x', 'life', attr_int)
-if (attr_int(1)/=42) error stop 'readattr: int'
+if (attr_int(1) /= 42) error stop 'readattr: int'
 
 call h%readattr('/x', 'life_float', attr32)
-if (any(attr32/=[42._real32, 84._real32])) error stop 'readattr: real32'
+if (any(attr32 /= [42._real32, 84._real32])) error stop 'readattr: real32'
 
 call h%readattr('/x', 'life_double', attr64)
-if (attr64(1)/=42._real64) error stop 'readattr: real64'
+if (attr64(1) /= 42._real64) error stop 'readattr: real64'
 
 call h%close()
 
