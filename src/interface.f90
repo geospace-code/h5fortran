@@ -37,9 +37,13 @@ integer(HID_T) :: lid=0, &   !< location ID
                   gid, &    !< group ID
                   glid   !< group location ID
 
-integer :: comp_lvl = 0 !< compression level (1-9)  0: disable compression
 logical :: verbose=.true.
 logical :: debug=.false.
+logical :: fletcher32 = .false.
+logical :: shuffle = .false.
+
+integer :: comp_lvl = 0
+!! compression level (1-9)  0: disable compression
 
 logical :: use_mpi = .false. !< MPI or serial HDF5
 
@@ -476,14 +480,16 @@ end interface
 contains
 
 
-subroutine hdf_initialize(self, filename, action, comp_lvl, verbose, debug)
+subroutine hdf_initialize(self, filename, action, comp_lvl, shuffle, fletcher32, verbose, debug)
 !! Opens hdf5 file
 
 class(hdf5_file), intent(inout)    :: self
 character(*), intent(in) :: filename
 character(*), intent(in), optional :: action !< r, r+, rw, w, a
-integer, intent(in), optional      :: comp_lvl  !< 0: no compression. 1-9: ZLIB compression, higher is more compressior
-logical, intent(in), optional      :: verbose, debug
+integer, intent(in), optional :: comp_lvl  !< 0: no compression. 1-9: ZLIB compression, higher is more compressior
+logical, intent(in), optional :: shuffle
+logical, intent(in), optional :: fletcher32
+logical, intent(in), optional :: verbose, debug
 
 character(:), allocatable :: laction
 integer :: ier
@@ -493,11 +499,30 @@ if(self%is_open()) then
   return
 endif
 
+laction = 'rw'
+if(present(action)) laction = action
+
 self%filename = filename
 
-if (present(comp_lvl)) self%comp_lvl = comp_lvl
+if (present(comp_lvl) .and. laction /= "r") self%comp_lvl = comp_lvl
 if (present(verbose)) self%verbose = verbose
 if (present(debug)) self%debug = debug
+
+if(self%comp_lvl > 0) then
+  self%shuffle = .true.
+  self%fletcher32 = .true.
+endif
+
+if(present(shuffle)) self%shuffle = shuffle
+if(present(fletcher32)) self%fletcher32 = fletcher32
+
+if(self%comp_lvl < 0) then
+  write(stderr, '(a)') "h5fortran:open: compression level must be >= 0, setting comp_lvl = 0"
+  self%comp_lvl = 0
+elseif(self%comp_lvl > 9) then
+  write(stderr, '(a)') "h5fortran:open: compression level must be <= 9, setting comp_lvl = 9"
+  self%comp_lvl = 9
+endif
 
 !> Initialize FORTRAN interface.
 call h5open_f(ier)
@@ -509,9 +534,6 @@ else
   call h5eset_auto_f(0, ier)
 endif
 if (check(ier, 'ERROR:h5fortran: HDF5 library set traceback')) error stop
-
-laction = 'rw'
-if(present(action)) laction = action
 
 select case(laction)
 case('r')
