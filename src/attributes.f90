@@ -14,7 +14,7 @@ module procedure readattr_char
 integer :: ier
 character(len(attrval)) :: buf
 
-if(.not.self%is_open) error stop 'h5fortran:readattr: file handle is not open'
+if(.not.self%is_open()) error stop 'h5fortran:readattr: file handle is not open'
 
 call h5ltget_attribute_string_f(self%lid, dname, attr, buf, ier)
 attrval = buf
@@ -28,7 +28,7 @@ module procedure readattr_num
 !! NOTE: HDF5 has 1D vector attributes for integer, float and double.
 integer :: ier
 
-if(.not.self%is_open) error stop 'h5fortran:readattr: file handle is not open'
+if(.not.self%is_open()) error stop 'h5fortran:readattr: file handle is not open'
 
 call attr_shape_check(self, dname, attr, size(attrval), ier)
 
@@ -55,7 +55,7 @@ module procedure writeattr_char
 
 integer :: ier
 
-if(.not.self%is_open) error stop 'h5fortran:writeattr: file handle is not open'
+if(.not.self%is_open()) error stop 'h5fortran:writeattr: file handle is not open'
 
 call h5ltset_attribute_string_f(self%lid, dname, attr, attrval, ier)
 
@@ -69,7 +69,7 @@ module procedure writeattr_num
 integer :: ier
 integer(size_t) :: dsize
 
-if(.not.self%is_open) error stop 'h5fortran:writeattr: file handle is not open'
+if(.not.self%is_open()) error stop 'h5fortran:writeattr: file handle is not open'
 
 dsize = size(attrval)
 
@@ -143,7 +143,7 @@ integer :: arank, atype
 integer(size_t) :: attr_bytes
 integer(hsize_t) :: adims(1)
 
-if(.not.self%is_open) error stop 'h5fortran:attr_shape: file handle is not open'
+if(.not.self%is_open()) error stop 'h5fortran:attr_shape: file handle is not open'
 
 if (.not.self%exist(dname)) then
   write(stderr,*) 'ERROR:h5fortran ' // dname // ' attribute ' // attr // ' does not exist in ' // self%filename

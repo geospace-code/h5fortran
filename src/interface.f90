@@ -13,6 +13,7 @@ use hdf5, only : HID_T, SIZE_T, HSIZE_T, H5F_ACC_RDONLY_F, H5F_ACC_RDWR_F, H5F_A
   h5dopen_f, h5dclose_f, h5dget_space_f, &
   h5gcreate_f, h5gclose_f, &
   h5fopen_f, h5fcreate_f, h5fclose_f, h5fis_hdf5_f, &
+  h5iis_valid_f, &
   h5lexists_f, &
   h5sclose_f, h5sselect_hyperslab_f, h5screate_simple_f, &
   h5get_libversion_f, h5eset_auto_f, h5fflush_f, &
@@ -39,23 +40,33 @@ integer(HID_T) :: lid=0, &   !< location ID
 integer :: comp_lvl = 0 !< compression level (1-9)  0: disable compression
 logical :: verbose=.true.
 logical :: debug=.false.
-logical :: is_open = .false.
 
 logical :: use_mpi = .false. !< MPI or serial HDF5
 
 
 contains
 !> define methods (procedures) that don't need generic procedure
-procedure, public :: open => hdf_initialize, close => hdf_finalize, &
-  write_group, create => hdf_create_user, &
-  open_group => hdf_open_group, close_group => hdf_close_group, &
-  flush => hdf_flush, &
-  ndim => hdf_get_ndim, ndims => hdf_get_ndim, &
-  shape => hdf_get_shape, layout => hdf_get_layout, chunks => hdf_get_chunk, &
-  class => get_class, dtype => get_native_dtype, &
-  exist => hdf_check_exist, exists => hdf_check_exist, &
-  is_contig => hdf_is_contig, is_chunked => hdf_is_chunked, is_compact => hdf_is_compact, &
-  softlink => create_softlink
+procedure, public :: open => hdf_initialize
+procedure, public :: close => hdf_finalize
+procedure, public :: write_group
+procedure, public :: create => hdf_create_user
+procedure, public :: open_group => hdf_open_group
+procedure, public :: close_group => hdf_close_group
+procedure, public :: flush => hdf_flush
+procedure, public :: ndim => hdf_get_ndim
+procedure, public :: ndims => hdf_get_ndim
+procedure, public :: shape => hdf_get_shape
+procedure, public :: layout => hdf_get_layout
+procedure, public :: chunks => hdf_get_chunk
+procedure, public :: class => get_class
+procedure, public :: dtype => get_native_dtype
+procedure, public :: exist => hdf_check_exist
+procedure, public :: exists => hdf_check_exist
+procedure, public :: is_contig => hdf_is_contig
+procedure, public :: is_chunked => hdf_is_chunked
+procedure, public :: is_compact => hdf_is_compact
+procedure, public :: softlink => create_softlink
+procedure, public :: is_open
 
 !> below are procedure that need generic mapping (type or rank agnostic)
 
@@ -477,7 +488,7 @@ logical, intent(in), optional      :: verbose, debug
 character(:), allocatable :: laction
 integer :: ier
 
-if(self%is_open) then
+if(self%is_open()) then
   write(stderr,*) 'h5fortran:open: file handle already open: '//self%filename
   return
 endif
@@ -523,8 +534,6 @@ end select
 
 if (check(ier, filename)) error stop
 
-self%is_open = .true.
-
 end subroutine hdf_initialize
 
 
@@ -542,7 +551,7 @@ logical, intent(in), optional :: close_hdf5_interface
 
 integer :: ier
 
-if (.not. self%is_open) then
+if (.not. self%is_open()) then
   write(stderr,*) 'WARNING:h5fortran:close: file handle is already closed: '// self%filename
   return
 endif
@@ -560,9 +569,24 @@ endif
 !> sentinel lid
 self%lid = 0
 
-self%is_open = .false.
-
 end subroutine hdf_finalize
+
+
+logical function is_open(self)
+!! check if file handle is open
+
+class(hdf5_file), intent(in) :: self
+
+! integer :: hid_type
+integer :: ierr
+
+call h5iis_valid_f(self%lid, is_open, ierr)
+if(ierr /= 0) error stop "h5fortran:is_open:h5iis_valid: " // self%filename
+
+! call h5iget_type_f(self%file_id, hid_type, ierr)
+! if(ierr /= 0 .or. hid_type /= H5I_FILE_F) is_open = .false.
+
+end function is_open
 
 
 subroutine destructor(self)
@@ -570,7 +594,7 @@ subroutine destructor(self)
 
 type(hdf5_file), intent(inout) :: self
 
-if (.not. self%is_open) return
+if (.not. self%is_open()) return
 
 print *, "auto-closing " // self%filename
 
@@ -612,7 +636,7 @@ subroutine hdf5_close()
 integer :: ier
 
 call h5close_f(ier)
-if (check(ier, 'ERROR: HDF5 library close')) error stop
+if (ier /= 0) error stop 'ERROR: h5fortran:h5close: HDF5 library close'
 
 end subroutine hdf5_close
 
@@ -665,7 +689,7 @@ integer :: ier
 integer :: sp, ep, sl
 logical :: gexist
 
-if(.not.self%is_open) error stop 'h5fortran:write_group: file handle is not open'
+if(.not.self%is_open()) error stop 'h5fortran:write_group: file handle is not open'
 
 sl = len(gname)
 sp = 1
@@ -727,7 +751,7 @@ integer, intent(in), dimension(size(i0)), optional :: i2
 integer(HSIZE_T), dimension(size(i0)) :: istart, iend, stride, mem_dims
 integer :: ierr
 
-if(.not.self%is_open) error stop 'h5fortran:slice: file handle is not open'
+if(.not.self%is_open()) error stop 'h5fortran:slice: file handle is not open'
 
 istart = int(i0, HSIZE_T)
 iend = int(i1, HSIZE_T)
@@ -780,7 +804,7 @@ integer :: ierr, drank, type_class
 
 if(present(vector_scalar)) vector_scalar = .false.
 
-if(.not.self%is_open) error stop 'h5fortran:rank_check: file handle is not open'
+if(.not.self%is_open()) error stop 'h5fortran:rank_check: file handle is not open'
 
 if (.not.self%exist(dname)) error stop 'ERROR: ' // dname // ' does not exist in ' // self%filename
 

@@ -38,7 +38,7 @@ if(dtype == H5T_NATIVE_CHARACTER) then
   if(.not. present(dtype_id)) error stop "h5fortran:hdf_create: character type must specify dtype_id"
 endif
 
-if(.not.self%is_open) error stop 'h5fortran:write: file handle is not open: ' // self%filename
+if(.not.self%is_open()) error stop 'h5fortran:write: file handle is not open: ' // self%filename
 
 call h5ltpath_valid_f(self%lid, dname, .true., exists, ierr)
 !! h5lexists_f can false error with groups--just use h5ltpath_valid
@@ -251,7 +251,7 @@ module procedure hdf_open_group
 
 integer :: ier
 
-if(.not.self%is_open) error stop 'h5fortran:open_group: file handle is not open: ' // self%filename
+if(.not.self%is_open()) error stop 'h5fortran:open_group: file handle is not open: ' // self%filename
 
 call h5gopen_f(self%lid, gname, self%gid, ier)
 if (check(ier, self%filename, gname)) error stop
@@ -266,7 +266,7 @@ module procedure hdf_close_group
 
 integer :: ier
 
-if(.not.self%is_open) error stop 'h5fortran:close_group: file handle is not open: ' // self%filename
+if(.not.self%is_open()) error stop 'h5fortran:close_group: file handle is not open: ' // self%filename
 
 call h5gclose_f(self%gid, ier)
 if (check(ier, self%filename)) error stop

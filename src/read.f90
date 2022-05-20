@@ -115,7 +115,7 @@ module procedure hdf_get_ndim
 !! get rank or "ndims"
 integer :: ier
 
-if(.not.self%is_open) error stop 'h5fortran:read: file handle is not open'
+if(.not.self%is_open()) error stop 'h5fortran:read: file handle is not open'
 
 drank = -1
 
@@ -151,7 +151,7 @@ module procedure hdf_get_chunk
 integer :: ierr, drank
 integer(HID_T) :: pid, dset_id
 
-if(.not.self%is_open) error stop 'h5fortran:read: file handle is not open'
+if(.not.self%is_open()) error stop 'h5fortran:read: file handle is not open'
 
 chunk_size = -1
 if (.not.self%exist(dname)) then
@@ -186,7 +186,7 @@ module procedure hdf_get_layout
 integer(HID_T) :: pid, dset_id
 integer :: ierr
 
-if(.not.self%is_open) error stop 'h5fortran:read: file handle is not open'
+if(.not.self%is_open()) error stop 'h5fortran:read: file handle is not open'
 
 layout = -1
 
@@ -211,7 +211,7 @@ module procedure hdf_check_exist
 
 integer :: ierr
 
-if(.not.self%is_open) error stop 'h5fortran:exist: file handle is not open'
+if(.not.self%is_open()) error stop 'h5fortran:exist: file handle is not open'
 
 call h5ltpath_valid_f(self%lid, dname, .true., hdf_check_exist, ierr)
 !! h5lexists_f can false error with groups--just use h5ltpath_valid

@@ -8,16 +8,17 @@ implicit none (type, external)
 call test_is_hdf5()
 print *, 'OK: is_hdf5'
 
-call test_exist()
+call test_exist('exist.h5')
 print *, 'OK: exist'
 
-call test_softlink()
+call test_softlink('soft.h5')
 print *, "OK: softlink"
 
 call test_multifiles()
 print *, 'OK: multiple files open at once'
 
 contains
+
 
 subroutine test_is_hdf5()
 integer :: i
@@ -33,9 +34,11 @@ if(is_hdf5('not_hdf5.h5')) error stop 'text files are not hdf5'
 end subroutine test_is_hdf5
 
 
-subroutine test_exist()
+subroutine test_exist(fn)
+
 type(hdf5_file) :: h
-character(*), parameter :: fn = 'exist.h5'
+
+character(*), intent(in) :: fn
 
 call h5write(fn, '/x', 42)
 if(.not.is_hdf5(fn)) error stop 'file does not exist'
@@ -47,7 +50,7 @@ if (h%exist('/A')) error stop 'variable /A should not exist in ' // h%filename
 
 call h%close()
 
-if(h%is_open) error stop 'file is closed'
+if(h%is_open()) error stop 'file is closed'
 
 if (.not. h5exist(fn, '/x')) error stop 'x exists'
 if (h5exist(fn, '/A')) error stop 'A not exist'
@@ -55,9 +58,11 @@ if (h5exist(fn, '/A')) error stop 'A not exist'
 end subroutine test_exist
 
 
-subroutine test_softlink()
+subroutine test_softlink(fn)
+
 type(hdf5_file) :: h
-character(*), parameter :: fn = 'soft.h5'
+character(*), intent(in) :: fn
+
 integer :: y
 
 call h%open(fn, action='w')
@@ -90,13 +95,13 @@ type(hdf5_file) :: f,g,h
 
 call f%open(filename='A.h5', action='w')
 call g%open(filename='B.h5', action='w')
-if (h%is_open) error stop 'is_open not isolated at constructor'
+if (h%is_open()) error stop 'is_open() not isolated at constructor'
 call h%open(filename='C.h5', action='w')
 
 call f%flush()
 
 call f%close()
-if (.not.g%is_open .or. .not. h%is_open) error stop 'is_open not isolated at destructor'
+if (.not.g%is_open() .or. .not. h%is_open()) error stop 'is_open() not isolated at destructor'
 call g%close()
 call h%close()
 
