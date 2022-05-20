@@ -8,9 +8,10 @@ implicit none (type, external)
 
 contains
 
+
 module procedure h5read_scalar
 
-integer(HSIZE_T) :: dims(rank(value))
+integer(HSIZE_T) :: dims(0)
 integer(SIZE_T) :: dsize
 integer(hid_t) :: dset_id, type_id, space_id
 integer :: dclass, ier, i
@@ -140,7 +141,7 @@ end if
 if(ier/=0) error stop 'h5fortran:reader: reading ' // dname // ' from ' // self%filename
 
 call h5dclose_f(dset_id, ier)
-if (ier/=0) error stop 'h5fortran:reader: error closing dataset ' // dname // ' in ' // self%filename
+if(ier /= 0) error stop "ERROR:h5fortran:reader: closing dataset: " // dname // " in " // self%filename
 
 
 end procedure h5read_scalar
