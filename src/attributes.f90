@@ -17,9 +17,9 @@ character(len(attrval)) :: buf
 if(.not.self%is_open()) error stop 'h5fortran:readattr: file handle is not open'
 
 call h5ltget_attribute_string_f(self%lid, dname, attr, buf, ier)
-attrval = buf
+if (ier /= 0) error stop "ERROR:h5fortran:readattr_char: problem reading attr of " // dname // " in " // self%filename
 
-if (check(ier, self%filename, dname)) error stop
+attrval = buf
 
 end procedure readattr_char
 
@@ -30,9 +30,8 @@ integer :: ier
 
 if(.not.self%is_open()) error stop 'h5fortran:readattr: file handle is not open'
 
-call attr_shape_check(self, dname, attr, size(attrval), ier)
+call attr_shape_check(self, dname, attr, size(attrval))
 
-if(ier==0) then
 select type(attrval)
 type is (real(real32))
   call h5ltget_attribute_float_f(self%lid, dname, attr, attrval, ier)
@@ -41,11 +40,10 @@ type is (real(real64))
 type is (integer(int32))
   call h5ltget_attribute_int_f(self%lid, dname, attr, attrval, ier)
 class default
-  ier = 6
+  error stop "ERROR:h5fortran:readattr_num: unknown dataset type for " // dname // " in " // self%filename
 end select
-endif
 
-if (check(ier, self%filename, dname)) error stop
+if (ier /= 0) error stop "ERROR:h5fortran:readattr_num: " // dname // " in " // self%filename
 
 end procedure readattr_num
 
@@ -55,11 +53,11 @@ module procedure writeattr_char
 
 integer :: ier
 
-if(.not.self%is_open()) error stop 'h5fortran:writeattr: file handle is not open'
+if(.not.self%is_open()) error stop 'ERROR:h5fortran:writeattr: file handle is not open'
 
 call h5ltset_attribute_string_f(self%lid, dname, attr, attrval, ier)
 
-if (check(ier, self%filename, dname)) error stop
+if (ier /= 0) error stop "ERROR:h5fortran:writeattr_char: " // dname // " in " // self%filename
 
 end procedure writeattr_char
 
@@ -69,7 +67,7 @@ module procedure writeattr_num
 integer :: ier
 integer(size_t) :: dsize
 
-if(.not.self%is_open()) error stop 'h5fortran:writeattr: file handle is not open'
+if(.not.self%is_open()) error stop 'ERROR:h5fortran:writeattr: file handle is not open'
 
 dsize = size(attrval)
 
@@ -81,10 +79,10 @@ type is (real(real64))
 type is (integer(int32))
   call h5ltset_attribute_int_f(self%lid, dname, attr, attrval, dsize, ier)
 class default
-  ier = 6
+  error stop "ERROR:h5fortran:writeattr_num: unknown dataset type for " // dname // " in " // self%filename
 end select
 
-if (check(ier, self%filename, dname)) error stop
+if (ier /= 0) error stop "ERROR:h5fortran:writeattr_num: " // dname // " in " // self%filename
 
 end procedure writeattr_num
 
@@ -133,44 +131,39 @@ call h%close()
 end procedure readattr_num_lt
 
 
-subroutine attr_shape_check(self, dname, attr, asize, ierr)
+subroutine attr_shape_check(self, dname, attr, asize)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname, attr
 integer, intent(in) :: asize
-integer, intent(out) :: ierr
 
-integer :: arank, atype
+integer :: arank, atype, ierr
 integer(size_t) :: attr_bytes
 integer(hsize_t) :: adims(1)
 
-if(.not.self%is_open()) error stop 'h5fortran:attr_shape: file handle is not open'
+if(.not. self%is_open()) error stop 'h5fortran:attr_shape: file handle is not open'
 
-if (.not.self%exist(dname)) then
-  write(stderr,*) 'ERROR:h5fortran ' // dname // ' attribute ' // attr // ' does not exist in ' // self%filename
-  ierr = -1
-  return
+if (.not. self%exist(dname)) then
+  error stop 'ERROR:h5fortran ' // dname // ' attribute ' // attr // ' does not exist in ' // self%filename
 endif
 
 !> check for matching rank, else bad reads can occur--doesn't always crash without this check
 call h5ltget_attribute_ndims_f(self%lid, dname, attr, arank, ierr)
-if (check(ierr, 'ERROR:h5fortran:get_attribute_ndims: ' // dname // ' ' // self%filename)) return
+if (ierr /= 0) error stop 'ERROR:h5fortran:get_attribute_ndims: ' // dname // ' ' // self%filename
 
 if (arank /= 1) then
   write(stderr,'(A,I6,A,I6)') 'ERROR: attribute rank mismatch ' // dname // ' attribute "' // attr // '" = ', &
     arank,'  should be 1'
-  ierr = -1
-  return
+  error stop
 endif
 
 !> check for matching size, else bad reads can occur.
 
 call h5ltget_attribute_info_f(self%lid, dname, attr, adims, atype, attr_bytes, ierr)
-if (check(ierr, 'ERROR:h5fortran: get_attribute_info' // dname // ' read ' // self%filename)) return
+if (ierr /= 0) error stop 'ERROR:h5fortran: get_attribute_info' // dname // ' read ' // self%filename
 
 if(.not. all(asize == adims)) then
   write(stderr,*) 'ERROR:h5fortran: shape mismatch ' // dname // ' attribute "' // attr //'" = ', adims,'  shape =', asize
-  ierr = -1
-  return
+  error stop
 endif
 
 end subroutine attr_shape_check
