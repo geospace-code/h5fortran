@@ -55,7 +55,7 @@ get_deflate = .false.
 Naux = size(Aux, kind=SIZE_T)
 
 if(.not.self%exist(dname)) error stop "ERROR:h5fortran:get_deflate: " // dname // " does not exist: " // self%filename
-call h5dopen_f(self%lid, dname, dset_id, ierr)
+call h5dopen_f(self%file_id, dname, dset_id, ierr)
 if (ierr/=0) error stop "ERROR:h5fortran:get_deflate:h5dopen: " // dname // " in " // self%filename
 
 call h5dget_create_plist_f(dset_id, dcpl, ierr)
@@ -111,7 +111,7 @@ if(present(ds_id)) then
 else
   if(.not.self%exist(dname)) error stop "ERROR:h5fortran:get_dset_class: " // dname // " does not exist: " // self%filename
 
-  call h5dopen_f(self%lid, dname, dset_id, ierr)
+  call h5dopen_f(self%file_id, dname, dset_id, ierr)
   if(ierr/=0) error stop 'ERROR:h5fortran:get_class: ' // dname // ' from ' // self%filename
 endif
 
@@ -204,7 +204,7 @@ if(.not.self%is_open()) error stop 'ERROR:h5fortran:read: file handle is not ope
 drank = -1
 
 if (self%exist(dname)) then
-  call h5ltget_dataset_ndims_f(self%lid, dname, drank, ier)
+  call h5ltget_dataset_ndims_f(self%file_id, dname, drank, ier)
 else
   write(stderr, '(a)') 'ERROR:get_ndim: ' // dname // ' does not exist in ' // self%filename
 endif
@@ -219,11 +219,11 @@ integer :: type_class, drank, ier
 
 if(.not. self%exist(dname)) error stop 'h5fortran:get_shape: ' // dname // ' does not exist in ' // self%filename
 
-call h5ltget_dataset_ndims_f(self%lid, dname, drank, ier)
+call h5ltget_dataset_ndims_f(self%file_id, dname, drank, ier)
 if (ier /= 0) error stop "h5fortran:get_shape: could not get rank of " // dname // " in " // self%filename
 
 allocate(dims(drank))
-call h5ltget_dataset_info_f(self%lid, dname, dims=dims, &
+call h5ltget_dataset_info_f(self%file_id, dname, dims=dims, &
   type_class=type_class, type_size=type_size, errcode=ier)
 if (ier /= 0) error stop "h5fortran:get_shape: could not get info: " // dname // ' from ' // self%filename
 
@@ -242,10 +242,10 @@ if (.not.self%is_open()) error stop 'ERROR:h5fortran:read: file handle is not op
 if (.not.self%exist(dname)) error stop 'ERROR:h5fortran:get_chunk: ' // dname // ' does not exist in ' // self%filename
 
 if(self%is_chunked(dname)) then
-  call h5ltget_dataset_ndims_f(self%lid, dname, drank, ierr)
+  call h5ltget_dataset_ndims_f(self%file_id, dname, drank, ierr)
   if (ierr /= 0) error stop 'ERROR:h5fortran:get_chunk: get rank ' // dname // ' ' // self%filename
 
-  call h5dopen_f(self%lid, dname, dset_id, ierr)
+  call h5dopen_f(self%file_id, dname, dset_id, ierr)
   if (ierr /= 0) error stop 'ERROR:h5fortran:get_chunk: open dataset ' // dname // ' ' // self%filename
 
   call h5dget_create_plist_f(dset_id, dapl, ierr)
@@ -285,7 +285,7 @@ layout = -1
 
 if (.not.self%exist(dname)) error stop 'ERROR:h5fortran:get_layout: ' // dname // ' does not exist in ' // self%filename
 
-call h5dopen_f(self%lid, dname, dset_id, ierr)
+call h5dopen_f(self%file_id, dname, dset_id, ierr)
 if (ierr /= 0) error stop 'ERROR:h5fortran:get_layout: open dataset ' // dname // ' ' // self%filename
 
 call h5dget_create_plist_f(dset_id, dapl, ierr)
@@ -309,7 +309,7 @@ integer :: ierr
 
 if(.not.self%is_open()) error stop 'ERROR:h5fortran:exist: file handle is not open:'  // self%filename
 
-call h5ltpath_valid_f(self%lid, dname, .true., hdf_check_exist, ierr)
+call h5ltpath_valid_f(self%file_id, dname, .true., hdf_check_exist, ierr)
 !! h5lexists_f can false error with groups--just use h5ltpath_valid
 
 if (ierr/=0) error stop 'ERROR:h5fortran:check_exist: could not determine status of ' // dname // ' in ' // self%filename

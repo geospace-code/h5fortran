@@ -24,10 +24,8 @@ public :: H5T_INTEGER_F, H5T_FLOAT_F, H5T_STRING_F
 !> main type
 type :: hdf5_file
 
-character(:),allocatable  :: filename
-integer(HID_T) :: lid=0, &   !< location ID
-                  gid, &    !< group ID
-                  glid   !< group location ID
+character(:), allocatable :: filename
+integer(HID_T) :: file_id
 
 logical :: verbose=.true.
 logical :: debug=.false.

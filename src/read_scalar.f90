@@ -46,7 +46,7 @@ if(vector_scalar) then
   return
 endif
 
-call h5dopen_f(self%lid, dname, dset_id, ier)
+call h5dopen_f(self%file_id, dname, dset_id, ier)
 if(ier/=0) error stop 'h5fortran:reader: ' // dname // ' could not be opened in ' // self%filename
 
 call get_dset_class(self, dname, dclass, dset_id)
@@ -124,7 +124,7 @@ elseif(dclass == H5T_STRING_F) then
       block
       character(dsize) :: buf_char
 
-      call h5ltread_dataset_string_f(self%lid, dname, buf_char, ier)
+      call h5ltread_dataset_string_f(self%file_id, dname, buf_char, ier)
       if(ier/=0) error stop "h5fortran:read:h5l5read_dataset_string " // dname // " in " // self%filename
 
       i = index(buf_char, c_null_char) - 1

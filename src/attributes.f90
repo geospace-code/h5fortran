@@ -16,7 +16,7 @@ character(len(attrval)) :: buf
 
 if(.not.self%is_open()) error stop 'h5fortran:readattr: file handle is not open'
 
-call h5ltget_attribute_string_f(self%lid, dname, attr, buf, ier)
+call h5ltget_attribute_string_f(self%file_id, dname, attr, buf, ier)
 if (ier /= 0) error stop "ERROR:h5fortran:readattr_char: problem reading attr of " // dname // " in " // self%filename
 
 attrval = buf
@@ -34,11 +34,11 @@ call attr_shape_check(self, dname, attr, size(attrval))
 
 select type(attrval)
 type is (real(real32))
-  call h5ltget_attribute_float_f(self%lid, dname, attr, attrval, ier)
+  call h5ltget_attribute_float_f(self%file_id, dname, attr, attrval, ier)
 type is (real(real64))
-  call h5ltget_attribute_double_f(self%lid, dname, attr, attrval, ier)
+  call h5ltget_attribute_double_f(self%file_id, dname, attr, attrval, ier)
 type is (integer(int32))
-  call h5ltget_attribute_int_f(self%lid, dname, attr, attrval, ier)
+  call h5ltget_attribute_int_f(self%file_id, dname, attr, attrval, ier)
 class default
   error stop "ERROR:h5fortran:readattr_num: unknown dataset type for " // dname // " in " // self%filename
 end select
@@ -55,7 +55,7 @@ integer :: ier
 
 if(.not.self%is_open()) error stop 'ERROR:h5fortran:writeattr: file handle is not open'
 
-call h5ltset_attribute_string_f(self%lid, dname, attr, attrval, ier)
+call h5ltset_attribute_string_f(self%file_id, dname, attr, attrval, ier)
 
 if (ier /= 0) error stop "ERROR:h5fortran:writeattr_char: " // dname // " in " // self%filename
 
@@ -73,11 +73,11 @@ dsize = size(attrval)
 
 select type(attrval)
 type is (real(real32))
-  call h5ltset_attribute_float_f(self%lid, dname, attr, attrval, dsize, ier)
+  call h5ltset_attribute_float_f(self%file_id, dname, attr, attrval, dsize, ier)
 type is (real(real64))
-  call h5ltset_attribute_double_f(self%lid, dname, attr, attrval, dsize, ier)
+  call h5ltset_attribute_double_f(self%file_id, dname, attr, attrval, dsize, ier)
 type is (integer(int32))
-  call h5ltset_attribute_int_f(self%lid, dname, attr, attrval, dsize, ier)
+  call h5ltset_attribute_int_f(self%file_id, dname, attr, attrval, dsize, ier)
 class default
   error stop "ERROR:h5fortran:writeattr_num: unknown dataset type for " // dname // " in " // self%filename
 end select
@@ -147,7 +147,7 @@ if (.not. self%exist(dname)) then
 endif
 
 !> check for matching rank, else bad reads can occur--doesn't always crash without this check
-call h5ltget_attribute_ndims_f(self%lid, dname, attr, arank, ierr)
+call h5ltget_attribute_ndims_f(self%file_id, dname, attr, arank, ierr)
 if (ierr /= 0) error stop 'ERROR:h5fortran:get_attribute_ndims: ' // dname // ' ' // self%filename
 
 if (arank /= 1) then
@@ -158,7 +158,7 @@ endif
 
 !> check for matching size, else bad reads can occur.
 
-call h5ltget_attribute_info_f(self%lid, dname, attr, adims, atype, attr_bytes, ierr)
+call h5ltget_attribute_info_f(self%file_id, dname, attr, adims, atype, attr_bytes, ierr)
 if (ierr /= 0) error stop 'ERROR:h5fortran: get_attribute_info' // dname // ' read ' // self%filename
 
 if(.not. all(asize == adims)) then
