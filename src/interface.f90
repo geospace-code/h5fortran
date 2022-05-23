@@ -211,9 +211,6 @@ character(*), intent(in) :: filename, dname
 class(*), intent(out) :: value
 end subroutine lt0read
 
-!! NOTE: intent(inout) for non-scalar read is avoid reallocation and
-!! segfault with allocatable arrays in user programs,
-!! even when the array was already allocated before the h5fortran interface was called.
 module subroutine lt1read(filename, dname, value)
 character(*), intent(in) :: filename, dname
 class(*), intent(inout) :: value(:)
@@ -252,14 +249,14 @@ end interface
 
 interface !< writer.f90
 module subroutine h5write_scalar(self, dname, value, compact)
-class(hdf5_file), intent(inout) :: self
+class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value
 logical, intent(in), optional :: compact
 end subroutine h5write_scalar
 
 module subroutine h5write_1d(self, dname, value, chunk_size, istart, iend, stride, compact, dset_dims)
-class(hdf5_file), intent(inout) :: self
+class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:)
 integer, intent(in), dimension(1), optional :: chunk_size, istart, iend, stride, dset_dims
@@ -267,7 +264,7 @@ logical, intent(in), optional :: compact
 end subroutine h5write_1d
 
 module subroutine h5write_2d(self, dname, value, chunk_size, istart, iend, stride, compact, dset_dims)
-class(hdf5_file), intent(inout) :: self
+class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:)
 integer, intent(in), dimension(2), optional :: chunk_size, istart, iend, stride, dset_dims
@@ -275,7 +272,7 @@ logical, intent(in), optional :: compact
 end subroutine h5write_2d
 
 module subroutine h5write_3d(self, dname, value, chunk_size, istart, iend, stride, compact, dset_dims)
-class(hdf5_file), intent(inout) :: self
+class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:)
 integer, intent(in), dimension(3), optional :: chunk_size, istart, iend, stride, dset_dims
@@ -283,7 +280,7 @@ logical, intent(in), optional :: compact
 end subroutine h5write_3d
 
 module subroutine h5write_4d(self, dname, value, chunk_size, istart, iend, stride, compact, dset_dims)
-class(hdf5_file), intent(inout) :: self
+class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:)
 integer, intent(in), dimension(4), optional :: chunk_size, istart, iend, stride, dset_dims
@@ -291,7 +288,7 @@ logical, intent(in), optional :: compact
 end subroutine h5write_4d
 
 module subroutine h5write_5d(self, dname, value, chunk_size, istart, iend, stride, compact, dset_dims)
-class(hdf5_file), intent(inout) :: self
+class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:,:)
 integer, intent(in), dimension(5), optional :: chunk_size, istart, iend, stride, dset_dims
@@ -299,7 +296,7 @@ logical, intent(in), optional :: compact
 end subroutine h5write_5d
 
 module subroutine h5write_6d(self, dname, value, chunk_size, istart, iend, stride, compact, dset_dims)
-class(hdf5_file), intent(inout) :: self
+class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:,:,:)
 integer, intent(in), dimension(6), optional :: chunk_size, istart, iend, stride, dset_dims
@@ -307,7 +304,7 @@ logical, intent(in), optional :: compact
 end subroutine h5write_6d
 
 module subroutine h5write_7d(self,dname,value, chunk_size, istart, iend, stride, compact, dset_dims)
-class(hdf5_file), intent(inout) :: self
+class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:,:,:,:)
 integer, intent(in), dimension(7), optional :: chunk_size, istart, iend, stride, dset_dims
@@ -489,8 +486,13 @@ end interface
 interface !< utils.f90
 
 module subroutine h5open(self, filename, action, comp_lvl, shuffle, fletcher32, verbose, debug)
-!! Opens hdf5 file
-class(hdf5_file), intent(inout)    :: self
+!! open/create file
+!!
+!! PARAMETERS:
+!! ----------
+!! filename
+!! action: "r", "w", "rw"
+class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: filename
 character(*), intent(in), optional :: action !< r, r+, rw, w, a
 integer, intent(in), optional :: comp_lvl  !< 0: no compression. 1-9: ZLIB compression, higher is more compressior
