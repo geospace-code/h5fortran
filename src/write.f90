@@ -157,6 +157,43 @@ if (ierr /= 0) error stop 'ERROR:h5fortran:create_softlink: ' // link // ' in ' 
 end procedure create_softlink
 
 
+module procedure write_group
+
+integer(HID_T)  :: gid
+integer :: ier
+
+integer :: sp, ep, L
+logical :: gexist
+
+if(.not.self%is_open()) error stop 'ERROR:h5fortran:write_group: file handle is not open'
+
+L = len_trim(group_path)
+if(L < 2) return  !< not a new group
+
+sp = 1
+ep = 0
+
+grps: do
+  ep = index(group_path(sp+1:L), "/")
+  if (ep == 0) return
+
+  ! check subgroup exists
+  sp = sp + ep
+  call h5lexists_f(self%lid, group_path(:sp-1), gexist, ier)
+  if (ier /= 0) error stop "ERROR:h5fortran:write_group: check exists group " // group_path // " in " // self%filename
+
+  if(gexist) cycle grps
+
+  call h5gcreate_f(self%lid, group_path(:sp-1), gid, ier)
+  if (ier /= 0) error stop "ERROR:h5fortran:write_group: create group " // group_path // " in " // self%filename
+
+  call h5gclose_f(gid, ier)
+  if (ier /= 0) error stop "ERROR:h5fortran:write_group: close new group " // group_path // " in " // self%filename
+end do grps
+
+end procedure write_group
+
+
 subroutine set_deflate(self, dims, dcpl, chunk_size)
 class(hdf5_file), intent(in) :: self
 integer(HSIZE_T), intent(in) :: dims(:)
@@ -277,7 +314,8 @@ integer :: ier
 if(.not.self%is_open()) error stop 'h5fortran:open_group: file handle is not open: ' // self%filename
 
 call h5gopen_f(self%lid, gname, self%gid, ier)
-if (check(ier, self%filename, gname)) error stop
+if (ier /= 0) error stop "ERROR:h5fortran:open_group:h5gopen: could not open group " // gname // " in " // self%filename
+
 
 self%glid = self%lid
 self%lid  = self%gid
@@ -292,11 +330,22 @@ integer :: ier
 if(.not.self%is_open()) error stop 'h5fortran:close_group: file handle is not open: ' // self%filename
 
 call h5gclose_f(self%gid, ier)
-if (check(ier, self%filename)) error stop
+if (ier /= 0) error stop "ERROR:h5fortran:close_group:h5gclose: could not close group " // self%filename
 
 self%lid = self%glid
 
 end procedure hdf_close_group
+
+
+module procedure hdf_flush
+
+integer :: ierr
+
+call h5fflush_f(self%lid, H5F_SCOPE_GLOBAL_F, ierr)
+
+if (ierr /= 0) error stop 'ERROR:h5fortran:flush ' // self%filename
+
+end procedure hdf_flush
 
 
 end submodule write

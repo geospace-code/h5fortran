@@ -12,7 +12,7 @@ use hdf5, only : HID_T, SIZE_T, HSIZE_T, &
   H5F_SCOPE_GLOBAL_F, &
   H5P_DEFAULT_F, &
   h5open_f, h5close_f, &
-  h5fopen_f, h5fcreate_f, h5fclose_f, h5fis_hdf5_f, &
+  h5fopen_f, h5fcreate_f, h5fclose_f, h5fis_hdf5_f, h5fget_filesize_f, &
   h5fget_obj_count_f, h5fget_obj_ids_f, h5fget_name_f, &
   h5dopen_f, h5dclose_f, h5dget_space_f, &
   h5gcreate_f, h5gclose_f, &
@@ -26,7 +26,7 @@ use h5lt, only : h5ltget_dataset_ndims_f, h5ltget_dataset_info_f
 implicit none (type, external)
 private
 public :: hdf5_file, hdf5_close, h5write, h5read, h5exist, is_hdf5, h5write_attr, h5read_attr, hdf5version
-public :: check, hdf_shape_check, hdf_rank_check, hdf_get_slice
+public :: hdf_shape_check, hdf_rank_check, hdf_get_slice
 !! for submodules only
 public :: HSIZE_T, HID_T, H5T_NATIVE_DOUBLE, H5T_NATIVE_REAL, H5T_NATIVE_INTEGER, H5T_NATIVE_CHARACTER, H5T_STD_I64LE
 public :: H5T_INTEGER_F, H5T_FLOAT_F, H5T_STRING_F
@@ -62,6 +62,7 @@ procedure, public :: create => hdf_create_user
 procedure, public :: open_group => hdf_open_group
 procedure, public :: close_group => hdf_close_group
 procedure, public :: flush => hdf_flush
+procedure, public :: filesize => hdf_filesize
 procedure, public :: ndim => hdf_get_ndim
 procedure, public :: ndims => hdf_get_ndim
 procedure, public :: shape => hdf_get_shape
@@ -158,11 +159,22 @@ module subroutine hdf_close_group(self)
 class(hdf5_file), intent(inout) :: self
 end subroutine hdf_close_group
 
+module subroutine write_group(self, group_path)
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: group_path   !< full path to group
+end subroutine write_group
+
 module subroutine create_softlink(self, tgt, link)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: tgt, &  !< target path to link
                             link  !< soft link path to create
 end subroutine create_softlink
+
+module subroutine hdf_flush(self)
+!! request operating system flush data to disk.
+!! The operating system can do this when it desires, which might be a while.
+class(hdf5_file), intent(in) :: self
+end subroutine hdf_flush
 
 end interface
 
@@ -522,30 +534,30 @@ if(present(shuffle)) self%shuffle = shuffle
 if(present(fletcher32)) self%fletcher32 = fletcher32
 
 if(self%comp_lvl < 0) then
-  write(stderr, '(a)') "h5fortran:open: compression level must be >= 0, setting comp_lvl = 0"
+  write(stderr, '(a)') "NOTICE:h5fortran:open: compression level must be >= 0, setting comp_lvl = 0"
   self%comp_lvl = 0
 elseif(self%comp_lvl > 9) then
-  write(stderr, '(a)') "h5fortran:open: compression level must be <= 9, setting comp_lvl = 9"
+  write(stderr, '(a)') "NOTICE:h5fortran:open: compression level must be <= 9, setting comp_lvl = 9"
   self%comp_lvl = 9
 endif
 
 !> Initialize FORTRAN interface.
 call h5open_f(ier)
-if (ier /= 0) error stop 'h5fortran:open: HDF5 library initialize'
+if (ier /= 0) error stop 'ERROR:h5fortran:open: HDF5 library initialize'
 
 if(self%verbose) then
   call h5eset_auto_f(1, ier)
 else
   call h5eset_auto_f(0, ier)
 endif
-if (check(ier, 'ERROR:h5fortran: HDF5 library set traceback')) error stop
+if (ier /= 0) error stop 'ERROR:h5fortran:open: HDF5 library set traceback'
 
 select case(laction)
 case('r')
-  if(.not. is_hdf5(filename)) error stop "h5fortran:open: file does not exist: "//filename
+  if(.not. is_hdf5(filename)) error stop "ERROR:h5fortran:open: file does not exist: "//filename
   call h5fopen_f(filename, H5F_ACC_RDONLY_F, self%lid,ier)
 case('r+')
-  if(.not. is_hdf5(filename)) error stop "h5fortran:open: file does not exist: "//filename
+  if(.not. is_hdf5(filename)) error stop "ERROR:h5fortran:open: file does not exist: "//filename
   call h5fopen_f(filename, H5F_ACC_RDWR_F, self%lid, ier)
 case('rw', 'a')
   if(is_hdf5(filename)) then
@@ -556,10 +568,10 @@ case('rw', 'a')
 case ('w')
   call h5fcreate_f(filename, H5F_ACC_TRUNC_F, self%lid, ier)
 case default
-  error stop 'h5fortran: Unsupported action: ' // laction
+  error stop 'ERROR:h5fortran:open: Unsupported action: ' // laction
 end select
 
-if (check(ier, filename)) error stop
+if (ier /= 0) error stop "ERROR:h5fortran:open: HDF5 file open failed: "//filename
 
 end subroutine hdf_initialize
 
@@ -573,7 +585,7 @@ subroutine hdf_finalize(self, close_hdf5_interface)
 !! close_hdf5_interface is when you know you have exactly one HDF5 file in your
 !! application, if true it closes ALL files, even those invoked directly from HDF5.
 
-class(hdf5_file), intent(inout) :: self
+class(hdf5_file), intent(in) :: self
 logical, intent(in), optional :: close_hdf5_interface
 
 integer :: ierr, i
@@ -636,8 +648,6 @@ if (present(close_hdf5_interface)) then
     if (ierr /= 0) error stop 'ERROR:h5fortran:h5close: HDF5 library close'
   endif
 endif
-!> sentinel lid
-self%lid = 0
 
 end subroutine hdf_finalize
 
@@ -662,12 +672,11 @@ end function is_open
 subroutine destructor(self)
 !! Close file and handle if user forgets to do so
 
-type(hdf5_file), intent(inout) :: self
+type(hdf5_file), intent(in) :: self
 
 if (.not. self%is_open()) return
 
-print *, "auto-closing " // self%filename
-
+print '(a)', "auto-closing " // self%filename
 call self%close()
 
 end subroutine destructor
@@ -679,22 +688,9 @@ integer :: v(3), ierr
 
 !> get library version
 call h5get_libversion_f(v(1), v(2), v(3), ierr)
-if (check(ierr, 'ERROR:h5fortran: HDF5 library get version')) error stop
+if (ierr/=0) error stop 'ERROR:h5fortran: HDF5 library get version'
 
 end function hdf5version
-
-
-subroutine hdf_flush(self)
-!! request operating system flush data to disk.
-!! The operating system can do this when it desires, which might be a while.
-class(hdf5_file), intent(in) :: self
-integer :: ier
-
-call h5fflush_f(self%lid, H5F_SCOPE_GLOBAL_F, ier)
-
-if (check(ier, 'ERROR: HDF5 flush ' // self%filename)) error stop
-
-end subroutine hdf_flush
 
 
 subroutine hdf5_close()
@@ -746,66 +742,6 @@ if (ierr/=0) is_hdf5 = .false.
 !! sometimes h5fis_hdf5_f is .true. for missing file
 
 end function is_hdf5
-
-
-subroutine write_group(self, gname)
-
-class(hdf5_file), intent(in) :: self
-character(*), intent(in) :: gname    !< relative path to group
-
-integer(HID_T)  :: gid
-integer :: ier
-
-integer :: sp, ep, sl
-logical :: gexist
-
-if(.not.self%is_open()) error stop 'h5fortran:write_group: file handle is not open'
-
-sl = len(gname)
-sp = 1
-ep = 0
-
-do
-  ep = index(gname(sp+1:sl), "/")
-
-  ! no subgroup found
-  if (ep == 0) exit
-
-  ! check subgroup exists
-  sp = sp + ep
-  call h5lexists_f(self%lid, gname(1:sp-1), gexist, ier)
-  if (check(ier, self%filename, gname)) error stop
-
-  if(.not.gexist) then
-    call h5gcreate_f(self%lid, gname(1:sp-1), gid, ier)
-    if (check(ier, self%filename, gname)) error stop
-
-    call h5gclose_f(gid, ier)
-    if (check(ier, self%filename, gname)) error stop
-  endif
-end do
-
-end subroutine write_group
-
-
-logical function check(ierr, filename, dname)
-integer, intent(in) :: ierr
-character(*), intent(in), optional :: filename, dname
-
-character(:), allocatable :: fn, dn
-
-check = .false.
-if (ierr==0) return
-
-check = .true.
-fn = ""
-dn = ""
-if (present(filename)) fn = filename
-if (present(dname)) dn = dname
-
-write(stderr,*) 'h5fortran:ERROR: ' // fn // ':' // dn // ' error code ', ierr
-
-end function check
 
 
 subroutine hdf_get_slice(self, dname, dset_id, filespace_id, memspace_id, i0, i1, i2)
@@ -918,15 +854,29 @@ call hdf_rank_check(self, dname, size(dims))
 
 call h5ltget_dataset_info_f(self%lid, dname, dims=ddims, &
     type_class=type_class, type_size=type_size, errcode=ierr)
-if (ierr/=0) error stop 'h5fortran:shape_check: get_dataset_info ' // dname // ' read ' // self%filename
+if (ierr/=0) error stop 'ERROR:h5fortran:shape_check: get_dataset_info ' // dname // ' read ' // self%filename
 
 
 if(any(int(dims, int64) /= ddims)) then
-  write(stderr,*) 'h5fortran:shape_check: shape mismatch ' // dname // ' = ',ddims,'  variable shape =', dims
+  write(stderr,*) 'ERROR:h5fortran:shape_check: shape mismatch ' // dname // ' = ',ddims,'  variable shape =', dims
   error stop
 endif
 
 end subroutine hdf_shape_check
+
+
+integer(HSIZE_T) function hdf_filesize(self)
+!! returns the size of the HDF5 file in bytes
+class(hdf5_file), intent(in) :: self
+
+integer :: ierr
+
+if(.not. self%is_open()) error stop 'ERROR:h5fortran:filesize: file handle is not open: ' // self%filename
+
+call h5fget_filesize_f(self%lid, hdf_filesize, ierr)
+if(ierr/=0) error stop "ERROR:h5fortran: could not get file size " // self%filename
+
+end function hdf_filesize
 
 
 end module h5fortran
