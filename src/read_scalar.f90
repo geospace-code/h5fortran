@@ -115,8 +115,6 @@ elseif(dclass == H5T_STRING_F) then
       call H5Tget_size_f(type_id, dsize, ier) !< only for non-variable
       if(ier/=0) error stop "h5fortran:read:h5tget_size " // dname // " in " // self%filename
 
-      if(pad_type == H5T_STR_NULLTERM_F) dsize = dsize + 1  !< for the trailing C_NULL_CHAR
-
       if(dsize > len(value)) then
         write(stderr,'(a,i0,a3,i0,1x,a)') "h5fortran:read:string: buffer too small: ", dsize, " > ", len(value), &
             dname // " in " // self%filename
