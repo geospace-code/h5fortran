@@ -6,9 +6,10 @@ implicit none (type, external)
 
 contains
 
+
 module procedure h5write_scalar
 
-integer(HID_T)  :: file_space_id, dset_id, dtype_id
+integer(HID_T) :: file_space_id, dset_id, dtype_id
 integer(HSIZE_T) :: dims(0)
 integer :: ier
 

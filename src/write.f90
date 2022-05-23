@@ -1,5 +1,5 @@
 submodule (h5fortran) write
-!! This submodule is for writing HDF5 data via child submodules
+
 use hdf5, only: &
 h5fflush_f, &
 h5screate_f, h5sclose_f, h5screate_simple_f, &

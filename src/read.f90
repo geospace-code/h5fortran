@@ -1,5 +1,4 @@
 submodule (h5fortran) hdf5_read
-!! This submodule is for reading HDF5 via submodules
 
 use, intrinsic:: iso_c_binding, only : c_null_char
 
@@ -301,7 +300,6 @@ if (ierr /= 0) error stop 'ERROR:h5fortran:get_layout read ' // dname //' ' // s
 call h5pclose_f(dapl, ierr)
 if (ierr /= 0) error stop 'ERROR:h5fortran:get_chunk: close property list ' // dname // ' ' // self%filename
 
-
 end procedure hdf_get_layout
 
 
@@ -317,7 +315,6 @@ call h5ltpath_valid_f(self%lid, dname, .true., hdf_check_exist, ierr)
 if (ierr/=0) error stop 'ERROR:h5fortran:check_exist: could not determine status of ' // dname // ' in ' // self%filename
 
 end procedure hdf_check_exist
-
 
 
 end submodule hdf5_read
