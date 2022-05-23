@@ -124,7 +124,7 @@ if (ierr /= 0) error stop "ERROR:h5fortran:hdf_create:h5screate:filespace " // d
 !> datatype id and size
 if(dtype == H5T_NATIVE_CHARACTER) then
   call h5tcopy_f(dtype, type_id, ierr)
-  if(ierr /= 0 ) error stop "h5fortran:h5tcopy:character: " // dname // " in " // self%filename
+  if(ierr /= 0) error stop "h5fortran:h5tcopy:character: " // dname // " in " // self%filename
 
   call h5tset_size_f(type_id, int(charlen, SIZE_T), ierr)
   if(ierr /= 0) error stop "h5fortran:h5tset_size:character: " // dname // " in " // self%filename
