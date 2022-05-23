@@ -313,36 +313,6 @@ end do
 end subroutine guess_chunk_size
 
 
-module procedure hdf_open_group
-
-integer :: ier
-
-if(.not.self%is_open()) error stop 'h5fortran:open_group: file handle is not open: ' // self%filename
-
-call h5gopen_f(self%lid, gname, self%gid, ier)
-if (ier /= 0) error stop "ERROR:h5fortran:open_group:h5gopen: could not open group " // gname // " in " // self%filename
-
-
-self%glid = self%lid
-self%lid  = self%gid
-
-end procedure hdf_open_group
-
-
-module procedure hdf_close_group
-
-integer :: ier
-
-if(.not.self%is_open()) error stop 'h5fortran:close_group: file handle is not open: ' // self%filename
-
-call h5gclose_f(self%gid, ier)
-if (ier /= 0) error stop "ERROR:h5fortran:close_group:h5gclose: could not close group " // self%filename
-
-self%lid = self%glid
-
-end procedure hdf_close_group
-
-
 module procedure hdf_flush
 
 integer :: ierr

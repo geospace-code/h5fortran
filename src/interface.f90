@@ -46,8 +46,6 @@ procedure, public :: open => h5open
 procedure, public :: close => h5close
 procedure, public :: write_group
 procedure, public :: create => hdf_create_user
-procedure, public :: open_group => hdf_open_group
-procedure, public :: close_group => hdf_close_group
 procedure, public :: flush => hdf_flush
 procedure, public :: filesize => hdf_filesize
 procedure, public :: ndim => hdf_get_ndim
@@ -116,7 +114,7 @@ end interface h5read_attr
 interface !< write.f90
 
 module subroutine hdf_create_user(self, dname, dtype, dset_dims, chunk_size, compact)
-class(hdf5_file), intent(inout) :: self
+class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
 integer(HID_T), intent(in) :: dtype
 integer(HSIZE_T), dimension(:), intent(in) :: dset_dims
@@ -126,7 +124,7 @@ end subroutine hdf_create_user
 
 module subroutine hdf_create(self, dname, dtype, mem_dims, dset_dims, filespace_id, dset_id, dtype_id, &
   chunk_size, istart, iend, stride, compact, charlen)
-class(hdf5_file), intent(inout) :: self
+class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
 integer(HID_T), intent(in) :: dtype
 integer(HSIZE_T), dimension(:), intent(in) :: mem_dims, dset_dims
@@ -138,22 +136,13 @@ integer, intent(in), optional :: charlen !< length of character scalar
 !! keep istart, iend, stride for future slice shape check
 end subroutine hdf_create
 
-module subroutine hdf_open_group(self, gname)
-class(hdf5_file), intent(inout) :: self
-character(*), intent(in)        :: gname
-end subroutine hdf_open_group
-
-module subroutine hdf_close_group(self)
-class(hdf5_file), intent(inout) :: self
-end subroutine hdf_close_group
-
 module subroutine write_group(self, group_path)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: group_path   !< full path to group
 end subroutine write_group
 
 module subroutine create_softlink(self, tgt, link)
-class(hdf5_file), intent(inout) :: self
+class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: tgt, &  !< target path to link
                             link  !< soft link path to create
 end subroutine create_softlink
@@ -327,6 +316,7 @@ end subroutine h5write_7d
 
 end interface
 
+
 interface !< read.f90
 
 module integer function get_class(self, dname)
@@ -360,6 +350,7 @@ module logical function get_deflate(self, dname)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
 end function get_deflate
+
 module integer function hdf_get_layout(self, dname) result(layout)
 !! H5D_CONTIGUOUS_F, H5D_CHUNKED_F, H5D_VIRTUAL_F, H5D_COMPACT_F
 class(hdf5_file), intent(in) :: self
@@ -376,7 +367,9 @@ module logical function hdf_check_exist(self, dname)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
 end function hdf_check_exist
+
 end interface
+
 
 interface !< reader.f90
 
@@ -434,6 +427,7 @@ character(*), intent(in)         :: dname
 class(*), intent(inout) :: value(:,:,:,:,:,:,:)
 integer, intent(in), dimension(7), optional :: istart, iend, stride
 end subroutine h5read_7d
+
 end interface
 
 
