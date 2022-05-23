@@ -1,4 +1,4 @@
-integer(HSIZE_T) :: dims(rank(value))
+integer(HSIZE_T), dimension(rank(value)) :: dims
 integer(HID_T) :: dset_id, file_space_id, mem_space_id, xfer_id
 integer :: dclass, ier
 
@@ -12,7 +12,7 @@ if(present(istart) .and. present(iend)) then
   call hdf_get_slice(self, dname, dset_id, file_space_id, mem_space_id, istart, iend, stride)
 else
   call hdf_shape_check(self, dname, dims)
-  call h5dopen_f(self%lid, dname, dset_id, ier)
+  call h5dopen_f(self%file_id, dname, dset_id, ier)
   if(ier/=0) error stop 'h5fortran:reader: setup read ' // dname // ' from ' // self%filename
 endif
 
@@ -41,7 +41,7 @@ elseif(dclass == H5T_INTEGER_F) then
 else
   error stop 'h5fortran:reader: non-handled datatype--please reach out to developers.'
 end if
-if(ier/=0) error stop 'h5fortran:reader: reading ' // dname // ' from ' // self%filename
+if(ier /= 0) error stop 'h5fortran:reader:h5dread: ' // dname // ' from ' // self%filename
 
 call h5dclose_f(dset_id, ier)
 if(ier /= 0) error stop "ERROR:h5fortran:reader: closing dataset: " // dname // " in " // self%filename

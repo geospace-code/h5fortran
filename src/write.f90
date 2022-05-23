@@ -55,7 +55,7 @@ endif
 if(.not. self%is_open()) error stop 'ERROR:h5fortran:write: file handle is not open: ' // self%filename
 
 !> sanity check: dataset path is valid
-call h5ltpath_valid_f(self%lid, dname, .true., exists, ierr)
+call h5ltpath_valid_f(self%file_id, dname, .true., exists, ierr)
 if (ierr /= 0) error stop 'ERROR:h5fortran:create: variable path invalid: ' // dname // ' in ' // self%filename
 !! h5lexists_f can false error with groups--just use h5ltpath_valid
 !! stricter than self%exists() since we're creating and/or writing variable
@@ -74,7 +74,7 @@ if(exists) then
   !! FIXME: read and write slice shape not checked; but should check in future versions
 
   !> open dataset
-  call h5dopen_f(self%lid, dname, dset_id, ierr)
+  call h5dopen_f(self%file_id, dname, dset_id, ierr)
   if (ierr /= 0) error stop 'ERROR:h5fortran:create: could not open ' // dname // ' in ' // self%filename
 
   !> get dataset filespace
@@ -140,7 +140,7 @@ else
 endif
 
 !> create dataset
-call h5dcreate_f(self%lid, dname, type_id=type_id, space_id=filespace_id, dset_id=dset_id, hdferr=ierr, dcpl_id=dcpl)
+call h5dcreate_f(self%file_id, dname, type_id=type_id, space_id=filespace_id, dset_id=dset_id, hdferr=ierr, dcpl_id=dcpl)
 if (ierr /= 0) error stop "ERROR:h5fortran:hdf_create:h5dcreate: " // dname // " in " // self%filename
 
 !> free resources
@@ -157,7 +157,7 @@ module procedure create_softlink
 
 integer :: ierr
 
-call H5Lcreate_soft_f(tgt, self%lid, link, ierr)
+call H5Lcreate_soft_f(tgt, self%file_id, link, ierr)
 if (ierr /= 0) error stop 'ERROR:h5fortran:create_softlink: ' // link // ' in ' // self%filename
 
 end procedure create_softlink
@@ -185,12 +185,12 @@ grps: do
 
   ! check subgroup exists
   sp = sp + ep
-  call h5lexists_f(self%lid, group_path(:sp-1), gexist, ier)
+  call h5lexists_f(self%file_id, group_path(:sp-1), gexist, ier)
   if (ier /= 0) error stop "ERROR:h5fortran:write_group: check exists group " // group_path // " in " // self%filename
 
   if(gexist) cycle grps
 
-  call h5gcreate_f(self%lid, group_path(:sp-1), gid, ier)
+  call h5gcreate_f(self%file_id, group_path(:sp-1), gid, ier)
   if (ier /= 0) error stop "ERROR:h5fortran:write_group: create group " // group_path // " in " // self%filename
 
   call h5gclose_f(gid, ier)
@@ -317,7 +317,7 @@ module procedure hdf_flush
 
 integer :: ierr
 
-call h5fflush_f(self%lid, H5F_SCOPE_GLOBAL_F, ierr)
+call h5fflush_f(self%file_id, H5F_SCOPE_GLOBAL_F, ierr)
 
 if (ierr /= 0) error stop 'ERROR:h5fortran:flush ' // self%filename
 

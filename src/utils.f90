@@ -67,18 +67,18 @@ if (ier /= 0) error stop 'ERROR:h5fortran:open: HDF5 library set traceback'
 select case(laction)
 case('r')
   if(.not. is_hdf5(filename)) error stop "ERROR:h5fortran:open: file does not exist: "//filename
-  call h5fopen_f(filename, H5F_ACC_RDONLY_F, self%lid,ier)
+  call h5fopen_f(filename, H5F_ACC_RDONLY_F, self%file_id,ier)
 case('r+')
   if(.not. is_hdf5(filename)) error stop "ERROR:h5fortran:open: file does not exist: "//filename
-  call h5fopen_f(filename, H5F_ACC_RDWR_F, self%lid, ier)
+  call h5fopen_f(filename, H5F_ACC_RDWR_F, self%file_id, ier)
 case('rw', 'a')
   if(is_hdf5(filename)) then
-    call h5fopen_f(filename, H5F_ACC_RDWR_F, self%lid, ier)
+    call h5fopen_f(filename, H5F_ACC_RDWR_F, self%file_id, ier)
   else
-    call h5fcreate_f(filename, H5F_ACC_TRUNC_F, self%lid, ier)
+    call h5fcreate_f(filename, H5F_ACC_TRUNC_F, self%file_id, ier)
   endif
 case ('w')
-  call h5fcreate_f(filename, H5F_ACC_TRUNC_F, self%lid, ier)
+  call h5fcreate_f(filename, H5F_ACC_TRUNC_F, self%file_id, ier)
 case default
   error stop 'ERROR:h5fortran:open: Unsupported action: ' // laction
 end select
@@ -102,18 +102,18 @@ if (.not. self%is_open()) then
 endif
 
 !> ref count for better error messages; this is more of a problem with HDF5-MPI programs
-call h5fget_obj_count_f(self%lid, H5F_OBJ_GROUP_F, Ngroup, ierr)
+call h5fget_obj_count_f(self%file_id, H5F_OBJ_GROUP_F, Ngroup, ierr)
 if(ierr /= 0) error stop "ERROR:h5fortran:close:h5fget_obj_count: could not count open groups: " // self%filename
 if(Ngroup > 0) write(stderr,'(a,i0,a)') "ERROR:h5fortran:close: there are ", Ngroup, " groups open: " // self%filename
 
 
-call h5fget_obj_count_f(self%lid, H5F_OBJ_DATASET_F, Ndset, ierr)
+call h5fget_obj_count_f(self%file_id, H5F_OBJ_DATASET_F, Ndset, ierr)
 if(ierr /= 0) error stop "ERROR:h5fortran:close:h5fget_obj_count: could not count open datasets: " // self%filename
 if(Ndset > 0) then
   write(stderr,'(a,i0,a)') "ERROR:h5fortran:close: there are ", Ndset, " datasets open: " // self%filename
 
   allocate(obj_ids(Ndset))
-  call h5fget_obj_ids_f(self%lid, H5F_OBJ_DATASET_F, Ndset, obj_ids, ierr)
+  call h5fget_obj_ids_f(self%file_id, H5F_OBJ_DATASET_F, Ndset, obj_ids, ierr)
   if(ierr /= 0) error stop "ERROR:h5fortran:close:h5fget_obj_ids: could not get open dataset ids: " // self%filename
 
   do i = 1, int(Ndset)
@@ -126,11 +126,11 @@ if(Ndset > 0) then
   end do
 endif
 
-call h5fget_obj_count_f(self%lid, H5F_OBJ_DATATYPE_F, Ndtype, ierr)
+call h5fget_obj_count_f(self%file_id, H5F_OBJ_DATATYPE_F, Ndtype, ierr)
 if(ierr /= 0) error stop "ERROR:h5fortran:close:h5fget_obj_count: could not count open datatypes: " // self%filename
 if(Ndtype > 0) write(stderr,'(a,i0,a)') "ERROR:h5fortran:close: there are ", Ndtype, " datatypes open: " // self%filename
 
-call h5fget_obj_count_f(self%lid, H5F_OBJ_FILE_F, Nfile, ierr)
+call h5fget_obj_count_f(self%file_id, H5F_OBJ_FILE_F, Nfile, ierr)
 if(ierr /= 0) error stop "ERROR:h5fortran:close:h5fget_obj_count: could not count open files: " // self%filename
 if(Nfile < 1) write(stderr,'(a,i0,a)') "ERROR:h5fortran:close: there are ", Nfile, " files open: " // self%filename
 
@@ -138,7 +138,7 @@ if(Ngroup > 0 .or. Ndset > 0 .or. Ndtype > 0) error stop "ERROR:h5fortran:close:
 
 
 !> close hdf5 file
-call h5fclose_f(self%lid, ierr)
+call h5fclose_f(self%file_id, ierr)
 if (ierr /= 0) then
   write(stderr,'(a,i0)') 'ERROR:h5fortran:h5fclose: HDF5 file close: ' // self%filename
   error stop
@@ -159,10 +159,10 @@ module procedure is_open
 ! integer :: hid_type
 integer :: ierr
 
-call h5iis_valid_f(self%lid, is_open, ierr)
+call h5iis_valid_f(self%file_id, is_open, ierr)
 if(ierr /= 0) error stop "ERROR:h5fortran:is_open:h5iis_valid: " // self%filename
 
-! call h5iget_type_f(self%lid, hid_type, ierr)
+! call h5iget_type_f(self%file_id, hid_type, ierr)
 ! if(ierr /= 0 .or. hid_type /= H5I_FILE_F) is_open = .false.
 
 end procedure is_open
@@ -251,7 +251,7 @@ mem_dims = iend - istart
 !> some callers have already opened the dataset. 0 is a sentinel saying not opened yet.
 if (dset_id == 0) then
   if(.not.self%exist(dname)) error stop "ERROR:h5fortran:get_slice: "//dname// " does not exist: " // self%filename
-  call h5dopen_f(self%lid, dname, dset_id, ierr)
+  call h5dopen_f(self%file_id, dname, dset_id, ierr)
   if(ierr /= 0) error stop 'h5fortran:get_slice:H5Dopen: ' // dname // ' ' // self%filename
 endif
 
@@ -285,14 +285,14 @@ if(.not.self%is_open()) error stop 'h5fortran:rank_check: file handle is not ope
 if (.not.self%exist(dname)) error stop 'ERROR: ' // dname // ' does not exist in ' // self%filename
 
 !> check for matching rank, else bad reads can occur--doesn't always crash without this check
-call h5ltget_dataset_ndims_f(self%lid, dname, drank, ierr)
+call h5ltget_dataset_ndims_f(self%file_id, dname, drank, ierr)
 if (ierr/=0) error stop 'h5fortran:rank_check: get_dataset_ndim ' // dname // ' read ' // self%filename
 
 if (drank == mrank) return
 
 if (present(vector_scalar) .and. drank == 1 .and. mrank == 0) then
   !! check if vector of length 1
-  call h5ltget_dataset_info_f(self%lid, dname, dims=ddims, &
+  call h5ltget_dataset_info_f(self%file_id, dname, dims=ddims, &
     type_class=type_class, type_size=type_size, errcode=ierr)
   if (ierr/=0) error stop 'h5fortran:rank_check: get_dataset_info ' // dname // ' read ' // self%filename
   if (ddims(1) == 1) then
@@ -319,7 +319,7 @@ call hdf_rank_check(self, dname, size(dims))
 
 !> check for matching size, else bad reads can occur.
 
-call h5ltget_dataset_info_f(self%lid, dname, dims=ddims, &
+call h5ltget_dataset_info_f(self%file_id, dname, dims=ddims, &
     type_class=type_class, type_size=type_size, errcode=ierr)
 if (ierr/=0) error stop 'ERROR:h5fortran:shape_check: get_dataset_info ' // dname // ' read ' // self%filename
 
@@ -338,7 +338,7 @@ integer :: ierr
 
 if(.not. self%is_open()) error stop 'ERROR:h5fortran:filesize: file handle is not open: ' // self%filename
 
-call h5fget_filesize_f(self%lid, hdf_filesize, ierr)
+call h5fget_filesize_f(self%file_id, hdf_filesize, ierr)
 if(ierr/=0) error stop "ERROR:h5fortran: could not get file size " // self%filename
 
 end procedure hdf_filesize
