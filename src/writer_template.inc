@@ -46,7 +46,7 @@ type is (integer(int64))
 class default
   error stop "ERROR:h5fortran:writer: unknown variable type for " // dname
 end select
-if (ier/=0) error stop 'ERROR:h5fortran:h5dwrite: could not write ' // dname // ' to ' // self%filename
+if (ier /= 0) error stop 'ERROR:h5fortran:h5dwrite: could not write ' // dname // ' to ' // self%filename
 
 call h5dclose_f(dset_id, ier)
 if(ier /= 0) error stop "ERROR:h5fortran:writer: closing dataset: " // dname // " in " // self%filename

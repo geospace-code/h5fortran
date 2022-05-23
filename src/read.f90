@@ -164,10 +164,10 @@ call get_dset_class(self, dname, class, ds_id, size_bytes)
 
 !> endianness and within type casting is handled by HDF5
 ! call h5tget_order_f(native_dtype_id, order, ierr)
-! if(ierr/=0) error stop 'h5fortran:reader: get endianness ' // dname // ' from ' // self%filename
+! if(ierr/=0) error stop 'ERROR:h5fortran:reader: get endianness ' // dname // ' from ' // self%filename
 ! !> check dataset endianness matches machine (in future, could swap endianness if needed)
 ! call h5tget_order_f(H5T_NATIVE_INTEGER, machine_order, ierr)
-! if(order /= machine_order) error stop 'h5fortran:read: endianness /= machine native: ' &
+! if(order /= machine_order) error stop 'ERROR:h5fortran:read: endianness /= machine native: ' &
 ! // dname // ' from ' // self%filename
 
 if(class == H5T_INTEGER_F) then
@@ -199,33 +199,33 @@ module procedure hdf_get_ndim
 !! get rank or "ndims"
 integer :: ier
 
-if(.not.self%is_open()) error stop 'ERROR:h5fortran:read: file handle is not open'
+if(.not. self%is_open()) error stop 'ERROR:h5fortran:read: file handle is not open'
 
 drank = -1
 
 if (self%exist(dname)) then
   call h5ltget_dataset_ndims_f(self%file_id, dname, drank, ier)
 else
-  write(stderr, '(a)') 'ERROR:get_ndim: ' // dname // ' does not exist in ' // self%filename
+  write(stderr, '(a)') 'ERROR:h5fortran:get_ndim: ' // dname // ' does not exist in ' // self%filename
 endif
 
 end procedure hdf_get_ndim
 
 
 module procedure hdf_get_shape
-!! must get dims before info, as "dims" must be allocated or segfault occurs.
+!! must get rank before info, as "dims" must be allocated first.
 integer(SIZE_T) :: type_size
 integer :: type_class, drank, ier
 
-if(.not. self%exist(dname)) error stop 'h5fortran:get_shape: ' // dname // ' does not exist in ' // self%filename
+if(.not. self%exist(dname)) error stop 'ERROR:h5fortran:get_shape: ' // dname // ' does not exist in ' // self%filename
 
 call h5ltget_dataset_ndims_f(self%file_id, dname, drank, ier)
-if (ier /= 0) error stop "h5fortran:get_shape: could not get rank of " // dname // " in " // self%filename
+if (ier /= 0) error stop "ERROR:h5fortran:get_shape: could not get rank of " // dname // " in " // self%filename
 
 allocate(dims(drank))
 call h5ltget_dataset_info_f(self%file_id, dname, dims=dims, &
   type_class=type_class, type_size=type_size, errcode=ier)
-if (ier /= 0) error stop "h5fortran:get_shape: could not get info: " // dname // ' from ' // self%filename
+if (ier /= 0) error stop "ERROR:h5fortran:get_shape: could not get shape of " // dname // " in " // self%filename
 
 end procedure hdf_get_shape
 
@@ -279,11 +279,11 @@ module procedure hdf_get_layout
 integer(HID_T) :: dapl, dset_id
 integer :: ierr
 
-if(.not.self%is_open()) error stop 'h5fortran:read:get_layout: file handle is not open'
+if(.not. self%is_open()) error stop 'ERROR:h5fortran:read: file handle is not open'
 
 layout = -1
 
-if (.not.self%exist(dname)) error stop 'ERROR:h5fortran:get_layout: ' // dname // ' does not exist in ' // self%filename
+if (.not. self%exist(dname)) error stop 'ERROR:h5fortran:get_layout: ' // dname // ' does not exist in ' // self%filename
 
 call h5dopen_f(self%file_id, dname, dset_id, ierr)
 if (ierr /= 0) error stop 'ERROR:h5fortran:get_layout: open dataset ' // dname // ' ' // self%filename
@@ -307,7 +307,7 @@ module procedure hdf_check_exist
 
 integer :: ierr
 
-if(.not.self%is_open()) error stop 'ERROR:h5fortran:exist: file handle is not open:'  // self%filename
+if(.not. self%is_open()) error stop 'ERROR:h5fortran:exist: file handle is not open: ' // self%filename
 
 call h5ltpath_valid_f(self%file_id, dname, .true., hdf_check_exist, ierr)
 !! h5lexists_f can false error with groups--just use h5ltpath_valid
