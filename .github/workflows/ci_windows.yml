@@ -9,6 +9,7 @@ on:
     paths:
       - "**/CMakeLists.txt"
       - "**.cmake"
+      - "**.f90"
       - ".github/workflows/ci_windows.yml"
   pull_request:
   release:
@@ -25,7 +26,8 @@ jobs:
 
     strategy:
       matrix:
-        shared: [true, false]
+        shared: [false]
+        # true works on my computers, but CI is false failing
 
     steps:
     - uses: msys2/setup-msys2@v2
