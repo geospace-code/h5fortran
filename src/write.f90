@@ -1,15 +1,20 @@
 submodule (h5fortran) write
 !! This submodule is for writing HDF5 data via child submodules
 use hdf5, only: &
-h5screate_f, H5S_SCALAR_F, &
-h5dcreate_f, &
+h5fflush_f, &
+h5screate_f, h5sclose_f, h5screate_simple_f, &
+h5dcreate_f, h5dopen_f, h5dclose_f, h5dget_space_f, &
 h5pset_chunk_f, h5pset_layout_f, h5pset_deflate_f, h5pset_shuffle_f, h5pset_fletcher32_f, h5pcreate_f, h5pclose_f, &
 H5P_DATASET_CREATE_F, &
-h5gopen_f, &
-H5Lcreate_soft_f, &
-h5tcopy_f, h5tset_size_f
+h5gopen_f, h5gcreate_f, h5gclose_f, &
+H5Lcreate_soft_f, h5lexists_f, &
+h5tcopy_f, h5tset_size_f, &
+H5S_SCALAR_F, &
+H5D_COMPACT_F, &
+H5F_SCOPE_GLOBAL_F
 
-use H5LT, only: h5ltpath_valid_f
+
+use h5lt, only: h5ltpath_valid_f
 
 implicit none (type, external)
 

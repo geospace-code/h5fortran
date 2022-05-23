@@ -1,8 +1,9 @@
 submodule (h5fortran:hdf5_read) read_scalar
 
 use h5lt, only : h5ltread_dataset_string_f
-use hdf5, only : h5dread_f, h5dvlen_get_max_len_f, h5dread_vl_f, h5dvlen_reclaim_f,&
+use hdf5, only : h5dread_f, h5dget_space_f, h5dvlen_get_max_len_f, h5dread_vl_f, h5dvlen_reclaim_f,&
 h5tis_variable_str_f, h5tget_strpad_f, &
+h5sclose_f, &
 H5T_STR_NULLTERM_F
 
 implicit none (type, external)

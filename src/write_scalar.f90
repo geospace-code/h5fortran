@@ -1,6 +1,6 @@
 submodule (h5fortran:write) write_scalar
 
-use hdf5, only: h5dwrite_f
+use hdf5, only: h5dwrite_f, h5tclose_f
 
 implicit none (type, external)
 
