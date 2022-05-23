@@ -64,12 +64,12 @@ procedure, public :: close_group => hdf_close_group
 procedure, public :: flush => hdf_flush
 procedure, public :: filesize => hdf_filesize
 procedure, public :: ndim => hdf_get_ndim
-procedure, public :: ndims => hdf_get_ndim
 procedure, public :: shape => hdf_get_shape
 procedure, public :: layout => hdf_get_layout
 procedure, public :: chunks => hdf_get_chunk
 procedure, public :: class => get_class
 procedure, public :: dtype => get_native_dtype
+procedure, public :: deflate => get_deflate
 procedure, public :: exist => hdf_check_exist
 procedure, public :: exists => hdf_check_exist
 procedure, public :: is_contig => hdf_is_contig
@@ -127,21 +127,21 @@ end interface h5read_attr
 
 interface !< write.f90
 
-module subroutine hdf_create_user(self, dname, dtype, dims, chunk_size, compact)
+module subroutine hdf_create_user(self, dname, dtype, dset_dims, chunk_size, compact)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 integer(HID_T), intent(in) :: dtype
-integer(HSIZE_T), dimension(:), intent(in) :: dims
+integer(HSIZE_T), dimension(:), intent(in) :: dset_dims
 integer, intent(in), dimension(:), optional :: chunk_size  !< (:) instead of size(dims) due to intel fortran quirk
 logical, intent(in), optional :: compact
 end subroutine hdf_create_user
 
-module subroutine hdf_create(self, dname, dtype, dims, filespace_id, dset_id, dtype_id, &
+module subroutine hdf_create(self, dname, dtype, mem_dims, dset_dims, filespace_id, dset_id, dtype_id, &
   chunk_size, istart, iend, stride, compact, charlen)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 integer(HID_T), intent(in) :: dtype
-integer(HSIZE_T), intent(in) :: dims(:)
+integer(HSIZE_T), dimension(:), intent(in) :: mem_dims, dset_dims
 integer(HID_T), intent(out) :: filespace_id, dset_id
 integer(HID_T), intent(out), optional :: dtype_id
 integer, intent(in), dimension(:), optional :: chunk_size, istart, iend, stride
@@ -281,59 +281,59 @@ class(*), intent(in) :: value
 logical, intent(in), optional :: compact
 end subroutine h5write_scalar
 
-module subroutine h5write_1d(self, dname, value, chunk_size, istart, iend, stride, compact)
+module subroutine h5write_1d(self, dname, value, chunk_size, istart, iend, stride, compact, dset_dims)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:)
-integer, intent(in), dimension(1), optional :: chunk_size, istart, iend, stride
+integer, intent(in), dimension(1), optional :: chunk_size, istart, iend, stride, dset_dims
 logical, intent(in), optional :: compact
 end subroutine h5write_1d
 
-module subroutine h5write_2d(self, dname, value, chunk_size, istart, iend, stride, compact)
+module subroutine h5write_2d(self, dname, value, chunk_size, istart, iend, stride, compact, dset_dims)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:)
-integer, intent(in), dimension(2), optional :: chunk_size, istart, iend, stride
+integer, intent(in), dimension(2), optional :: chunk_size, istart, iend, stride, dset_dims
 logical, intent(in), optional :: compact
 end subroutine h5write_2d
 
-module subroutine h5write_3d(self, dname, value, chunk_size, istart, iend, stride, compact)
+module subroutine h5write_3d(self, dname, value, chunk_size, istart, iend, stride, compact, dset_dims)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:)
-integer, intent(in), dimension(3), optional :: chunk_size, istart, iend, stride
+integer, intent(in), dimension(3), optional :: chunk_size, istart, iend, stride, dset_dims
 logical, intent(in), optional :: compact
 end subroutine h5write_3d
 
-module subroutine h5write_4d(self, dname, value, chunk_size, istart, iend, stride, compact)
+module subroutine h5write_4d(self, dname, value, chunk_size, istart, iend, stride, compact, dset_dims)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:)
-integer, intent(in), dimension(4), optional :: chunk_size, istart, iend, stride
+integer, intent(in), dimension(4), optional :: chunk_size, istart, iend, stride, dset_dims
 logical, intent(in), optional :: compact
 end subroutine h5write_4d
 
-module subroutine h5write_5d(self, dname, value, chunk_size, istart, iend, stride, compact)
+module subroutine h5write_5d(self, dname, value, chunk_size, istart, iend, stride, compact, dset_dims)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:,:)
-integer, intent(in), dimension(5), optional :: chunk_size, istart, iend, stride
+integer, intent(in), dimension(5), optional :: chunk_size, istart, iend, stride, dset_dims
 logical, intent(in), optional :: compact
 end subroutine h5write_5d
 
-module subroutine h5write_6d(self, dname, value, chunk_size, istart, iend, stride, compact)
+module subroutine h5write_6d(self, dname, value, chunk_size, istart, iend, stride, compact, dset_dims)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:,:,:)
-integer, intent(in), dimension(6), optional :: chunk_size, istart, iend, stride
+integer, intent(in), dimension(6), optional :: chunk_size, istart, iend, stride, dset_dims
 logical, intent(in), optional :: compact
 end subroutine h5write_6d
 
-module subroutine h5write_7d(self,dname,value, chunk_size, istart, iend, stride, compact)
+module subroutine h5write_7d(self,dname,value, chunk_size, istart, iend, stride, compact, dset_dims)
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: value(:,:,:,:,:,:,:)
-integer, intent(in), dimension(7), optional :: chunk_size, istart, iend, stride
+integer, intent(in), dimension(7), optional :: chunk_size, istart, iend, stride, dset_dims
 logical, intent(in), optional :: compact
 end subroutine h5write_7d
 
@@ -363,6 +363,10 @@ character(*), intent(in) :: dname
 integer(HSIZE_T), intent(out), allocatable :: dims(:)
 end subroutine hdf_get_shape
 
+module logical function get_deflate(self, dname)
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: dname
+end function get_deflate
 module integer function hdf_get_layout(self, dname) result(layout)
 !! H5D_CONTIGUOUS_F, H5D_CHUNKED_F, H5D_VIRTUAL_F, H5D_COMPACT_F
 class(hdf5_file), intent(in) :: self
@@ -372,7 +376,7 @@ end function hdf_get_layout
 module subroutine hdf_get_chunk(self, dname, chunk_size)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
-integer(hsize_t), intent(out) :: chunk_size(:)
+class(*), intent(out) :: chunk_size(:)
 end subroutine hdf_get_chunk
 
 module logical function hdf_check_exist(self, dname)

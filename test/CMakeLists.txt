@@ -57,7 +57,7 @@ endfunction(setup_test)
 cmake_path(SET shape_file ${CMAKE_CURRENT_BINARY_DIR}/test_shape.h5)
 cmake_path(SET string_file ${CMAKE_CURRENT_BINARY_DIR}/test_string_py.h5)
 
-set(test_names array attributes cast deflate destructor exist module layout lt scalar shape string string_read version write
+set(test_names array attributes cast deflate_write deflate_read deflate_props destructor exist groups layout lt scalar shape string string_read version write
 fail_read_size_mismatch fail_read_rank_mismatch fail_nonexist_variable)
 
 setup_test("${test_names}")
@@ -69,6 +69,15 @@ set_tests_properties(shape PROPERTIES FIXTURES_SETUP h5shape)
 set_tests_properties(layout PROPERTIES
 FIXTURES_REQUIRED test_files
 REQUIRED_FILES ${CMAKE_CURRENT_BINARY_DIR}/test_write.h5
+)
+
+set_tests_properties(deflate_write PROPERTIES
+FIXTURES_SETUP deflate_files
+)
+
+set_tests_properties(deflate_props deflate_read PROPERTIES
+FIXTURES_REQUIRED deflate_files
+REQUIRED_FILES ${CMAKE_CURRENT_BINARY_DIR}/deflate1.h5
 )
 
 if(ENABLE_COVERAGE)

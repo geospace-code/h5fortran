@@ -1,6 +1,5 @@
 submodule (h5fortran:hdf5_read) read_scalar
 
-use, intrinsic :: iso_c_binding, only : c_null_char
 use h5lt, only : h5ltread_dataset_string_f
 use hdf5, only : h5dread_f, h5dvlen_get_max_len_f, h5dread_vl_f, h5dvlen_reclaim_f,&
 h5tis_variable_str_f, h5tget_strpad_f, &

@@ -21,7 +21,8 @@ module procedure hdf_create_user
 integer(HID_T) :: file_space_id, dset_id
 integer :: ierr
 
-call hdf_create(self, dname, dtype, dims, file_space_id, dset_id)
+call hdf_create(self, dname, dtype, mem_dims=dset_dims, dset_dims=dset_dims, &
+ filespace_id=file_space_id, dset_id=dset_id)
 
 call h5dclose_f(dset_id, ierr)
 if(ierr /= 0) error stop "ERROR:h5fortran:write:create_user: closing dataset: " // dname // " in " // self%filename
@@ -58,11 +59,11 @@ if(self%debug) print *,'h5fortran:TRACE:create:exists: ' // dname, exists
 
 if(exists) then
   if (.not.present(istart)) then
-    if (size(dims) == 0) then
+    if (size(mem_dims) == 0) then
       !! scalar
-      call hdf_rank_check(self, dname, size(dims))
+      call hdf_rank_check(self, dname, size(mem_dims))
     else
-      call hdf_shape_check(self, dname, dims)
+      call hdf_shape_check(self, dname, mem_dims)
     endif
   endif
   !! FIXME: read and write slice shape not checked; but should check in future versions
@@ -94,15 +95,15 @@ call self%write_group(dname)
 !! write_group is needed for any dataset in a group e.g. /hi/there/var
 
 !> compression
-if(size(dims) >= 2) then
+if(size(mem_dims) >= 2) then
   if(self%debug) print *, 'h5fortran:TRACE:create: deflate: ' // dname
-  call set_deflate(self, dims, dcpl, chunk_size)
+  call set_deflate(self, mem_dims, dcpl, chunk_size)
 endif
 
 !> compact dataset (for very small datasets to increase I/O speed)
 if(present(compact)) then
 !! datasets are EITHER compact or chunked.
-if(compact .and. dcpl == H5P_DEFAULT_F .and. product(dims) * 8 < 60000)  then
+if(compact .and. dcpl == H5P_DEFAULT_F .and. product(dset_dims) * 8 < 60000)  then
 !! 64000 byte limit, here we assumed 8 bytes / element
   call h5pcreate_f(H5P_DATASET_CREATE_F, dcpl, ierr)
   if (ierr /= 0) error stop "ERROR:h5fortran:hdf_create:h5pcreate: " // dname // " in " // self%filename
@@ -113,10 +114,10 @@ endif
 endif
 
 !> create dataset dataspace
-if(size(dims) == 0) then
+if(size(dset_dims) == 0) then
   call h5screate_f(H5S_SCALAR_F, filespace_id, ierr)
 else
-  call h5screate_simple_f(size(dims), dims, filespace_id, ierr)
+  call h5screate_simple_f(size(dset_dims), dset_dims, filespace_id, ierr)
 endif
 if (ierr /= 0) error stop "ERROR:h5fortran:hdf_create:h5screate:filespace " // dname // " in " // self%filename
 

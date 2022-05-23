@@ -6,19 +6,21 @@ use h5fortran, only: hdf5_file, h5write, h5read
 
 implicit none (type, external)
 
-call testGroup()
-print *,'PASSED: HDF5 group'
+call test_group('test_groups.h5')
+print *,'OK: HDF5 group'
 
-call test_writeExistingVariable()
-print *,'PASSED: write existing variable'
+call test_write_existing('overwrite.h5')
+print *,'OK: write existing variable'
 
 contains
 
-subroutine testGroup()
+subroutine test_group(fn)
+
+character(*), intent(in) :: fn
 
 type(hdf5_file) :: h5f
 
-call h5f%open('test_groups.h5', action='w')
+call h5f%open(fn, action='w')
 
 call h5f%write_group('/test/')
 
@@ -34,12 +36,13 @@ if(.not. h5f%exist('/test/group3/scalar')) error stop "/test/group3/scalar does 
 
 call h5f%close()
 
-end subroutine testGroup
+end subroutine test_group
 
 
-subroutine test_writeExistingVariable()
-type(hdf5_file) :: h5f
-character(*), parameter :: fn = 'overwrite.h5'
+subroutine test_write_existing(fn)
+  type(hdf5_file) :: h5f
+  character(*), intent(in) :: fn
+
 
 call h5f%open(fn, action='w')
 call h5f%write('/scalar_int', 42_int32)
@@ -51,6 +54,6 @@ call h5f%write('/scalar_int', 100_int32)
 call h5f%write('/int1d', [100_int32, 10_int32])
 call h5f%close()
 
-end subroutine test_writeExistingVariable
+end subroutine test_write_existing
 
 end program
