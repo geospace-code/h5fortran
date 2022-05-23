@@ -24,13 +24,9 @@ call h5f%open(fn, action='w')
 
 call h5f%write_group('/test/')
 
-call h5f%open_group('/test')
+call h5f%write('/test/group3/scalar', 1_int32)
 
-call h5f%write('group3/scalar', 1_int32)
-
-call h5f%write('group3/scalar_real', 1._real32)
-
-call h5f%close_group()
+call h5f%write('/test/group3/scalar_real', 1._real32)
 
 if(.not. h5f%exist('/test/group3/scalar')) error stop "/test/group3/scalar does not exist: create gorup failed"
 
