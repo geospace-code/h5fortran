@@ -281,8 +281,8 @@ integer :: ierr, drank, type_class
 
 if(present(vector_scalar)) vector_scalar = .false.
 
-if(.not.self%is_open()) error stop 'h5fortran:rank_check: file handle is not open'
-if (.not.self%exist(dname)) error stop 'ERROR: ' // dname // ' does not exist in ' // self%filename
+if(.not.self%is_open()) error stop 'ERROR:h5fortran:rank_check: file handle is not open: ' // self%filename
+if (.not.self%exist(dname)) error stop 'ERROR::h5fortran:rank_check: ' // dname // ' does not exist in ' // self%filename
 
 !> check for matching rank, else bad reads can occur--doesn't always crash without this check
 call h5ltget_dataset_ndims_f(self%file_id, dname, drank, ierr)
