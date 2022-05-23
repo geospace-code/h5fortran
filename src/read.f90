@@ -55,6 +55,7 @@ get_deflate = .false.
 
 Naux = size(Aux, kind=SIZE_T)
 
+if(.not.self%exist(dname)) error stop "ERROR:h5fortran:get_deflate: " // dname // " does not exist: " // self%filename
 call h5dopen_f(self%lid, dname, dset_id, ierr)
 if (ierr/=0) error stop "ERROR:h5fortran:get_deflate:h5dopen: " // dname // " in " // self%filename
 
@@ -109,6 +110,8 @@ integer(HID_T) :: dtype_id, native_dtype_id, dset_id
 if(present(ds_id)) then
   dset_id = ds_id
 else
+  if(.not.self%exist(dname)) error stop "ERROR:h5fortran:get_dset_class: " // dname // " does not exist: " // self%filename
+
   call h5dopen_f(self%lid, dname, dset_id, ierr)
   if(ierr/=0) error stop 'ERROR:h5fortran:get_class: ' // dname // ' from ' // self%filename
 endif
