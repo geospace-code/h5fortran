@@ -2,7 +2,8 @@ program test_string
 
 use, intrinsic:: iso_fortran_env, only:  stderr=>error_unit
 
-use h5fortran, only : hdf5_file
+use hdf5, only: H5T_STR_SPACEPAD_F
+use h5fortran, only: hdf5_file
 
 implicit none (type, external)
 
@@ -49,8 +50,14 @@ character(1024) :: val1k
 call h%open(fn, action='r')
 call h%read('/little', value)
 
-if(len_trim(value) /= 2) error stop "test_string: read length /= 2"
+if(len_trim(value) /= 2) then
+  write(stderr,'(a,i0,a)') "test_string: read length ", len_trim(value), " /= 2"
+  error stop
+endif
 if (value /= '42') error stop 'test_string:  read/write verification failure. Value: '// value
+
+!> check padding
+if (h%get_strpad("/little") /= H5T_STR_SPACEPAD_F) error stop "SPACEPAD expected for /little"
 
 !> longer character than data
 call h%read('/little', val1k)

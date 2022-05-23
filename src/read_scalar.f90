@@ -2,7 +2,7 @@ submodule (h5fortran:hdf5_read) read_scalar
 
 use h5lt, only : h5ltread_dataset_string_f
 use hdf5, only : h5dread_f, h5dget_space_f, h5dvlen_get_max_len_f, h5dread_vl_f, h5dvlen_reclaim_f,&
-h5tis_variable_str_f, h5tget_strpad_f, &
+h5tis_variable_str_f, &
 h5sclose_f, &
 H5T_STR_NULLTERM_F
 
@@ -109,9 +109,6 @@ elseif(dclass == H5T_STRING_F) then
       call h5sclose_f(space_id, ier)
       if(ier/=0) error stop "h5fortran:read:h5sclose " // dname // " in " // self%filename
     else
-      !! H5T_STR_NULLTERM  Null terminate (as C does).
-      !! H5T_STR_NULLPAD   Pad with zeros.
-      !! H5T_STR_SPACEPAD  Pad with spaces (as FORTRAN does).
       call H5Tget_strpad_f(type_id, pad_type, ier)
       if(ier/=0) error stop "h5fortran:read:h5tget_strpad " // dname // " in " // self%filename
 

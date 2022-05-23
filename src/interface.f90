@@ -62,6 +62,7 @@ procedure, public :: exists => hdf_check_exist
 procedure, public :: is_contig => hdf_is_contig
 procedure, public :: is_chunked => hdf_is_chunked
 procedure, public :: is_compact => hdf_is_compact
+procedure, public :: get_strpad
 procedure, public :: softlink => create_softlink
 procedure, public :: is_open
 
@@ -349,6 +350,11 @@ class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
 integer(HSIZE_T), intent(out), allocatable :: dims(:)
 end subroutine hdf_get_shape
+
+module integer function get_strpad(self, dset_name)
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: dset_name
+end function get_strpad
 
 module logical function get_deflate(self, dname)
 class(hdf5_file), intent(in) :: self
