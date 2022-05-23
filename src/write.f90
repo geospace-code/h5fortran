@@ -58,7 +58,7 @@ if(.not. self%is_open()) error stop 'ERROR:h5fortran:write: file handle is not o
 call h5ltpath_valid_f(self%file_id, dname, .true., exists, ierr)
 if (ierr /= 0) error stop 'ERROR:h5fortran:create: variable path invalid: ' // dname // ' in ' // self%filename
 !! h5lexists_f can false error with groups--just use h5ltpath_valid
-!! stricter than self%exists() since we're creating and/or writing variable
+!! stricter than self%exist() since we're creating and/or writing variable
 
 if(self%debug) print *,'h5fortran:TRACE:create:exists: ' // dname, exists
 
@@ -318,7 +318,6 @@ module procedure hdf_flush
 integer :: ierr
 
 call h5fflush_f(self%file_id, H5F_SCOPE_GLOBAL_F, ierr)
-
 if (ierr /= 0) error stop 'ERROR:h5fortran:flush ' // self%filename
 
 end procedure hdf_flush

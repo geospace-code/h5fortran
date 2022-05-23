@@ -11,15 +11,9 @@ H5T_INTEGER_F, H5T_FLOAT_F, H5T_STRING_F, &
 H5P_DEFAULT_F
 
 implicit none (type, external)
-private
-public :: hdf5_file, hdf5_close, h5write, h5read, h5exist, is_hdf5, h5write_attr, h5read_attr, hdf5version
-public :: hdf_shape_check, hdf_rank_check, hdf_get_slice
-!! for submodules only
-public :: HSIZE_T, HID_T, H5T_NATIVE_DOUBLE, H5T_NATIVE_REAL, H5T_NATIVE_INTEGER, H5T_NATIVE_CHARACTER, H5T_STD_I64LE
-public :: H5T_INTEGER_F, H5T_FLOAT_F, H5T_STRING_F
-!! HDF5 types for end users
 
-! intrinsic :: size !< workaround for intel fortran
+private
+
 
 !> main type
 type :: hdf5_file
@@ -54,18 +48,19 @@ procedure, public :: class => get_class
 procedure, public :: dtype => get_native_dtype
 procedure, public :: deflate => get_deflate
 procedure, public :: exist => hdf_check_exist
-procedure, public :: exists => hdf_check_exist
 procedure, public :: is_contig => hdf_is_contig
 procedure, public :: is_chunked => hdf_is_chunked
 procedure, public :: is_compact => hdf_is_compact
 procedure, public :: get_strpad
 procedure, public :: softlink => create_softlink
 procedure, public :: is_open
+!! procedures without mapping
 
 !> below are procedure that need generic mapping (type or rank agnostic)
 
-!> write group or dataset integer/real
 generic, public :: write => h5write_scalar, h5write_1d, h5write_2d, h5write_3d, h5write_4d, h5write_5d, h5write_6d, h5write_7d
+
+generic, public :: read => h5read_scalar, h5read_1d, h5read_2d, h5read_3d, h5read_4d, h5read_5d, h5read_6d, h5read_7d
 
 !> write attributes
 generic, public :: writeattr => writeattr_char, writeattr_num
@@ -73,16 +68,12 @@ generic, public :: writeattr => writeattr_char, writeattr_num
 !> read attributes
 generic, public :: readattr => readattr_char, readattr_num
 
-!> read dataset
-generic, public :: read => h5read_scalar, &
-h5read_1d, h5read_2d, h5read_3d, h5read_4d, h5read_5d, h5read_6d, h5read_7d
+procedure, private :: writeattr_char, writeattr_num, readattr_char, readattr_num
 
-!> private methods
-!! each method must be declared here, and above as a generic, public
-procedure,private :: h5write_scalar, &
-h5write_1d, h5write_2d, h5write_3d, h5write_4d, h5write_5d, h5write_6d, h5write_7d, &
-h5read_scalar, h5read_1d, h5read_2d, h5read_3d, h5read_4d, h5read_5d, h5read_6d, h5read_7d, &
-writeattr_char, writeattr_num, readattr_char, readattr_num
+procedure, private :: h5write_scalar, h5write_1d, h5write_2d, h5write_3d, h5write_4d, h5write_5d, h5write_6d, h5write_7d
+
+procedure, private :: h5read_scalar, h5read_1d, h5read_2d, h5read_3d, h5read_4d, h5read_5d, h5read_6d, h5read_7d
+!! mapped procedures must be declared again like this
 
 !> flush file to disk and close file if user forgets to do so.
 final :: destructor
@@ -105,6 +96,13 @@ end interface h5write_attr
 interface h5read_attr
 procedure readattr_num_lt, readattr_char_lt
 end interface h5read_attr
+
+public :: hdf5_file, hdf5_close, h5write, h5read, h5exist, is_hdf5, h5write_attr, h5read_attr, hdf5version
+public :: hdf_shape_check, hdf_rank_check, hdf_get_slice
+!! for submodules only
+public :: HSIZE_T, HID_T, H5T_NATIVE_DOUBLE, H5T_NATIVE_REAL, H5T_NATIVE_INTEGER, H5T_NATIVE_CHARACTER, H5T_STD_I64LE
+public :: H5T_INTEGER_F, H5T_FLOAT_F, H5T_STRING_F
+!! HDF5 types for end users
 
 
 !> Submodules
