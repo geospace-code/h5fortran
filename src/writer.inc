@@ -1,6 +1,6 @@
-integer(HID_T) :: file_space_id, mem_space_id, dset_id, xfer_id, dtype
+integer(HID_T) :: file_space_id, mem_space_id, dset_id, xfer_id, dtype, dtype_id
 integer(HSIZE_T), dimension(rank(value)) :: mem_dims, dims_dset
-integer :: ier
+integer :: ier, charlen
 
 xfer_id = H5P_DEFAULT_F
 
@@ -12,6 +12,8 @@ else
   dims_dset = mem_dims
 endif
 
+charlen = 0
+
 select type (value)
 type is (real(real32))
   dtype = H5T_NATIVE_REAL
@@ -21,12 +23,16 @@ type is (integer(int32))
   dtype = H5T_NATIVE_INTEGER
 type is (integer(int64))
   dtype = H5T_STD_I64LE
+type is (character(*))
+  charlen = len(value)
+  dtype = H5T_NATIVE_CHARACTER
 class default
   error stop "unknown variable type for " // dname
 end select
 
 call hdf_create(self, dname, dtype, mem_dims, dims_dset, file_space_id, dset_id, &
-  chunk_size=chunk_size, istart=istart, iend=iend, stride=stride, compact=compact)
+  chunk_size=chunk_size, istart=istart, iend=iend, stride=stride, compact=compact, &
+  dtype_id=dtype_id, charlen=charlen)
 
 mem_space_id = H5S_ALL_F !< default
 
@@ -43,6 +49,10 @@ type is (integer(int32))
   call h5dwrite_f(dset_id, dtype, value, dims_dset, ier, file_space_id=file_space_id, mem_space_id=mem_space_id, xfer_prp=xfer_id)
 type is (integer(int64))
   call h5dwrite_f(dset_id, dtype, value, dims_dset, ier, file_space_id=file_space_id, mem_space_id=mem_space_id, xfer_prp=xfer_id)
+type is (character(*))
+  call h5dwrite_f(dset_id, dtype_id, value, dims_dset, ier)
+  if (ier /= 0) error stop 'h5fortran:write:string: could not write ' // dname // ' to ' // self%filename
+  call h5tclose_f(dtype_id, ier)
 class default
   error stop "ERROR:h5fortran:writer: unknown variable type for " // dname
 end select
