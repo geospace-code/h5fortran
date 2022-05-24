@@ -13,7 +13,7 @@ if(present(istart) .and. present(iend)) then
 else
   call hdf_shape_check(self, dname, dims)
   call h5dopen_f(self%file_id, dname, dset_id, ier)
-  if(ier/=0) error stop 'h5fortran:reader: setup read ' // dname // ' from ' // self%filename
+  if(ier/=0) error stop 'ERROR:h5fortran:reader: setup read ' // dname // ' from ' // self%filename
 endif
 
 call get_dset_class(self, dname, dclass, dset_id)
@@ -27,7 +27,7 @@ if(dclass == H5T_FLOAT_F) then
   type is (real(real32))
     call h5dread_f(dset_id, H5T_NATIVE_REAL, value, dims, ier, mem_space_id, file_space_id, xfer_id)
   class default
-    error stop 'h5fortran:read: real disk dataset ' // dname // ' needs real memory variable'
+    error stop 'ERROR:h5fortran:read: real disk dataset ' // dname // ' needs real memory variable'
   end select
 elseif(dclass == H5T_INTEGER_F) then
   select type(value)
@@ -36,12 +36,14 @@ elseif(dclass == H5T_INTEGER_F) then
   type is (integer(int64))
     call h5dread_f(dset_id, H5T_STD_I64LE, value, dims, ier, mem_space_id, file_space_id, xfer_id)
   class default
-    error stop 'h5fortran:read: integer disk dataset ' // dname // ' needs integer memory variable'
+    error stop 'ERROR:h5fortran:read: integer disk dataset ' // dname // ' needs integer memory variable'
   end select
+elseif(dclass == H5T_STRING_F) then
+  error stop "ERROR:h5fortran:reader: character arrays (non-singleton) not yet supported by h5fortran."
 else
-  error stop 'h5fortran:reader: non-handled datatype--please reach out to developers.'
+  error stop 'ERROR:h5fortran:reader: non-handled datatype--please reach out to developers.'
 end if
-if(ier /= 0) error stop 'h5fortran:reader:h5dread: ' // dname // ' from ' // self%filename
+if(ier /= 0) error stop 'ERROR:h5fortran:reader:h5dread: ' // dname // ' from ' // self%filename
 
 call h5dclose_f(dset_id, ier)
 if(ier /= 0) error stop "ERROR:h5fortran:reader: closing dataset: " // dname // " in " // self%filename
