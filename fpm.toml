@@ -6,6 +6,11 @@ version = "4.6.3"
 [build]
 auto-tests = false
 external-modules = ["hdf5", "h5lt"]
+
+# HDF5 >= 1.10.6
+# link = ["hdf5_hl_fortran", "hdf5_fortran", "hdf5_hl", "hdf5"]
+
+# HDF5 < 1.10.6, and distros that rename the old way such as Ubuntu 22.04
 link = ["hdf5hl_fortran", "hdf5_fortran", "hdf5_hl", "hdf5"]
 
 [install]
@@ -28,8 +33,20 @@ name = "cast"
 main = "test_cast.f90"
 
 [[test]]
-name = "deflate"
-main = "test_deflate.f90"
+name = "write"
+main = "test_write.f90"
+
+[[test]]
+name = "deflate_write"
+main = "test_deflate_write.f90"
+
+[[test]]
+name = "deflate_read"
+main = "test_deflate_read.f90"
+
+[[test]]
+name = "deflate_props"
+main = "test_deflate_props.f90"
 
 [[test]]
 name = "destructor"
@@ -46,10 +63,6 @@ main = "test_layout.f90"
 [[test]]
 name = "lt"
 main = "test_lt.f90"
-
-[[test]]
-name = "module"
-main = "test_module.f90"
 
 [[test]]
 name = "scalar"
