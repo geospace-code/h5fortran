@@ -57,7 +57,8 @@ endfunction(setup_test)
 cmake_path(SET shape_file ${CMAKE_CURRENT_BINARY_DIR}/test_shape.h5)
 cmake_path(SET string_file ${CMAKE_CURRENT_BINARY_DIR}/test_string_py.h5)
 
-set(test_names array attributes cast deflate_write deflate_read deflate_props destructor exist groups layout lt scalar shape string string_read version write
+set(test_names array attributes cast deflate_write deflate_read deflate_props destructor exist fill
+groups layout lt scalar shape string string_read version write
 fail_read_size_mismatch fail_read_rank_mismatch fail_nonexist_variable)
 
 setup_test("${test_names}")

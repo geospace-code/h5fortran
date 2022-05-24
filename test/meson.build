@@ -8,7 +8,7 @@ test('minimal', test_minimal,
 
 foreach t : ['array', 'attributes', 'cast',
 'deflate_write', 'deflate_read', 'deflate_props',
-'destructor', 'exist', 'groups', 'layout', 'lt',
+'destructor', 'exist', 'fill', 'groups', 'layout', 'lt',
 'scalar', 'shape', 'string', 'version', 'write',
 'fail_read_size_mismatch', 'fail_read_rank_mismatch', 'fail_nonexist_variable']
 

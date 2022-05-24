@@ -252,23 +252,23 @@ mem_dims = iend - istart
 if (dset_id == 0) then
   if(.not.self%exist(dname)) error stop "ERROR:h5fortran:get_slice: "//dname// " does not exist: " // self%filename
   call h5dopen_f(self%file_id, dname, dset_id, ierr)
-  if(ierr /= 0) error stop 'h5fortran:get_slice:H5Dopen: ' // dname // ' ' // self%filename
+  if(ierr /= 0) error stop 'ERROR:h5fortran:get_slice:H5Dopen: ' // dname // ' ' // self%filename
 endif
 
 !> Select hyperslab in file
 call h5dget_space_f(dset_id, filespace_id, ierr)
-if (ierr/=0) error stop "h5dget_space: " // dname
+if (ierr /= 0) error stop "ERROR:h5fortran:get_slice:h5dget_space: " // dname
 
 call h5sselect_hyperslab_f(filespace_id, H5S_SELECT_SET_F, &
 start=istart, &
 count=mem_dims, &
 hdferr=ierr, &
 stride=stride)
-if(ierr /= 0) error stop 'h5fortran:h5sselect_hyperslab: ' // dname
+if(ierr /= 0) error stop 'ERROR:h5fortran:get_slice:h5sselect_hyperslab: ' // dname
 
 !> create memory dataspace
 call h5screate_simple_f(rank=size(mem_dims), dims=mem_dims, space_id=memspace_id, hdferr=ierr)
-if (ierr/=0) error stop "h5fortran:h5screate_simple:memspace " // dname
+if (ierr /= 0) error stop "ERROR:h5fortran:get_slice:h5screate_simple:memspace " // dname
 
 end procedure hdf_get_slice
 

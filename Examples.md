@@ -7,12 +7,14 @@ use h5fortran, only: hdf5_file
 type(hdf5_file) :: h5f
 ```
 
-* gzip compression may be applied for rank &ge; 2 arrays by setting `comp_lvl` to a value between 1 and 9.
-  Shuffle filter is automatically applied for better compression
-* string attributes may be applied to any variable at time of writing or later.
-* h5f%open(..., `comp_lvl=1`) option enables GZIP compression., where comp_lvl is from 1 to 9. bigger comp_lvl gives more compression but isslower to write.
+GZip compression may be applied for rank &ge; 2 arrays by setting `comp_lvl` to a value between 1 and 9.
+Shuffle filter is automatically applied for better compression
+`h5f%open(..., 'comp_lvl=1')` option enables GZIP compression., where comp_lvl is from 1 to 9.
+Bigger comp_lvl gives more compression but is slower to write.
 
-## Create new HDF5 file, with variable "value1"
+Dataset attributes may be applied to any dataset at time of writing or later.
+
+## Create new HDF5 file, with dataset "value1"
 
 ```fortran
 call h5f%open('test.h5', action='w')
@@ -22,9 +24,18 @@ call h5f%write('/value1', 123.)
 call h5f%close()
 ```
 
-## create soft links to actual variable
+## Create dataset with fill value
 
-HDF5 soft link variables: arbitrarily many soft-linked variable names can point to an actual variable, which need not yet exist.
+By default a dataset has arbitrary data.
+Providing a fill value initializes the dataset to that value, in case only some of the dataset arary indices are set.
+
+```fortran
+call h5f%create('/x', H5T_NATIVE_REAL, dset_dims=[4], fill_value=-1.)
+```
+
+## create soft links to actual dataset
+
+HDF5 soft link datasets: arbitrarily many soft-linked dataset names can point to an actual dataset, which need not yet exist.
 
 ```fortran
 call h5f%write("/x", 42)
@@ -58,11 +69,11 @@ The flush request is on a per-file basis, so if multiple files are open, flush e
 call h5f%flush()
 ```
 
-## read / write attributes to variable
+## read / write attributes to dataset
 
 Note that HDF5 character attributes are scalar while int32, real32, real64 attributes are 1D vectors.
 
-Assume variable "/x" exists and then see these examples:
+Assume dataset "/x" exists and then see these examples:
 
 ### write attributes
 
@@ -111,10 +122,10 @@ call h5read_attr('myfile.h5', '/x', 'date', idate)
 call h5read_attr('myfile.h5', '/x', 'units', unit_str)
 ```
 
-## Add/append variable "value1" to existing HDF5 file "test.h5"
+## Add/append dataset "value1" to existing HDF5 file "test.h5"
 
-* if file `test.h5` exists, add a variable to it
-* if file `test.h5` does not exist, create it and add a variable to it.
+* if file `test.h5` exists, add a dataset to it
+* if file `test.h5` does not exist, create it and add a dataset to it.
 
 ```fortran
 call h5f%open('test.h5', action='rw')
@@ -142,9 +153,9 @@ chunk_size may be manually specified in write() otherwise it will be set automat
 
 Currently, data is written contiguous or compact if not compressed and is only chunked if compression is used.
 
-## check if a variable exists
+## check if a dataset exists
 
-the logical method %exist() checks if a dataset (variable) exists in the opened HDF5 file.
+the logical method %exist() checks if a dataset exists in the opened HDF5 file.
 
 ```fortran
 exists = h5f%exist("/A")
@@ -156,7 +167,7 @@ A convenience method that checks existence of a dataset without creating the h5 
 exists = h5exist("my.h5", "/A")
 ```
 
-## check variable shape, rank/ndims
+## check dataset shape, rank/ndims
 
 `h5f%ndim` we didn't use `%rank` to avoid confusion with intrinsic "rank()"
 
@@ -189,9 +200,9 @@ call h5f%close()
 
 ## read slice (part of) a disk array
 
-Reading a disk HDF5 array into a variable of matching shape is done with `istart=` and `iend=` arguments, which have 1-D arguments for the start and stop index desired from each dimension.
+Reading a disk HDF5 array into a dataset of matching shape is done with `istart=` and `iend=` arguments, which have 1-D arguments for the start and stop index desired from each dimension.
 
-For example, support HDF5 disk variable "/A" is shape (10,20,30) and you wish to read just part of this array like:
+For example, support HDF5 disk dataset "/A" is shape (10,20,30) and you wish to read just part of this array like:
 
 * dim 1: 5-7
 * dim 2: 1-5
@@ -209,9 +220,9 @@ call h5f%read('/A', A, istart=[5, 1, 2], iend=[7, 5, 8])
 
 ## write slice (part of) a disk array
 
-Writing a disk HDF5 array from a variable of matching shape is done with `istart=` and `iend=` arguments, which have 1-D arguments for the start and stop index desired from each dimension.
+Writing a disk HDF5 array from a dataset of matching shape is done with `istart=` and `iend=` arguments, which have 1-D arguments for the start and stop index desired from each dimension.
 
-For example, support HDF5 disk variable "/A" is shape (10,20,30) and you wish to write a slice from a variable shaped (5,7,1) with start/stop indices:
+For example, support HDF5 disk dataset "/A" is shape (10,20,30) and you wish to write a slice from a variable shaped (5,7,1) with start/stop indices:
 
 * dim 1: 3-7
 * dim 2: 4-10
@@ -224,11 +235,11 @@ real, dimension(5,7,1) :: A
 
 call h5f%open('test.h5')
 
-call h5f%create('/A', H5T_NATIVE_REAL, [5,7,1])
+call h5f%create('/A', H5T_NATIVE_REAL, dset_dims=[5,7,1])
 call h5f%write('/A', A, istart=[3, 4, 8], iend=[7, 10, 8])
 ```
 
-Note the h5f%create() call to open the disk variable.
+Note the h5f%create() call to open the dataset.
 This step is also needed with h5py in Python or Matlab HDF5 h5create() before h5write().
 
 ## is dataset compact, contiguous, or chunked
