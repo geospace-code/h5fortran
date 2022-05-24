@@ -16,35 +16,35 @@ end procedure h5exist
 
 
 module procedure lt0read
-include "reader_lt_template.inc"
-end procedure lt0read
+include "reader_lt.inc"
+end procedure
 
 module procedure lt1read
-include "reader_lt_template.inc"
-end procedure lt1read
+include "reader_lt.inc"
+end procedure
 
 module procedure lt2read
-include "reader_lt_template.inc"
-end procedure lt2read
+include "reader_lt.inc"
+end procedure
 
 module procedure lt3read
-include "reader_lt_template.inc"
-end procedure lt3read
+include "reader_lt.inc"
+end procedure
 
 module procedure lt4read
-include "reader_lt_template.inc"
-end procedure lt4read
+include "reader_lt.inc"
+end procedure
 
 module procedure lt5read
-include "reader_lt_template.inc"
-end procedure lt5read
+include "reader_lt.inc"
+end procedure
 
 module procedure lt6read
-include "reader_lt_template.inc"
-end procedure lt6read
+include "reader_lt.inc"
+end procedure
 
 module procedure lt7read
-include "reader_lt_template.inc"
-end procedure lt7read
+include "reader_lt.inc"
+end procedure
 
 end submodule reader_lt

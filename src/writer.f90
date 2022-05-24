@@ -7,31 +7,31 @@ implicit none (type, external)
 contains
 
 module procedure h5write_1d
-include "writer_template.inc"
-end procedure h5write_1d
+include "writer.inc"
+end procedure
 
 module procedure h5write_2d
-include "writer_template.inc"
-end procedure h5write_2d
+include "writer.inc"
+end procedure
 
 module procedure h5write_3d
-include "writer_template.inc"
-end procedure h5write_3d
+include "writer.inc"
+end procedure
 
 module procedure h5write_4d
-include "writer_template.inc"
-end procedure h5write_4d
+include "writer.inc"
+end procedure
 
 module procedure h5write_5d
-include "writer_template.inc"
-end procedure h5write_5d
+include "writer.inc"
+end procedure
 
 module procedure h5write_6d
-include "writer_template.inc"
-end procedure h5write_6d
+include "writer.inc"
+end procedure
 
 module procedure h5write_7d
-include "writer_template.inc"
-end procedure h5write_7d
+include "writer.inc"
+end procedure
 
 end submodule writer
