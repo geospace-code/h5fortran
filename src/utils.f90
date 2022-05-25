@@ -232,8 +232,6 @@ module procedure hdf_get_slice
 integer(HSIZE_T), dimension(size(i0)) :: istart, iend, stride, mem_dims
 integer :: ierr
 
-if(.not.self%is_open()) error stop 'h5fortran:slice: file handle is not open'
-
 istart = int(i0, HSIZE_T)
 iend = int(i1, HSIZE_T)
 
@@ -248,8 +246,8 @@ istart = istart - 1
 
 mem_dims = iend - istart
 
-!> some callers have already opened the dataset. 0 is a sentinel saying not opened yet.
-if (dset_id == 0) then
+!> some callers have already opened the dataset.
+if (dset_id == 0) then  !< this is NOT %is_open()
   if(.not.self%exist(dname)) error stop "ERROR:h5fortran:get_slice: "//dname// " does not exist: " // self%filename
   call h5dopen_f(self%file_id, dname, dset_id, ierr)
   if(ierr /= 0) error stop 'ERROR:h5fortran:get_slice:H5Dopen: ' // dname // ' ' // self%filename
@@ -281,7 +279,6 @@ integer :: ierr, drank, type_class
 
 if(present(vector_scalar)) vector_scalar = .false.
 
-if(.not.self%is_open()) error stop 'ERROR:h5fortran:rank_check: file handle is not open: ' // self%filename
 if (.not.self%exist(dname)) error stop 'ERROR::h5fortran:rank_check: ' // dname // ' does not exist in ' // self%filename
 
 !> check for matching rank, else bad reads can occur--doesn't always crash without this check

@@ -199,8 +199,6 @@ module procedure hdf_get_ndim
 !! get rank or "ndims"
 integer :: ier
 
-if(.not. self%is_open()) error stop 'ERROR:h5fortran:read: file handle is not open'
-
 drank = -1
 
 if (self%exist(dname)) then
@@ -238,7 +236,6 @@ integer(HSIZE_T) :: cs(size(chunk_size))
 
 cs = -1
 
-if (.not.self%is_open()) error stop 'ERROR:h5fortran:read: file handle is not open'
 if (.not.self%exist(dname)) error stop 'ERROR:h5fortran:get_chunk: ' // dname // ' does not exist in ' // self%filename
 
 if(self%is_chunked(dname)) then
@@ -278,8 +275,6 @@ module procedure hdf_get_layout
 
 integer(HID_T) :: dapl, dset_id
 integer :: ierr
-
-if(.not. self%is_open()) error stop 'ERROR:h5fortran:read: file handle is not open'
 
 layout = -1
 

@@ -2,7 +2,7 @@ integer(HSIZE_T), dimension(rank(value)) :: dims
 integer(HID_T) :: dset_id, file_space_id, mem_space_id, xfer_id
 integer :: dclass, ier
 
-dset_id = 0 !< sentinel
+dset_id = 0 !< sentinel used in hdf_get_slice
 file_space_id = H5S_ALL_F
 mem_space_id = H5S_ALL_F
 xfer_id = H5P_DEFAULT_F
