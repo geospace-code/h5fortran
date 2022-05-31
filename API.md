@@ -18,7 +18,7 @@ use h5fortran, only : hdf5version
 print *, hdf5version()
 ```
 
-## Open / close HDF5 file reference
+## Open HDF5 file reference
 
 More than one HDF5 file can be open in a program, by declaring unique file handle (variable) like:
 
@@ -27,33 +27,33 @@ type(hdf5_file) :: h1, h2, h3
 ```
 
 ```fortran
-call h%open(filename,action,comp_lvl,verbose,debug)
+call h%open(filename, action, comp_lvl)
 !! Opens hdf5 file
 
 character(*), intent(in) :: filename
 character(*), intent(in), optional :: action  !< r, w, rw
 integer, intent(in), optional      :: comp_lvl  !< 0: no compression. 1-9: ZLIB compression, higher is more compressior
-logical, intent(in), optional      :: verbose, debug
 ```
+
+## Close HDF5 file reference
 
 ```fortran
 call h%close(close_hdf5_interface)
-!! This must be called on each HDF5 file to flush buffers to disk
+!! This must be called on each open file to flush buffers to disk
 !! data loss can occur if program terminates before this procedure
 !!
-!! We don't reference count because applications might also invoke HDF5
-!! directly.
 !! close_hdf5_interface is when you know you have exactly one HDF5 file in your
 !! application, if true it closes ALL files, even those invoked directly from HDF5.
 
 logical, intent(in), optional :: close_hdf5_interface
 ```
 
-To avoid memory leaks or corrupted files, always "finalize" all hDF5 files before STOPping the Fortran program.
+To avoid memory leaks or corrupted files, always "close" files before STOPping the Fortran program.
+
+## Flush data to disk while file is open
 
 ```fortran
 call h%flush()
-!! request operating system flush data to disk.
 ```
 
 ## Disk variable (dataset) inquiry
@@ -70,6 +70,7 @@ Get disk dataset shape (1D vector)
 
 ```fortran
 call h%shape(dataset_name, dims)
+
 character(*), intent(in) :: dataset_name
 integer(HSIZE_T), intent(out), allocatable :: dims(:)
 ```
@@ -95,7 +96,8 @@ character(*), intent(in) :: dname
 Does dataset "dname" exist in this HDF5 file?
 
 ```fortran
-exists = h%exist(dname)
+tf = h%exist(dname)
+
 character(*), intent(in) :: dname
 ```
 
@@ -103,7 +105,7 @@ Is dataset "dname" contiguous on disk?
 
 ```fortran
 tf = h%is_contig(dname)
-!! is dataset contiguous
+
 character(*), intent(in) :: dname
 ```
 
@@ -142,6 +144,7 @@ character(*), intent(in) :: dname
 
 ```fortran
 call h%chunks(dname, chunk_size)
+
 character(*), intent(in) :: dname
 integer, intent(out) :: chunk_size(:)
 ```
@@ -172,6 +175,7 @@ Write dataset attribute (e.g. units or instrument)
 
 ```fortran
 call h%writeattr(dname, attr, attrval)
+
 character(*), intent(in) :: dname, attr  !< dataset name, attribute name
 class(*), intent(in) :: attrval(:)  !< character, real, integer
 ```
