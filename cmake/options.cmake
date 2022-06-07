@@ -9,7 +9,7 @@ set(CMAKE_TLS_VERIFY true)
 
 
 if(BUILD_SHARED_LIBS)
-  if(WIN32 AND CMAKE_VERSION VERSION_LESS 3.21 AND BUILD_TESTING)
+  if(WIN32 AND CMAKE_VERSION VERSION_LESS 3.21 AND ${PROJECT_NAME}_BUILD_TESTING)
     message(STATUS "Windows with shared libs needs CMake >= 3.21 to run tests")
   endif()
   if(MSVC)

@@ -29,7 +29,7 @@ h5fortran is designed for easy use using static or shared linking from your proj
 
 * `cmake --install`
 * CMake ExternalProject
-* CMake FetchContent
+* CMake [FetchContent (example)](https://github.com/scivision/h5fortran-fetchcontent)
 * CMake + Git submodule
 * Fortran Package Manager (fpm)
 * Meson subproject
