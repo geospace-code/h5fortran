@@ -28,7 +28,7 @@ We don't yet implement the interface for "parallel" HDF5.
 h5fortran is designed for easy use using static or shared linking from your project via:
 
 * `cmake --install`
-* CMake ExternalProject
+* CMake [ExternalProject (example)](https://github.com/scivision/h5fortran-externalproject)
 * CMake [FetchContent (example)](https://github.com/scivision/h5fortran-fetchcontent)
 * CMake + Git submodule
 * Fortran Package Manager (fpm)

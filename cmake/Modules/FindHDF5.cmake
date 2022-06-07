@@ -178,21 +178,27 @@ if(hdf5_have_zlib)
     # Szip even though not used by default.
     # If system HDF5 dynamically links libhdf5 with szip, our builds will fail if we don't also link szip.
     # however, we don't require SZIP for this case as other HDF5 libraries may statically link SZIP.
-    if(NOT SZIP_ROOT)
-      set(SZIP_ROOT ${ZLIB_ROOT})
-    endif()
-    if(HDF5_FIND_REQUIRED)
-      find_package(SZIP REQUIRED)
-    else()
-      find_package(SZIP)
-    endif()
-    if(NOT SZIP_FOUND)
+
+    find_library(SZIP_LIBRARY
+    NAMES szip sz
+    NAMES_PER_DIR
+    HINTS ${SZIP_ROOT} ${ZLIB_ROOT}
+    DOC "SZIP API"
+    )
+
+    find_path(SZIP_INCLUDE_DIR
+    NAMES szlib.h
+    HINTS ${SZIP_ROOT} ${ZLIB_ROOT}
+    DOC "SZIP header"
+    )
+
+    if(NOT SZIP_LIBRARY AND SZIP_INCLUDE_DIR)
       set(hdf5_prereqs false PARENT_SCOPE)
       return()
     endif()
 
-    list(APPEND CMAKE_REQUIRED_INCLUDES ${SZIP_INCLUDE_DIRS})
-    list(APPEND CMAKE_REQUIRED_LIBRARIES ${SZIP_LIBRARIES})
+    list(APPEND CMAKE_REQUIRED_INCLUDES ${SZIP_INCLUDE_DIR})
+    list(APPEND CMAKE_REQUIRED_LIBRARIES ${SZIP_LIBRARY})
   endif()
 
   list(APPEND CMAKE_REQUIRED_INCLUDES ${ZLIB_INCLUDE_DIRS})
@@ -886,12 +892,16 @@ if(HDF5_FOUND)
   if(NOT TARGET HDF5::HDF5)
     add_library(HDF5::HDF5 INTERFACE IMPORTED)
     set_target_properties(HDF5::HDF5 PROPERTIES
-      INTERFACE_LINK_LIBRARIES "${HDF5_LIBRARIES}"
-      INTERFACE_INCLUDE_DIRECTORIES "${HDF5_INCLUDE_DIRS}")
+    INTERFACE_LINK_LIBRARIES "${HDF5_LIBRARIES}"
+    INTERFACE_INCLUDE_DIRECTORIES "${HDF5_INCLUDE_DIRS}"
+    )
 
+    target_include_directories(HDF5::HDF5 INTERFACE
+    $<$<BOOL:${hdf5_have_szip}>:${SZIP_INCLUDE_DIR}>
+    )
     target_link_libraries(HDF5::HDF5 INTERFACE
     $<$<BOOL:${hdf5_have_zlib}>:ZLIB::ZLIB>
-    $<$<BOOL:${hdf5_have_szip}>:SZIP::SZIP>
+    $<$<BOOL:${hdf5_have_szip}>:${SZIP_LIBRARY}>
     ${CMAKE_THREAD_LIBS_INIT}
     ${CMAKE_DL_LIBS}
     $<$<BOOL:${UNIX}>:m>
