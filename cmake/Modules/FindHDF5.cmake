@@ -162,16 +162,14 @@ if(NOT ZLIB_ROOT)
 endif()
 
 
-set(hdf5_prereqs true PARENT_SCOPE)
-
 if(hdf5_have_zlib)
+
   if(HDF5_FIND_REQUIRED)
     find_package(ZLIB REQUIRED)
   else()
     find_package(ZLIB)
   endif()
   if(NOT ZLIB_FOUND)
-    set(hdf5_prereqs false PARENT_SCOPE)
     return()
   endif()
 
@@ -194,7 +192,6 @@ if(hdf5_have_zlib)
     )
 
     if(NOT SZIP_LIBRARY AND SZIP_INCLUDE_DIR)
-      set(hdf5_prereqs false PARENT_SCOPE)
       return()
     endif()
 
@@ -742,7 +739,7 @@ endfunction(check_fortran_links)
 
 function(check_hdf5_link)
 
-if(NOT (hdf5_prereqs AND HDF5_C_FOUND))
+if(NOT HDF5_C_FOUND)
   return()
 endif()
 
@@ -863,11 +860,11 @@ if(HDF5_C_FOUND)
   detect_config()
 endif(HDF5_C_FOUND)
 
-if(hdf5_prereqs AND HDF5_C_FOUND AND CXX IN_LIST HDF5_FIND_COMPONENTS)
+if(HDF5_C_FOUND AND CXX IN_LIST HDF5_FIND_COMPONENTS)
   find_hdf5_cxx()
 endif()
 
-if(hdf5_prereqs AND HDF5_C_FOUND AND Fortran IN_LIST HDF5_FIND_COMPONENTS)
+if(HDF5_C_FOUND AND Fortran IN_LIST HDF5_FIND_COMPONENTS)
   find_hdf5_fortran()
 endif()
 
@@ -884,7 +881,7 @@ list(REMOVE_ITEM CMAKE_IGNORE_PATH ${h5_ignore_path})
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(HDF5
-REQUIRED_VARS HDF5_C_LIBRARIES HDF5_links hdf5_prereqs
+REQUIRED_VARS HDF5_C_LIBRARIES HDF5_links
 VERSION_VAR HDF5_VERSION
 HANDLE_COMPONENTS
 HANDLE_VERSION_RANGE
