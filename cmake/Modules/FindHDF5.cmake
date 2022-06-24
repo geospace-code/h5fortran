@@ -826,7 +826,7 @@ elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "(aarch64|arm64)")
   list(APPEND hdf5_isuf openmpi-aarch64 mpich-aarch64)  # CentOS
 endif()
 
-if(NOT HDF5_ROOT AND CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
+if(NOT HDF5_ROOT AND CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
   # CentOS paths
   if(parallel IN_LIST HDF5_FIND_COMPONENTS)
     list(PREPEND hdf5_msuf gfortran/modules/openmpi gfortran/modules/mpich)
@@ -837,7 +837,7 @@ endif()
 
 # --- binary prefix / suffix
 set(hdf5_binpref)
-if(CMAKE_SYSTEM_NAME STREQUAL Linux)
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
   set(hdf5_binpref /usr/lib64)
 endif()
 

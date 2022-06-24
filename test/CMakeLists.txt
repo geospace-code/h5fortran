@@ -26,7 +26,7 @@ target_link_libraries(test_${name} PRIVATE h5fortran::h5fortran)
 target_compile_options(test_${name} PRIVATE "$<$<Fortran_COMPILER_ID:GNU>:-Wno-compare-reals;-Wno-conversion>")
 set_target_properties(test_${name} PROPERTIES LABELS unit)
 
-if(${name} STREQUAL string_read)
+if(${name} STREQUAL "string_read")
   add_test(NAME ${name} COMMAND test_${name} ${string_file})
 else()
   add_test(NAME ${name} COMMAND test_${name})
