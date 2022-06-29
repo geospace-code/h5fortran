@@ -32,7 +32,7 @@ sources: hdf5_src,
 dependencies: hdf5,
 install: true)
 
-hdf5_interface = declare_dependency(link_with: ooh5, dependencies: hdf5)
+h5fortran = declare_dependency(link_with: ooh5, dependencies: hdf5)
 
 # --- testing
 if not meson.is_subproject()
