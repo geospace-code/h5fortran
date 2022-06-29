@@ -2,13 +2,12 @@ program test_deflate_read
 
 use, intrinsic:: iso_fortran_env, only: int32, int64, real32, real64, stderr=>error_unit
 
-use h5fortran, only: hdf5_file, HSIZE_T
+use h5fortran, only: hdf5_file
 
 implicit none (type, external)
 
 character(*), parameter :: fn1='deflate1.h5'
-integer, parameter :: N(2) = [50, 1000], &
-MIN_COMP = 2  !< lots of CPUs, smaller arrays => poorer compression
+integer, parameter :: N(2) = [50, 1000]
 
 
 call test_read_deflate(fn1, N)
