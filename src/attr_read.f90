@@ -2,10 +2,9 @@ submodule (h5fortran) attr_read
 
 use, intrinsic :: iso_c_binding, only : C_CHAR, C_NULL_CHAR, C_F_POINTER
 
-use hdf5, only : H5Dopen_f, H5Dclose_f, &
-H5Aexists_by_name_f, H5Aopen_f, H5Aread_f, H5Aclose_f, H5Aget_info_f, H5Aget_type_f, &
+use hdf5, only : H5Aexists_by_name_f, H5Aopen_by_name_f, H5Aread_f, H5Aclose_f, H5Aget_info_f, H5Aget_type_f, &
 H5Tclose_f, H5Tis_variable_str_f
-use h5lt, only: h5ltget_attribute_string_f, h5ltget_attribute_float_f, h5ltget_attribute_double_f, h5ltget_attribute_int_f, &
+use h5lt, only: h5ltget_attribute_float_f, h5ltget_attribute_double_f, h5ltget_attribute_int_f, &
 h5ltget_attribute_ndims_f, h5ltget_attribute_info_f
 
 implicit none (type, external)
@@ -15,7 +14,7 @@ contains
 
 module procedure readattr_char
 !! NOTE: HDF5 character attributes are scalar.
-integer(HID_T) :: type_id, attr_id, dset_id
+integer(HID_T) :: type_id, attr_id
 integer :: ier, i, L
 integer(HSIZE_T) :: dsize
 
@@ -34,15 +33,11 @@ integer(HSIZE_T) :: dims(0)
 
 L = len(A)
 
-call H5Dopen_f(self%file_id, dname, dset_id, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:readattr:h5dopen failed: " // dname // " attr: " // attr
-
 call h5aexists_by_name_f(self%file_id, dname, attr, attr_exists, ier)
 if(ier /= 0) error stop "ERROR:h5fortran:readattr:h5aexists_by_name_f failed: " // dname // " attr: " // attr
 if(.not.attr_exists) error stop 'h5fortran:readattr: attribute not exist: ' // dname // " attr: " // attr
 
-call H5Aopen_f(dset_id, attr, attr_id, ier)
-!call H5Aopen_by_name_f(self%file_id, dname, attr, attr_id, ier)
+call H5Aopen_by_name_f(self%file_id, dname, attr, attr_id, ier)
 if(ier /= 0) error stop "ERROR:h5fortran:readattr:H5Aopen_by_name_f failed: " // dname // " attr: " // attr
 
 call H5Aget_type_f(attr_id, type_id, ier)
@@ -95,10 +90,6 @@ if(ier/=0) error stop "ERROR:h5fortran:read:H5Tclose " // dname // " attr: " // 
 
 call H5Aclose_f(attr_id, ier)
 if(ier /= 0) error stop "ERROR:h5fortran:readattr:H5Aclose " // dname // " attr: " // attr
-
-call H5Dclose_f(dset_id, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:readattr:H5Dclose " // dname // " attr: " // attr
-
 
 end procedure readattr_char
 
