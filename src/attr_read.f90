@@ -3,7 +3,8 @@ submodule (h5fortran) attr_read
 use, intrinsic :: iso_c_binding, only : C_CHAR, C_NULL_CHAR, C_F_POINTER
 
 use hdf5, only : H5Aexists_by_name_f, H5Aopen_by_name_f, H5Aread_f, H5Aclose_f, H5Aget_info_f, H5Aget_type_f, &
-H5Tclose_f, H5Tis_variable_str_f
+H5Tclose_f, H5Tis_variable_str_f, H5Tget_class_f, H5Tget_native_type_f, H5Tget_size_f, H5Tget_strpad_f, &
+H5T_DIR_ASCEND_F
 use h5lt, only: h5ltget_attribute_float_f, h5ltget_attribute_double_f, h5ltget_attribute_int_f, &
 h5ltget_attribute_ndims_f, h5ltget_attribute_info_f
 
@@ -19,7 +20,7 @@ integer :: ier, i, L
 integer(HSIZE_T) :: dsize
 
 logical :: vstatus, f_corder_valid
-integer :: corder, cset
+integer :: corder, cset, attr_class
 logical :: attr_exists
 
 !> variable length string
@@ -33,12 +34,18 @@ integer(HSIZE_T) :: dims(0)
 
 L = len(A)
 
-call h5aexists_by_name_f(self%file_id, dname, attr, attr_exists, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:readattr:h5aexists_by_name_f failed: " // dname // " attr: " // attr
-if(.not.attr_exists) error stop 'h5fortran:readattr: attribute not exist: ' // dname // " attr: " // attr
+call H5Aexists_by_name_f(self%file_id, dname, attr, attr_exists, ier)
+if(ier /= 0) error stop "ERROR:h5fortran:readattr:h5aexists_by_name_f failed: " // dname // ":" // attr
+if(.not.attr_exists) error stop 'h5fortran:readattr: attribute not exist: ' // dname // ":" // attr
 
 call H5Aopen_by_name_f(self%file_id, dname, attr, attr_id, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:readattr:H5Aopen_by_name_f failed: " // dname // " attr: " // attr
+if(ier /= 0) error stop "ERROR:h5fortran:readattr:H5Aopen_by_name_f failed: " // dname // ":" // attr
+
+call get_attr_class(self, dname, attr, attr_class, attr_id)
+
+if(attr_class /= H5T_STRING_F) then
+  error stop 'ERROR:h5fortran:readattr: character disk attribute ' // dname // ':' // attr // ' needs character memory variable'
+endif
 
 call H5Aget_type_f(attr_id, type_id, ier)
 if(ier/=0) error stop "ERROR:h5fortran:readattr:H5Aget_type " // dname
@@ -49,14 +56,11 @@ call H5Tis_variable_str_f(type_id, vstatus, ier)
 if(ier/=0) error stop "ERROR:h5fortran:readattr:H5Tis_variable_str " // trim(dname)
 
 if(vstatus) then
-  ! call H5Aget_space_f(attr_id, space_id, ier)
-  ! if(ier/=0) error stop "ERROR:h5fortran:read:readattr:H5Aget_space " // dname // " attr: " // attr
-
   allocate(cbuf(1:dsize))
   f_ptr = C_LOC(cbuf(1))
 
   call H5Aread_f(attr_id, type_id, f_ptr, ier)
-  if(ier/=0) error stop "h5fortran:read:readattr:H5Aread " // dname // " attr: " // attr
+  if(ier/=0) error stop "h5fortran:read:readattr:H5Aread " // dname // ":" // attr
 
   call C_F_POINTER(cbuf(1), cstr)
 
@@ -77,7 +81,7 @@ else
   allocate(character(dsize) :: buf_char)
 
   call H5Aread_f(attr_id, type_id, buf_char, dims, ier)
-  if(ier/=0) error stop "ERROR:h5fortran:readattr:H5Aread " // dname // " attr: " // attr
+  if(ier/=0) error stop "ERROR:h5fortran:readattr:H5Aread " // dname // ":" // attr
 
   i = index(buf_char, c_null_char) - 1
   if (i == -1) i = len_trim(buf_char)
@@ -86,30 +90,41 @@ else
 endif
 
 call H5Tclose_f(type_id, ier)
-if(ier/=0) error stop "ERROR:h5fortran:read:H5Tclose " // dname // " attr: " // attr
+if(ier/=0) error stop "ERROR:h5fortran:read:H5Tclose " // dname // ":" // attr
 
 call H5Aclose_f(attr_id, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:readattr:H5Aclose " // dname // " attr: " // attr
+if(ier /= 0) error stop "ERROR:h5fortran:readattr:H5Aclose " // dname // ":" // attr
 
 end procedure readattr_char
 
 
 module procedure readattr_num
 !! NOTE: HDF5 has 1D vector attributes for integer, float and double.
-integer :: ier
+integer :: ier, attr_class
 
 call attr_shape_check(self, dname, attr, size(A))
 
-select type(A)
-type is (real(real32))
-  call h5ltget_attribute_float_f(self%file_id, dname, attr, A, ier)
-type is (real(real64))
-  call h5ltget_attribute_double_f(self%file_id, dname, attr, A, ier)
-type is (integer(int32))
-  call h5ltget_attribute_int_f(self%file_id, dname, attr, A, ier)
-class default
-  error stop "ERROR:h5fortran:readattr_num: unknown dataset type for " // dname // " in " // self%filename
-end select
+call get_attr_class(self, dname, attr, attr_class)
+
+if(attr_class == H5T_FLOAT_F) then
+  select type(A)
+  type is (real(real32))
+    call h5ltget_attribute_float_f(self%file_id, dname, attr, A, ier)
+  type is (real(real64))
+    call h5ltget_attribute_double_f(self%file_id, dname, attr, A, ier)
+  class default
+    error stop 'ERROR:h5fortran:readattr: real disk attribute ' // dname // ':' // attr // ' needs real memory variable'
+  end select
+elseif(attr_class == H5T_INTEGER_F) then
+  select type(A)
+  type is (integer(int32))
+    call h5ltget_attribute_int_f(self%file_id, dname, attr, A, ier)
+  class default
+    error stop 'ERROR:h5fortran:readattr: integer disk attribute ' // dname // ':' // attr // ' needs integer memory variable'
+  end select
+else
+  error stop "ERROR:h5fortran:readattr_num: unknown attribute type for " // dname // ':' // attr
+endif
 
 if (ier /= 0) error stop "ERROR:h5fortran:readattr_num: " // dname // " in " // self%filename
 
@@ -147,14 +162,14 @@ integer :: arank, atype, ierr
 integer(size_t) :: attr_bytes
 integer(hsize_t) :: adims(1)
 
-if (.not. self%exist(dname)) error stop 'ERROR:h5fortran ' // dname // ' attr: ' // attr // ' does not exist in ' // self%filename
+if (.not. self%exist(dname)) error stop 'ERROR:h5fortran: attribute ' // dname // ':' // attr // ' not exist: ' // self%filename
 
 !> check for matching rank, else bad reads can occur--doesn't always crash without this check
 call h5ltget_attribute_ndims_f(self%file_id, dname, attr, arank, ierr)
 if (ierr /= 0) error stop 'ERROR:h5fortran:get_attribute_ndims: ' // dname // ' ' // self%filename
 
 if (arank /= 1) then
-  write(stderr,'(A,I6,A,I6)') 'ERROR:h5fortran: attribute rank mismatch ' // dname // ' attr: "' // attr // '" = ', arank,' /= 1'
+  write(stderr,'(A,I6,A,I6)') 'ERROR:h5fortran: attribute rank mismatch ' // dname // ':' // attr // ' = ', arank,' /= 1'
   error stop
 endif
 
@@ -164,11 +179,73 @@ call h5ltget_attribute_info_f(self%file_id, dname, attr, adims, atype, attr_byte
 if (ierr /= 0) error stop 'ERROR:h5fortran: get_attribute_info' // dname // ' read ' // self%filename
 
 if(.not. all(asize == adims)) then
-  write(stderr,*) 'ERROR:h5fortran: shape mismatch ' // dname // ' attribute "' // attr //'" = ', adims,'  shape =', asize
+  write(stderr,*) 'ERROR:h5fortran: shape mismatch ' // dname // ':' // attr //' = ', adims,'  shape =', asize
   error stop
 endif
 
 end subroutine attr_shape_check
+
+
+subroutine get_attr_class(self, dset_name, attr_name, class, attr_id, size_bytes, pad_type)
+!! get the attribute class (integer, float, string, ...)
+!! {H5T_INTEGER_F, H5T_FLOAT_F, H5T_STRING_F}
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: dset_name, attr_name
+integer, intent(out) :: class
+integer(HID_T), intent(in), optional :: attr_id
+integer(SIZE_T), intent(out), optional :: size_bytes
+integer, intent(out), optional :: pad_type
+
+logical :: attr_exists
+integer :: ierr
+integer(HID_T) :: type_id, native_type_id, a_id
+
+if(present(attr_id)) then
+  a_id = attr_id
+else
+  call H5Aexists_by_name_f(self%file_id, dset_name, attr_name, attr_exists, ierr)
+  if(ierr /= 0) error stop "ERROR:h5fortran:get_attr_class:H5Aexists_by_name_f failed: " // dset_name // ":" // attr_name
+  if(.not.attr_exists) error stop 'ERROR:h5fortran:get_attr_class: attribute not exist: ' // dset_name // ":" // attr_name
+
+  call H5Aopen_by_name_f(self%file_id, dset_name, attr_name, a_id, ierr)
+  if(ierr /= 0) error stop "ERROR:h5fortran:readattr:H5Aopen_by_name_f failed: " // dset_name // ":" // attr_name
+endif
+
+call H5Aget_type_f(a_id, type_id, ierr)
+if(ierr/=0) error stop 'ERROR:h5fortran:get_attr_class: type_id ' // dset_name // ":" // attr_name
+
+call H5Tget_native_type_f(type_id, H5T_DIR_ASCEND_F, native_type_id, ierr)
+if(ierr/=0) error stop 'ERROR:h5fortran:get_attr_class: native_type_id ' // dset_name // ":" // attr_name
+
+!> compose datatype inferred
+call H5Tget_class_f(native_type_id, class, ierr)
+if(ierr/=0) error stop 'ERROR:h5fortran:get_attr_class: class ' // dset_name // ":" // attr_name
+
+if(present(size_bytes)) then
+  call H5Tget_size_f(native_type_id, size_bytes, ierr)
+  if(ierr/=0) error stop 'ERROR:h5fortran:get_attr_class: byte size ' // dset_name // ":" // attr_name
+endif
+
+if(present(pad_type)) then
+  if(class /= H5T_STRING_F) error stop "ERROR:h5fortran:get_attr_class: pad_type only for string"
+
+  call H5Tget_strpad_f(type_id, pad_type, ierr)
+  if(ierr /= 0) error stop "ERROR:h5fortran:get_attr_class:h5tget_strpad " // dset_name // ":" // attr_name
+endif
+
+!> close to avoid memory leaks
+call H5Tclose_f(native_type_id, ierr)
+if(ierr/=0) error stop 'ERROR:h5fortran:get_class: closing native dtype ' // dset_name // ":" // attr_name
+
+call H5Tclose_f(type_id, ierr)
+if(ierr/=0) error stop 'ERROR:h5fortran:get_class: closing dtype ' // dset_name // ":" // attr_name
+
+if(.not.present(attr_id)) then
+  call H5Aclose_f(a_id, ierr)
+  if(ierr/=0) error stop 'ERROR:h5fortran:get_class: close attribute ' // dset_name // ':' // attr_name
+endif
+
+end subroutine get_attr_class
 
 
 end submodule attr_read
