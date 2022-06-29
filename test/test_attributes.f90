@@ -62,7 +62,7 @@ call h%read('/x', x)
 if (x/=1) error stop 'readattr: unexpected value'
 
 call h%readattr('/x', 'note', attr_str)
-if (attr_str /= 'this is just a little number') error stop 'readattr value note'
+if (attr_str /= 'this is just a little number') error stop 'readattr char note: ' // attr_str
 
 call h%readattr('/x', 'life', attr_int)
 if (attr_int(1) /= 42) error stop 'readattr: int'
