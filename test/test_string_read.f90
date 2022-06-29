@@ -35,6 +35,14 @@ call h%read("/wink", u1)
 print '(a)', "wink: " // u1
 if(u1 /= wink) error stop "test_utf8: wink failed"
 
+call h%readattr("/variable", "smiley", u1)
+print '(a)', "attribute: smiley: " // u1
+if(u1 /= smiley) error stop "test_utf8:attr: smiley failed"
+
+call h%readattr("/nullpad", "wink", u1)
+print '(a)', "attribute: wink: " // u1
+if(u1 /= wink) error stop "test_utf8:attr: wink failed"
+
 
 call h%close()
 

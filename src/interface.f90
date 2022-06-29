@@ -427,54 +427,54 @@ end interface
 
 interface  !< attributes.f90
 
-module subroutine readattr_char(self, dname, attr, attrval)
+module subroutine readattr_char(self, dname, attr, A)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname, attr
-character(*), intent(inout) :: attrval
+character(*), intent(inout) :: A
 !! intent(inout) for character
 end subroutine
 
-module subroutine readattr_num(self, dname, attr, attrval)
+module subroutine readattr_num(self, dname, attr, A)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname, attr
-class(*), intent(out) :: attrval(:)
+class(*), intent(out) :: A(:)
 end subroutine
 
-module subroutine writeattr_char(self, dname, attr, attrval)
+module subroutine writeattr_char(self, dname, attr, A)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname, attr
-character(*), intent(in) :: attrval
+character(*), intent(in) :: A
 end subroutine
 
-module subroutine writeattr_num(self, dname, attr, attrval)
+module subroutine writeattr_num(self, dname, attr, A)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname, attr
-class(*), intent(in) :: attrval(:)
+class(*), intent(in) :: A(:)
 end subroutine
 
-module subroutine writeattr_char_lt(filename, dname, attr, attrval)
+module subroutine writeattr_char_lt(filename, dname, attr, A)
 character(*), intent(in) :: filename
 character(*), intent(in) :: dname, attr
-character(*), intent(in) :: attrval
+character(*), intent(in) :: A
 end subroutine
 
-module subroutine writeattr_num_lt(filename, dname, attr, attrval)
+module subroutine writeattr_num_lt(filename, dname, attr, A)
 character(*), intent(in) :: filename
 character(*), intent(in) :: dname, attr
-class(*), intent(in) :: attrval(:)
+class(*), intent(in) :: A(:)
 end subroutine
 
-module subroutine readattr_char_lt(filename, dname, attr, attrval)
+module subroutine readattr_char_lt(filename, dname, attr, A)
 character(*), intent(in) :: filename
 character(*), intent(in) :: dname, attr
-character(*), intent(inout) :: attrval
+character(*), intent(inout) :: A
 !! intent(inout) for character
 end subroutine
 
-module subroutine readattr_num_lt(filename, dname, attr, attrval)
+module subroutine readattr_num_lt(filename, dname, attr, A)
 character(*), intent(in) :: filename
 character(*), intent(in) :: dname, attr
-class(*), intent(out) :: attrval(:)
+class(*), intent(out) :: A(:)
 end subroutine
 
 end interface

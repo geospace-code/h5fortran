@@ -15,9 +15,16 @@ P = p.parse_args()
 fn = Path(P.file).expanduser()
 
 with h5py.File(fn, "w") as f:
-    f["/variable"] = "Hello World!"  # H5T_STR_NULLTERM
-    f.create_dataset("/nullpad", dtype=h5py.string_dtype('utf-8', 40), data="Hello World!")
+
+    """H5T_STR_NULLTERM"""
+    v = f.create_dataset("/variable", data="Hello World!")
+    v.attrs["smiley"] = "😀"
+
+    n = f.create_dataset(
+        "/nullpad", dtype=h5py.string_dtype("utf-8", 40), data="Hello World!"
+    )
+    n.attrs["wink"] = "😉"
 
     f["/smiley"] = "😀"
 
-    f.create_dataset("/wink", dtype=h5py.string_dtype('utf-8'), data="😉")
+    f.create_dataset("/wink", dtype=h5py.string_dtype("utf-8"), data="😉")
