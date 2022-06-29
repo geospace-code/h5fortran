@@ -18,6 +18,21 @@ implicit none (type, external)
 
 contains
 
+module procedure id2name
+
+integer(SIZE_T) :: L
+integer :: ierr
+
+character(2048) :: name
+
+call h5iget_name_f(id, name, len(name, SIZE_T), L, ierr)
+if(ierr /= 0) error stop "h5fortran:id2name:h5iget_name"
+
+id2name = name(:L)
+
+end procedure id2name
+
+
 module procedure h5open
 
 character(:), allocatable :: laction

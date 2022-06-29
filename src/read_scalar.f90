@@ -1,11 +1,20 @@
 submodule (h5fortran:hdf5_read) read_scalar
 
-use hdf5, only : H5Dread_f, H5Dget_space_f, H5Dvlen_get_max_len_f, H5Dread_vl_f, H5Dvlen_reclaim_f,&
-H5Tis_variable_str_f, &
-H5Sclose_f, &
-H5T_STR_NULLTERM_F
+use hdf5, only : H5Dread_f, &
+H5Sclose_f
 
 implicit none (type, external)
+
+interface
+
+module subroutine read_scalar_char(A, dset_id, file_space_id, mem_space_id, dims)
+class(*), intent(inout) :: A
+integer(HID_T), intent(in) :: dset_id, file_space_id
+integer(HID_T), intent(inout) :: mem_space_id
+integer(HSIZE_T), intent(in) :: dims(:)
+end subroutine
+
+end interface
 
 contains
 
@@ -13,11 +22,10 @@ contains
 module procedure h5read_scalar
 
 integer(HSIZE_T) :: dims(0)
-integer(SIZE_T) :: dsize
-integer(HID_T) :: dset_id, type_id, file_space_id, mem_space_id
-integer :: dclass, ier, i, pad_type
+integer(HID_T) :: dset_id, file_space_id, mem_space_id
+integer :: dclass, ier
 
-logical :: is_scalar, vstatus
+logical :: is_scalar
 
 file_space_id = H5S_ALL_F
 mem_space_id = H5S_ALL_F
@@ -54,71 +62,7 @@ elseif(dclass == H5T_INTEGER_F) then
     error stop 'ERROR:h5fortran:read: integer disk dataset ' // dname // ' needs integer memory variable'
   end select
 elseif(dclass == H5T_STRING_F) then
-  select type(value)
-  type is (character(*))
-
-    call H5Dget_type_f(dset_id, type_id, ier)
-    if(ier/=0) error stop "ERROR:h5fortran:read:H5Tget_type " // dname // " in " // self%filename
-    call H5Tis_variable_str_f(type_id, vstatus, ier)
-    if(ier/=0) error stop "ERROR:h5fortran:read:H5Tis_variable_str " // dname // " in " // self%filename
-
-    if(vstatus) then
-      if(mem_space_id == H5S_ALL_F) call H5Dget_space_f(dset_id, mem_space_id, ier)
-      if(ier/=0) error stop "ERROR:h5fortran:read:H5Dget_space " // dname // " in " // self%filename
-      !call H5Dvlen_get_max_len_f(dset_id, type_id, space_id, dsize, ier)
-      !if(ier/=0) error stop "h5fortran:read:H5Dvlen_get_max_len " // dname // " in " // self%filename
-
-      block
-      character(10000) :: buf_char(1)
-      !! TODO: dynamically determine buffer size
-      integer(HSIZE_T) :: vldims(2)
-      integer(SIZE_T) :: vlen(1)
-
-      vldims = [len(buf_char), 1]
-
-      call H5Dread_vl_f(dset_id, type_id, buf_char, vldims, vlen, ier, mem_space_id, file_space_id)
-      if(ier/=0) error stop "ERROR:h5fortran:read:H5Dread_vl " // dname // " in " // self%filename
-
-      i = index(buf_char(1), c_null_char) - 1
-      if (i == -1) i = len_trim(buf_char(1))
-
-      value = buf_char(1)(:i)
-
-      ! call H5Dvlen_reclaim_f(type_id, H5S_ALL_F, H5P_DEFAULT_F, buf_char, ier)
-      end block
-    else
-      call H5Tget_strpad_f(type_id, pad_type, ier)
-      if(ier/=0) error stop "ERROR:h5fortran:read:H5Tget_strpad " // dname // " in " // self%filename
-
-      call H5Tget_size_f(type_id, dsize, ier) !< only for non-variable
-      if(ier/=0) error stop "ERROR:h5fortran:read:H5Tget_size " // dname // " in " // self%filename
-
-      if(dsize > len(value)) then
-        write(stderr,'(a,i0,a3,i0,1x,a)') "ERROR:h5fortran:read:string: buffer too small: ", dsize, " > ", len(value), &
-            dname // " in " // self%filename
-        error stop
-      endif
-
-      block
-      character(dsize) :: buf_char
-
-      call H5Dread_f(dset_id, type_id, buf_char, dims, ier, mem_space_id, file_space_id)
-      if(ier/=0) error stop "ERROR:h5fortran:read:H5Dread character " // dname // " in " // self%filename
-
-      i = index(buf_char, c_null_char) - 1
-      if (i == -1) i = len_trim(buf_char)
-
-      value = buf_char(:i)
-      end block
-    endif
-
-    ! print '(a,1x,i0,1x,a)', "TRACE: read_Scalar: " // dname, dsize, trim(value)
-    call H5Tclose_f(type_id, ier)
-    if(ier/=0) error stop "ERROR:h5fortran:read:H5Tclose " // dname // " in " // self%filename
-
-  class default
-    error stop "ERROR:h5fortran:read: character disk dataset " // dname // " needs character memory variable"
-  end select
+  call read_scalar_char(value, dset_id, file_space_id, mem_space_id, dims)
 else
   error stop 'ERROR:h5fortran:reader: non-handled datatype--please reach out to developers.'
 end if

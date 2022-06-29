@@ -94,7 +94,8 @@ procedure readattr_num_lt, readattr_char_lt
 end interface
 
 public :: hdf5_file, hdf5_close, h5write, h5read, h5exist, is_hdf5, h5write_attr, h5read_attr, hdf5version
-public :: hdf_shape_check, hdf_rank_check, hdf_get_slice
+!! for users
+public :: hdf_shape_check, hdf_rank_check, hdf_get_slice, id2name
 !! for submodules only
 public :: HSIZE_T, HID_T, H5T_NATIVE_DOUBLE, H5T_NATIVE_REAL, H5T_NATIVE_INTEGER, H5T_NATIVE_CHARACTER, H5T_STD_I64LE
 public :: H5T_INTEGER_F, H5T_FLOAT_F, H5T_STRING_F
@@ -480,6 +481,12 @@ end interface
 
 
 interface !< utils.f90
+
+module function id2name(id)
+!! get name of object with given id
+integer(HID_T), intent(in) :: id
+character(:), allocatable :: id2name
+end function
 
 module subroutine h5open(self, filename, action, comp_lvl, shuffle, fletcher32, verbose, debug)
 !! open/create file
