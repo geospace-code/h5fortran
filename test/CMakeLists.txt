@@ -54,6 +54,7 @@ endfunction(setup_test)
 
 # --- setup unit tests
 
+cmake_path(SET attr_file ${CMAKE_CURRENT_BINARY_DIR}/test_attr.h5)
 cmake_path(SET shape_file ${CMAKE_CURRENT_BINARY_DIR}/test_shape.h5)
 cmake_path(SET string_file ${CMAKE_CURRENT_BINARY_DIR}/test_string_py.h5)
 
@@ -110,6 +111,16 @@ endif()
 
 set_tests_properties(string_read PROPERTIES
 FIXTURES_REQUIRED h5str
+DISABLED $<NOT:$<BOOL:${h5py_ok}>>
+)
+
+add_test(NAME PythonAttributes
+COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test_attributes.py ${attr_file}
+)
+
+set_tests_properties(PythonAttributes PROPERTIES
+FIXTURES_REQUIRED h5lib
+FIXTURES_SETUP h5str
 DISABLED $<NOT:$<BOOL:${h5py_ok}>>
 )
 

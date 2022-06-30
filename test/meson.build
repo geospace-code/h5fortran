@@ -11,12 +11,21 @@ python = find_program('python')
 h5py_ok = run_command(python, '-c', 'import h5py', check: false).returncode() == 0
 if h5py_ok
   test_string_py = meson.current_build_dir() / 'test_string_py.h5'
+
+  test('PythonAttributes', python,
+  args: [files('test_attributes.py'), meson.current_build_dir() / 'test_attr.h5'],
+  is_parallel: true, priority: 50, timeout: 15
+  )
+
   test('PythonShape', python,
-    args: [files('test_shape.py'), meson.current_build_dir() / 'test_shape.h5'],
-    is_parallel: false, priority: -100, timeout: 15)
+  args: [files('test_shape.py'), meson.current_build_dir() / 'test_shape.h5'],
+  is_parallel: false, priority: -100, timeout: 15
+  )
+
   test('PythonString', python,
-    args: [files('test_string.py'), test_string_py],
-    is_parallel: true, priority: 50, timeout: 15)
+  args: [files('test_string.py'), test_string_py],
+  is_parallel: true, priority: 50, timeout: 15
+  )
 endif
 
 foreach t : ['array', 'attributes', 'cast',
