@@ -21,7 +21,6 @@ integer(HSIZE_T) :: dsize
 
 logical :: vstatus, f_corder_valid
 integer :: corder, cset, attr_class
-logical :: attr_exists
 
 !> variable length string
 TYPE(C_PTR), DIMENSION(:), ALLOCATABLE, TARGET :: cbuf
@@ -34,9 +33,7 @@ integer(HSIZE_T) :: dims(0)
 
 L = len(A)
 
-call H5Aexists_by_name_f(self%file_id, dname, attr, attr_exists, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:readattr:h5aexists_by_name_f failed: " // dname // ":" // attr
-if(.not.attr_exists) error stop 'h5fortran:readattr: attribute not exist: ' // dname // ":" // attr
+call attr_shape_check(self, dname, attr, shape(A))
 
 call H5Aopen_by_name_f(self%file_id, dname, attr, attr_id, ier)
 if(ier /= 0) error stop "ERROR:h5fortran:readattr:H5Aopen_by_name_f failed: " // dname // ":" // attr
@@ -102,7 +99,7 @@ module procedure readattr_num
 !! NOTE: HDF5 has 1D vector attributes for integer, float and double.
 integer :: ier, attr_class
 
-call attr_shape_check(self, dname, attr, size(A))
+call attr_shape_check(self, dname, attr, shape(A))
 
 call get_attr_class(self, dname, attr, attr_class)
 
@@ -153,33 +150,37 @@ call h%close()
 end procedure readattr_num_lt
 
 
-subroutine attr_shape_check(self, dname, attr, asize)
+subroutine attr_shape_check(self, dset_name, attr_name, dims)
 class(hdf5_file), intent(in) :: self
-character(*), intent(in) :: dname, attr
-integer, intent(in) :: asize
+character(*), intent(in) :: dset_name, attr_name
+integer, intent(in) :: dims(:)
 
-integer :: arank, atype, ierr
+integer :: attr_rank, attr_type, ierr
 integer(size_t) :: attr_bytes
-integer(hsize_t) :: adims(1)
+integer(HSIZE_T), dimension(size(dims)):: attr_dims
+logical :: attr_exists
 
-if (.not. self%exist(dname)) error stop 'ERROR:h5fortran: attribute ' // dname // ':' // attr // ' not exist: ' // self%filename
+call H5Aexists_by_name_f(self%file_id, dset_name, attr_name, attr_exists, ierr)
+if(ierr /= 0) error stop "ERROR:h5fortran:attr_shape_check:H5Aexists_by_name_f failed: " // dset_name // ":" // attr_name
+if(.not.attr_exists) error stop 'ERROR:h5fortran:attr_shape_check: attribute not exist: ' // dset_name // ":" // attr_name
 
 !> check for matching rank, else bad reads can occur--doesn't always crash without this check
-call h5ltget_attribute_ndims_f(self%file_id, dname, attr, arank, ierr)
-if (ierr /= 0) error stop 'ERROR:h5fortran:get_attribute_ndims: ' // dname // ' ' // self%filename
+call h5ltget_attribute_ndims_f(self%file_id, dset_name, attr_name, attr_rank, ierr)
+if (ierr /= 0) error stop 'ERROR:h5fortran:attr_shape_check:get_attribute_ndims: ' // dset_name // ' ' // self%filename
 
-if (arank /= 1) then
-  write(stderr,'(A,I6,A,I6)') 'ERROR:h5fortran: attribute rank mismatch ' // dname // ':' // attr // ' = ', arank,' /= 1'
+if (attr_rank /= size(dims)) then
+  write(stderr,'(A,I0,A,I0)') 'ERROR:h5fortran:attr_shape_check: attribute rank ' // dset_name // ':' // attr_name // ' ', &
+    attr_rank,' /= ',size(dims)
   error stop
 endif
 
 !> check for matching size, else bad reads can occur.
 
-call h5ltget_attribute_info_f(self%file_id, dname, attr, adims, atype, attr_bytes, ierr)
-if (ierr /= 0) error stop 'ERROR:h5fortran: get_attribute_info' // dname // ' read ' // self%filename
+call h5ltget_attribute_info_f(self%file_id, dset_name, attr_name, attr_dims, attr_type, attr_bytes, ierr)
+if (ierr /= 0) error stop 'ERROR:h5fortran:attr_shape_check:get_attribute_info' // dset_name // ':' // attr_name
 
-if(.not. all(asize == adims)) then
-  write(stderr,*) 'ERROR:h5fortran: shape mismatch ' // dname // ':' // attr //' = ', adims,'  shape =', asize
+if(.not. all(dims == attr_dims)) then
+  write(stderr,*) 'ERROR:h5fortran:attr_shape_check: ' // dset_name // ':' // attr_name //': ', attr_dims,' /= ', dims
   error stop
 endif
 
