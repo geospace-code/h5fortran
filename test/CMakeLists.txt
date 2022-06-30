@@ -120,7 +120,7 @@ COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test_attributes.py ${at
 
 set_tests_properties(PythonAttributes PROPERTIES
 FIXTURES_REQUIRED h5lib
-FIXTURES_SETUP h5str
+FIXTURES_SETUP h5attr
 DISABLED $<NOT:$<BOOL:${h5py_ok}>>
 )
 
