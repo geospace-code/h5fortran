@@ -77,7 +77,6 @@ if(ier /= 0) error stop "ERROR:h5fortran:read_scalar closing memory dataspace: "
 if(file_space_id /= H5S_ALL_F) call H5Sclose_f(file_space_id, ier)
 if(ier /= 0) error stop "ERROR:h5fortran:read_scalar closing file dataspace: " // dname // " in " // self%filename
 
-
 end procedure h5read_scalar
 
 end submodule read_scalar

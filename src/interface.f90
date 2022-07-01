@@ -65,11 +65,11 @@ generic, public :: read => h5read_scalar, h5read_1d, h5read_2d, h5read_3d, h5rea
 procedure, private :: h5read_scalar, h5read_1d, h5read_2d, h5read_3d, h5read_4d, h5read_5d, h5read_6d, h5read_7d
 
 !> attributes
-generic, public :: writeattr => writeattr_char, writeattr_num
-procedure, private :: writeattr_char, writeattr_num
+generic, public :: writeattr => writeattr_scalar, writeattr_1d
+procedure, private :: writeattr_scalar, writeattr_1d
 
-generic, public :: readattr => readattr_char, readattr_num
-procedure, private :: readattr_char, readattr_num
+generic, public :: readattr => readattr_scalar, readattr_1d
+procedure, private :: readattr_scalar, readattr_1d
 
 !> flush file to disk and close file if user forgets to do so.
 final :: destructor
@@ -86,11 +86,11 @@ procedure lt0read, lt1read, lt2read, lt3read, lt4read, lt5read, lt6read, lt7read
 end interface
 
 interface h5write_attr
-procedure writeattr_num_lt, writeattr_char_lt
+procedure lt0writeattr, lt1writeattr
 end interface
 
 interface h5read_attr
-procedure readattr_num_lt, readattr_char_lt
+procedure lt0readattr, lt1readattr
 end interface
 
 public :: hdf5_file, hdf5_close, h5write, h5read, h5exist, is_hdf5, h5write_attr, h5read_attr, hdf5version
@@ -427,54 +427,52 @@ end interface
 
 interface  !< attributes.f90
 
-module subroutine readattr_char(self, dname, attr, A)
+module subroutine readattr_scalar(self, dname, attr, A)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname, attr
-character(*), intent(inout) :: A
-!! intent(inout) for character
+class(*), intent(inout) :: A
 end subroutine
 
-module subroutine readattr_num(self, dname, attr, A)
+module subroutine readattr_1d(self, dname, attr, A)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname, attr
-class(*), intent(out) :: A(:)
+class(*), intent(inout) :: A(:)
 end subroutine
 
-module subroutine writeattr_char(self, dname, attr, A)
+module subroutine writeattr_scalar(self, dname, attr, A)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname, attr
-character(*), intent(in) :: A
+class(*), intent(in) :: A
 end subroutine
 
-module subroutine writeattr_num(self, dname, attr, A)
+module subroutine writeattr_1d(self, dname, attr, A)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname, attr
 class(*), intent(in) :: A(:)
 end subroutine
 
-module subroutine writeattr_char_lt(filename, dname, attr, A)
+module subroutine lt0writeattr(filename, dname, attr, A)
 character(*), intent(in) :: filename
 character(*), intent(in) :: dname, attr
-character(*), intent(in) :: A
+class(*), intent(in) :: A
 end subroutine
 
-module subroutine writeattr_num_lt(filename, dname, attr, A)
+module subroutine lt1writeattr(filename, dname, attr, A)
 character(*), intent(in) :: filename
 character(*), intent(in) :: dname, attr
 class(*), intent(in) :: A(:)
 end subroutine
 
-module subroutine readattr_char_lt(filename, dname, attr, A)
+module subroutine lt0readattr(filename, dname, attr, A)
 character(*), intent(in) :: filename
 character(*), intent(in) :: dname, attr
 character(*), intent(inout) :: A
-!! intent(inout) for character
 end subroutine
 
-module subroutine readattr_num_lt(filename, dname, attr, A)
+module subroutine lt1readattr(filename, dname, attr, A)
 character(*), intent(in) :: filename
 character(*), intent(in) :: dname, attr
-class(*), intent(out) :: A(:)
+class(*), intent(inout) :: A(:)
 end subroutine
 
 end interface

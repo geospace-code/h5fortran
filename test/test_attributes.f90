@@ -34,9 +34,9 @@ call h%open(path, action='w')
 
 call h%write('/x', 1)
 
+call h%writeattr('/x', 'int32-scalar', 42)
 call h%writeattr('/x', 'note','this is just a little number')
 call h%writeattr('/x', 'hello', 'hi')
-call h%writeattr('/x', 'life', [42])
 call h%writeattr('/x', 'life_float', [42._real32, 84._real32])
 call h%writeattr('/x', 'life_double', [42._real64])
 
@@ -50,7 +50,7 @@ subroutine test_read_attributes(path)
 type(hdf5_file) :: h
 character(*), intent(in) :: path
 character(1024) :: attr_str
-integer :: attr_int(1)
+integer :: int32_0
 real(real32) :: attr32(2)
 real(real64) :: attr64(1)
 
@@ -64,8 +64,8 @@ if (x/=1) error stop 'readattr: unexpected value'
 call h%readattr('/x', 'note', attr_str)
 if (attr_str /= 'this is just a little number') error stop 'readattr char note: ' // attr_str
 
-call h%readattr('/x', 'life', attr_int)
-if (attr_int(1) /= 42) error stop 'readattr: int'
+call h%readattr('/x', 'int32-scalar', int32_0)
+if (int32_0 /= 42) error stop 'readattr: int32-scalar'
 
 call h%readattr('/x', 'life_float', attr32)
 if (any(attr32 /= [42._real32, 84._real32])) error stop 'readattr: real32'
