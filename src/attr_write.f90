@@ -1,6 +1,6 @@
 submodule (h5fortran:attr_smod) attr_write
 
-use h5lt, only: h5ltset_attribute_string_f, h5ltset_attribute_float_f, h5ltset_attribute_double_f, h5ltset_attribute_int_f
+use hdf5, only: H5Awrite_f
 
 implicit none (type, external)
 
@@ -8,26 +8,26 @@ contains
 
 module procedure writeattr_scalar
 
-integer(HID_T) :: attr_id, dtype_id
+integer(HID_T) :: attr_id, dtype_id, space_id
 integer(HSIZE_T) :: attr_dims(0)
 integer :: ier, L
 
 select type (A)
 type is (real(real32))
-  call attr_create(self, obj_name, attr, H5T_NATIVE_REAL, attr_dims, attr_id)
+  call attr_create(self, obj_name, attr, H5T_NATIVE_REAL, attr_dims, space_id, attr_id)
   call H5Awrite_f(attr_id, H5T_NATIVE_REAL, A, attr_dims, ier)
 type is (real(real64))
-  call attr_create(self, obj_name, attr, H5T_NATIVE_DOUBLE, attr_dims, attr_id)
+  call attr_create(self, obj_name, attr, H5T_NATIVE_DOUBLE, attr_dims, space_id, attr_id)
   call H5Awrite_f(attr_id, H5T_NATIVE_DOUBLE, A, attr_dims, ier)
 type is (integer(int32))
-  call attr_create(self, obj_name, attr, H5T_NATIVE_INTEGER, attr_dims, attr_id)
+  call attr_create(self, obj_name, attr, H5T_NATIVE_INTEGER, attr_dims, space_id, attr_id)
   call H5Awrite_f(attr_id, H5T_NATIVE_INTEGER, A, attr_dims, ier)
 type is (integer(int64))
-  call attr_create(self, obj_name, attr, H5T_STD_I64LE, attr_dims, attr_id)
+  call attr_create(self, obj_name, attr, H5T_STD_I64LE, attr_dims, space_id, attr_id)
   call H5Awrite_f(attr_id, H5T_STD_I64LE, A, attr_dims, ier)
 type is (character(*))
   L = len(A)  !< workaround for GCC 8.3.0 bug
-  call attr_create(self, obj_name, attr, H5T_NATIVE_CHARACTER, attr_dims, attr_id, dtype_id, charlen=L)
+  call attr_create(self, obj_name, attr, H5T_NATIVE_CHARACTER, attr_dims, space_id, attr_id, dtype_id, charlen=L)
   call H5Awrite_f(attr_id, dtype_id, A, attr_dims, ier)
   if (ier /= 0) error stop 'ERROR:h5fortran:writeattr:string:H5Awrite: ' // obj_name // ":" // attr // " in " // self%filename
   call h5tclose_f(dtype_id, ier)
@@ -38,34 +38,41 @@ end select
 if (ier /= 0) error stop 'ERROR:h5fortran:writeattr:H5Awrite ' // obj_name // ":" // attr // " in " // self%filename
 
 call H5Aclose_f(attr_id, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:writeattr: closing " // obj_name // ":" // attr // " in " // self%filename
+if(ier /= 0) error stop "ERROR:h5fortran:writeattr:H5Aclose " // obj_name // ":" // attr // " in " // self%filename
+
+if(space_id /= H5S_ALL_F) call H5Sclose_f(space_id, ier)
+if(ier /= 0) error stop "ERROR:h5fortran:writeattr:H5Sclose " // obj_name // ":" // attr // " in " // self%filename
 
 end procedure writeattr_scalar
 
 
 module procedure writeattr_1d
+include 'attr_write.inc'
+end procedure
 
-integer :: ier
-integer(size_t) :: dsize
+module procedure writeattr_2d
+include 'attr_write.inc'
+end procedure
 
-if(.not.self%is_open()) error stop 'ERROR:h5fortran:writeattr: file handle is not open'
+module procedure writeattr_3d
+include 'attr_write.inc'
+end procedure
 
-dsize = size(A)
+module procedure writeattr_4d
+include 'attr_write.inc'
+end procedure
 
-select type(A)
-type is (real(real32))
-  call h5ltset_attribute_float_f(self%file_id, obj_name, attr, A, dsize, ier)
-type is (real(real64))
-  call h5ltset_attribute_double_f(self%file_id, obj_name, attr, A, dsize, ier)
-type is (integer(int32))
-  call h5ltset_attribute_int_f(self%file_id, obj_name, attr, A, dsize, ier)
-class default
-  error stop "ERROR:h5fortran:writeattr_num: unknown dataset type for " // obj_name // ":" // attr // " in " // self%filename
-end select
+module procedure writeattr_5d
+include 'attr_write.inc'
+end procedure
 
-if (ier /= 0) error stop "ERROR:h5fortran:writeattr_num: " // obj_name // ":" // attr // " in " // self%filename
+module procedure writeattr_6d
+include 'attr_write.inc'
+end procedure
 
-end procedure writeattr_1d
+module procedure writeattr_7d
+include 'attr_write.inc'
+end procedure
 
 
 module procedure lt0writeattr

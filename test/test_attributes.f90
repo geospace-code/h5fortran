@@ -30,6 +30,8 @@ subroutine test_write_attributes(path)
 type(hdf5_file) :: h
 character(*), intent(in) :: path
 
+integer :: i2(1,1), i3(1,1,1), i4(1,1,1,1), i5(1,1,1,1,1), i6(1,1,1,1,1,1), i7(1,1,1,1,1,1,1)
+
 call h%open(path, action='w')
 
 call h%write('/x', 1)
@@ -40,10 +42,18 @@ call h%writeattr('/x', 'hello', 'hi')
 call h%writeattr('/x', 'real32_1d', [real(real32) :: 42, 84])
 call h%writeattr('/x', 'real64_1d0', [42._real64])
 
+call h%writeattr('/x', 'i2', i2)
+call h%writeattr('/x', 'i3', i3)
+call h%writeattr('/x', 'i4', i4)
+call h%writeattr('/x', 'i5', i5)
+call h%writeattr('/x', 'i6', i6)
+call h%writeattr('/x', 'i7', i7)
+
 call h%close()
 
 call h%open(path, action='a')
 call h%writeattr('/x', 'int32-scalar', 142)
+call h%writeattr('/x', 'real32_1d', [real(real32) :: 142, 84])
 call h%writeattr('/x', 'char', 'overwrite attrs')
 call h%delete_attr('/x', 'hello')
 call h%close()
@@ -62,6 +72,8 @@ real(real64) :: attr64
 
 integer :: x
 
+integer :: i2(1,1), i3(1,1,1), i4(1,1,1,1), i5(1,1,1,1,1), i6(1,1,1,1,1,1), i7(1,1,1,1,1,1,1)
+
 call h%open(path, action='r')
 
 call h%read('/x', x)
@@ -74,12 +86,19 @@ call h%readattr('/x', 'int32-scalar', int32_0)
 if (int32_0 /= 142) error stop 'readattr: int32-scalar'
 
 call h%readattr('/x', 'real32_1d', attr32)
-if (any(attr32 /= [42._real32, 84._real32])) error stop 'readattr: real32'
+if (any(attr32 /= [real(real32) :: 142, 84])) error stop 'readattr: real32'
 
 call h%readattr('/x', 'real64_1d0', attr64)
 if (attr64 /= 42._real64) error stop 'readattr: real64'
 
 if (h%exist_attr('/x', 'hello')) error stop "delete attr failed"
+
+call h%readattr('/x', 'i2', i2)
+call h%readattr('/x', 'i3', i3)
+call h%readattr('/x', 'i4', i4)
+call h%readattr('/x', 'i5', i5)
+call h%readattr('/x', 'i6', i6)
+call h%readattr('/x', 'i7', i7)
 
 call h%close()
 

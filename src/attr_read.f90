@@ -13,7 +13,7 @@ contains
 
 module procedure readattr_scalar
 
-integer(HSIZE_T) :: dims(0)
+integer(HSIZE_T) :: attr_dims(0)
 integer(HID_T) :: attr_id
 integer :: attr_class, ier
 logical :: is_scalar
@@ -31,18 +31,18 @@ call get_attr_class(self, obj_name, attr, attr_class, attr_id)
 if(attr_class == H5T_FLOAT_F) then
   select type(A)
   type is (real(real64))
-    call H5Aread_f(attr_id, H5T_NATIVE_DOUBLE, A, dims, ier)
+    call H5Aread_f(attr_id, H5T_NATIVE_DOUBLE, A, attr_dims, ier)
   type is (real(real32))
-    call H5Aread_f(attr_id, H5T_NATIVE_REAL, A, dims, ier)
+    call H5Aread_f(attr_id, H5T_NATIVE_REAL, A, attr_dims, ier)
   class default
     error stop 'ERROR:h5fortran:readattr: real disk dataset ' // obj_name // ':' // attr // ' needs real memory variable'
   end select
 elseif(attr_class == H5T_INTEGER_F) then
   select type(A)
   type is (integer(int32))
-    call H5Aread_f(attr_id, H5T_NATIVE_INTEGER, A, dims, ier)
+    call H5Aread_f(attr_id, H5T_NATIVE_INTEGER, A, attr_dims, ier)
   type is (integer(int64))
-    call H5Aread_f(attr_id, H5T_STD_I64LE, A, dims, ier)
+    call H5Aread_f(attr_id, H5T_STD_I64LE, A, attr_dims, ier)
   class default
     error stop 'ERROR:h5fortran:readattr: integer disk dataset ' // obj_name // ':' // attr // ' needs integer memory variable'
   end select
@@ -79,7 +79,7 @@ TYPE(C_PTR) :: f_ptr
 CHARACTER(10000, kind=c_char), POINTER :: cstr !< arbitrary maximum variable length string
 character(:), allocatable :: buf_char !< fixed length read
 
-integer(HSIZE_T) :: dims(0)
+integer(HSIZE_T) :: attr_dims(0)
 
 select type(A)
 type is (character(*)) !< kind=c_char too
@@ -131,7 +131,7 @@ else
 
   allocate(character(dsize) :: buf_char)
 
-  call H5Aread_f(attr_id, type_id, buf_char, dims, ier)
+  call H5Aread_f(attr_id, type_id, buf_char, attr_dims, ier)
   if(ier/=0) error stop "ERROR:h5fortran:readattr:H5Aread " // obj_name // ":" // attr
 
   i = index(buf_char, c_null_char) - 1
@@ -153,39 +153,32 @@ end subroutine readattr_char
 
 
 module procedure readattr_1d
-!! NOTE: HDF5 has 1D vector attributes for integer, float and double.
-integer :: ier, attr_class
+include 'attr_read.inc'
+end procedure
 
-call attr_shape_check(self, obj_name, attr, shape(A, HSIZE_T))
+module procedure readattr_2d
+include 'attr_read.inc'
+end procedure
 
-call get_attr_class(self, obj_name, attr, attr_class)
+module procedure readattr_3d
+include 'attr_read.inc'
+end procedure
 
-if(attr_class == H5T_FLOAT_F) then
-  select type(A)
-  type is (real(real32))
-    call h5ltget_attribute_float_f(self%file_id, obj_name, attr, A, ier)
-  type is (real(real64))
-    call h5ltget_attribute_double_f(self%file_id, obj_name, attr, A, ier)
-  class default
-    error stop 'ERROR:h5fortran:readattr: real disk attribute ' // obj_name // ':' // attr // ' needs real memory variable'
-  end select
-elseif(attr_class == H5T_INTEGER_F) then
-  select type(A)
-  type is (integer(int32))
-    call h5ltget_attribute_int_f(self%file_id, obj_name, attr, A, ier)
-  class default
-    error stop 'ERROR:h5fortran:readattr: integer disk attribute ' // obj_name // ':' // attr // ' needs integer memory variable'
-  end select
-elseif(attr_class == H5T_STRING_F) then
-  error stop "ERROR:h5fortran:readattr: attribute character arrays (non-singleton) not yet supported by h5fortran."
-else
-  error stop "ERROR:h5fortran:readattr_num: unknown attribute type for " // obj_name // ':' // attr
-endif
+module procedure readattr_4d
+include 'attr_read.inc'
+end procedure
 
-if (ier /= 0) error stop "ERROR:h5fortran:readattr_num: " // obj_name // " in " // self%filename
+module procedure readattr_5d
+include 'attr_read.inc'
+end procedure
 
-end procedure readattr_1d
+module procedure readattr_6d
+include 'attr_read.inc'
+end procedure
 
+module procedure readattr_7d
+include 'attr_read.inc'
+end procedure
 
 module procedure lt0readattr
 

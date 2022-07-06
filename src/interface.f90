@@ -67,11 +67,15 @@ generic, public :: read => h5read_scalar, h5read_1d, h5read_2d, h5read_3d, h5rea
 procedure, private :: h5read_scalar, h5read_1d, h5read_2d, h5read_3d, h5read_4d, h5read_5d, h5read_6d, h5read_7d
 
 !> attributes
-generic, public :: writeattr => writeattr_scalar, writeattr_1d
-procedure, private :: writeattr_scalar, writeattr_1d
+generic, public :: writeattr => writeattr_scalar, writeattr_1d, writeattr_2d, writeattr_3d, writeattr_4d, writeattr_5d, &
+  writeattr_6d, writeattr_7d
+procedure, private :: writeattr_scalar, writeattr_1d, writeattr_2d, writeattr_3d, writeattr_4d, writeattr_5d, &
+  writeattr_6d, writeattr_7d
 
-generic, public :: readattr => readattr_scalar, readattr_1d
-procedure, private :: readattr_scalar, readattr_1d
+generic, public :: readattr => readattr_scalar, readattr_1d, readattr_2d, readattr_3d, readattr_4d, readattr_5d, &
+readattr_6d, readattr_7d
+procedure, private :: readattr_scalar, readattr_1d, readattr_2d, readattr_3d, readattr_4d, readattr_5d, &
+readattr_6d, readattr_7d
 
 !> flush file to disk and close file if user forgets to do so.
 final :: destructor
@@ -441,6 +445,43 @@ character(*), intent(in) :: obj_name, attr
 class(*), intent(inout) :: A(:)
 end subroutine
 
+module subroutine readattr_2d(self, obj_name, attr, A)
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: obj_name, attr
+class(*), intent(inout) :: A(:,:)
+end subroutine
+
+module subroutine readattr_3d(self, obj_name, attr, A)
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: obj_name, attr
+class(*), intent(inout) :: A(:,:,:)
+end subroutine
+
+module subroutine readattr_4d(self, obj_name, attr, A)
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: obj_name, attr
+class(*), intent(inout) :: A(:,:,:,:)
+end subroutine
+
+module subroutine readattr_5d(self, obj_name, attr, A)
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: obj_name, attr
+class(*), intent(inout) :: A(:,:,:,:,:)
+end subroutine
+
+module subroutine readattr_6d(self, obj_name, attr, A)
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: obj_name, attr
+class(*), intent(inout) :: A(:,:,:,:,:,:)
+end subroutine
+
+module subroutine readattr_7d(self, obj_name, attr, A)
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: obj_name, attr
+class(*), intent(inout) :: A(:,:,:,:,:,:,:)
+end subroutine
+
+
 module subroutine writeattr_scalar(self, obj_name, attr, A)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: obj_name, attr
@@ -452,6 +493,43 @@ class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: obj_name, attr
 class(*), intent(in) :: A(:)
 end subroutine
+
+module subroutine writeattr_2d(self, obj_name, attr, A)
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: obj_name, attr
+class(*), intent(in) :: A(:,:)
+end subroutine
+
+module subroutine writeattr_3d(self, obj_name, attr, A)
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: obj_name, attr
+class(*), intent(in) :: A(:,:,:)
+end subroutine
+
+module subroutine writeattr_4d(self, obj_name, attr, A)
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: obj_name, attr
+class(*), intent(in) :: A(:,:,:,:)
+end subroutine
+
+module subroutine writeattr_5d(self, obj_name, attr, A)
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: obj_name, attr
+class(*), intent(in) :: A(:,:,:,:,:)
+end subroutine
+
+module subroutine writeattr_6d(self, obj_name, attr, A)
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: obj_name, attr
+class(*), intent(in) :: A(:,:,:,:,:,:)
+end subroutine
+
+module subroutine writeattr_7d(self, obj_name, attr, A)
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: obj_name, attr
+class(*), intent(in) :: A(:,:,:,:,:,:,:)
+end subroutine
+
 
 module subroutine lt0writeattr(filename, obj_name, attr, A)
 character(*), intent(in) :: filename

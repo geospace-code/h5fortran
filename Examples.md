@@ -71,8 +71,6 @@ call h5f%flush()
 
 ## read / write attributes to dataset
 
-Note that HDF5 character attributes are scalar while int32, real32, real64 attributes are 1D vectors.
-
 Assume dataset "/x" exists and then see these examples:
 
 ### write attributes

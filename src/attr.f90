@@ -1,7 +1,7 @@
 submodule (h5fortran) attr_smod
 
 use hdf5, only : H5S_SCALAR_F, &
-H5Aexists_by_name_f, H5Aopen_by_name_f, H5Awrite_f, H5Aclose_f, H5Acreate_by_name_f, H5Adelete_f, &
+H5Aexists_by_name_f, H5Aopen_by_name_f, H5Aclose_f, H5Acreate_by_name_f, H5Adelete_f, &
 H5Screate_f, H5Screate_simple_f, H5Sclose_f, &
 H5Tcopy_f, H5Tset_size_f, H5Tclose_f, &
 H5Dopen_f, H5Dclose_f
@@ -81,19 +81,19 @@ endif
 end subroutine attr_shape_check
 
 
-subroutine attr_create(self, obj_name, attr_name, dtype, mem_dims, attr_id, dtype_id, charlen)
+subroutine attr_create(self, obj_name, attr_name, dtype, attr_dims, space_id, attr_id, dtype_id, charlen)
 
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: obj_name, attr_name
 integer(HID_T), intent(in) :: dtype
-integer(HSIZE_T), dimension(:), intent(in) :: mem_dims
-integer(HID_T), intent(out) :: attr_id
+integer(HSIZE_T), dimension(:), intent(in) :: attr_dims
+integer(HID_T), intent(out) :: space_id, attr_id
 integer(HID_T), intent(out), optional :: dtype_id
 integer, intent(in), optional :: charlen !< length of character scalar
 
 logical :: attr_exists
 integer :: ier
-integer(HID_T) :: filespace_id, type_id
+integer(HID_T) :: type_id
 
 
 if(dtype == H5T_NATIVE_CHARACTER) then
@@ -117,10 +117,10 @@ if(attr_exists) then
 endif
 
 !> create attribute dataspace
-if(size(mem_dims) == 0) then
-  call H5Screate_f(H5S_SCALAR_F, filespace_id, ier)
+if(size(attr_dims) == 0) then
+  call H5Screate_f(H5S_SCALAR_F, space_id, ier)
 else
-  call H5Screate_simple_f(size(mem_dims), mem_dims, filespace_id, ier)
+  call H5Screate_simple_f(size(attr_dims), attr_dims, space_id, ier)
 endif
 if (ier /= 0) error stop "ERROR:h5fortran:attr_create:h5screate:filespace " // obj_name // ":" // attr_name // ": " // self%filename
 
@@ -135,11 +135,8 @@ else
   type_id = dtype
 endif
 
-call H5Acreate_by_name_f(self%file_id, obj_name, attr_name, type_id, filespace_id, attr_id, ier)
+call H5Acreate_by_name_f(self%file_id, obj_name, attr_name, type_id, space_id, attr_id, ier)
 if(ier/=0) error stop "ERROR:h5fortran:attr_create:H5Acreate_by_name: " // obj_name // ":" // attr_name // ": " // self%filename
-
-call H5Sclose_f(filespace_id, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:attr_create:h5sclose: " // obj_name // ":" // attr_name // ": " // self%filename
 
 end subroutine attr_create
 
