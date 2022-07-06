@@ -466,7 +466,7 @@ end subroutine
 module subroutine lt0readattr(filename, dname, attr, A)
 character(*), intent(in) :: filename
 character(*), intent(in) :: dname, attr
-character(*), intent(inout) :: A
+class(*), intent(inout) :: A
 end subroutine
 
 module subroutine lt1readattr(filename, dname, attr, A)

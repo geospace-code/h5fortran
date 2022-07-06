@@ -17,8 +17,9 @@ module procedure readattr_scalar
 integer(HSIZE_T) :: dims(0)
 integer(HID_T) :: attr_id
 integer :: attr_class, ier
+logical :: is_scalar
 
-call attr_shape_check(self, dname, attr, shape(A))
+call attr_rank_check(self, dname, attr, rank(A), is_scalar)
 
 call H5Aopen_by_name_f(self%file_id, dname, attr, attr_id, ier)
 if(ier/=0) error stop 'ERROR:h5fortran:readattr:H5Aopen ' // dname // ' in ' // self%filename
@@ -209,34 +210,63 @@ call h%close()
 end procedure lt1readattr
 
 
+subroutine attr_rank_check(self, dset_name, attr_name, mrank, vector_scalar)
+!! check for matching rank, else bad reads can occur--doesn't always crash without this check
+
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: dset_name, attr_name
+integer, intent(in) :: mrank
+logical, intent(out), optional :: vector_scalar
+
+integer(HSIZE_T) :: attr_dims(1)
+integer(SIZE_T) :: attr_bytes
+integer :: ierr, attr_rank, attr_type
+logical :: attr_exists
+
+if(present(vector_scalar)) vector_scalar = .false.
+
+if(.not.self%is_open()) error stop 'ERROR:h5fortran:attr_rank_check: file handle is not open'
+
+call H5Aexists_by_name_f(self%file_id, dset_name, attr_name, attr_exists, ierr)
+if(ierr /= 0) error stop "ERROR:h5fortran:attr_rank_check:H5Aexists_by_name_f failed: " // dset_name // ":" // attr_name
+if(.not.attr_exists) error stop 'ERROR:h5fortran:attr_rank_check: attribute not exist: ' // dset_name // ":" // attr_name
+
+!> check for matching rank, else bad reads can occur--doesn't always crash without this check
+call h5ltget_attribute_ndims_f(self%file_id, dset_name, attr_name, attr_rank, ierr)
+if (ierr /= 0) error stop 'ERROR:h5fortran:attr_rank__check:get_attribute_ndims: ' // dset_name // ":" // attr_name
+
+
+if (attr_rank == mrank) return
+
+if (present(vector_scalar) .and. attr_rank == 1 .and. mrank == 0) then
+  !! check if vector of length 1
+  call h5ltget_attribute_info_f(self%file_id, dset_name, attr_name, attr_dims, attr_type, attr_bytes, ierr)
+  if (ierr/=0) error stop 'ERROR:h5fortran:attr_rank_check:get_dataset_info ' // dset_name // ":" // attr_name
+  if (attr_dims(1) == 1) then
+    vector_scalar = .true.
+    return
+  endif
+endif
+
+write(stderr,'(A,I0,A,I0)') 'ERROR:h5fortran:attr_rank_check: rank mismatch ' // dset_name // ":" // attr_name // &
+  ' = ', attr_rank,'  variable rank =', mrank
+error stop
+
+end subroutine attr_rank_check
+
+
 subroutine attr_shape_check(self, dset_name, attr_name, dims)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dset_name, attr_name
 integer, intent(in) :: dims(:)
 
-integer :: attr_rank, attr_type, ierr
-integer(size_t) :: attr_bytes
+integer :: attr_type, ierr
+integer(SIZE_T) :: attr_bytes
 integer(HSIZE_T), dimension(size(dims)):: attr_dims
-logical :: attr_exists
 
-if(.not.self%is_open()) error stop 'h5fortran:readattr: file handle is not open'
-
-call H5Aexists_by_name_f(self%file_id, dset_name, attr_name, attr_exists, ierr)
-if(ierr /= 0) error stop "ERROR:h5fortran:attr_shape_check:H5Aexists_by_name_f failed: " // dset_name // ":" // attr_name
-if(.not.attr_exists) error stop 'ERROR:h5fortran:attr_shape_check: attribute not exist: ' // dset_name // ":" // attr_name
-
-!> check for matching rank, else bad reads can occur--doesn't always crash without this check
-call h5ltget_attribute_ndims_f(self%file_id, dset_name, attr_name, attr_rank, ierr)
-if (ierr /= 0) error stop 'ERROR:h5fortran:attr_shape_check:get_attribute_ndims: ' // dset_name // ' ' // self%filename
-
-if (attr_rank /= size(dims)) then
-  write(stderr,'(A,I0,A,I0)') 'ERROR:h5fortran:attr_shape_check: attribute rank ' // dset_name // ':' // attr_name // ' ', &
-    attr_rank,' /= ',size(dims)
-  error stop
-endif
+call attr_rank_check(self, dset_name, attr_name, size(dims))
 
 !> check for matching size, else bad reads can occur.
-
 call h5ltget_attribute_info_f(self%file_id, dset_name, attr_name, attr_dims, attr_type, attr_bytes, ierr)
 if (ierr /= 0) error stop 'ERROR:h5fortran:attr_shape_check:get_attribute_info' // dset_name // ':' // attr_name
 
