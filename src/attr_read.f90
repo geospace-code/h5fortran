@@ -1,12 +1,11 @@
-submodule (h5fortran) attr_read
+submodule (h5fortran:attr_smod) attr_read
 
 use, intrinsic :: iso_c_binding, only : C_CHAR, C_NULL_CHAR, C_F_POINTER
 
-use hdf5, only : H5Aexists_by_name_f, H5Aopen_by_name_f, H5Aread_f, H5Aclose_f, H5Aget_info_f, H5Aget_type_f, &
-H5Tclose_f, H5Tis_variable_str_f, H5Tget_class_f, H5Tget_native_type_f, H5Tget_size_f, H5Tget_strpad_f, &
+use hdf5, only : H5Aread_f, H5Aget_info_f, H5Aget_type_f, &
+H5Tis_variable_str_f, H5Tget_class_f, H5Tget_native_type_f, H5Tget_size_f, H5Tget_strpad_f, &
 H5T_DIR_ASCEND_F
-use h5lt, only: h5ltget_attribute_float_f, h5ltget_attribute_double_f, h5ltget_attribute_int_f, &
-h5ltget_attribute_ndims_f, h5ltget_attribute_info_f
+use h5lt, only: h5ltget_attribute_float_f, h5ltget_attribute_double_f, h5ltget_attribute_int_f
 
 implicit none (type, external)
 
@@ -157,7 +156,7 @@ module procedure readattr_1d
 !! NOTE: HDF5 has 1D vector attributes for integer, float and double.
 integer :: ier, attr_class
 
-call attr_shape_check(self, dname, attr, shape(A))
+call attr_shape_check(self, dname, attr, shape(A, HSIZE_T))
 
 call get_attr_class(self, dname, attr, attr_class)
 
@@ -208,74 +207,6 @@ call h%readattr(dname, attr, A)
 call h%close()
 
 end procedure lt1readattr
-
-
-subroutine attr_rank_check(self, dset_name, attr_name, mrank, vector_scalar)
-!! check for matching rank, else bad reads can occur--doesn't always crash without this check
-
-class(hdf5_file), intent(in) :: self
-character(*), intent(in) :: dset_name, attr_name
-integer, intent(in) :: mrank
-logical, intent(out), optional :: vector_scalar
-
-integer(HSIZE_T) :: attr_dims(1)
-integer(SIZE_T) :: attr_bytes
-integer :: ierr, attr_rank, attr_type
-logical :: attr_exists
-
-if(present(vector_scalar)) vector_scalar = .false.
-
-if(.not.self%is_open()) error stop 'ERROR:h5fortran:attr_rank_check: file handle is not open'
-
-call H5Aexists_by_name_f(self%file_id, dset_name, attr_name, attr_exists, ierr)
-if(ierr /= 0) error stop "ERROR:h5fortran:attr_rank_check:H5Aexists_by_name_f failed: " // dset_name // ":" // attr_name
-if(.not.attr_exists) error stop 'ERROR:h5fortran:attr_rank_check: attribute not exist: ' // dset_name // ":" // attr_name
-
-!> check for matching rank, else bad reads can occur--doesn't always crash without this check
-call h5ltget_attribute_ndims_f(self%file_id, dset_name, attr_name, attr_rank, ierr)
-if (ierr /= 0) error stop 'ERROR:h5fortran:attr_rank__check:get_attribute_ndims: ' // dset_name // ":" // attr_name
-
-
-if (attr_rank == mrank) return
-
-if (present(vector_scalar) .and. attr_rank == 1 .and. mrank == 0) then
-  !! check if vector of length 1
-  call h5ltget_attribute_info_f(self%file_id, dset_name, attr_name, attr_dims, attr_type, attr_bytes, ierr)
-  if (ierr/=0) error stop 'ERROR:h5fortran:attr_rank_check:get_dataset_info ' // dset_name // ":" // attr_name
-  if (attr_dims(1) == 1) then
-    vector_scalar = .true.
-    return
-  endif
-endif
-
-write(stderr,'(A,I0,A,I0)') 'ERROR:h5fortran:attr_rank_check: rank mismatch ' // dset_name // ":" // attr_name // &
-  ' = ', attr_rank,'  variable rank =', mrank
-error stop
-
-end subroutine attr_rank_check
-
-
-subroutine attr_shape_check(self, dset_name, attr_name, dims)
-class(hdf5_file), intent(in) :: self
-character(*), intent(in) :: dset_name, attr_name
-integer, intent(in) :: dims(:)
-
-integer :: attr_type, ierr
-integer(SIZE_T) :: attr_bytes
-integer(HSIZE_T), dimension(size(dims)):: attr_dims
-
-call attr_rank_check(self, dset_name, attr_name, size(dims))
-
-!> check for matching size, else bad reads can occur.
-call h5ltget_attribute_info_f(self%file_id, dset_name, attr_name, attr_dims, attr_type, attr_bytes, ierr)
-if (ierr /= 0) error stop 'ERROR:h5fortran:attr_shape_check:get_attribute_info' // dset_name // ':' // attr_name
-
-if(.not. all(dims == attr_dims)) then
-  write(stderr,*) 'ERROR:h5fortran:attr_shape_check: ' // dset_name // ':' // attr_name //': ', attr_dims,' /= ', dims
-  error stop
-endif
-
-end subroutine attr_shape_check
 
 
 subroutine get_attr_class(self, dset_name, attr_name, class, attr_id, size_bytes, pad_type)
