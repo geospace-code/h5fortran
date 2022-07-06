@@ -14,7 +14,7 @@ module procedure writeattr_scalar
 
 integer(HID_T) :: attr_id, dtype_id
 integer(HSIZE_T) :: attr_dims(0)
-integer :: ier
+integer :: ier, L
 
 select type (A)
 type is (real(real32))
@@ -30,7 +30,8 @@ type is (integer(int64))
   call attr_create(self, dname, attr, H5T_STD_I64LE, attr_dims, attr_id)
   call H5Awrite_f(attr_id, H5T_STD_I64LE, A, attr_dims, ier)
 type is (character(*))
-  call attr_create(self, dname, attr, H5T_NATIVE_CHARACTER, attr_dims, attr_id, dtype_id, charlen=len(A))
+  L = len(A)  !< workaround for GCC 8.3.0 bug
+  call attr_create(self, dname, attr, H5T_NATIVE_CHARACTER, attr_dims, attr_id, dtype_id, charlen=L)
   call H5Awrite_f(attr_id, dtype_id, A, attr_dims, ier)
   if (ier /= 0) error stop 'h5fortran:writeattr:string: could not write ' // dname // ":" // attr // " in " // self%filename
   call h5tclose_f(dtype_id, ier)
