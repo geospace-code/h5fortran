@@ -7,7 +7,7 @@ cmake -B build -DCMAKE_INSTALL_PREFIX=~/h5fortran
 cmake --build build
 cmake --install build
 
-cmake -B Examples/build -S Examples -Dh5fortran_ROOT=~/h5fortran
+cmake -B example/build -S Examples -Dh5fortran_ROOT=~/h5fortran
 ```
 
 ## Example 1

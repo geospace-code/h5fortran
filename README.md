@@ -132,16 +132,6 @@ cmake -B build -DCMAKE_PREFIX_PATH=~/mylibs
 cmake --build build
 ```
 
-NOTE: If using Intel oneAPI on Windows, ensure that environment variable CC=icl as set manually in the command prompt:
-
-```posh
-set CC=icx
-set FC=ifx
-```
-
-This is necessary to workaround techniques used by HDF5 CMake files that don't pickup the CMake `set(ENV{CC})`.
-Otherwise, HDF5 build failures may result due to defaulting to icl-clang.
-
 Request a specific [HDF5 Git tag](https://github.com/HDFGroup/hdf5/tags) or commit hash like:
 
 ```sh
@@ -150,7 +140,7 @@ cmake -B build -Dhdf5_tag=hdf5-1_12_2
 
 ## Usage
 
-The simplest [example](./Examples/) h5fortran usage is like:
+The simplest [example](./example/) h5fortran usage is like:
 
 ```fortran
 use h5fortran
@@ -170,7 +160,7 @@ if(.not. is_hdf5('golt.h5')) error stop 'golt.h5 is not an HDF5 file'
 call h5read('golt.h5', '/x', x2)
 ```
 
-For detailed [examples](./Examples/) see [Examples.md](./Examples.md).
+For detailed [examples](./example/) see [Examples.md](./Examples.md).
 
 ## Notes
 

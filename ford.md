@@ -136,7 +136,7 @@ cmake -B build -Dzlib_legacy=on
 
 ## Usage
 
-The simplest [example](./Examples/) h5fortran usage is like:
+The simplest [example](./example/) h5fortran usage is like:
 
 ```fortran
 use h5fortran
@@ -156,7 +156,7 @@ if(.not. is_hdf5('golt.h5')) error stop 'golt.h5 is not an HDF5 file'
 call h5read('golt.h5', '/x', x2)
 ```
 
-For detailed [examples](./Examples/) see [Examples.md](./Examples.md).
+For detailed [examples](./example/) see [Examples.md](./Examples.md).
 
 ## Notes
 
