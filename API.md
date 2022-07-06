@@ -101,6 +101,14 @@ tf = h%exist(dname)
 character(*), intent(in) :: dname
 ```
 
+Does attribute "attr" exist for object "obj" in this file?
+
+```fortran
+tf = h%exist_attr(obj, attr)
+
+character(*), intent(in) :: obj, attr
+```
+
 Is dataset "dname" contiguous on disk?
 
 ```fortran
@@ -197,6 +205,12 @@ Read dataset attribute into memory
 call h%readattr(dname, attr, attrval)
 character(*), intent(in) :: dname, attr  !< dataset name, attribute name
 class(*), intent(out) :: attrval(:)  !< character, real, integer
+```
+
+## delete attribute
+
+```fortran
+call h%delete_attr(dname, attr)
 ```
 
 ## high level operations

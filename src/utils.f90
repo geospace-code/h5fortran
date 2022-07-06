@@ -2,7 +2,7 @@ submodule (h5fortran) utils_smod
 
 use hdf5, only: h5get_libversion_f, &
 h5eset_auto_f, &
-h5iis_valid_f, h5iget_type_f, h5iget_name_f, &
+h5iis_valid_f, h5iget_name_f, &
 h5open_f, h5close_f, &
 h5fopen_f, h5fcreate_f, h5fclose_f, h5fis_hdf5_f, h5fget_filesize_f, &
 h5fget_obj_count_f, h5fget_obj_ids_f, h5fget_name_f, &

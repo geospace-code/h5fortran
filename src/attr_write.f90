@@ -14,31 +14,31 @@ integer :: ier, L
 
 select type (A)
 type is (real(real32))
-  call attr_create(self, dname, attr, H5T_NATIVE_REAL, attr_dims, attr_id)
+  call attr_create(self, obj_name, attr, H5T_NATIVE_REAL, attr_dims, attr_id)
   call H5Awrite_f(attr_id, H5T_NATIVE_REAL, A, attr_dims, ier)
 type is (real(real64))
-  call attr_create(self, dname, attr, H5T_NATIVE_DOUBLE, attr_dims, attr_id)
+  call attr_create(self, obj_name, attr, H5T_NATIVE_DOUBLE, attr_dims, attr_id)
   call H5Awrite_f(attr_id, H5T_NATIVE_DOUBLE, A, attr_dims, ier)
 type is (integer(int32))
-  call attr_create(self, dname, attr, H5T_NATIVE_INTEGER, attr_dims, attr_id)
+  call attr_create(self, obj_name, attr, H5T_NATIVE_INTEGER, attr_dims, attr_id)
   call H5Awrite_f(attr_id, H5T_NATIVE_INTEGER, A, attr_dims, ier)
 type is (integer(int64))
-  call attr_create(self, dname, attr, H5T_STD_I64LE, attr_dims, attr_id)
+  call attr_create(self, obj_name, attr, H5T_STD_I64LE, attr_dims, attr_id)
   call H5Awrite_f(attr_id, H5T_STD_I64LE, A, attr_dims, ier)
 type is (character(*))
   L = len(A)  !< workaround for GCC 8.3.0 bug
-  call attr_create(self, dname, attr, H5T_NATIVE_CHARACTER, attr_dims, attr_id, dtype_id, charlen=L)
+  call attr_create(self, obj_name, attr, H5T_NATIVE_CHARACTER, attr_dims, attr_id, dtype_id, charlen=L)
   call H5Awrite_f(attr_id, dtype_id, A, attr_dims, ier)
-  if (ier /= 0) error stop 'ERROR:h5fortran:writeattr:string:H5Awrite: ' // dname // ":" // attr // " in " // self%filename
+  if (ier /= 0) error stop 'ERROR:h5fortran:writeattr:string:H5Awrite: ' // obj_name // ":" // attr // " in " // self%filename
   call h5tclose_f(dtype_id, ier)
-  if (ier /= 0) error stop 'ERROR:h5fortran:writeattr:string:H5Tclose ' // dname // ":" // attr // " in " // self%filename
+  if (ier /= 0) error stop 'ERROR:h5fortran:writeattr:string:H5Tclose ' // obj_name // ":" // attr // " in " // self%filename
 class default
-  error stop "ERROR:h5fortran:writeattr: unsupported type for " // dname // ":" // attr // " in " // self%filename
+  error stop "ERROR:h5fortran:writeattr: unsupported type for " // obj_name // ":" // attr // " in " // self%filename
 end select
-if (ier /= 0) error stop 'ERROR:h5fortran:writeattr:H5Awrite ' // dname // ":" // attr // " in " // self%filename
+if (ier /= 0) error stop 'ERROR:h5fortran:writeattr:H5Awrite ' // obj_name // ":" // attr // " in " // self%filename
 
 call H5Aclose_f(attr_id, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:writeattr: closing " // dname // ":" // attr // " in " // self%filename
+if(ier /= 0) error stop "ERROR:h5fortran:writeattr: closing " // obj_name // ":" // attr // " in " // self%filename
 
 end procedure writeattr_scalar
 
@@ -54,16 +54,16 @@ dsize = size(A)
 
 select type(A)
 type is (real(real32))
-  call h5ltset_attribute_float_f(self%file_id, dname, attr, A, dsize, ier)
+  call h5ltset_attribute_float_f(self%file_id, obj_name, attr, A, dsize, ier)
 type is (real(real64))
-  call h5ltset_attribute_double_f(self%file_id, dname, attr, A, dsize, ier)
+  call h5ltset_attribute_double_f(self%file_id, obj_name, attr, A, dsize, ier)
 type is (integer(int32))
-  call h5ltset_attribute_int_f(self%file_id, dname, attr, A, dsize, ier)
+  call h5ltset_attribute_int_f(self%file_id, obj_name, attr, A, dsize, ier)
 class default
-  error stop "ERROR:h5fortran:writeattr_num: unknown dataset type for " // dname // ":" // attr // " in " // self%filename
+  error stop "ERROR:h5fortran:writeattr_num: unknown dataset type for " // obj_name // ":" // attr // " in " // self%filename
 end select
 
-if (ier /= 0) error stop "ERROR:h5fortran:writeattr_num: " // dname // ":" // attr // " in " // self%filename
+if (ier /= 0) error stop "ERROR:h5fortran:writeattr_num: " // obj_name // ":" // attr // " in " // self%filename
 
 end procedure writeattr_1d
 
@@ -73,7 +73,7 @@ module procedure lt0writeattr
 type(hdf5_file) :: h
 
 call h%open(filename, action='r+')
-call h%writeattr(dname, attr, A)
+call h%writeattr(obj_name, attr, A)
 call h%close()
 
 end procedure lt0writeattr
@@ -84,7 +84,7 @@ module procedure lt1writeattr
 type(hdf5_file) :: h
 
 call h%open(filename, action='r+')
-call h%writeattr(dname, attr, A)
+call h%writeattr(obj_name, attr, A)
 call h%close()
 
 end procedure lt1writeattr

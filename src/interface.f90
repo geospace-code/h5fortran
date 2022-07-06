@@ -54,6 +54,8 @@ procedure, public :: is_compact => hdf_is_compact
 procedure, public :: get_strpad
 procedure, public :: softlink => create_softlink
 procedure, public :: is_open
+procedure, public :: delete_attr => attr_delete
+procedure, public :: exist_attr => attr_exist
 !! procedures without mapping
 
 !> below are procedure that need generic mapping (type or rank agnostic)
@@ -427,53 +429,63 @@ end interface
 
 interface  !< attributes.f90
 
-module subroutine readattr_scalar(self, dname, attr, A)
+module subroutine readattr_scalar(self, obj_name, attr, A)
 class(hdf5_file), intent(in) :: self
-character(*), intent(in) :: dname, attr
+character(*), intent(in) :: obj_name, attr
 class(*), intent(inout) :: A
 end subroutine
 
-module subroutine readattr_1d(self, dname, attr, A)
+module subroutine readattr_1d(self, obj_name, attr, A)
 class(hdf5_file), intent(in) :: self
-character(*), intent(in) :: dname, attr
+character(*), intent(in) :: obj_name, attr
 class(*), intent(inout) :: A(:)
 end subroutine
 
-module subroutine writeattr_scalar(self, dname, attr, A)
+module subroutine writeattr_scalar(self, obj_name, attr, A)
 class(hdf5_file), intent(in) :: self
-character(*), intent(in) :: dname, attr
+character(*), intent(in) :: obj_name, attr
 class(*), intent(in) :: A
 end subroutine
 
-module subroutine writeattr_1d(self, dname, attr, A)
+module subroutine writeattr_1d(self, obj_name, attr, A)
 class(hdf5_file), intent(in) :: self
-character(*), intent(in) :: dname, attr
+character(*), intent(in) :: obj_name, attr
 class(*), intent(in) :: A(:)
 end subroutine
 
-module subroutine lt0writeattr(filename, dname, attr, A)
+module subroutine lt0writeattr(filename, obj_name, attr, A)
 character(*), intent(in) :: filename
-character(*), intent(in) :: dname, attr
+character(*), intent(in) :: obj_name, attr
 class(*), intent(in) :: A
 end subroutine
 
-module subroutine lt1writeattr(filename, dname, attr, A)
+module subroutine lt1writeattr(filename, obj_name, attr, A)
 character(*), intent(in) :: filename
-character(*), intent(in) :: dname, attr
+character(*), intent(in) :: obj_name, attr
 class(*), intent(in) :: A(:)
 end subroutine
 
-module subroutine lt0readattr(filename, dname, attr, A)
+module subroutine lt0readattr(filename, obj_name, attr, A)
 character(*), intent(in) :: filename
-character(*), intent(in) :: dname, attr
+character(*), intent(in) :: obj_name, attr
 class(*), intent(inout) :: A
 end subroutine
 
-module subroutine lt1readattr(filename, dname, attr, A)
+module subroutine lt1readattr(filename, obj_name, attr, A)
 character(*), intent(in) :: filename
-character(*), intent(in) :: dname, attr
+character(*), intent(in) :: obj_name, attr
 class(*), intent(inout) :: A(:)
 end subroutine
+
+module subroutine attr_delete(self, obj_name, attr_name)
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: obj_name, attr_name
+end subroutine
+
+module logical function attr_exist(self, obj_name, attr_name)
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: obj_name, attr_name
+end function
 
 end interface
 

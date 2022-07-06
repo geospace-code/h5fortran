@@ -42,6 +42,12 @@ call h%writeattr('/x', 'real64_1d0', [42._real64])
 
 call h%close()
 
+call h%open(path, action='a')
+call h%writeattr('/x', 'int32-scalar', 142)
+call h%writeattr('/x', 'char', 'overwrite attrs')
+call h%delete_attr('/x', 'hello')
+call h%close()
+
 end subroutine test_write_attributes
 
 
@@ -62,16 +68,18 @@ call h%read('/x', x)
 if (x/=1) error stop 'readattr: unexpected value'
 
 call h%readattr('/x', 'char', attr_str)
-if (attr_str /= 'this is just a little number') error stop 'readattr char note: ' // attr_str
+if (attr_str /= 'overwrite attrs') error stop 'overwrite attrs failed: ' // attr_str
 
 call h%readattr('/x', 'int32-scalar', int32_0)
-if (int32_0 /= 42) error stop 'readattr: int32-scalar'
+if (int32_0 /= 142) error stop 'readattr: int32-scalar'
 
 call h%readattr('/x', 'real32_1d', attr32)
 if (any(attr32 /= [42._real32, 84._real32])) error stop 'readattr: real32'
 
 call h%readattr('/x', 'real64_1d0', attr64)
 if (attr64 /= 42._real64) error stop 'readattr: real64'
+
+if (h%exist_attr('/x', 'hello')) error stop "delete attr failed"
 
 call h%close()
 
