@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20...3.23)
+cmake_minimum_required(VERSION 3.20...3.24)
 
 get_property(is_multi_config GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
 if(NOT is_multi_config AND NOT (CMAKE_BUILD_TYPE OR DEFINED ENV{CMAKE_BUILD_TYPE}))
@@ -24,7 +24,7 @@ include(cmake/options.cmake)
 include(cmake/compilers.cmake)
 
 # --- find or build HDF5 library
-find_package(HDF5 1.8.7 COMPONENTS Fortran HL)
+find_package(HDF5 COMPONENTS Fortran HL)
 if(NOT HDF5_FOUND)
   message(FATAL_ERROR "HDF5 not found or working on the system. First build HDF5 by:
 
@@ -36,6 +36,9 @@ if(NOT HDF5_FOUND)
   cmake -B build -DCMAKE_PREFIX_PATH=~/mylibs
   cmake --build build
   ")
+endif()
+if(HDF5_VERSION VERSION_LESS 1.8.7)
+  message(WARNING "HDF5 >= 1.8.7 required for ${PROJECT_NAME}")
 endif()
 
 if(hdf5_parallel OR HDF5_HAVE_PARALLEL)
