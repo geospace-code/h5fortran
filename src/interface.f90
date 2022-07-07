@@ -41,6 +41,7 @@ procedure, public :: create => hdf_create_user
 procedure, public :: flush => hdf_flush
 procedure, public :: filesize => hdf_filesize
 procedure, public :: ndim => hdf_get_ndim
+procedure, public :: ndims => hdf_get_ndim !< legacy
 procedure, public :: shape => hdf_get_shape
 procedure, public :: layout => hdf_get_layout
 procedure, public :: chunks => hdf_get_chunk
