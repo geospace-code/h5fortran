@@ -160,44 +160,44 @@ end interface
 
 interface !< writer_lt.f90
 
-module subroutine lt0write(filename, dname, value)
+module subroutine lt0write(filename, dname, A)
 character(*), intent(in) :: filename, dname
-class(*), intent(in) :: value
+class(*), intent(in) :: A
 end subroutine
 
-module subroutine lt1write(filename, dname, value)
+module subroutine lt1write(filename, dname, A)
 character(*), intent(in) :: filename, dname
-class(*), intent(in) :: value(:)
+class(*), intent(in) :: A(:)
 end subroutine
 
-module subroutine lt2write(filename, dname, value)
+module subroutine lt2write(filename, dname, A)
 character(*), intent(in) :: filename, dname
-class(*), intent(in) :: value(:,:)
+class(*), intent(in) :: A(:,:)
 end subroutine
 
-module subroutine lt3write(filename, dname, value)
+module subroutine lt3write(filename, dname, A)
 character(*), intent(in) :: filename, dname
-class(*), intent(in) :: value(:,:,:)
+class(*), intent(in) :: A(:,:,:)
 end subroutine
 
-module subroutine lt4write(filename, dname, value)
+module subroutine lt4write(filename, dname, A)
 character(*), intent(in) :: filename, dname
-class(*), intent(in) :: value(:,:,:,:)
+class(*), intent(in) :: A(:,:,:,:)
 end subroutine
 
-module subroutine lt5write(filename, dname, value)
+module subroutine lt5write(filename, dname, A)
 character(*), intent(in) :: filename, dname
-class(*), intent(in) :: value(:,:,:,:,:)
+class(*), intent(in) :: A(:,:,:,:,:)
 end subroutine
 
-module subroutine lt6write(filename, dname, value)
+module subroutine lt6write(filename, dname, A)
 character(*), intent(in) :: filename, dname
-class(*), intent(in) :: value(:,:,:,:,:,:)
+class(*), intent(in) :: A(:,:,:,:,:,:)
 end subroutine
 
-module subroutine lt7write(filename, dname, value)
+module subroutine lt7write(filename, dname, A)
 character(*), intent(in) :: filename, dname
-class(*), intent(in) :: value(:,:,:,:,:,:,:)
+class(*), intent(in) :: A(:,:,:,:,:,:,:)
 end subroutine
 
 end interface
@@ -209,108 +209,108 @@ module logical function h5exist(filename, dname)
 character(*), intent(in) :: filename, dname
 end function
 
-module subroutine lt0read(filename, dname, value)
+module subroutine lt0read(filename, dname, A)
 character(*), intent(in) :: filename, dname
-class(*), intent(out) :: value
+class(*), intent(out) :: A
 end subroutine
 
-module subroutine lt1read(filename, dname, value)
+module subroutine lt1read(filename, dname, A)
 character(*), intent(in) :: filename, dname
-class(*), intent(inout) :: value(:)
+class(*), intent(inout) :: A(:)
 end subroutine
 
-module subroutine lt2read(filename, dname, value)
+module subroutine lt2read(filename, dname, A)
 character(*), intent(in) :: filename, dname
-class(*), intent(inout) :: value(:,:)
+class(*), intent(inout) :: A(:,:)
 end subroutine
 
-module subroutine lt3read(filename, dname, value)
+module subroutine lt3read(filename, dname, A)
 character(*), intent(in) :: filename, dname
-class(*), intent(inout) :: value(:,:,:)
+class(*), intent(inout) :: A(:,:,:)
 end subroutine
 
-module subroutine lt4read(filename, dname, value)
+module subroutine lt4read(filename, dname, A)
 character(*), intent(in) :: filename, dname
-class(*), intent(inout) :: value(:,:,:,:)
+class(*), intent(inout) :: A(:,:,:,:)
 end subroutine
 
-module subroutine lt5read(filename, dname, value)
+module subroutine lt5read(filename, dname, A)
 character(*), intent(in) :: filename, dname
-class(*), intent(inout) :: value(:,:,:,:,:)
+class(*), intent(inout) :: A(:,:,:,:,:)
 end subroutine
 
-module subroutine lt6read(filename, dname, value)
+module subroutine lt6read(filename, dname, A)
 character(*), intent(in) :: filename, dname
-class(*), intent(inout) :: value(:,:,:,:,:,:)
+class(*), intent(inout) :: A(:,:,:,:,:,:)
 end subroutine
 
-module subroutine lt7read(filename, dname, value)
+module subroutine lt7read(filename, dname, A)
 character(*), intent(in) :: filename, dname
-class(*), intent(inout) :: value(:,:,:,:,:,:,:)
+class(*), intent(inout) :: A(:,:,:,:,:,:,:)
 end subroutine
 end interface
 
 
 interface !< writer.f90
-module subroutine h5write_scalar(self, dname, value, compact)
+module subroutine h5write_scalar(self, dname, A, compact)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
-class(*), intent(in) :: value
+class(*), intent(in) :: A
 logical, intent(in), optional :: compact
 end subroutine
 
-module subroutine h5write_1d(self, dname, value, chunk_size, istart, iend, stride, compact, dset_dims)
+module subroutine h5write_1d(self, dname, A, chunk_size, istart, iend, stride, compact, dset_dims)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
-class(*), intent(in) :: value(:)
+class(*), intent(in) :: A(:)
 integer, intent(in), dimension(1), optional :: chunk_size, istart, iend, stride, dset_dims
 logical, intent(in), optional :: compact
 end subroutine
 
-module subroutine h5write_2d(self, dname, value, chunk_size, istart, iend, stride, compact, dset_dims)
+module subroutine h5write_2d(self, dname, A, chunk_size, istart, iend, stride, compact, dset_dims)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
-class(*), intent(in) :: value(:,:)
+class(*), intent(in) :: A(:,:)
 integer, intent(in), dimension(2), optional :: chunk_size, istart, iend, stride, dset_dims
 logical, intent(in), optional :: compact
 end subroutine
 
-module subroutine h5write_3d(self, dname, value, chunk_size, istart, iend, stride, compact, dset_dims)
+module subroutine h5write_3d(self, dname, A, chunk_size, istart, iend, stride, compact, dset_dims)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
-class(*), intent(in) :: value(:,:,:)
+class(*), intent(in) :: A(:,:,:)
 integer, intent(in), dimension(3), optional :: chunk_size, istart, iend, stride, dset_dims
 logical, intent(in), optional :: compact
 end subroutine
 
-module subroutine h5write_4d(self, dname, value, chunk_size, istart, iend, stride, compact, dset_dims)
+module subroutine h5write_4d(self, dname, A, chunk_size, istart, iend, stride, compact, dset_dims)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
-class(*), intent(in) :: value(:,:,:,:)
+class(*), intent(in) :: A(:,:,:,:)
 integer, intent(in), dimension(4), optional :: chunk_size, istart, iend, stride, dset_dims
 logical, intent(in), optional :: compact
 end subroutine
 
-module subroutine h5write_5d(self, dname, value, chunk_size, istart, iend, stride, compact, dset_dims)
+module subroutine h5write_5d(self, dname, A, chunk_size, istart, iend, stride, compact, dset_dims)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
-class(*), intent(in) :: value(:,:,:,:,:)
+class(*), intent(in) :: A(:,:,:,:,:)
 integer, intent(in), dimension(5), optional :: chunk_size, istart, iend, stride, dset_dims
 logical, intent(in), optional :: compact
 end subroutine
 
-module subroutine h5write_6d(self, dname, value, chunk_size, istart, iend, stride, compact, dset_dims)
+module subroutine h5write_6d(self, dname, A, chunk_size, istart, iend, stride, compact, dset_dims)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
-class(*), intent(in) :: value(:,:,:,:,:,:)
+class(*), intent(in) :: A(:,:,:,:,:,:)
 integer, intent(in), dimension(6), optional :: chunk_size, istart, iend, stride, dset_dims
 logical, intent(in), optional :: compact
 end subroutine
 
-module subroutine h5write_7d(self,dname,value, chunk_size, istart, iend, stride, compact, dset_dims)
+module subroutine h5write_7d(self,dname,A, chunk_size, istart, iend, stride, compact, dset_dims)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
-class(*), intent(in) :: value(:,:,:,:,:,:,:)
+class(*), intent(in) :: A(:,:,:,:,:,:,:)
 integer, intent(in), dimension(7), optional :: chunk_size, istart, iend, stride, dset_dims
 logical, intent(in), optional :: compact
 end subroutine
@@ -374,58 +374,58 @@ end interface
 
 interface !< reader.f90
 
-module subroutine h5read_scalar(self, dname, value)
+module subroutine h5read_scalar(self, dname, A)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-class(*), intent(inout)        :: value
+class(*), intent(inout)        :: A
 end subroutine
 
-module subroutine h5read_1d(self, dname, value, istart, iend, stride)
+module subroutine h5read_1d(self, dname, A, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-class(*), intent(inout) :: value(:)
+class(*), intent(inout) :: A(:)
 integer, intent(in), dimension(1), optional :: istart, iend, stride
 end subroutine
 
-module subroutine h5read_2d(self, dname, value, istart, iend, stride)
+module subroutine h5read_2d(self, dname, A, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-class(*), intent(inout) :: value(:,:)
+class(*), intent(inout) :: A(:,:)
 integer, intent(in), dimension(2), optional :: istart, iend, stride
 end subroutine
 
-module subroutine h5read_3d(self, dname, value, istart, iend, stride)
+module subroutine h5read_3d(self, dname, A, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-class(*), intent(inout) :: value(:,:,:)
+class(*), intent(inout) :: A(:,:,:)
 integer, intent(in), dimension(3), optional :: istart, iend, stride
 end subroutine
 
-module subroutine h5read_4d(self, dname, value,  istart, iend, stride)
+module subroutine h5read_4d(self, dname, A,  istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-class(*), intent(inout) :: value(:,:,:,:)
+class(*), intent(inout) :: A(:,:,:,:)
 integer, intent(in), dimension(4), optional :: istart, iend, stride
 end subroutine
 
-module subroutine h5read_5d(self, dname, value, istart, iend, stride)
+module subroutine h5read_5d(self, dname, A, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-class(*), intent(inout) :: value(:,:,:,:,:)
+class(*), intent(inout) :: A(:,:,:,:,:)
 integer, intent(in), dimension(5), optional :: istart, iend, stride
 end subroutine
 
-module subroutine h5read_6d(self, dname, value, istart, iend, stride)
+module subroutine h5read_6d(self, dname, A, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-class(*), intent(inout) :: value(:,:,:,:,:,:)
+class(*), intent(inout) :: A(:,:,:,:,:,:)
 integer, intent(in), dimension(6), optional :: istart, iend, stride
 end subroutine
 
-module subroutine h5read_7d(self, dname, value, istart, iend, stride)
+module subroutine h5read_7d(self, dname, A, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-class(*), intent(inout) :: value(:,:,:,:,:,:,:)
+class(*), intent(inout) :: A(:,:,:,:,:,:,:)
 integer, intent(in), dimension(7), optional :: istart, iend, stride
 end subroutine
 

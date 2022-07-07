@@ -1,4 +1,4 @@
-integer(HSIZE_T), dimension(rank(value)) :: dims
+integer(HSIZE_T), dimension(rank(A)) :: dims
 integer(HID_T) :: dset_id, file_space_id, mem_space_id, xfer_id
 integer :: dclass, ier
 
@@ -6,7 +6,7 @@ dset_id = 0 !< sentinel used in hdf_get_slice
 file_space_id = H5S_ALL_F
 mem_space_id = H5S_ALL_F
 xfer_id = H5P_DEFAULT_F
-dims = shape(value, HSIZE_T)
+dims = shape(A, HSIZE_T)
 
 if(present(istart) .and. present(iend)) then
   call hdf_get_slice(self, dname, dset_id, file_space_id, mem_space_id, istart, iend, stride)
@@ -21,20 +21,20 @@ call get_dset_class(self, dname, dclass, dset_id)
 !> casting is handled by HDF5 library internally
 !! select case doesn't allow H5T_*
 if(dclass == H5T_FLOAT_F) then
-  select type(value)
+  select type(A)
   type is (real(real64))
-    call h5dread_f(dset_id, H5T_NATIVE_DOUBLE, value, dims, ier, mem_space_id, file_space_id, xfer_id)
+    call h5dread_f(dset_id, H5T_NATIVE_DOUBLE, A, dims, ier, mem_space_id, file_space_id, xfer_id)
   type is (real(real32))
-    call h5dread_f(dset_id, H5T_NATIVE_REAL, value, dims, ier, mem_space_id, file_space_id, xfer_id)
+    call h5dread_f(dset_id, H5T_NATIVE_REAL, A, dims, ier, mem_space_id, file_space_id, xfer_id)
   class default
     error stop 'ERROR:h5fortran:read: real disk dataset ' // dname // ' needs real memory variable'
   end select
 elseif(dclass == H5T_INTEGER_F) then
-  select type(value)
+  select type(A)
   type is (integer(int32))
-    call h5dread_f(dset_id, H5T_NATIVE_INTEGER, value, dims, ier, mem_space_id, file_space_id, xfer_id)
+    call h5dread_f(dset_id, H5T_NATIVE_INTEGER, A, dims, ier, mem_space_id, file_space_id, xfer_id)
   type is (integer(int64))
-    call h5dread_f(dset_id, H5T_STD_I64LE, value, dims, ier, mem_space_id, file_space_id, xfer_id)
+    call h5dread_f(dset_id, H5T_STD_I64LE, A, dims, ier, mem_space_id, file_space_id, xfer_id)
   class default
     error stop 'ERROR:h5fortran:read: integer disk dataset ' // dname // ' needs integer memory variable'
   end select

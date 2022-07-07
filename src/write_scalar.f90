@@ -15,23 +15,23 @@ integer :: ier, L
 
 if(.not.self%is_open()) error stop 'h5fortran:write: file handle is not open'
 
-select type (value)
+select type (A)
 type is (real(real32))
   call hdf_create(self, dname, H5T_NATIVE_REAL, dims, dims, file_space_id, dset_id, compact=compact)
-  call h5dwrite_f(dset_id, H5T_NATIVE_REAL, value, dims, ier)
+  call h5dwrite_f(dset_id, H5T_NATIVE_REAL, A, dims, ier)
 type is (real(real64))
   call hdf_create(self, dname, H5T_NATIVE_DOUBLE, dims, dims, file_space_id, dset_id, compact=compact)
-  call h5dwrite_f(dset_id, H5T_NATIVE_DOUBLE, value, dims, ier)
+  call h5dwrite_f(dset_id, H5T_NATIVE_DOUBLE, A, dims, ier)
 type is (integer(int32))
   call hdf_create(self, dname, H5T_NATIVE_INTEGER, dims, dims, file_space_id, dset_id, compact=compact)
-  call h5dwrite_f(dset_id, H5T_NATIVE_INTEGER, value, dims, ier)
+  call h5dwrite_f(dset_id, H5T_NATIVE_INTEGER, A, dims, ier)
 type is (integer(int64))
   call hdf_create(self, dname, H5T_STD_I64LE, dims, dims, file_space_id, dset_id, compact=compact)
-  call h5dwrite_f(dset_id, H5T_STD_I64LE, value, dims, ier)
+  call h5dwrite_f(dset_id, H5T_STD_I64LE, A, dims, ier)
 type is (character(*))
-  L = len(value)  !< workaround for GCC 8.3.0 bug
+  L = len(A)  !< workaround for GCC 8.3.0 bug
   call hdf_create(self, dname, H5T_NATIVE_CHARACTER, dims, dims, file_space_id, dset_id, dtype_id, charlen=L)
-  call h5dwrite_f(dset_id, dtype_id, value, dims, ier)
+  call h5dwrite_f(dset_id, dtype_id, A, dims, ier)
   if (ier /= 0) error stop 'h5fortran:write:string: could not write ' // dname // ' to ' // self%filename
   call h5tclose_f(dtype_id, ier)
 class default

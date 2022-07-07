@@ -170,11 +170,11 @@ character(*), intent(in) :: target, &  !< target path to link dataset
 ## file write operations
 
 ```fortran
-call h%write(dname,value, chunk_size, istart, iend, stride, compact)
+call h%write(dname, A, chunk_size, istart, iend, stride, compact)
 !! write 0d..7d dataset
 character(*), intent(in) :: dname
-class(*), intent(in) :: value(:)  !< array to write
-integer, intent(in), optional :: chunk_size(rank(value))
+class(*), intent(in) :: A(:)  !< array to write
+integer, intent(in), optional :: chunk_size(rank(A))
 integer, intent(in), optional, dimension(:) :: istart, iend, stride  !< array slicing
 logical, intent(in), optional :: compact  !< faster I/O for sub-64 kB datasets
 ```
@@ -193,9 +193,9 @@ class(*), intent(in) :: attrval(:)  !< character, real, integer
 Read data from disk to memory
 
 ```fortran
-call h%read(dname, value, istart, iend, stride)
+call h%read(dname, A, istart, iend, stride)
 character(*), intent(in)         :: dname
-class(*), intent(out) :: value(:)  !< read array to this ALLOCATED variable
+class(*), intent(out) :: A(:)  !< read array to this ALLOCATED variable
 integer, intent(in), optional, dimension(:) :: istart, iend, stride !< array slicing
 ```
 
@@ -221,15 +221,15 @@ The runtime penalty may be insignificant unless you call these functions many ti
 The `h5write` opens `filename` with `action='rw'` (create if not present, append if existing).
 
 ```fortran
-call h5write(filename, dname, value)
+call h5write(filename, dname, A)
 character(*), intent(in) :: filename, dname
-class(*), intent(in) :: value(:)
+class(*), intent(in) :: A(:)
 ```
 
 The `h5read` opens `filename` with `action='r'` (error if file not exist).
 
 ```fortran
-call h5read(filename, dname, value)
+call h5read(filename, dname, A)
 character(*), intent(in) :: filename, dname
-class(*), intent(out) :: value(:)
+class(*), intent(out) :: A(:)
 ```

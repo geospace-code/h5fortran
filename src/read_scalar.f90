@@ -30,7 +30,7 @@ logical :: is_scalar
 file_space_id = H5S_ALL_F
 mem_space_id = H5S_ALL_F
 
-call hdf_rank_check(self, dname, rank(value), is_scalar)
+call hdf_rank_check(self, dname, rank(A), is_scalar)
 
 call H5Dopen_f(self%file_id, dname, dset_id, ier)
 if(ier/=0) error stop 'ERROR:h5fortran:reader: ' // dname // ' could not be opened in ' // self%filename
@@ -44,25 +44,25 @@ if (is_scalar) call hdf_get_slice(self, dname, dset_id, file_space_id, mem_space
 !! select case doesn't allow H5T_*
 !! https://support.hdfgroup.org/HDF5/doc/UG/HDF5_Users_Guide-Responsive%20HTML5/index.html#t=HDF5_Users_Guide%2FDatatypes%2FHDF5_Datatypes.htm%23TOC_6_10_Data_Transferbc-26&rhtocid=6.5_2
 if(dclass == H5T_FLOAT_F) then
-  select type(value)
+  select type(A)
   type is (real(real64))
-    call H5Dread_f(dset_id, H5T_NATIVE_DOUBLE, value, dims, ier)
+    call H5Dread_f(dset_id, H5T_NATIVE_DOUBLE, A, dims, ier)
   type is (real(real32))
-    call H5Dread_f(dset_id, H5T_NATIVE_REAL, value, dims, ier)
+    call H5Dread_f(dset_id, H5T_NATIVE_REAL, A, dims, ier)
   class default
     error stop 'ERROR:h5fortran:read: real disk dataset ' // dname // ' needs real memory variable'
   end select
 elseif(dclass == H5T_INTEGER_F) then
-  select type(value)
+  select type(A)
   type is (integer(int32))
-    call H5Dread_f(dset_id, H5T_NATIVE_INTEGER, value, dims, ier)
+    call H5Dread_f(dset_id, H5T_NATIVE_INTEGER, A, dims, ier)
   type is (integer(int64))
-    call H5Dread_f(dset_id, H5T_STD_I64LE, value, dims, ier)
+    call H5Dread_f(dset_id, H5T_STD_I64LE, A, dims, ier)
   class default
     error stop 'ERROR:h5fortran:read: integer disk dataset ' // dname // ' needs integer memory variable'
   end select
 elseif(dclass == H5T_STRING_F) then
-  call read_scalar_char(value, dset_id, file_space_id, mem_space_id, dims)
+  call read_scalar_char(A, dset_id, file_space_id, mem_space_id, dims)
 else
   error stop 'ERROR:h5fortran:reader: non-handled datatype--please reach out to developers.'
 end if
