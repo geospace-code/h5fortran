@@ -14,7 +14,7 @@ use h5lt, only : h5ltread_dataset_float_f
 implicit none (type, external)
 
 private
-public :: print_layout, write_layout, sysclock2ms, unlink, bench_write, bench_read
+public :: print_layout, write_layout, sysclock2ms, std_unlink, bench_write, bench_read
 
 contains
 
