@@ -26,7 +26,7 @@ integer :: ierr
 character(2048) :: name
 
 call h5iget_name_f(id, name, len(name, SIZE_T), L, ierr)
-if(ierr /= 0) error stop "h5fortran:id2name:h5iget_name"
+if(ierr /= 0) error stop "ERROR:h5fortran:id2name:h5iget_name"
 
 id2name = name(:L)
 
@@ -37,21 +37,23 @@ module procedure h5open
 
 character(:), allocatable :: laction
 integer :: ier
+integer(HID_T) :: fapl !< file access property list
+integer :: file_mode
 
 if(self%is_open()) then
   write(stderr,*) 'h5fortran:open: file handle already open: '//self%filename
   return
 endif
 
-laction = 'rw'
-if(present(action)) laction = action
+laction = 'r'
+if (present(action)) laction = action
 
 self%filename = filename
 
-if (present(comp_lvl) .and. laction /= "r") self%comp_lvl = comp_lvl
-if (present(verbose)) self%verbose = verbose
-if (present(debug)) self%debug = debug
+if(present(debug)) self%debug = debug
 
+!> compression parameter
+if(present(comp_lvl) .and. laction /= "r") self%comp_lvl = comp_lvl
 if(self%comp_lvl > 0) then
   self%shuffle = .true.
   self%fletcher32 = .true.
@@ -72,33 +74,42 @@ endif
 call h5open_f(ier)
 if (ier /= 0) error stop 'ERROR:h5fortran:open: HDF5 library initialize'
 
-if(self%verbose) then
+if(self%debug) then
   call h5eset_auto_f(1, ier)
 else
   call h5eset_auto_f(0, ier)
 endif
 if (ier /= 0) error stop 'ERROR:h5fortran:open: HDF5 library set traceback'
 
+fapl = H5P_DEFAULT_F
+
 select case(laction)
 case('r')
-  if(.not. is_hdf5(filename)) error stop "ERROR:h5fortran:open: file does not exist: "//filename
-  call h5fopen_f(filename, H5F_ACC_RDONLY_F, self%file_id,ier)
+  file_mode = H5F_ACC_RDONLY_F
 case('r+')
-  if(.not. is_hdf5(filename)) error stop "ERROR:h5fortran:open: file does not exist: "//filename
-  call h5fopen_f(filename, H5F_ACC_RDWR_F, self%file_id, ier)
+  file_mode = H5F_ACC_RDWR_F
 case('rw', 'a')
   if(is_hdf5(filename)) then
-    call h5fopen_f(filename, H5F_ACC_RDWR_F, self%file_id, ier)
+    file_mode = H5F_ACC_RDWR_F
   else
-    call h5fcreate_f(filename, H5F_ACC_TRUNC_F, self%file_id, ier)
+    file_mode = H5F_ACC_TRUNC_F
   endif
 case ('w')
-  call h5fcreate_f(filename, H5F_ACC_TRUNC_F, self%file_id, ier)
+  file_mode = H5F_ACC_TRUNC_F
 case default
-  error stop 'ERROR:h5fortran:open: Unsupported action: ' // laction
+  error stop 'ERROR:h5fortran:open Unsupported action ' // laction // ' for ' // filename
 end select
 
-if (ier /= 0) error stop "ERROR:h5fortran:open: HDF5 file open failed: "//filename
+if (file_mode == H5F_ACC_RDONLY_F .or. file_mode == H5F_ACC_RDWR_F) then
+  if(.not. is_hdf5(filename)) error stop "ERROR:h5fortran:open: not an HDF5 file: "//filename
+  call H5Fopen_f(filename, file_mode, self%file_id, ier, access_prp=fapl)
+  if (ier /= 0) error stop "ERROR:h5fortran:open:H5Fopen: " // filename
+elseif(file_mode == H5F_ACC_TRUNC_F) then
+  call H5Fcreate_f(filename, file_mode, self%file_id, ier, access_prp=fapl)
+  if (ier /= 0) error stop "ERROR:h5fortran:open:H5Fcreate: " // filename
+else
+  error stop "ERROR:h5fortran:open: Unsupported file mode: " // filename
+endif
 
 end procedure h5open
 
@@ -298,7 +309,7 @@ if (.not.self%exist(dname)) error stop 'ERROR:h5fortran:rank_check: ' // dname /
 
 !> check for matching rank, else bad reads can occur--doesn't always crash without this check
 call h5ltget_dataset_ndims_f(self%file_id, dname, drank, ierr)
-if (ierr/=0) error stop 'ERROR:h5fortran:rank_check: get_dataset_ndim ' // dname // ' read ' // self%filename
+if (ierr/=0) error stop 'ERROR:h5fortran:rank_check:get_dataset_ndims: ' // dname // ' in ' // self%filename
 
 if (drank == mrank) return
 
@@ -306,7 +317,7 @@ if (present(vector_scalar) .and. drank == 1 .and. mrank == 0) then
   !! check if vector of length 1
   call h5ltget_dataset_info_f(self%file_id, dname, dims=ddims, &
     type_class=type_class, type_size=type_size, errcode=ierr)
-  if (ierr/=0) error stop 'ERROR:h5fortran:rank_check: get_dataset_info ' // dname // ' read ' // self%filename
+  if (ierr/=0) error stop 'ERROR:h5fortran:rank_check:get_dataset_info ' // dname // ' in ' // self%filename
   if (ddims(1) == 1) then
     vector_scalar = .true.
     return

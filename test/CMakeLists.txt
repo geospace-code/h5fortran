@@ -33,7 +33,6 @@ else()
 endif()
 set_tests_properties(${name} PROPERTIES
 FIXTURES_REQUIRED h5lib
-WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 )
 
 if(${name} MATCHES ".*fail.*")
@@ -179,4 +178,7 @@ DISABLED $<NOT:$<BOOL:${h5ls}>>
 
 get_property(test_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY TESTS)
 
-set_tests_properties(${test_names} PROPERTIES TIMEOUT 60)
+set_tests_properties(${test_names} PROPERTIES
+TIMEOUT 60
+WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+)

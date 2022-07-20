@@ -31,7 +31,7 @@ call h%open(filename, action, comp_lvl)
 !! Opens hdf5 file
 
 character(*), intent(in) :: filename
-character(*), intent(in), optional :: action  !< r, w, rw
+character(*), intent(in), optional :: action  !< 'r', 'r+', 'w', 'rw'  (default 'r')
 integer, intent(in), optional      :: comp_lvl  !< 0: no compression. 1-9: ZLIB compression, higher is more compressior
 ```
 

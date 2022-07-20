@@ -21,7 +21,6 @@ type :: hdf5_file
 character(:), allocatable :: filename
 integer(HID_T) :: file_id
 
-logical :: verbose=.true.
 logical :: debug=.false.
 logical :: fletcher32 = .false.
 logical :: shuffle = .false.
@@ -307,7 +306,7 @@ integer, intent(in), dimension(6), optional :: chunk_size, istart, iend, stride,
 logical, intent(in), optional :: compact
 end subroutine
 
-module subroutine h5write_7d(self,dname,A, chunk_size, istart, iend, stride, compact, dset_dims)
+module subroutine h5write_7d(self, dname, A, chunk_size, istart, iend, stride, compact, dset_dims)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
 class(*), intent(in) :: A(:,:,:,:,:,:,:)
@@ -577,20 +576,21 @@ integer(HID_T), intent(in) :: id
 character(:), allocatable :: id2name
 end function
 
-module subroutine h5open(self, filename, action, comp_lvl, shuffle, fletcher32, verbose, debug)
+module subroutine h5open(self, filename, action, comp_lvl, shuffle, fletcher32, debug)
 !! open/create file
 !!
 !! PARAMETERS:
 !! ----------
 !! filename
 !! action: "r", "w", "rw"
+
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: filename
 character(*), intent(in), optional :: action !< r, r+, rw, w, a
 integer, intent(in), optional :: comp_lvl  !< 0: no compression. 1-9: ZLIB compression, higher is more compressior
 logical, intent(in), optional :: shuffle
 logical, intent(in), optional :: fletcher32
-logical, intent(in), optional :: verbose, debug
+logical, intent(in), optional :: debug
 end subroutine
 
 module subroutine h5close(self, close_hdf5_interface)

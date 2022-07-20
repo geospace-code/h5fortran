@@ -272,12 +272,12 @@ call h5f%write_group('/scope/')
 call h5f%close()
 ```
 
-## verbose / debug
+## debug
 
-set options debug and /or verbose for diagnostics
+for diagnostic prints:
 
 ```sh
-call h5f%open(..., verbose=.true., debug=.true.)
+call h5f%open(..., debug=.true.)
 ```
 
 ## Permissive syntax

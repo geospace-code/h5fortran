@@ -15,7 +15,7 @@ print *, 'PASSED: slice read'
 call test_write_slice('test_array.h5')
 print *, 'PASSED: slice write'
 
-call test_readwrite_array('test_group_array.f90', ng=69, nn=100, pn=5)
+call test_readwrite_array('test_group_array.h5', ng=69, nn=100, pn=5)
 print *,'PASSED: array write / read'
 
 
@@ -49,7 +49,7 @@ enddo
 r1 = i1
 r2 = i2
 
-call h%open(filename, action='w', comp_lvl=1, verbose=.False.)
+call h%open(filename, action='w', comp_lvl=1)
 
 call h%write('/int32-1d', i1)
 call h%write('/test/group2/int32-2d', i2)
@@ -59,7 +59,7 @@ call h%write('/nan', nan)
 call h%close()
 
 !! read
-call h%open(filename, action='r', verbose=.false.)
+call h%open(filename, action='r')
 
 !> int32
 call h%read('/int32-1d', i1t)
@@ -146,7 +146,7 @@ integer(int32), dimension(4) :: i1t
 integer(int32), dimension(4,4) :: i2t
 
 
-call h%open(filename, action='r+', verbose=.true., debug=.true.)
+call h%open(filename, action='r+', debug=.true.)
 
 call h%create('/int32a-1d', dtype=H5T_NATIVE_INTEGER, dset_dims=int([3], hsize_t))
 call h%write('/int32a-1d', [1,3], istart=[1], iend=[2])

@@ -27,7 +27,7 @@ type is (character(*))
   charlen = len(A)
   dtype = H5T_NATIVE_CHARACTER
 class default
-  error stop "unknown variable type for " // dname
+  error stop "ERROR:h5fortran:writer:unknown variable type for " // dname
 end select
 
 call hdf_create(self, dname, dtype, mem_dims, dims_dset, file_space_id, dset_id, &
