@@ -1,9 +1,9 @@
+message(STATUS "${PROJECT_NAME} ${PROJECT_VERSION}  CMake ${CMAKE_VERSION}")
+
 option(ENABLE_COVERAGE "Code coverage tests")
 
 option(matlab "check HDF5 file writes with Matlab")
 option(concepts "conceptual testing, for devs only" off)
-
-message(STATUS "${PROJECT_NAME} ${PROJECT_VERSION}  CMake ${CMAKE_VERSION}")
 
 set(CMAKE_TLS_VERIFY true)
 
