@@ -2,7 +2,7 @@ program test_string
 
 use, intrinsic:: iso_fortran_env, only:  stderr=>error_unit
 
-use hdf5, only: H5T_STR_SPACEPAD_F
+use hdf5, only: H5T_STR_SPACEPAD_F, HSIZE_T
 use h5fortran, only: hdf5_file
 
 implicit none (type, external)
@@ -34,6 +34,8 @@ call h%open(fn, action='w')
 call h%write('/little', '42')
 call h%write('/MySentence', 'this is a little sentence.')
 call h%write('/vector_scalar', ['vector scalar'])
+call h%write("/1d", [character(3) :: "hi", "bye"])
+call h%write("/2d", reshape([character(5) :: "one", "two", "three", "four", "five", "six"], [2,3]))
 
 call h%close()
 
@@ -48,6 +50,7 @@ type(hdf5_file) :: h
 character(2) :: value
 character(1024) :: val1k
 character(13) :: vs
+integer(HSIZE_T), allocatable :: dims(:)
 
 call h%open(fn, action='r')
 call h%read('/little', value)
@@ -72,6 +75,14 @@ endif
 !> vector scalar (length 1 vector)
 call h%read('/vector_scalar', vs)
 if(vs /= "vector scalar") error stop "test_string: vector_scalar"
+
+!> vector
+call h%shape("/1d", dims)
+if( dims(1) /= 2) error stop "test_string: 1d shape"
+
+!> 2d
+call h%shape("/2d", dims)
+if(any(dims /= [2, 3])) error stop "test_string: 2d shape"
 
 call h%close()
 

@@ -28,3 +28,5 @@ with h5py.File(fn, "w") as f:
     f["/smiley"] = "😀"
 
     f.create_dataset("/wink", dtype=h5py.string_dtype("utf-8"), data="😉")
+
+    f["/1d"] = ["Hi", "Bye"]
