@@ -660,16 +660,20 @@ integer, intent(in), dimension(size(i0)) :: i1
 integer, intent(in), dimension(size(i0)), optional :: i2
 end subroutine
 
-module subroutine hdf_rank_check(self, dname, mrank, vector_scalar)
+module subroutine hdf_rank_check(self, dname, file_space_id, mrank, is_scalar)
+!! check for matching rank, else bad reads can occur--doesn't always crash without this check
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
+integer(HID_T), intent(in) :: file_space_id
 integer, intent(in) :: mrank
-logical, intent(out), optional :: vector_scalar
+logical, intent(out), optional :: is_scalar
 end subroutine
 
-module subroutine hdf_shape_check(self, dname, dims)
+module subroutine hdf_shape_check(self, dname, file_space_id, dims)
+!! check for matching size, else bad reads can occur.
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
+integer(HID_T), intent(in) :: file_space_id
 integer(HSIZE_T), intent(in) :: dims(:)
 end subroutine
 

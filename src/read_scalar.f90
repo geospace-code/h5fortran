@@ -31,7 +31,7 @@ if(ier/=0) error stop 'ERROR:h5fortran:reader: ' // dname // ' could not be open
 call H5Dget_space_f(dset_id, file_space_id, ier)
 if(ier/=0) error stop 'ERROR:h5fortran:reader:H5Dget_space ' // dname // ' from ' // self%filename
 
-call hdf_rank_check(self, dname, rank(A), is_scalar)
+call hdf_rank_check(self, dname, file_space_id, rank(A), is_scalar)
 
 if (is_scalar) then
   call hdf_get_slice(self, dname, dset_id, file_space_id, mem_space_id, [1], [1])

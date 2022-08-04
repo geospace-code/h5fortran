@@ -7,12 +7,10 @@ h5open_f, h5close_f, &
 h5fopen_f, h5fcreate_f, h5fclose_f, h5fis_hdf5_f, h5fget_filesize_f, &
 h5fget_obj_count_f, h5fget_obj_ids_f, h5fget_name_f, &
 h5sselect_hyperslab_f, h5screate_simple_f, &
-h5dopen_f, h5dclose_f, h5dget_space_f, &
+H5Sget_simple_extent_ndims_f, H5Sget_simple_extent_dims_f, H5Sget_simple_extent_npoints_f, &
 H5F_ACC_RDONLY_F, H5F_ACC_RDWR_F, H5F_ACC_TRUNC_F, &
 H5F_OBJ_FILE_F, H5F_OBJ_GROUP_F, H5F_OBJ_DATASET_F, H5F_OBJ_DATATYPE_F, H5F_OBJ_ALL_F, &
 H5D_CONTIGUOUS_F, H5D_CHUNKED_F, H5D_COMPACT_F
-
-use h5lt, only : h5ltget_dataset_ndims_f, h5ltget_dataset_info_f
 
 implicit none (type, external)
 
@@ -288,32 +286,28 @@ end procedure hdf_get_slice
 
 module procedure hdf_rank_check
 
-integer(HSIZE_T) :: ddims(1)
-integer(SIZE_T) :: type_size
-integer :: ierr, drank, type_class
+integer(HSIZE_T) :: N
+integer :: ierr, drank
 
-if(present(vector_scalar)) vector_scalar = .false.
+if(present(is_scalar)) is_scalar = .false.
 
 if (.not.self%exist(dname)) error stop 'ERROR:h5fortran:rank_check: ' // dname // ' does not exist in ' // self%filename
 
-!> check for matching rank, else bad reads can occur--doesn't always crash without this check
-call h5ltget_dataset_ndims_f(self%file_id, dname, drank, ierr)
-if (ierr/=0) error stop 'ERROR:h5fortran:rank_check:get_dataset_ndims: ' // dname // ' in ' // self%filename
+call H5Sget_simple_extent_ndims_f(file_space_id, drank, ierr)
+if (ierr/=0) error stop 'ERROR:h5fortran:rank_check:H5Sget_simple_extent_ndims: ' // dname // ' in ' // self%filename
 
 if (drank == mrank) return
 
-if (present(vector_scalar) .and. drank == 1 .and. mrank == 0) then
-  !! check if vector of length 1
-  call h5ltget_dataset_info_f(self%file_id, dname, dims=ddims, &
-    type_class=type_class, type_size=type_size, errcode=ierr)
-  if (ierr/=0) error stop 'ERROR:h5fortran:rank_check:get_dataset_info ' // dname // ' in ' // self%filename
-  if (ddims(1) == 1) then
-    vector_scalar = .true.
-    return
-  endif
+if (present(is_scalar)) then
+  !! check if single element
+  call H5Sget_simple_extent_npoints_f(file_space_id, N, ierr)
+  if (ierr /= 0) error stop 'ERROR:h5fortran:rank_check:H5Sget_simple_extent_npoints: ' // dname // ' in ' // self%filename
+
+  is_scalar = N == 1
+  if(is_scalar) return
 endif
 
-write(stderr,'(A,I0,A,I0)') 'ERROR:h5fortran:rank_check: rank mismatch ' // dname // ' = ',drank,'  variable rank =', mrank
+write(stderr,'(A,I0,A,I0)') 'ERROR:h5fortran:rank_check: rank mismatch ' // dname // ' = ', drank,'  variable rank =', mrank
 error stop
 
 end procedure hdf_rank_check
@@ -322,18 +316,12 @@ end procedure hdf_rank_check
 module procedure hdf_shape_check
 
 integer :: ierr
-integer(SIZE_T) :: type_size
-integer(HSIZE_T), dimension(size(dims)):: ddims
-integer :: type_class
+integer(HSIZE_T), dimension(size(dims)):: ddims, maxdims
 
-call hdf_rank_check(self, dname, size(dims))
+call hdf_rank_check(self, dname, file_space_id, size(dims))
 
-!> check for matching size, else bad reads can occur.
-
-call h5ltget_dataset_info_f(self%file_id, dname, dims=ddims, &
-    type_class=type_class, type_size=type_size, errcode=ierr)
-if (ierr/=0) error stop 'ERROR:h5fortran:shape_check: get_dataset_info ' // dname // ' read ' // self%filename
-
+call H5Sget_simple_extent_dims_f(file_space_id, ddims, maxdims, ierr)
+if (ierr /= size(dims)) error stop 'ERROR:h5fortran:rank_check:H5Sget_simple_extent_dims: ' // dname // ' in ' // self%filename
 
 if(any(int(dims, int64) /= ddims)) then
   write(stderr,*) 'ERROR:h5fortran:shape_check: shape mismatch ' // dname // ' = ',ddims,'  variable shape =', dims

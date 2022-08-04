@@ -54,23 +54,23 @@ if(dtype == H5T_NATIVE_CHARACTER) then
 endif
 
 if(self%exist(dname)) then
-  if (.not.present(istart)) then
-    if (size(mem_dims) == 0) then
-      !! scalar
-      call hdf_rank_check(self, dname, size(mem_dims))
-    else
-      call hdf_shape_check(self, dname, mem_dims)
-    endif
-  endif
-  !! FIXME: read and write slice shape not checked; but should check in future versions
-
-  !> open dataset
   call h5dopen_f(self%file_id, dname, dset_id, ierr)
   if (ierr /= 0) error stop 'ERROR:h5fortran:create: could not open ' // dname // ' in ' // self%filename
 
-  !> get dataset filespace
   call h5dget_space_f(dset_id, filespace_id, ierr)
   if(ierr /= 0) error stop 'ERROR:h5fortran:create could not get dataset ' // dname // ' in ' // self%filename
+
+
+  if (present(istart)) then
+    !! FIXME: read and write slice shape not checked; but should check in future versions
+  else
+    if (size(mem_dims) == 0) then
+      !! scalar
+      call hdf_rank_check(self, dname, filespace_id, size(mem_dims))
+    else
+      call hdf_shape_check(self, dname, filespace_id, mem_dims)
+    endif
+  endif
 
   if(dtype == H5T_NATIVE_CHARACTER) then
     call h5tcopy_f(dtype, type_id, ierr)
