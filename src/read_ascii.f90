@@ -52,7 +52,7 @@ if(vstatus) then
   allocate(cbuf(1:dset_dims(1)))
   f_ptr = C_LOC(cbuf(1))
 
-  call H5Dread_f(dset_id, type_id, f_ptr, ier)
+  call H5Dread_f(dset_id, type_id, f_ptr, ier, mem_space_id)
   if(ier/=0) error stop "h5fortran:read:vlen_char:H5Dread " // trim(dset_name)
 
   call C_F_POINTER(cbuf(1), cstr)
