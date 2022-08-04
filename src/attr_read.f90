@@ -56,7 +56,12 @@ elseif(attr_class == H5T_INTEGER_F) then
     error stop 'ERROR:h5fortran:readattr: integer disk dataset ' // obj_name // ':' // attr_name // ' needs integer memory variable'
   end select
 elseif(attr_class == H5T_STRING_F) then
-  call readattr_char(self, obj_name, attr_name, attr_id, space_id, A)
+  select type(A)
+  type is (character(*)) !< kind=c_char too
+    call readattr_char(self, obj_name, attr_name, attr_id, space_id, A)
+  class default
+    error stop 'ERROR:h5fortran:readattr: string dataset ' // obj_name // ':' // attr_name // ' needs character memory variable'
+  end select
 else
   error stop 'ERROR:h5fortran:attr_read: non-handled datatype--please reach out to developers.'
 end if
@@ -75,11 +80,11 @@ subroutine readattr_char(self, obj_name, attr_name, attr_id, space_id, A)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: obj_name, attr_name
 integer(HID_T), intent(in) :: attr_id, space_id
-class(*), intent(inout) :: A
+character(*), intent(inout) :: A
 
 integer(HSIZE_T) :: attr_dims(1), maxdims(1)
 integer(HID_T) :: type_id
-integer :: ier, i, L
+integer :: ier, i, L, drank
 integer(HSIZE_T) :: dsize
 
 logical :: vstatus
@@ -89,12 +94,9 @@ TYPE(C_PTR), DIMENSION(:), ALLOCATABLE, TARGET :: cbuf
 TYPE(C_PTR) :: f_ptr
 
 CHARACTER(10000, kind=c_char), POINTER :: cstr !< arbitrary maximum variable length string
-character(:), allocatable :: buf_char !< fixed length read
+CHARACTER(:), DIMENSION(:), ALLOCATABLE, TARGET :: buf_char !< fixed length read
 
-select type(A)
-type is (character(*)) !< kind=c_char too
-  L = len(A)
-end select
+L = len(A)
 
 call H5Aget_type_f(attr_id, type_id, ier)
 if(ier/=0) error stop "ERROR:h5fortran:readattr:H5Aget_type " // obj_name // ":" // attr_name // " " // self%filename
@@ -102,8 +104,15 @@ if(ier/=0) error stop "ERROR:h5fortran:readattr:H5Aget_type " // obj_name // ":"
 call H5Tget_size_f(type_id, dsize, ier) !< only for non-variable
 if(ier/=0) error stop "ERROR:h5fortran:attr_read:H5Tget_size " // obj_name // ":" // attr_name // " " // self%filename
 
-CALL H5Sget_simple_extent_dims_f(space_id, attr_dims, maxdims, ier)
-if(ier/=0) error stop "ERROR:h5fortran:readattr:H5Sget_simple_extent_dims " // obj_name // ":" // attr_name // " " // self%filename
+CALL H5Sget_simple_extent_ndims_f(space_id, drank, ier)
+if(ier /= 0) error stop "ERROR:h5fortran:readattr:H5Sget_simple_extent_ndims " // obj_name // ":" // attr_name
+
+if(drank > 0) then
+  CALL H5Sget_simple_extent_dims_f(space_id, attr_dims, maxdims, ier)
+  if(ier /= drank) error stop "ERROR:h5fortran:readattr:H5Sget_simple_extent_dims " // obj_name // ":" // attr_name
+else
+  attr_dims(1) = 1
+endif
 
 call H5Tis_variable_str_f(type_id, vstatus, ier)
 if(ier/=0) error stop "ERROR:h5fortran:readattr:H5Tis_variable_str " // obj_name // ":" // attr_name
@@ -124,28 +133,25 @@ if(vstatus) then
     error stop
   endif
 
-  select type(A)
-  type is (character(*)) !< kind=c_char too
-    A = cstr(:i)
-  end select
+  A = cstr(:i)
 else
   if(dsize > L) then
     write(stderr,'(a,i0,a3,i0,1x,a)') "ERROR:h5fortran:readattr: buffer too small: ", dsize, " > ", L, obj_name // ":" // attr_name
     error stop
   endif
 
-  allocate(character(dsize) :: buf_char)
+  allocate(character(dsize) :: buf_char(attr_dims(1)))
 
-  call H5Aread_f(attr_id, type_id, buf_char, attr_dims, ier)
+  f_ptr = C_LOC(buf_char(1)(1:1))
+
+  call H5Aread_f(attr_id, type_id, f_ptr, ier)
   if(ier/=0) error stop "ERROR:h5fortran:readattr:H5Aread " // obj_name // ":" // attr_name
 
-  i = index(buf_char, c_null_char) - 1
-  if (i == -1) i = len_trim(buf_char)
+  i = index(buf_char(1), c_null_char) - 1
+  if (i == -1) i = len_trim(buf_char(1))
 
-  select type(A)
-  type is (character(*)) !< kind=c_char too
-    A = buf_char(:i)
-  end select
+  A = buf_char(1)(:i)
+
 endif
 
 call H5Tclose_f(type_id, ier)
