@@ -2,7 +2,7 @@ submodule (h5fortran) utils_smod
 
 use hdf5, only: h5get_libversion_f, &
 h5eset_auto_f, &
-h5iis_valid_f, h5iget_name_f, &
+h5iis_valid_f, h5iget_name_f, H5Iget_type_f, &
 h5open_f, h5close_f, &
 h5fopen_f, h5fcreate_f, h5fclose_f, h5fis_hdf5_f, h5fget_filesize_f, &
 h5fget_obj_count_f, h5fget_obj_ids_f, h5fget_name_f, &
@@ -10,7 +10,8 @@ h5sselect_hyperslab_f, h5screate_simple_f, &
 H5Sget_simple_extent_ndims_f, H5Sget_simple_extent_dims_f, H5Sget_simple_extent_npoints_f, &
 H5F_ACC_RDONLY_F, H5F_ACC_RDWR_F, H5F_ACC_TRUNC_F, &
 H5F_OBJ_FILE_F, H5F_OBJ_GROUP_F, H5F_OBJ_DATASET_F, H5F_OBJ_DATATYPE_F, H5F_OBJ_ALL_F, &
-H5D_CONTIGUOUS_F, H5D_CHUNKED_F, H5D_COMPACT_F
+H5D_CONTIGUOUS_F, H5D_CHUNKED_F, H5D_COMPACT_F, &
+H5I_FILE_F
 
 implicit none (type, external)
 
@@ -180,14 +181,13 @@ end procedure h5close
 
 module procedure is_open
 
-! integer :: hid_type
-integer :: ierr
+integer :: hid_type, ier
 
-call h5iis_valid_f(self%file_id, is_open, ierr)
-if(ierr /= 0) error stop "ERROR:h5fortran:is_open:h5iis_valid: " // self%filename
+call H5Iis_valid_f(self%file_id, is_open, ier)
+if(ier /= 0) error stop "ERROR:h5fortran:is_open:h5iis_valid: " // self%filename
 
-! call h5iget_type_f(self%file_id, hid_type, ierr)
-! if(ierr /= 0 .or. hid_type /= H5I_FILE_F) is_open = .false.
+call H5Iget_type_f(self%file_id, hid_type, ier)
+if(ier /= 0 .or. hid_type /= H5I_FILE_F) is_open = .false.
 
 end procedure is_open
 
