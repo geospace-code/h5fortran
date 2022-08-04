@@ -56,7 +56,7 @@ elseif(attr_class == H5T_INTEGER_F) then
     error stop 'ERROR:h5fortran:readattr: integer disk dataset ' // obj_name // ':' // attr_name // ' needs integer memory variable'
   end select
 elseif(attr_class == H5T_STRING_F) then
-  call readattr_char(self, obj_name, attr_name, attr_id, A)
+  call readattr_char(self, obj_name, attr_name, attr_id, space_id, A)
 else
   error stop 'ERROR:h5fortran:attr_read: non-handled datatype--please reach out to developers.'
 end if
@@ -71,13 +71,13 @@ if(ier /= 0) error stop "ERROR:h5fortran:readattr_scalar:H5Sclose: " // obj_name
 end procedure readattr_scalar
 
 
-subroutine readattr_char(self, obj_name, attr_name, attr_id, A)
+subroutine readattr_char(self, obj_name, attr_name, attr_id, space_id, A)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: obj_name, attr_name
-integer(HID_T), intent(in) :: attr_id
+integer(HID_T), intent(in) :: attr_id, space_id
 class(*), intent(inout) :: A
 
-!! NOTE: HDF5 character attributes are scalar.
+integer(HSIZE_T) :: attr_dims(1), maxdims(1)
 integer(HID_T) :: type_id
 integer :: ier, i, L
 integer(HSIZE_T) :: dsize
@@ -91,8 +91,6 @@ TYPE(C_PTR) :: f_ptr
 CHARACTER(10000, kind=c_char), POINTER :: cstr !< arbitrary maximum variable length string
 character(:), allocatable :: buf_char !< fixed length read
 
-integer(HSIZE_T) :: attr_dims(0)
-
 select type(A)
 type is (character(*)) !< kind=c_char too
   L = len(A)
@@ -103,6 +101,9 @@ if(ier/=0) error stop "ERROR:h5fortran:readattr:H5Aget_type " // obj_name // ":"
 
 call H5Tget_size_f(type_id, dsize, ier) !< only for non-variable
 if(ier/=0) error stop "ERROR:h5fortran:attr_read:H5Tget_size " // obj_name // ":" // attr_name // " " // self%filename
+
+CALL H5Sget_simple_extent_dims_f(space_id, attr_dims, maxdims, ier)
+if(ier/=0) error stop "ERROR:h5fortran:readattr:H5Sget_simple_extent_dims " // obj_name // ":" // attr_name // " " // self%filename
 
 call H5Tis_variable_str_f(type_id, vstatus, ier)
 if(ier/=0) error stop "ERROR:h5fortran:readattr:H5Tis_variable_str " // obj_name // ":" // attr_name
