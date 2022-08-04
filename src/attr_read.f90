@@ -220,27 +220,15 @@ subroutine get_attr_class(self, obj_name, attr_name, class, attr_id, size_bytes,
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: obj_name, attr_name
 integer, intent(out) :: class
-integer(HID_T), intent(in), optional :: attr_id
+integer(HID_T), intent(in) :: attr_id
 integer(SIZE_T), intent(out), optional :: size_bytes
 integer, intent(out), optional :: pad_type
 
-logical :: attr_exists
 integer :: ierr
-integer(HID_T) :: type_id, native_type_id, a_id
+integer(HID_T) :: type_id, native_type_id
 
-if(present(attr_id)) then
-  a_id = attr_id
-else
-  call H5Aexists_by_name_f(self%file_id, obj_name, attr_name, attr_exists, ierr)
-  if(ierr /= 0) error stop "ERROR:h5fortran:get_attr_class:H5Aexists_by_name_f failed: " // obj_name // ":" // attr_name
-  if(.not.attr_exists) error stop 'ERROR:h5fortran:get_attr_class: attribute not exist: ' // obj_name // ":" // attr_name
-
-  call H5Aopen_by_name_f(self%file_id, obj_name, attr_name, a_id, ierr)
-  if(ierr /= 0) error stop "ERROR:h5fortran:readattr:H5Aopen_by_name_f failed: " // obj_name // ":" // attr_name
-endif
-
-call H5Aget_type_f(a_id, type_id, ierr)
-if(ierr/=0) error stop 'ERROR:h5fortran:get_attr_class: type_id ' // obj_name // ":" // attr_name
+call H5Aget_type_f(attr_id, type_id, ierr)
+if(ierr/=0) error stop 'ERROR:h5fortran:get_attr_class: type_id ' // obj_name // ":" // attr_name // " " // self%filename
 
 call H5Tget_native_type_f(type_id, H5T_DIR_ASCEND_F, native_type_id, ierr)
 if(ierr/=0) error stop 'ERROR:h5fortran:get_attr_class: native_type_id ' // obj_name // ":" // attr_name
@@ -267,11 +255,6 @@ if(ierr/=0) error stop 'ERROR:h5fortran:get_class: closing native dtype ' // obj
 
 call H5Tclose_f(type_id, ierr)
 if(ierr/=0) error stop 'ERROR:h5fortran:get_class: closing dtype ' // obj_name // ":" // attr_name
-
-if(.not.present(attr_id)) then
-  call H5Aclose_f(a_id, ierr)
-  if(ierr/=0) error stop 'ERROR:h5fortran:get_class: close attribute ' // obj_name // ':' // attr_name
-endif
 
 end subroutine get_attr_class
 

@@ -12,7 +12,7 @@ if(ier /= 0) error stop "ERROR:h5fortran:readattr:H5Aget_space: " // obj_name //
 
 call attr_shape_check(self, obj_name, attr, space_id, attr_dims)
 
-call get_attr_class(self, obj_name, attr, attr_class)
+call get_attr_class(self, obj_name, attr, attr_class, attr_id)
 
 !> cast the dataset read from disk to the variable type presented by user h5f%readattr("/my_dataset", x, "y")
 !> We only cast when needed to save memory.
