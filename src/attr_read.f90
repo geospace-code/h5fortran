@@ -82,7 +82,7 @@ integer :: ier, i, L
 integer(HSIZE_T) :: dsize
 
 logical :: vstatus, f_corder_valid
-integer :: corder, cset, attr_class
+integer :: corder, cset
 
 !> variable length string
 TYPE(C_PTR), DIMENSION(:), ALLOCATABLE, TARGET :: cbuf
@@ -100,12 +100,6 @@ end select
 
 call H5Aopen_by_name_f(self%file_id, obj_name, attr, attr_id, ier)
 if(ier /= 0) error stop "ERROR:h5fortran:readattr:H5Aopen_by_name_f failed: " // obj_name // ":" // attr
-
-call get_attr_class(self, obj_name, attr, attr_class, attr_id)
-
-if(attr_class /= H5T_STRING_F) then
-  error stop 'ERROR:h5fortran:readattr: character disk attribute ' // obj_name // ':' // attr // ' needs character memory variable'
-endif
 
 call H5Aget_type_f(attr_id, type_id, ier)
 if(ier/=0) error stop "ERROR:h5fortran:readattr:H5Aget_type " // obj_name // ":" // attr
