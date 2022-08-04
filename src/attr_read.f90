@@ -21,11 +21,13 @@ logical :: is_scalar, attr_exists
 if(.not.self%is_open()) error stop 'ERROR:h5fortran:attr_read: file handle is not open'
 
 call H5Aexists_by_name_f(self%file_id, obj_name, attr_name, attr_exists, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:attr_read:H5Aexists_by_name_f failed: " // obj_name // ":" // attr_name
-if(.not.attr_exists) error stop 'ERROR:h5fortran:attr_read: attribute not exist: ' // obj_name // ":" // attr_name
+if(ier /= 0) error stop "ERROR:h5fortran:attr_read:H5Aexists_by_name " // obj_name // ":" // attr_name // " : " // self%filename
+if(.not.attr_exists) then
+  error stop 'ERROR:h5fortran:attr_read: attribute not exist: ' // obj_name // ":" // attr_name // " : " // self%filename
+endif
 
 call H5Aopen_by_name_f(self%file_id, obj_name, attr_name, attr_id, ier)
-if(ier/=0) error stop 'ERROR:h5fortran:readattr:H5Aopen ' // obj_name // ' in ' // self%filename
+if(ier/=0) error stop 'ERROR:h5fortran:readattr:H5Aopen ' // obj_name // ":" // attr_name // " : " // self%filename
 
 call H5Aget_space_f(attr_id, space_id, ier)
 if(ier/=0) error stop 'ERROR:h5fortran:readattr:H5Aget_space ' // obj_name // ":" // attr_name
@@ -118,7 +120,7 @@ call H5Tis_variable_str_f(type_id, vstatus, ier)
 if(ier/=0) error stop "ERROR:h5fortran:readattr:H5Tis_variable_str " // obj_name // ":" // attr_name
 
 if(vstatus) then
-  allocate(cbuf(1:dsize))
+  allocate(cbuf(1:attr_dims(1)))
   f_ptr = C_LOC(cbuf(1))
 
   call H5Aread_f(attr_id, type_id, f_ptr, ier)

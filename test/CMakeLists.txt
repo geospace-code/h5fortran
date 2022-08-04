@@ -1,4 +1,8 @@
-set_directory_properties(PROPERTIES LABELS h5fortran)
+set_property(DIRECTORY PROPERTY LABELS h5fortran)
+
+cmake_path(SET attr_file ${CMAKE_CURRENT_BINARY_DIR}/test_attr_py.h5)
+cmake_path(SET shape_file ${CMAKE_CURRENT_BINARY_DIR}/test_shape.h5)
+cmake_path(SET string_file ${CMAKE_CURRENT_BINARY_DIR}/test_string_py.h5)
 
 # --- fundamental HDF5 library check
 
@@ -6,12 +10,8 @@ add_executable(test_minimal test_minimal.f90)
 # even though we're not using h5fortran, we're testing that HDF5 was linked
 # as part of h5fortran
 target_link_libraries(test_minimal PRIVATE h5fortran::h5fortran)
-set_target_properties(test_minimal PROPERTIES LABELS unit)
 add_test(NAME minimal COMMAND test_minimal)
-set_tests_properties(minimal PROPERTIES
-FIXTURES_SETUP h5lib
-LABELS core
-)
+
 
 # --- h5fortran unit tests
 
@@ -24,26 +24,20 @@ foreach(name IN LISTS names)
 add_executable(test_${name} test_${name}.f90)
 target_link_libraries(test_${name} PRIVATE h5fortran::h5fortran)
 target_compile_options(test_${name} PRIVATE "$<$<Fortran_COMPILER_ID:GNU>:-Wno-compare-reals;-Wno-conversion>")
-set_target_properties(test_${name} PROPERTIES LABELS unit)
 
 if(${name} STREQUAL "string_read")
   add_test(NAME ${name} COMMAND test_${name} ${string_file})
+elseif(${name} STREQUAL "attributes_read")
+  add_test(NAME ${name} COMMAND test_${name} ${attr_file})
 else()
   add_test(NAME ${name} COMMAND test_${name})
 endif()
-set_tests_properties(${name} PROPERTIES
-FIXTURES_REQUIRED h5lib
-)
 
 if(${name} MATCHES ".*fail.*")
   set_tests_properties(${name} PROPERTIES
   WILL_FAIL true
   LABELS shaky
   DISABLED $<OR:$<BOOL:${CI}>,$<NOT:$<BOOL:test_shaky>>>
-  )
-else()
-  set_tests_properties(${name} PROPERTIES
-  LABELS unit
   )
 endif()
 
@@ -53,11 +47,8 @@ endfunction(setup_test)
 
 # --- setup unit tests
 
-cmake_path(SET attr_file ${CMAKE_CURRENT_BINARY_DIR}/test_attr.h5)
-cmake_path(SET shape_file ${CMAKE_CURRENT_BINARY_DIR}/test_shape.h5)
-cmake_path(SET string_file ${CMAKE_CURRENT_BINARY_DIR}/test_string_py.h5)
-
-set(test_names array attributes cast deflate_write deflate_read deflate_props destructor exist fill
+set(test_names array attributes attributes_read
+cast deflate_write deflate_read deflate_props destructor exist fill
 groups layout lt scalar shape string string_read version write
 fail_read_size_mismatch fail_read_rank_mismatch fail_nonexist_variable)
 
@@ -108,20 +99,24 @@ if(NOT DEFINED h5py_ok)
   endif()
 endif()
 
-set_tests_properties(string_read PROPERTIES
-FIXTURES_REQUIRED h5str
-DISABLED $<NOT:$<BOOL:${h5py_ok}>>
-)
+set_property(TEST string_read PROPERTY FIXTURES_REQUIRED h5str)
+set_property(TEST string_read PROPERTY REQUIRED_FILES ${string_file})
+set_property(TEST string_read PROPERTY DISABLED $<NOT:$<BOOL:${h5py_ok}>>)
+
+# --- attributes
 
 add_test(NAME PythonAttributes
 COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test_attributes.py ${attr_file}
 )
 
-set_tests_properties(PythonAttributes PROPERTIES
-FIXTURES_REQUIRED h5lib
-FIXTURES_SETUP h5attr
-DISABLED $<NOT:$<BOOL:${h5py_ok}>>
-)
+set_property(TEST PythonAttributes PROPERTY FIXTURES_SETUP h5attr)
+set_property(TEST PythonAttributes PROPERTY DISABLED $<NOT:$<BOOL:${h5py_ok}>>)
+
+set_property(TEST attributes_read PROPERTY FIXTURES_REQUIRED h5attr)
+set_property(TEST attributes_read PROPERTY REQUIRED_FILES ${attr_file})
+set_property(TEST attributes_read PROPERTY DISABLED $<NOT:$<BOOL:${h5py_ok}>>)
+
+# --- shape
 
 add_test(NAME PythonShape
 COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test_shape.py ${shape_file}
@@ -129,7 +124,7 @@ COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test_shape.py ${shape_f
 
 set_tests_properties(PythonShape PROPERTIES
 REQUIRED_FILES ${shape_file}
-FIXTURES_REQUIRED "h5lib;h5shape"
+FIXTURES_REQUIRED h5shape
 DISABLED $<NOT:$<BOOL:${h5py_ok}>>
 )
 
@@ -138,7 +133,6 @@ COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test_string.py ${string
 )
 
 set_tests_properties(PythonString PROPERTIES
-FIXTURES_REQUIRED h5lib
 FIXTURES_SETUP h5str
 DISABLED $<NOT:$<BOOL:${h5py_ok}>>
 )
@@ -156,7 +150,7 @@ if(Matlab_FOUND)
   LABELS shaky
   DEPENDS shape
   REQUIRED_FILES ${shape_file}
-  FIXTURES_REQUIRED "h5lib;h5shape"
+  FIXTURES_REQUIRED h5shape
   )
 
 endif(Matlab_FOUND)
@@ -169,7 +163,7 @@ add_test(NAME h5ls COMMAND ${h5ls} ${shape_file}/d7)
 
 set_tests_properties(h5ls PROPERTIES
 REQUIRED_FILES ${shape_file}
-FIXTURES_REQUIRED "h5lib;h5shape"
+FIXTURES_REQUIRED h5shape
 DEPENDS shape
 PASS_REGULAR_EXPRESSION "{5, 6, 7, 4, 3, 1, 2}"
 DISABLED $<NOT:$<BOOL:${h5ls}>>

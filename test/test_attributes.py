@@ -17,6 +17,13 @@ fn = Path(P.file).expanduser()
 
 with h5py.File(fn, "w") as f:
     v = f.create_dataset("/empty", dtype=float)
+
     v.attrs["real32-scalar"] = np.float32(3.)
     v.attrs["real64-scalar"] = np.float64(3.)
     v.attrs["real16-scalar"] = np.float16(3.)
+
+    v.attrs["variable_str"] = "Hi there"
+    v.attrs.create("nullpad", dtype=h5py.string_dtype("utf-8", 40), data="Hello World!")
+
+    v.attrs["smiley"] = "😀"
+    v.attrs["wink"] = "😉"
