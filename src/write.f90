@@ -45,7 +45,6 @@ end procedure hdf_create_user
 
 module procedure hdf_create
 
-logical :: exists
 integer :: ierr
 integer(HID_T) :: dcpl, type_id
 
@@ -54,18 +53,7 @@ if(dtype == H5T_NATIVE_CHARACTER) then
   if(.not. present(dtype_id)) error stop "h5fortran:hdf_create: character type must specify dtype_id"
 endif
 
-!> sanity check: file is open
-if(.not. self%is_open()) error stop 'ERROR:h5fortran:write: file handle is not open: ' // self%filename
-
-!> sanity check: dataset path is valid
-call h5ltpath_valid_f(self%file_id, dname, .true., exists, ierr)
-if (ierr /= 0) error stop 'ERROR:h5fortran:create: variable path invalid: ' // dname // ' in ' // self%filename
-!! h5lexists_f can false error with groups--just use h5ltpath_valid
-!! stricter than self%exist() since we're creating and/or writing variable
-
-if(self%debug) print *,'h5fortran:TRACE:create:exists: ' // dname, exists
-
-if(exists) then
+if(self%exist(dname)) then
   if (.not.present(istart)) then
     if (size(mem_dims) == 0) then
       !! scalar
