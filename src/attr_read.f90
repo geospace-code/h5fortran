@@ -2,7 +2,7 @@ submodule (h5fortran:attr_smod) attr_read
 
 use, intrinsic :: iso_c_binding, only : C_CHAR, C_NULL_CHAR, C_F_POINTER
 
-use hdf5, only : H5Aread_f, H5Aget_info_f, H5Aget_type_f, &
+use hdf5, only : H5Aread_f, H5Aget_type_f, &
 H5Tis_variable_str_f, H5Tget_class_f, H5Tget_native_type_f, H5Tget_size_f, H5Tget_strpad_f, &
 H5T_DIR_ASCEND_F
 use h5lt, only: h5ltget_attribute_float_f, h5ltget_attribute_double_f, h5ltget_attribute_int_f
@@ -56,7 +56,7 @@ elseif(attr_class == H5T_INTEGER_F) then
     error stop 'ERROR:h5fortran:readattr: integer disk dataset ' // obj_name // ':' // attr_name // ' needs integer memory variable'
   end select
 elseif(attr_class == H5T_STRING_F) then
-  call readattr_char(self, obj_name, attr_name, A)
+  call readattr_char(self, obj_name, attr_name, attr_id, A)
 else
   error stop 'ERROR:h5fortran:attr_read: non-handled datatype--please reach out to developers.'
 end if
@@ -71,18 +71,18 @@ if(ier /= 0) error stop "ERROR:h5fortran:readattr_scalar:H5Sclose: " // obj_name
 end procedure readattr_scalar
 
 
-subroutine readattr_char(self, obj_name, attr, A)
+subroutine readattr_char(self, obj_name, attr_name, attr_id, A)
 class(hdf5_file), intent(in) :: self
-character(*), intent(in) :: obj_name, attr
+character(*), intent(in) :: obj_name, attr_name
+integer(HID_T), intent(in) :: attr_id
 class(*), intent(inout) :: A
 
 !! NOTE: HDF5 character attributes are scalar.
-integer(HID_T) :: type_id, attr_id
+integer(HID_T) :: type_id
 integer :: ier, i, L
 integer(HSIZE_T) :: dsize
 
-logical :: vstatus, f_corder_valid
-integer :: corder, cset
+logical :: vstatus
 
 !> variable length string
 TYPE(C_PTR), DIMENSION(:), ALLOCATABLE, TARGET :: cbuf
@@ -98,30 +98,28 @@ type is (character(*)) !< kind=c_char too
   L = len(A)
 end select
 
-call H5Aopen_by_name_f(self%file_id, obj_name, attr, attr_id, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:readattr:H5Aopen_by_name_f failed: " // obj_name // ":" // attr
-
 call H5Aget_type_f(attr_id, type_id, ier)
-if(ier/=0) error stop "ERROR:h5fortran:readattr:H5Aget_type " // obj_name // ":" // attr
-call H5Aget_info_f(attr_id, f_corder_valid, corder, cset, dsize, ier)
-if(ier/=0) error stop "ERROR:h5fortran:readattr:H5Aget_info " // obj_name // ":" // attr
+if(ier/=0) error stop "ERROR:h5fortran:readattr:H5Aget_type " // obj_name // ":" // attr_name // " " // self%filename
+
+call H5Tget_size_f(type_id, dsize, ier) !< only for non-variable
+if(ier/=0) error stop "ERROR:h5fortran:attr_read:H5Tget_size " // obj_name // ":" // attr_name // " " // self%filename
 
 call H5Tis_variable_str_f(type_id, vstatus, ier)
-if(ier/=0) error stop "ERROR:h5fortran:readattr:H5Tis_variable_str " // obj_name // ":" // attr
+if(ier/=0) error stop "ERROR:h5fortran:readattr:H5Tis_variable_str " // obj_name // ":" // attr_name
 
 if(vstatus) then
   allocate(cbuf(1:dsize))
   f_ptr = C_LOC(cbuf(1))
 
   call H5Aread_f(attr_id, type_id, f_ptr, ier)
-  if(ier/=0) error stop "h5fortran:read:readattr:H5Aread " // obj_name // ":" // attr
+  if(ier/=0) error stop "h5fortran:read:readattr:H5Aread " // obj_name // ":" // attr_name
 
   call C_F_POINTER(cbuf(1), cstr)
 
   i = index(cstr, c_null_char) - 1
   if (i == -1) i = len_trim(cstr)
   if(i > L) then
-    write(stderr,'(a,i0,a3,i0,1x,a)') "ERROR:h5fortran:readattr_vlen: buffer too small: ", i, " > ", L, obj_name // ":" // attr
+    write(stderr,'(a,i0,a3,i0,1x,a)') "ERROR:h5fortran:readattr_vlen: buffer too small: ", i, " > ", L, obj_name // ":" // attr_name
     error stop
   endif
 
@@ -131,14 +129,14 @@ if(vstatus) then
   end select
 else
   if(dsize > L) then
-    write(stderr,'(a,i0,a3,i0,1x,a)') "ERROR:h5fortran:readattr: buffer too small: ", dsize, " > ", L, obj_name // ":" // attr
+    write(stderr,'(a,i0,a3,i0,1x,a)') "ERROR:h5fortran:readattr: buffer too small: ", dsize, " > ", L, obj_name // ":" // attr_name
     error stop
   endif
 
   allocate(character(dsize) :: buf_char)
 
   call H5Aread_f(attr_id, type_id, buf_char, attr_dims, ier)
-  if(ier/=0) error stop "ERROR:h5fortran:readattr:H5Aread " // obj_name // ":" // attr
+  if(ier/=0) error stop "ERROR:h5fortran:readattr:H5Aread " // obj_name // ":" // attr_name
 
   i = index(buf_char, c_null_char) - 1
   if (i == -1) i = len_trim(buf_char)
@@ -150,10 +148,7 @@ else
 endif
 
 call H5Tclose_f(type_id, ier)
-if(ier/=0) error stop "ERROR:h5fortran:read:H5Tclose " // obj_name // ":" // attr
-
-call H5Aclose_f(attr_id, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:readattr:H5Aclose " // obj_name // ":" // attr
+if(ier/=0) error stop "ERROR:h5fortran:read:H5Tclose " // obj_name // ":" // attr_name
 
 end subroutine readattr_char
 
