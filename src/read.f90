@@ -6,6 +6,7 @@ use hdf5, only : h5dget_create_plist_f, &
   h5pget_layout_f, h5pget_chunk_f, h5pclose_f, h5pget_nfilters_f, h5pget_filter_f, &
   h5dget_type_f, h5dopen_f, h5dclose_f, H5Dget_space_f, &
   h5lexists_f, &
+  H5Sget_simple_extent_ndims_f, H5Sget_simple_extent_dims_f, H5Sclose_f, &
   h5tclose_f, h5tget_native_type_f, h5tget_class_f, H5Tget_order_f, h5tget_size_f, h5tget_strpad_f, &
   h5z_filter_deflate_f, &
   H5T_DIR_ASCEND_F
@@ -199,39 +200,48 @@ module procedure hdf_get_ndim
 !! get rank or "ndims"
 integer :: ier
 
-drank = -1
+if (.not. self%exist(dname)) error stop 'ERROR:h5fortran:get_ndim: ' // dname // ' does not exist in ' // self%filename
 
-if (self%exist(dname)) then
-  call h5ltget_dataset_ndims_f(self%file_id, dname, drank, ier)
-else
-  write(stderr, '(a)') 'ERROR:h5fortran:get_ndim: ' // dname // ' does not exist in ' // self%filename
-endif
+call h5ltget_dataset_ndims_f(self%file_id, dname, drank, ier)
+if(ier/=0) error stop 'ERROR:h5fortran:get_ndim:h5ltget_dataset_ndims ' // dname // ' from ' // self%filename
 
 end procedure hdf_get_ndim
 
 
 module procedure hdf_get_shape
-!! must get rank before info, as "dims" must be allocated first.
-integer(SIZE_T) :: type_size
-integer :: type_class, drank, ier
+
+integer :: drank, ier
+integer(HID_T) :: dset_id, space_id
+integer(HSIZE_T), allocatable :: maxdims(:)
 
 if(.not. self%exist(dname)) error stop 'ERROR:h5fortran:get_shape: ' // dname // ' does not exist in ' // self%filename
 
-call h5ltget_dataset_ndims_f(self%file_id, dname, drank, ier)
-if (ier /= 0) error stop "ERROR:h5fortran:get_shape: could not get rank of " // dname // " in " // self%filename
+call H5Dopen_f(self%file_id, dname, dset_id, ier)
+if(ier/=0) error stop 'ERROR:h5fortran:get_shape:H5Dopen ' // dname // ' from ' // self%filename
 
-allocate(dims(drank))
-call h5ltget_dataset_info_f(self%file_id, dname, dims=dims, &
-  type_class=type_class, type_size=type_size, errcode=ier)
-if (ier /= 0) error stop "ERROR:h5fortran:get_shape: could not get shape of " // dname // " in " // self%filename
+call H5Dget_space_f(dset_id, space_id, ier)
+if(ier/=0) error stop 'ERROR:h5fortran:get_shape:H5Dget_space ' // dname // ' from ' // self%filename
+
+call H5Sget_simple_extent_ndims_f(space_id, drank, ier)
+if (ier /= 0) error stop 'ERROR:h5fortran:get_shape:H5Sget_simple_extent_ndims: ' // dname // ' in ' // self%filename
+
+allocate(dims(drank), maxdims(drank))
+call H5Sget_simple_extent_dims_f(space_id, dims, maxdims, ier)
+if (ier /= drank) error stop 'ERROR:h5fortran:get_shape:H5Sget_simple_extent_dims: ' // dname // ' in ' // self%filename
+
+call H5Sclose_f(space_id, ier)
+if(ier/=0) error stop 'ERROR:h5fortran:get_shape:H5Sclose: ' // dname // ' in ' // self%filename
+
+call H5Dclose_f(dset_id, ier)
+if(ier/=0) error stop 'ERROR:h5fortran:get_shape:H5Dclose: ' // dname // ' in ' // self%filename
 
 end procedure hdf_get_shape
 
 
 module procedure hdf_get_chunk
 
-integer :: ierr, drank
-integer(HID_T) :: dapl, dset_id
+integer :: ier, drank
+integer(HID_T) :: dapl, dset_id, space_id
 integer(HSIZE_T) :: cs(size(chunk_size))
 
 cs = -1
@@ -239,24 +249,28 @@ cs = -1
 if (.not.self%exist(dname)) error stop 'ERROR:h5fortran:get_chunk: ' // dname // ' does not exist in ' // self%filename
 
 if(self%is_chunked(dname)) then
-  call h5ltget_dataset_ndims_f(self%file_id, dname, drank, ierr)
-  if (ierr /= 0) error stop 'ERROR:h5fortran:get_chunk: get rank ' // dname // ' ' // self%filename
+  call H5Dopen_f(self%file_id, dname, dset_id, ier)
+  if(ier/=0) error stop 'ERROR:h5fortran:get_chunk:H5Dopen ' // dname // ' from ' // self%filename
 
-  call h5dopen_f(self%file_id, dname, dset_id, ierr)
-  if (ierr /= 0) error stop 'ERROR:h5fortran:get_chunk: open dataset ' // dname // ' ' // self%filename
+  call H5Dget_space_f(dset_id, space_id, ier)
+  if(ier/=0) error stop 'ERROR:h5fortran:get_chunk:H5Dget_space ' // dname // ' from ' // self%filename
+  call H5Sget_simple_extent_ndims_f(space_id, drank, ier)
+  if (ier /= 0) error stop 'ERROR:h5fortran:get_chunk:H5Sget_simple_extent_ndims: ' // dname // ' in ' // self%filename
+  call H5Sclose_f(space_id, ier)
+  if(ier/=0) error stop 'ERROR:h5fortran:get_chunk:H5Sclose: ' // dname // ' in ' // self%filename
 
-  call h5dget_create_plist_f(dset_id, dapl, ierr)
-  if (ierr /= 0) error stop 'ERROR:h5fortran:get_chunk: get property list ID ' // dname // ' ' // self%filename
+  call h5dget_create_plist_f(dset_id, dapl, ier)
+  if (ier /= 0) error stop 'ERROR:h5fortran:get_chunk: get property list ID ' // dname // ' ' // self%filename
 
-  call h5dclose_f(dset_id, ierr)
-  if (ierr /= 0) error stop 'ERROR:h5fortran:get_chunk: close dataset: ' // dname // ' ' // self%filename
+  call h5dclose_f(dset_id, ier)
+  if (ier /= 0) error stop 'ERROR:h5fortran:get_chunk: close dataset: ' // dname // ' ' // self%filename
 
-  call h5pget_chunk_f(dapl, drank, cs, ierr)
-  if (ierr /= drank) error stop 'ERROR:h5fortran:get_chunk:h5pget_chunk ' // dname // ' ' // self%filename
+  call h5pget_chunk_f(dapl, drank, cs, ier)
+  if (ier /= drank) error stop 'ERROR:h5fortran:get_chunk:h5pget_chunk ' // dname // ' ' // self%filename
   !! yes ierr == drank is success for this call
 
-  call h5pclose_f(dapl, ierr)
-  if (ierr /= 0) error stop 'ERROR:h5fortran:get_chunk: close property list ' // dname // ' ' // self%filename
+  call h5pclose_f(dapl, ier)
+  if (ier /= 0) error stop 'ERROR:h5fortran:get_chunk: close property list ' // dname // ' ' // self%filename
 endif
 
 select type (chunk_size)

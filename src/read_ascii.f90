@@ -3,7 +3,6 @@ submodule (h5fortran:read_scalar) read_scalar_ascii
 use, intrinsic :: iso_c_binding, only : C_CHAR, C_F_POINTER
 use hdf5, only : H5T_STR_NULLTERM_F, &
 H5Dvlen_get_max_len_f, H5Dread_vl_f, H5Dvlen_reclaim_f, &
-H5Sget_simple_extent_dims_f, &
 H5Tis_variable_str_f
 
 implicit none (type, external)
