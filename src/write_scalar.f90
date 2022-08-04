@@ -42,7 +42,7 @@ if (ier /= 0) error stop 'ERROR:h5fortran:write: could not write ' // dname // '
 call h5dclose_f(dset_id, ier)
 if(ier /= 0) error stop "ERROR:h5fortran:writer: closing dataset: " // dname // " in " // self%filename
 
-if(file_space_id /= H5S_ALL_F) call h5sclose_f(file_space_id, ier)
+call h5sclose_f(file_space_id, ier)
 if(ier /= 0) error stop "ERROR:h5fortran:writer closing file dataspace: " // dname // " in " // self%filename
 
 

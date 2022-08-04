@@ -34,7 +34,7 @@ call hdf_create(self, dname, dtype, mem_dims=dset_dims, dset_dims=dset_dims, &
 call h5dclose_f(dset_id, ierr)
 if(ierr /= 0) error stop "ERROR:h5fortran:write:create_user: closing dataset: " // dname // " in " // self%filename
 
-if(file_space_id /= H5S_ALL_F) call h5sclose_f(file_space_id, ierr)
+call h5sclose_f(file_space_id, ierr)
 if(ierr /= 0) error stop "ERROR:h5fortran:write:create_user: closing file dataspace: " // dname // " in " // self%filename
 
 if(dtype == H5T_NATIVE_CHARACTER) call h5tclose_f(dtype_id, ierr)

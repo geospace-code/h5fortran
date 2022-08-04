@@ -42,7 +42,7 @@ call H5Tis_variable_str_f(type_id, vstatus, ier)
 if(ier/=0) error stop "ERROR:h5fortran:read:H5Tis_variable_str " // trim(dset_name)
 
 if(vstatus) then
-  if(mem_space_id == H5S_ALL_F) call H5Dget_space_f(dset_id, mem_space_id, ier)
+  call H5Dget_space_f(dset_id, mem_space_id, ier)
   if(ier/=0) error stop "ERROR:h5fortran:read:vlen_char:H5Dget_space " // trim(dset_name)
   !call H5Dvlen_get_max_len_f(dset_id, type_id, space_id, dsize, ier)
   !if(ier/=0) error stop "h5fortran:read:H5Dvlen_get_max_len " // trim(dset_name)

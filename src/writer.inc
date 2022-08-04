@@ -34,10 +34,10 @@ call hdf_create(self, dname, dtype, mem_dims, dims_dset, file_space_id, dset_id,
   chunk_size=chunk_size, istart=istart, iend=iend, stride=stride, compact=compact, &
   dtype_id=dtype_id, charlen=charlen)
 
-mem_space_id = H5S_ALL_F !< default
-
 if(present(istart) .and. present(iend)) then
   call hdf_get_slice(self, dname, dset_id, file_space_id, mem_space_id, istart, iend, stride)
+else
+  mem_space_id = H5S_ALL_F
 endif
 
 select type (A)
@@ -64,5 +64,5 @@ if(ier /= 0) error stop "ERROR:h5fortran:writer: closing dataset: " // dname // 
 if(mem_space_id /= H5S_ALL_F) call h5sclose_f(mem_space_id, ier)
 if(ier /= 0) error stop "ERROR:h5fortran:writer closing memory dataspace: " // dname // " in " // self%filename
 
-if(file_space_id /= H5S_ALL_F) call h5sclose_f(file_space_id, ier)
+call h5sclose_f(file_space_id, ier)
 if(ier /= 0) error stop "ERROR:h5fortran:writer closing file dataspace: " // dname // " in " // self%filename

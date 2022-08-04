@@ -25,19 +25,21 @@ integer :: dclass, ier
 
 logical :: is_scalar
 
-file_space_id = H5S_ALL_F
-mem_space_id = H5S_ALL_F
-
-call hdf_rank_check(self, dname, rank(A), is_scalar)
 
 call H5Dopen_f(self%file_id, dname, dset_id, ier)
 if(ier/=0) error stop 'ERROR:h5fortran:reader: ' // dname // ' could not be opened in ' // self%filename
 call H5Dget_space_f(dset_id, file_space_id, ier)
 if(ier/=0) error stop 'ERROR:h5fortran:reader:H5Dget_space ' // dname // ' from ' // self%filename
 
-call get_dset_class(self, dname, dclass, dset_id)
+call hdf_rank_check(self, dname, rank(A), is_scalar)
 
-if (is_scalar) call hdf_get_slice(self, dname, dset_id, file_space_id, mem_space_id, [1], [1])
+if (is_scalar) then
+  call hdf_get_slice(self, dname, dset_id, file_space_id, mem_space_id, [1], [1])
+else
+  mem_space_id = H5S_ALL_F
+endif
+
+call get_dset_class(self, dname, dclass, dset_id)
 
 !> cast the dataset read from disk to the variable type presented by user h5f%read("/my_dataset", x)
 !> We only cast when needed to save memory.
@@ -74,7 +76,7 @@ if(ier /= 0) error stop "ERROR:h5fortran:read_scalar: closing dataset: " // dnam
 if(mem_space_id /= H5S_ALL_F) call H5Sclose_f(mem_space_id, ier)
 if(ier /= 0) error stop "ERROR:h5fortran:read_scalar closing memory dataspace: " // dname // " in " // self%filename
 
-if(file_space_id /= H5S_ALL_F) call H5Sclose_f(file_space_id, ier)
+call H5Sclose_f(file_space_id, ier)
 if(ier /= 0) error stop "ERROR:h5fortran:read_scalar closing file dataspace: " // dname // " in " // self%filename
 
 end procedure h5read_scalar
