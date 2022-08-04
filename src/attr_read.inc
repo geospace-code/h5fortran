@@ -1,15 +1,18 @@
 integer :: ier, attr_class
-integer(HID_T) :: attr_id
+integer(HID_T) :: attr_id, space_id
 integer(HSIZE_T) :: attr_dims(rank(A))
 
 attr_dims = shape(A, HSIZE_T)
 
-call attr_shape_check(self, obj_name, attr, attr_dims)
-
-call get_attr_class(self, obj_name, attr, attr_class)
-
 call H5Aopen_by_name_f(self%file_id, obj_name, attr, attr_id, ier)
 if(ier /= 0) error stop "ERROR:h5fortran:readattr:H5Aopen_by_name: " // obj_name // ":" // attr // ":" // self%filename
+
+call H5Aget_space_f(attr_id, space_id, ier)
+if(ier /= 0) error stop "ERROR:h5fortran:readattr:H5Aget_space: " // obj_name // ":" // attr // ":" // self%filename
+
+call attr_shape_check(self, obj_name, attr, space_id, attr_dims)
+
+call get_attr_class(self, obj_name, attr, attr_class)
 
 !> cast the dataset read from disk to the variable type presented by user h5f%readattr("/my_dataset", x, "y")
 !> We only cast when needed to save memory.
@@ -42,3 +45,6 @@ if (ier /= 0) error stop "ERROR:h5fortran:readattr: " // obj_name // " in " // s
 
 call H5Aclose_f(attr_id, ier)
 if(ier /= 0) error stop "ERROR:h5fortran:readattr:H5Aclose: " // obj_name // ":" // attr // ":" // self%filename
+
+call H5Sclose_f(space_id, ier)
+if(ier /= 0) error stop "ERROR:h5fortran:readattr:H5Sclose: " // obj_name // ":" // attr // ":" // self%filename

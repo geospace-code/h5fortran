@@ -14,16 +14,25 @@ contains
 module procedure readattr_scalar
 
 integer(HSIZE_T) :: attr_dims(0)
-integer(HID_T) :: attr_id
+integer(HID_T) :: attr_id, space_id
 integer :: attr_class, ier
-logical :: is_scalar
+logical :: is_scalar, attr_exists
 
-call attr_rank_check(self, obj_name, attr, rank(A), is_scalar)
+if(.not.self%is_open()) error stop 'ERROR:h5fortran:attr_read: file handle is not open'
 
-call H5Aopen_by_name_f(self%file_id, obj_name, attr, attr_id, ier)
+call H5Aexists_by_name_f(self%file_id, obj_name, attr_name, attr_exists, ier)
+if(ier /= 0) error stop "ERROR:h5fortran:attr_read:H5Aexists_by_name_f failed: " // obj_name // ":" // attr_name
+if(.not.attr_exists) error stop 'ERROR:h5fortran:attr_read: attribute not exist: ' // obj_name // ":" // attr_name
+
+call H5Aopen_by_name_f(self%file_id, obj_name, attr_name, attr_id, ier)
 if(ier/=0) error stop 'ERROR:h5fortran:readattr:H5Aopen ' // obj_name // ' in ' // self%filename
 
-call get_attr_class(self, obj_name, attr, attr_class, attr_id)
+call H5Aget_space_f(attr_id, space_id, ier)
+if(ier/=0) error stop 'ERROR:h5fortran:readattr:H5Aget_space ' // obj_name // ":" // attr_name
+
+call attr_rank_check(self, obj_name, attr_name, space_id, rank(A), is_scalar)
+
+call get_attr_class(self, obj_name, attr_name, attr_class, attr_id)
 
 !> cast the dataset read from disk to the variable type presented by user h5f%readattr("/my_dataset", x, "y")
 !> We only cast when needed to save memory.
@@ -35,7 +44,7 @@ if(attr_class == H5T_FLOAT_F) then
   type is (real(real32))
     call H5Aread_f(attr_id, H5T_NATIVE_REAL, A, attr_dims, ier)
   class default
-    error stop 'ERROR:h5fortran:readattr: real disk dataset ' // obj_name // ':' // attr // ' needs real memory variable'
+    error stop 'ERROR:h5fortran:readattr: real disk dataset ' // obj_name // ':' // attr_name // ' needs real memory variable'
   end select
 elseif(attr_class == H5T_INTEGER_F) then
   select type(A)
@@ -44,17 +53,20 @@ elseif(attr_class == H5T_INTEGER_F) then
   type is (integer(int64))
     call H5Aread_f(attr_id, H5T_STD_I64LE, A, attr_dims, ier)
   class default
-    error stop 'ERROR:h5fortran:readattr: integer disk dataset ' // obj_name // ':' // attr // ' needs integer memory variable'
+    error stop 'ERROR:h5fortran:readattr: integer disk dataset ' // obj_name // ':' // attr_name // ' needs integer memory variable'
   end select
 elseif(attr_class == H5T_STRING_F) then
-  call readattr_char(self, obj_name, attr, A)
+  call readattr_char(self, obj_name, attr_name, A)
 else
-  error stop 'ERROR:h5fortran:reader: non-handled datatype--please reach out to developers.'
+  error stop 'ERROR:h5fortran:attr_read: non-handled datatype--please reach out to developers.'
 end if
-if(ier/=0) error stop 'ERROR:h5fortran:readattr: reading ' // obj_name // ':' // attr // ' from ' // self%filename
+if(ier/=0) error stop 'ERROR:h5fortran:readattr: reading ' // obj_name // ':' // attr_name // ' from ' // self%filename
 
 call H5Aclose_f(attr_id, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:readattr_scalar: closing dataset: " // obj_name // ':' // attr // " in " // self%filename
+if(ier /= 0) error stop "ERROR:h5fortran:readattr_scalar:H5Aclose: " // obj_name // ':' // attr_name // " in " // self%filename
+
+call H5Sclose_f(space_id, ier)
+if(ier /= 0) error stop "ERROR:h5fortran:readattr_scalar:H5Sclose: " // obj_name // ':' // attr_name // " in " // self%filename
 
 end procedure readattr_scalar
 

@@ -433,9 +433,9 @@ end interface
 
 interface  !< attributes.f90
 
-module subroutine readattr_scalar(self, obj_name, attr, A)
+module subroutine readattr_scalar(self, obj_name, attr_name, A)
 class(hdf5_file), intent(in) :: self
-character(*), intent(in) :: obj_name, attr
+character(*), intent(in) :: obj_name, attr_name
 class(*), intent(inout) :: A
 end subroutine
 

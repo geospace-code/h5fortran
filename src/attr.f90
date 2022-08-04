@@ -1,8 +1,8 @@
 submodule (h5fortran) attr_smod
 
 use hdf5, only : H5S_SCALAR_F, &
-H5Aexists_by_name_f, H5Aopen_by_name_f, H5Aclose_f, H5Acreate_by_name_f, H5Adelete_f, &
-H5Screate_f, H5Screate_simple_f, H5Sclose_f, &
+H5Aexists_by_name_f, H5Aopen_by_name_f, H5Aclose_f, H5Acreate_by_name_f, H5Adelete_f, H5Aget_space_f, &
+H5Screate_f, H5Screate_simple_f, H5Sclose_f, H5Sget_simple_extent_ndims_f, H5Sget_simple_extent_npoints_f, &
 H5Tcopy_f, H5Tset_size_f, H5Tclose_f, &
 H5Dopen_f, H5Dclose_f
 
@@ -13,42 +13,35 @@ implicit none (type, external)
 contains
 
 
-subroutine attr_rank_check(self, obj_name, attr_name, mrank, vector_scalar)
+subroutine attr_rank_check(self, obj_name, attr_name, space_id, mrank, is_scalar)
 !! check for matching rank, else bad reads can occur--doesn't always crash without this check
 
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: obj_name, attr_name
+integer(HID_T), intent(in) :: space_id
 integer, intent(in) :: mrank
-logical, intent(out), optional :: vector_scalar
+logical, intent(out), optional :: is_scalar
 
-integer(HSIZE_T) :: attr_dims(1)
-integer(SIZE_T) :: attr_bytes
-integer :: ierr, attr_rank, attr_type
+integer(HID_T) :: attr_id
+integer(HSIZE_T) :: N
+integer :: ierr, attr_rank
 logical :: attr_exists
 
-if(present(vector_scalar)) vector_scalar = .false.
+if(present(is_scalar)) is_scalar = .false.
 
-if(.not.self%is_open()) error stop 'ERROR:h5fortran:attr_rank_check: file handle is not open'
-
-call H5Aexists_by_name_f(self%file_id, obj_name, attr_name, attr_exists, ierr)
-if(ierr /= 0) error stop "ERROR:h5fortran:attr_rank_check:H5Aexists_by_name_f failed: " // obj_name // ":" // attr_name
-if(.not.attr_exists) error stop 'ERROR:h5fortran:attr_rank_check: attribute not exist: ' // obj_name // ":" // attr_name
-
-!> check for matching rank, else bad reads can occur--doesn't always crash without this check
-call h5ltget_attribute_ndims_f(self%file_id, obj_name, attr_name, attr_rank, ierr)
-if (ierr /= 0) error stop 'ERROR:h5fortran:attr_rank__check:get_attribute_ndims: ' // obj_name // ":" // attr_name
-
+call H5Sget_simple_extent_ndims_f(space_id, attr_rank, ierr)
+if (ierr/=0) error stop 'ERROR:h5fortran:rank_check:H5Sget_simple_extent_ndims: ' // obj_name // ":" // attr_name
 
 if (attr_rank == mrank) return
 
-if (present(vector_scalar) .and. attr_rank == 1 .and. mrank == 0) then
-  !! check if vector of length 1
-  call h5ltget_attribute_info_f(self%file_id, obj_name, attr_name, attr_dims, attr_type, attr_bytes, ierr)
-  if (ierr/=0) error stop 'ERROR:h5fortran:attr_rank_check:get_dataset_info ' // obj_name // ":" // attr_name
-  if (attr_dims(1) == 1) then
-    vector_scalar = .true.
-    return
-  endif
+if (present(is_scalar) .and. attr_rank == 1 .and. mrank == 0) then
+  !! check if length 1
+  call H5Sget_simple_extent_npoints_f(space_id, N, ierr)
+  if (ierr /= 0) error stop 'ERROR:h5fortran:rank_check:H5Sget_simple_extent_npoints: ' // obj_name // ":" // attr_name
+
+  if (ierr/=0) error stop 'ERROR:h5fortran:attr_rank_check:get_attribute_info ' // obj_name // ":" // attr_name
+  is_scalar = N == 1
+  if(is_scalar) return
 endif
 
 write(stderr,'(A,I0,A,I0)') 'ERROR:h5fortran:attr_rank_check: rank mismatch ' // obj_name // ":" // attr_name // &
@@ -58,16 +51,17 @@ error stop
 end subroutine attr_rank_check
 
 
-subroutine attr_shape_check(self, obj_name, attr_name, dims)
+subroutine attr_shape_check(self, obj_name, attr_name, space_id, dims)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: obj_name, attr_name
+integer(HID_T), intent(in) :: space_id
 integer(HSIZE_T), intent(in) :: dims(:)
 
 integer :: attr_type, ierr
 integer(SIZE_T) :: attr_bytes
 integer(HSIZE_T), dimension(size(dims)):: attr_dims
 
-call attr_rank_check(self, obj_name, attr_name, size(dims))
+call attr_rank_check(self, obj_name, attr_name, space_id, size(dims))
 
 !> check for matching size, else bad reads can occur.
 call h5ltget_attribute_info_f(self%file_id, obj_name, attr_name, attr_dims, attr_type, attr_bytes, ierr)

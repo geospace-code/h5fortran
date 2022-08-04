@@ -11,7 +11,7 @@ use hdf5, only : h5dget_create_plist_f, &
   h5z_filter_deflate_f, &
   H5T_DIR_ASCEND_F
 
-use H5LT, only : h5ltpath_valid_f, h5ltget_dataset_ndims_f, h5ltget_dataset_info_f
+use H5LT, only : h5ltpath_valid_f, h5ltget_dataset_ndims_f
 
 implicit none (type, external)
 
