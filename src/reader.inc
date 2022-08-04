@@ -3,17 +3,20 @@ integer(HID_T) :: dset_id, file_space_id, mem_space_id, xfer_id
 integer :: dclass, ier
 
 dset_id = 0 !< sentinel used in hdf_get_slice
-file_space_id = H5S_ALL_F
-mem_space_id = H5S_ALL_F
+
 xfer_id = H5P_DEFAULT_F
 dims = shape(A, HSIZE_T)
+
+call h5dopen_f(self%file_id, dname, dset_id, ier)
+if(ier/=0) error stop 'ERROR:h5fortran:reader:H5Dopen ' // dname // ' from ' // self%filename
+call H5Dget_space_f(dset_id, file_space_id, ier)
+if(ier/=0) error stop 'ERROR:h5fortran:reader:H5Dget_space ' // dname // ' from ' // self%filename
 
 if(present(istart) .and. present(iend)) then
   call hdf_get_slice(self, dname, dset_id, file_space_id, mem_space_id, istart, iend, stride)
 else
   call hdf_shape_check(self, dname, dims)
-  call h5dopen_f(self%file_id, dname, dset_id, ier)
-  if(ier/=0) error stop 'ERROR:h5fortran:reader: setup read ' // dname // ' from ' // self%filename
+  mem_space_id = H5S_ALL_F
 endif
 
 call get_dset_class(self, dname, dclass, dset_id)

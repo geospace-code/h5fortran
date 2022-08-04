@@ -272,17 +272,6 @@ istart = istart - 1
 
 mem_dims = iend - istart
 
-!> some callers have already opened the dataset.
-if (dset_id == 0) then  !< this is NOT %is_open()
-  if(.not.self%exist(dname)) error stop "ERROR:h5fortran:get_slice: "//dname// " does not exist: " // self%filename
-  call h5dopen_f(self%file_id, dname, dset_id, ierr)
-  if(ierr /= 0) error stop 'ERROR:h5fortran:get_slice:H5Dopen: ' // dname // ' ' // self%filename
-endif
-
-!> Select hyperslab in file
-call h5dget_space_f(dset_id, filespace_id, ierr)
-if (ierr /= 0) error stop "ERROR:h5fortran:get_slice:h5dget_space: " // dname
-
 call h5sselect_hyperslab_f(filespace_id, H5S_SELECT_SET_F, &
 start=istart, &
 count=mem_dims, &

@@ -2,7 +2,7 @@ submodule (h5fortran:read_scalar) read_scalar_ascii
 
 use, intrinsic :: iso_c_binding, only : C_CHAR, C_F_POINTER
 use hdf5, only : H5T_STR_NULLTERM_F, &
-H5Dget_space_f, H5Dvlen_get_max_len_f, H5Dread_vl_f, H5Dvlen_reclaim_f, &
+H5Dvlen_get_max_len_f, H5Dread_vl_f, H5Dvlen_reclaim_f, &
 H5Sget_simple_extent_dims_f, &
 H5Tis_variable_str_f
 
@@ -18,7 +18,7 @@ integer(SIZE_T) :: dsize
 logical :: vstatus
 
 !> variable length string
-integer(HSIZE_T) :: dset_dims(1), maxdims(2)
+integer(HSIZE_T) :: dset_dims(1), maxdims(1)
 TYPE(C_PTR), DIMENSION(:), ALLOCATABLE, TARGET :: cbuf
 TYPE(C_PTR) :: f_ptr
 

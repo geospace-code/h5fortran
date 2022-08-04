@@ -6,14 +6,12 @@ H5Sclose_f
 implicit none (type, external)
 
 interface
-
 module subroutine read_scalar_char(A, dset_id, file_space_id, mem_space_id, dims)
 class(*), intent(inout) :: A
 integer(HID_T), intent(in) :: dset_id, file_space_id
 integer(HID_T), intent(inout) :: mem_space_id
 integer(HSIZE_T), intent(in) :: dims(:)
 end subroutine
-
 end interface
 
 contains
@@ -34,6 +32,8 @@ call hdf_rank_check(self, dname, rank(A), is_scalar)
 
 call H5Dopen_f(self%file_id, dname, dset_id, ier)
 if(ier/=0) error stop 'ERROR:h5fortran:reader: ' // dname // ' could not be opened in ' // self%filename
+call H5Dget_space_f(dset_id, file_space_id, ier)
+if(ier/=0) error stop 'ERROR:h5fortran:reader:H5Dget_space ' // dname // ' from ' // self%filename
 
 call get_dset_class(self, dname, dclass, dset_id)
 

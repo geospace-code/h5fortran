@@ -653,7 +653,8 @@ module subroutine hdf_get_slice(self, dname, dset_id, filespace_id, memspace_id,
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
 integer(HID_T), intent(inout) :: dset_id  !< inout for sentinel value
-integer(HID_T), intent(out) :: filespace_id, memspace_id
+integer(HID_T), intent(in) :: filespace_id
+integer(HID_T), intent(out) :: memspace_id
 integer, intent(in), dimension(:) :: i0
 integer, intent(in), dimension(size(i0)) :: i1
 integer, intent(in), dimension(size(i0)), optional :: i2

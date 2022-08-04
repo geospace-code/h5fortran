@@ -50,6 +50,7 @@ type(hdf5_file) :: h
 character(2) :: value
 character(1024) :: val1k
 character(13) :: vs
+
 integer(HSIZE_T), allocatable :: dims(:)
 
 call h%open(fn, action='r')
@@ -78,7 +79,7 @@ if(vs /= "vector scalar") error stop "test_string: vector_scalar"
 
 !> vector
 call h%shape("/1d", dims)
-if( dims(1) /= 2) error stop "test_string: 1d shape"
+if(dims(1) /= 2) error stop "test_string: 1d shape"
 
 !> 2d
 call h%shape("/2d", dims)

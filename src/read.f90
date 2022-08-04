@@ -4,7 +4,7 @@ use, intrinsic:: iso_c_binding, only : c_null_char
 
 use hdf5, only : h5dget_create_plist_f, &
   h5pget_layout_f, h5pget_chunk_f, h5pclose_f, h5pget_nfilters_f, h5pget_filter_f, &
-  h5dget_type_f, h5dopen_f, h5dclose_f, &
+  h5dget_type_f, h5dopen_f, h5dclose_f, H5Dget_space_f, &
   h5lexists_f, &
   h5tclose_f, h5tget_native_type_f, h5tget_class_f, H5Tget_order_f, h5tget_size_f, h5tget_strpad_f, &
   h5z_filter_deflate_f, &
