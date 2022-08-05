@@ -3,7 +3,7 @@ submodule (h5fortran) hdf5_read
 use, intrinsic:: iso_c_binding, only : c_null_char
 
 use hdf5, only : &
-H5Aget_type_f, &
+H5Aget_space_f, H5Aget_type_f, H5Aopen_by_name_f, H5Aclose_f, &
 h5pget_layout_f, h5pget_chunk_f, h5pclose_f, h5pget_nfilters_f, h5pget_filter_f, &
 H5Dget_create_plist_f, h5dget_type_f, h5dopen_f, h5dclose_f, H5Dget_space_f, &
 H5Iget_type_f, &
@@ -233,29 +233,43 @@ end procedure hdf_get_ndim
 module procedure hdf_get_shape
 
 integer :: drank, ier
-integer(HID_T) :: dset_id, space_id
+integer(HID_T) :: obj_id, space_id
 integer(HSIZE_T), allocatable :: maxdims(:)
 
-if(.not. self%exist(dname)) error stop 'ERROR:h5fortran:get_shape: ' // dname // ' does not exist in ' // self%filename
 
-call H5Dopen_f(self%file_id, dname, dset_id, ier)
-if(ier/=0) error stop 'ERROR:h5fortran:get_shape:H5Dopen ' // dname // ' from ' // self%filename
+if(.not. self%exist(obj_name)) error stop 'ERROR:h5fortran:get_shape: ' // obj_name // ' does not exist in ' // self%filename
 
-call H5Dget_space_f(dset_id, space_id, ier)
-if(ier/=0) error stop 'ERROR:h5fortran:get_shape:H5Dget_space ' // dname // ' from ' // self%filename
+if(present(attr_name)) then
+  call H5Aopen_by_name_f(self%file_id, obj_name, attr_name, obj_id, ier)
+  if(ier/=0) error stop 'ERROR:h5fortran:get_shape:H5Aopen ' // obj_name // ":" // attr_name // ' from ' // self%filename
+  call H5Aget_space_f(obj_id, space_id, ier)
+  if(ier/=0) error stop 'ERROR:h5fortran:get_shape:H5Aget_space ' // obj_name // ":" // attr_name // ' from ' // self%filename
+else
+  call H5Dopen_f(self%file_id, obj_name, obj_id, ier)
+  if(ier/=0) error stop 'ERROR:h5fortran:get_shape:H5Dopen ' // obj_name // ' from ' // self%filename
+  call H5Dget_space_f(obj_id, space_id, ier)
+if(ier/=0) error stop 'ERROR:h5fortran:get_shape:H5Dget_space ' // obj_name // ' from ' // self%filename
+endif
+
+
 
 call H5Sget_simple_extent_ndims_f(space_id, drank, ier)
-if (ier /= 0) error stop 'ERROR:h5fortran:get_shape:H5Sget_simple_extent_ndims: ' // dname // ' in ' // self%filename
+if (ier /= 0) error stop 'ERROR:h5fortran:get_shape:H5Sget_simple_extent_ndims: ' // obj_name // ' in ' // self%filename
 
 allocate(dims(drank), maxdims(drank))
 call H5Sget_simple_extent_dims_f(space_id, dims, maxdims, ier)
-if (ier /= drank) error stop 'ERROR:h5fortran:get_shape:H5Sget_simple_extent_dims: ' // dname // ' in ' // self%filename
+if (ier /= drank) error stop 'ERROR:h5fortran:get_shape:H5Sget_simple_extent_dims: ' // obj_name // ' in ' // self%filename
 
 call H5Sclose_f(space_id, ier)
-if(ier/=0) error stop 'ERROR:h5fortran:get_shape:H5Sclose: ' // dname // ' in ' // self%filename
+if(ier/=0) error stop 'ERROR:h5fortran:get_shape:H5Sclose: ' // obj_name // ' in ' // self%filename
 
-call H5Dclose_f(dset_id, ier)
-if(ier/=0) error stop 'ERROR:h5fortran:get_shape:H5Dclose: ' // dname // ' in ' // self%filename
+if(present(attr_name)) then
+  call H5Aclose_f(obj_id, ier)
+  if(ier/=0) error stop 'ERROR:h5fortran:get_shape:H5Aclose: ' // obj_name // ' in ' // self%filename
+else
+  call H5Dclose_f(obj_id, ier)
+  if(ier/=0) error stop 'ERROR:h5fortran:get_shape:H5Dclose: ' // obj_name // ' in ' // self%filename
+endif
 
 end procedure hdf_get_shape
 

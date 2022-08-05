@@ -75,6 +75,15 @@ character(*), intent(in) :: dataset_name
 integer(HSIZE_T), intent(out), allocatable :: dims(:)
 ```
 
+Get attribute shape (1D vector)
+
+```fortran
+call h%shape(dataset_name, dims, attr_name)
+
+character(*), intent(in) :: dataset_name, attr_name
+integer(HSIZE_T), intent(out), allocatable :: dims(:)
+```
+
 Dataset "dname" data class (i.e. integer, float, string, ...)
 
 ```fortran

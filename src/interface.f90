@@ -346,10 +346,11 @@ class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
 end function
 
-module subroutine hdf_get_shape(self, dname, dims)
+module subroutine hdf_get_shape(self, obj_name, dims, attr_name)
 class(hdf5_file), intent(in) :: self
-character(*), intent(in) :: dname
+character(*), intent(in) :: obj_name
 integer(HSIZE_T), intent(out), allocatable :: dims(:)
+character(*), intent(in), optional :: attr_name
 end subroutine
 
 module integer function get_strpad(self, dset_name)

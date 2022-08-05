@@ -1,7 +1,8 @@
 program test_attributes
 
 use, intrinsic:: iso_fortran_env, only: int32, real32, real64, stderr=>error_unit
-use h5fortran, only: hdf5_file, h5write_attr, h5read_attr
+
+use h5fortran, only: hdf5_file, h5write_attr, h5read_attr, HSIZE_T
 
 implicit none (type, external)
 
@@ -49,8 +50,8 @@ call h%writeattr('/x', 'i5', i5)
 call h%writeattr('/x', 'i6', i6)
 call h%writeattr('/x', 'i7', i7)
 
-call h%writeattr("/x", "/c1d", [character(5) :: 'one', 'two', 'three'])
-call h%writeattr("/x", "/c2d", reshape([character(5) :: 'one', 'two', 'three', 'four', 'five', 'six'], [2,3]))
+call h%writeattr("/x", "c1d", [character(5) :: 'one', 'two', 'three'])
+call h%writeattr("/x", "c2d", reshape([character(5) :: 'one', 'two', 'three', 'four', 'five', 'six'], [2,3]))
 
 call h%close()
 
@@ -72,6 +73,9 @@ character(1024) :: attr_str
 integer :: int32_0
 real(real32) :: attr32(2)
 real(real64) :: attr64
+integer(HSIZE_T), allocatable :: dims(:)
+
+character(5), allocatable :: c1d(:), c2d(:,:)
 
 integer :: x
 
@@ -102,6 +106,8 @@ call h%readattr('/x', 'i4', i4)
 call h%readattr('/x', 'i5', i5)
 call h%readattr('/x', 'i6', i6)
 call h%readattr('/x', 'i7', i7)
+
+call h%shape("/x", dims, "c1d")
 
 call h%close()
 
