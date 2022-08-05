@@ -36,13 +36,11 @@ add_test(NAME CPP_fcn COMMAND cpp_fcn)
 
 # properties
 get_property(test_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY TESTS)
-set_tests_properties(${test_names} PROPERTIES
-TIMEOUT 10
-WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-)
+set_property(TEST ${test_names} PROPERTY TIMEOUT 10)
+set_property(TEST ${test_names} PROPERTY WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
 if(WIN32 AND CMAKE_VERSION VERSION_GREATER_EQUAL 3.22)
-  set_tests_properties(${test_names} PROPERTIES
+set_property(TEST ${test_names} PROPERTY
   ENVIRONMENT_MODIFICATION "PATH=path_list_append:${ZLIB_INCLUDE_DIRS}/../bin;PATH=path_list_append:${ZLIB_INCLUDE_DIR}/../bin;PATH=path_list_append:${PROJECT_BINARY_DIR}/bin;PATH=path_list_append:${h5fortran_DIR}/../bin"
   )
 endif()

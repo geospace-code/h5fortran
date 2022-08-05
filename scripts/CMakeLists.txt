@@ -56,7 +56,7 @@ endif()
 # --- commence HDF5 build/install
 file(READ ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/libraries.json json)
 
-set_directory_properties(PROPERTIES EP_UPDATE_DISCONNECTED true)
+set_property(DIRECTORY PROPERTY EP_UPDATE_DISCONNECTED true)
 
 if(hdf5_parallel)
   find_package(MPI COMPONENTS C REQUIRED)
