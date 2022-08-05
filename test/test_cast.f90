@@ -61,6 +61,7 @@ if (h%class("/scalar_int64") /= H5T_INTEGER_F) error stop "int64 not integer"
 if (h%class("/scalar_real32") /= H5T_FLOAT_F) error stop "real32 not float"
 if (h%class("/scalar_real64") /= H5T_FLOAT_F) error stop "real64 not float"
 if (h%class("/char") /= H5T_STRING_F) error stop "char not string"
+print *, "OK: class method"
 
 !> %dtype method
 if (h%dtype('/scalar_int32') /= H5T_NATIVE_INTEGER) error stop "int32 type"
@@ -68,6 +69,7 @@ if (h%dtype("/scalar_int64") /= H5T_STD_I64LE) error stop "int64 type"
 if (h%dtype("/scalar_real32") /= H5T_NATIVE_REAL) error stop "real32 type"
 if (h%dtype("/scalar_real64") /= H5T_NATIVE_DOUBLE) error stop "real64 type"
 if (h%dtype("/char") /= H5T_NATIVE_CHARACTER) error stop "char type"
+print *, "OK: dtype method"
 
 !> read casting -- real32 to real64 and int32 to int64
 call h%read('/scalar_real32', r64)

@@ -324,10 +324,10 @@ class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
 end function
 
-module integer(hid_t) function get_native_dtype(self, dname, ds_id)
+module integer(hid_t) function get_native_dtype(self, dname, obj_id)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
-integer(hid_t), intent(in), optional :: ds_id
+integer(hid_t), intent(in), optional :: obj_id
 end function
 
 module integer function hdf_get_ndim(self, dname) result (drank)

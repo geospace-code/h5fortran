@@ -19,7 +19,18 @@ contains
 
 
 module procedure get_class
-call get_dset_class(self, dname, get_class)
+
+integer(HID_T) :: dset_id
+integer :: ier
+
+call H5Dopen_f(self%file_id, dname, dset_id, ier)
+if(ier /= 0) error stop "ERROR:h5fortran:get_class:H5Dopen " // dname // " " // self%filename
+
+call get_obj_class(self, dname, dset_id, get_class)
+
+call H5Dclose_f(dset_id, ier)
+if(ier /= 0) error stop "ERROR:h5fortran:get_class:H5Dclose " // dname // " " // self%filename
+
 end procedure get_class
 
 
@@ -29,8 +40,16 @@ module procedure get_strpad
 !! H5T_STR_SPACEPAD  Pad with spaces (as FORTRAN does).
 
 integer :: class
+integer(HID_T) :: dset_id
+integer :: ier
 
-call get_dset_class(self, dset_name, class, pad_type=get_strpad)
+call H5Dopen_f(self%file_id, dset_name, dset_id, ier)
+if(ier /= 0) error stop "ERROR:h5fortran:get_strpad:H5Dopen " // dset_name // " " // self%filename
+
+call get_obj_class(self, dset_name, dset_id, class, pad_type=get_strpad)
+
+call H5Dclose_f(dset_id, ier)
+if(ier /= 0) error stop "ERROR:h5fortran:get_strpad:H5Dclose " // dset_name // " " // self%filename
 
 end procedure get_strpad
 
@@ -94,74 +113,73 @@ call h5pclose_f(dcpl, ierr)
 end procedure get_deflate
 
 
-subroutine get_dset_class(self, dname, class, ds_id, size_bytes, pad_type)
-!! get the dataset class (integer, float, string, ...)
+subroutine get_obj_class(self, obj_name, obj_id, class, size_bytes, pad_type)
+!! get the object class (integer, float, string, ...)
 !! {H5T_INTEGER_F, H5T_FLOAT_F, H5T_STRING_F}
 class(hdf5_file), intent(in) :: self
-character(*), intent(in) :: dname
+character(*), intent(in) :: obj_name
+integer(HID_T), intent(in) :: obj_id
 integer, intent(out) :: class
-integer(HID_T), intent(in), optional :: ds_id
 integer(SIZE_T), intent(out), optional :: size_bytes
 integer, intent(out), optional :: pad_type
 
 integer :: ierr
-integer(HID_T) :: dtype_id, native_dtype_id, dset_id
+integer(HID_T) :: dtype_id, native_dtype_id
 
-if(present(ds_id)) then
-  dset_id = ds_id
-else
-  if(.not.self%exist(dname)) error stop "ERROR:h5fortran:get_dset_class: " // dname // " does not exist: " // self%filename
+call h5dget_type_f(obj_id, dtype_id, ierr)
+if(ierr/=0) error stop 'ERROR:h5fortran:get_class: dtype_id ' // obj_name // ' from ' // self%filename
 
-  call h5dopen_f(self%file_id, dname, dset_id, ierr)
-  if(ierr/=0) error stop 'ERROR:h5fortran:get_class: ' // dname // ' from ' // self%filename
-endif
-
-call h5dget_type_f(dset_id, dtype_id, ierr)
-if(ierr/=0) error stop 'ERROR:h5fortran:get_class: dtype_id ' // dname // ' from ' // self%filename
-
-call h5tget_native_type_f(dtype_id, H5T_DIR_ASCEND_F, native_dtype_id, ierr)
-if(ierr/=0) error stop 'ERROR:h5fortran:get_class: native_dtype_id ' // dname // ' from ' // self%filename
+call H5Tget_native_type_f(dtype_id, H5T_DIR_ASCEND_F, native_dtype_id, ierr)
+if(ierr/=0) error stop 'ERROR:h5fortran:get_class: native_dtype_id ' // obj_name // ' from ' // self%filename
 
 !> compose datatype inferred
-call h5tget_class_f(native_dtype_id, class, ierr)
-if(ierr/=0) error stop 'ERROR:h5fortran:get_class: class ' // dname // ' from ' // self%filename
+call H5Tget_class_f(native_dtype_id, class, ierr)
+if(ierr/=0) error stop 'ERROR:h5fortran:get_class: class ' // obj_name // ' from ' // self%filename
 
 if(present(size_bytes)) then
-  call h5tget_size_f(native_dtype_id, size_bytes, ierr)
-  if(ierr/=0) error stop 'ERROR:h5fortran:get_class: byte size ' // dname // ' from ' // self%filename
+  call H5Tget_size_f(native_dtype_id, size_bytes, ierr)
+  if(ierr/=0) error stop 'ERROR:h5fortran:get_class: byte size ' // obj_name // ' from ' // self%filename
 endif
+
+call H5Tclose_f(native_dtype_id, ierr)
+if(ierr/=0) error stop 'ERROR:h5fortran:get_class: closing native dtype ' // obj_name // ' from ' // self%filename
 
 if(present(pad_type)) then
   if(class /= H5T_STRING_F) error stop "ERROR:h5fortran:get_class: pad_type only for string"
 
   call H5Tget_strpad_f(dtype_id, pad_type, ierr)
-  if(ierr /= 0) error stop "h5fortran:read:h5tget_strpad " // dname // " in " // self%filename
+  if(ierr /= 0) error stop "h5fortran:read:h5tget_strpad " // obj_name // " in " // self%filename
 endif
 
-!> close to avoid memory leaks
-call h5tclose_f(native_dtype_id, ierr)
-if(ierr/=0) error stop 'ERROR:h5fortran:get_class: closing native dtype ' // dname // ' from ' // self%filename
+call H5Tclose_f(dtype_id, ierr)
+if(ierr/=0) error stop 'ERROR:h5fortran:get_class: closing dtype ' // obj_name // ' from ' // self%filename
 
-call h5tclose_f(dtype_id, ierr)
-if(ierr/=0) error stop 'ERROR:h5fortran:get_class: closing dtype ' // dname // ' from ' // self%filename
-
-if(.not.present(ds_id)) then
-  call h5dclose_f(dset_id, ierr)
-  if(ierr/=0) error stop 'ERROR:h5fortran:get_class: close dataset ' // dname // ' from ' // self%filename
-endif
-
-end subroutine get_dset_class
+end subroutine get_obj_class
 
 
 module procedure get_native_dtype
 !! get the dataset variable type:
 !! {H5T_NATIVE_REAL, H5T_NATIVE_DOUBLE, H5T_NATIVE_INTEGER, H5T_NATIVE_CHARACTER, H5T_STD_I64LE}
 
-integer :: class
+integer :: class, ier
 ! integer :: order, machine_order
 integer(size_t) :: size_bytes
+integer(HID_T) :: o_id
 
-call get_dset_class(self, dname, class, ds_id, size_bytes)
+if(present(obj_id)) then
+  o_id = obj_id
+else
+  !! assume dataset
+  call H5Dopen_f(self%file_id, dname, o_id, ier)
+  if(ier /= 0) error stop "ERROR:h5fortran:get_native_dtype: H5Dopen " // dname // " in " // self%filename
+endif
+
+call get_obj_class(self, dname, o_id, class, size_bytes=size_bytes)
+
+if(.not.present(obj_id)) then
+  call H5Dclose_f(o_id, ier)
+  if(ier /= 0) error stop "ERROR:h5fortran:get_native_dtype: H5Dclose " // dname // " in " // self%filename
+endif
 
 !> endianness and within type casting is handled by HDF5
 ! call h5tget_order_f(native_dtype_id, order, ierr)

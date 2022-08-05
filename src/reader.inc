@@ -19,7 +19,7 @@ else
   mem_space_id = H5S_ALL_F
 endif
 
-call get_dset_class(self, dname, dclass, dset_id)
+call get_obj_class(self, dname, dset_id, dclass)
 
 !> casting is handled by HDF5 library internally
 !! select case doesn't allow H5T_*

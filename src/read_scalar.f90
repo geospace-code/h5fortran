@@ -38,7 +38,7 @@ else
   mem_space_id = H5S_ALL_F
 endif
 
-call get_dset_class(self, dname, dclass, dset_id)
+call get_obj_class(self, dname, dset_id, dclass)
 
 !> cast the dataset read from disk to the variable type presented by user h5f%read("/my_dataset", x)
 !> We only cast when needed to save memory.
