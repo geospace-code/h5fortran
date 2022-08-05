@@ -32,7 +32,7 @@ if(ier/=0) error stop 'ERROR:h5fortran:readattr:H5Aopen ' // obj_name // ":" // 
 call H5Aget_space_f(attr_id, space_id, ier)
 if(ier/=0) error stop 'ERROR:h5fortran:readattr:H5Aget_space ' // obj_name // ":" // attr_name
 
-call attr_rank_check(self, obj_name, attr_name, space_id, rank(A), is_scalar)
+call hdf_rank_check(self, obj_name // ":" // attr_name, space_id, rank(A), is_scalar)
 
 call get_obj_class(self, obj_name // ":" // attr_name, attr_id, attr_class)
 

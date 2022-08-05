@@ -12,43 +12,6 @@ implicit none (type, external)
 contains
 
 
-subroutine attr_rank_check(self, obj_name, attr_name, space_id, mrank, is_scalar)
-!! check for matching rank, else bad reads can occur--doesn't always crash without this check
-
-class(hdf5_file), intent(in) :: self
-character(*), intent(in) :: obj_name, attr_name
-integer(HID_T), intent(in) :: space_id
-integer, intent(in) :: mrank
-logical, intent(out), optional :: is_scalar
-
-integer(HSIZE_T) :: N
-integer :: ierr, attr_rank
-
-if(present(is_scalar)) is_scalar = .false.
-
-call H5Sget_simple_extent_ndims_f(space_id, attr_rank, ierr)
-if (ierr/=0) error stop 'ERROR:h5fortran:attr_rank_check:H5Sget_simple_extent_ndims: ' // obj_name // ":" // &
-  attr_name // " " // self%filename
-
-if (attr_rank == mrank) return
-
-if (present(is_scalar) .and. attr_rank == 1 .and. mrank == 0) then
-  !! check if length 1
-  call H5Sget_simple_extent_npoints_f(space_id, N, ierr)
-  if (ierr /= 0) error stop 'ERROR:h5fortran:rank_check:H5Sget_simple_extent_npoints: ' // obj_name // ":" // attr_name
-
-  if (ierr/=0) error stop 'ERROR:h5fortran:attr_rank_check:get_attribute_info ' // obj_name // ":" // attr_name
-  is_scalar = N == 1
-  if(is_scalar) return
-endif
-
-write(stderr,'(A,I0,A,I0)') 'ERROR:h5fortran:attr_rank_check: rank mismatch ' // obj_name // ":" // attr_name // &
-  ' = ', attr_rank,'  variable rank =', mrank
-error stop
-
-end subroutine attr_rank_check
-
-
 subroutine attr_shape_check(self, obj_name, attr_name, space_id, dims)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: obj_name, attr_name
@@ -58,7 +21,7 @@ integer(HSIZE_T), intent(in) :: dims(:)
 integer :: ier
 integer(HSIZE_T), dimension(size(dims)):: attr_dims, maxdims
 
-call attr_rank_check(self, obj_name, attr_name, space_id, size(dims))
+call hdf_rank_check(self, obj_name // ":" // attr_name, space_id, size(dims))
 
 call H5Sget_simple_extent_dims_f(space_id, attr_dims, maxdims, ier)
 if (ier /= size(dims)) error stop 'ERROR:h5fortran:shape_check:H5Sget_simple_extent_dims: ' // obj_name // ":" // attr_name

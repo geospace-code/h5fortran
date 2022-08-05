@@ -291,23 +291,21 @@ integer :: ierr, drank
 
 if(present(is_scalar)) is_scalar = .false.
 
-if (.not.self%exist(dname)) error stop 'ERROR:h5fortran:rank_check: ' // dname // ' does not exist in ' // self%filename
-
 call H5Sget_simple_extent_ndims_f(file_space_id, drank, ierr)
-if (ierr/=0) error stop 'ERROR:h5fortran:rank_check:H5Sget_simple_extent_ndims: ' // dname // ' in ' // self%filename
+if (ierr/=0) error stop 'ERROR:h5fortran:rank_check:H5Sget_simple_extent_ndims: ' // obj_name // ' in ' // self%filename
 
 if (drank == mrank) return
 
 if (present(is_scalar)) then
   !! check if single element
   call H5Sget_simple_extent_npoints_f(file_space_id, N, ierr)
-  if (ierr /= 0) error stop 'ERROR:h5fortran:rank_check:H5Sget_simple_extent_npoints: ' // dname // ' in ' // self%filename
+  if (ierr /= 0) error stop 'ERROR:h5fortran:rank_check:H5Sget_simple_extent_npoints: ' // obj_name // ' in ' // self%filename
 
   is_scalar = N == 1
   if(is_scalar) return
 endif
 
-write(stderr,'(A,I0,A,I0)') 'ERROR:h5fortran:rank_check: rank mismatch ' // dname // ' = ', drank,'  variable rank =', mrank
+write(stderr,'(A,I0,A,I0)') 'ERROR:h5fortran:rank_check: rank mismatch ' // obj_name // ' = ', drank,'  variable rank =', mrank
 error stop
 
 end procedure hdf_rank_check
