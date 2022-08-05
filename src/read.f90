@@ -2,14 +2,17 @@ submodule (h5fortran) hdf5_read
 
 use, intrinsic:: iso_c_binding, only : c_null_char
 
-use hdf5, only : h5dget_create_plist_f, &
-  h5pget_layout_f, h5pget_chunk_f, h5pclose_f, h5pget_nfilters_f, h5pget_filter_f, &
-  h5dget_type_f, h5dopen_f, h5dclose_f, H5Dget_space_f, &
-  h5lexists_f, &
-  H5Sget_simple_extent_ndims_f, H5Sget_simple_extent_dims_f, H5Sclose_f, &
-  h5tclose_f, h5tget_native_type_f, h5tget_class_f, H5Tget_order_f, h5tget_size_f, h5tget_strpad_f, &
-  h5z_filter_deflate_f, &
-  H5T_DIR_ASCEND_F
+use hdf5, only : &
+H5Aget_type_f, &
+h5pget_layout_f, h5pget_chunk_f, h5pclose_f, h5pget_nfilters_f, h5pget_filter_f, &
+H5Dget_create_plist_f, h5dget_type_f, h5dopen_f, h5dclose_f, H5Dget_space_f, &
+H5Iget_type_f, &
+h5lexists_f, &
+H5Sget_simple_extent_ndims_f, H5Sget_simple_extent_dims_f, H5Sclose_f, &
+h5tclose_f, h5tget_native_type_f, h5tget_class_f, H5Tget_order_f, h5tget_size_f, h5tget_strpad_f, &
+h5z_filter_deflate_f, &
+H5T_DIR_ASCEND_F, &
+H5I_ATTR_F, H5I_DATASET_F
 
 use H5LT, only : h5ltpath_valid_f, h5ltget_dataset_ndims_f
 
@@ -113,20 +116,21 @@ call h5pclose_f(dcpl, ier)
 end procedure get_deflate
 
 
-subroutine get_obj_class(self, obj_name, obj_id, class, size_bytes, pad_type)
-!! get the object class (integer, float, string, ...)
-!! {H5T_INTEGER_F, H5T_FLOAT_F, H5T_STRING_F}
-class(hdf5_file), intent(in) :: self
-character(*), intent(in) :: obj_name
-integer(HID_T), intent(in) :: obj_id
-integer, intent(out) :: class
-integer(SIZE_T), intent(out), optional :: size_bytes
-integer, intent(out), optional :: pad_type
+module procedure get_obj_class
 
-integer :: ier
+integer :: ier, obj_type
 integer(HID_T) :: dtype_id, native_dtype_id
 
-call h5dget_type_f(obj_id, dtype_id, ier)
+call H5Iget_type_f(obj_id, obj_type, ier)
+if(ier /= 0) error stop "ERROR:h5fortran:get_obj_class:H5Iget_type: " // obj_name // " " // self%filename
+
+if(obj_type == H5I_DATASET_F) then
+  call H5Dget_type_f(obj_id, dtype_id, ier)
+elseif(obj_type == H5I_ATTR_F) then
+  call H5Aget_type_f(obj_id, dtype_id, ier)
+else
+  error stop "ERROR:h5fortran:get_obj_class: only datasets and attributes have datatype " // obj_name // " " // self%filename
+endif
 if(ier/=0) error stop 'ERROR:h5fortran:get_class: dtype_id ' // obj_name // ' from ' // self%filename
 
 call H5Tget_native_type_f(dtype_id, H5T_DIR_ASCEND_F, native_dtype_id, ier)
@@ -154,7 +158,7 @@ endif
 call H5Tclose_f(dtype_id, ier)
 if(ier/=0) error stop 'ERROR:h5fortran:get_class: closing dtype ' // obj_name // ' from ' // self%filename
 
-end subroutine get_obj_class
+end procedure get_obj_class
 
 
 module procedure get_native_dtype

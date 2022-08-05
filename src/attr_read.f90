@@ -34,7 +34,7 @@ if(ier/=0) error stop 'ERROR:h5fortran:readattr:H5Aget_space ' // obj_name // ":
 
 call attr_rank_check(self, obj_name, attr_name, space_id, rank(A), is_scalar)
 
-call get_attr_class(self, obj_name, attr_name, attr_class, attr_id)
+call get_obj_class(self, obj_name // ":" // attr_name, attr_id, attr_class)
 
 !> cast the dataset read from disk to the variable type presented by user h5f%readattr("/my_dataset", x, "y")
 !> We only cast when needed to save memory.
@@ -210,51 +210,6 @@ call h%readattr(obj_name, attr, A)
 call h%close()
 
 end procedure lt1readattr
-
-
-subroutine get_attr_class(self, obj_name, attr_name, class, attr_id, size_bytes, pad_type)
-!! get the attribute class (integer, float, string, ...)
-!! {H5T_INTEGER_F, H5T_FLOAT_F, H5T_STRING_F}
-class(hdf5_file), intent(in) :: self
-character(*), intent(in) :: obj_name, attr_name
-integer, intent(out) :: class
-integer(HID_T), intent(in) :: attr_id
-integer(SIZE_T), intent(out), optional :: size_bytes
-integer, intent(out), optional :: pad_type
-
-integer :: ierr
-integer(HID_T) :: type_id, native_type_id
-
-call H5Aget_type_f(attr_id, type_id, ierr)
-if(ierr/=0) error stop 'ERROR:h5fortran:get_attr_class: type_id ' // obj_name // ":" // attr_name // " " // self%filename
-
-call H5Tget_native_type_f(type_id, H5T_DIR_ASCEND_F, native_type_id, ierr)
-if(ierr/=0) error stop 'ERROR:h5fortran:get_attr_class: native_type_id ' // obj_name // ":" // attr_name
-
-!> compose datatype inferred
-call H5Tget_class_f(native_type_id, class, ierr)
-if(ierr/=0) error stop 'ERROR:h5fortran:get_attr_class: class ' // obj_name // ":" // attr_name
-
-if(present(size_bytes)) then
-  call H5Tget_size_f(native_type_id, size_bytes, ierr)
-  if(ierr/=0) error stop 'ERROR:h5fortran:get_attr_class: byte size ' // obj_name // ":" // attr_name
-endif
-
-if(present(pad_type)) then
-  if(class /= H5T_STRING_F) error stop "ERROR:h5fortran:get_attr_class: pad_type only for string"
-
-  call H5Tget_strpad_f(type_id, pad_type, ierr)
-  if(ierr /= 0) error stop "ERROR:h5fortran:get_attr_class:h5tget_strpad " // obj_name // ":" // attr_name
-endif
-
-!> close to avoid memory leaks
-call H5Tclose_f(native_type_id, ierr)
-if(ierr/=0) error stop 'ERROR:h5fortran:get_class: closing native dtype ' // obj_name // ":" // attr_name
-
-call H5Tclose_f(type_id, ierr)
-if(ierr/=0) error stop 'ERROR:h5fortran:get_class: closing dtype ' // obj_name // ":" // attr_name
-
-end subroutine get_attr_class
 
 
 end submodule attr_read

@@ -4,15 +4,15 @@ integer(HSIZE_T) :: attr_dims(rank(A))
 
 attr_dims = shape(A, HSIZE_T)
 
-call H5Aopen_by_name_f(self%file_id, obj_name, attr, attr_id, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:readattr:H5Aopen_by_name: " // obj_name // ":" // attr // ":" // self%filename
+call H5Aopen_by_name_f(self%file_id, obj_name, attr_name, attr_id, ier)
+if(ier /= 0) error stop "ERROR:h5fortran:readattr:H5Aopen_by_name: " // obj_name // ":" // attr_name // ":" // self%filename
 
 call H5Aget_space_f(attr_id, space_id, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:readattr:H5Aget_space: " // obj_name // ":" // attr // ":" // self%filename
+if(ier /= 0) error stop "ERROR:h5fortran:readattr:H5Aget_space: " // obj_name // ":" // attr_name // ":" // self%filename
 
-call attr_shape_check(self, obj_name, attr, space_id, attr_dims)
+call attr_shape_check(self, obj_name, attr_name, space_id, attr_dims)
 
-call get_attr_class(self, obj_name, attr, attr_class, attr_id)
+call get_obj_class(self, obj_name // ":" // attr_name, attr_id, attr_class)
 
 !> cast the dataset read from disk to the variable type presented by user h5f%readattr("/my_dataset", x, "y")
 !> We only cast when needed to save memory.
@@ -24,7 +24,7 @@ if(attr_class == H5T_FLOAT_F) then
   type is (real(real32))
     call H5Aread_f(attr_id, H5T_NATIVE_REAL, A, attr_dims, ier)
   class default
-    error stop 'ERROR:h5fortran:readattr: real disk dataset ' // obj_name // ':' // attr // ' needs real memory variable'
+    error stop 'ERROR:h5fortran:readattr: real disk dataset ' // obj_name // ':' // attr_name // ' needs real memory variable'
   end select
 elseif(attr_class == H5T_INTEGER_F) then
   select type(A)
@@ -33,18 +33,18 @@ elseif(attr_class == H5T_INTEGER_F) then
   type is (integer(int64))
     call H5Aread_f(attr_id, H5T_STD_I64LE, A, attr_dims, ier)
   class default
-    error stop 'ERROR:h5fortran:readattr: integer disk dataset ' // obj_name // ':' // attr // ' needs integer memory variable'
+    error stop 'ERROR:h5fortran:readattr: integer disk dataset ' // obj_name // ':' // attr_name // ' needs integer memory variable'
   end select
 elseif(attr_class == H5T_STRING_F) then
   error stop "ERROR:h5fortran:readattr: attribute character arrays (non-singleton) not yet supported by h5fortran."
 else
-  error stop "ERROR:h5fortran:readattr: unknown attribute type for " // obj_name // ':' // attr
+  error stop "ERROR:h5fortran:readattr: unknown attribute type for " // obj_name // ':' // attr_name
 endif
 
 if (ier /= 0) error stop "ERROR:h5fortran:readattr: " // obj_name // " in " // self%filename
 
 call H5Aclose_f(attr_id, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:readattr:H5Aclose: " // obj_name // ":" // attr // ":" // self%filename
+if(ier /= 0) error stop "ERROR:h5fortran:readattr:H5Aclose: " // obj_name // ":" // attr_name // ":" // self%filename
 
 call H5Sclose_f(space_id, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:readattr:H5Sclose: " // obj_name // ":" // attr // ":" // self%filename
+if(ier /= 0) error stop "ERROR:h5fortran:readattr:H5Sclose: " // obj_name // ":" // attr_name // ":" // self%filename

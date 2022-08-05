@@ -101,7 +101,7 @@ end interface
 
 public :: hdf5_file, hdf5_close, h5write, h5read, h5exist, is_hdf5, h5write_attr, h5read_attr, hdf5version
 !! for users
-public :: hdf_shape_check, hdf_rank_check, hdf_get_slice, id2name
+public :: hdf_shape_check, hdf_rank_check, hdf_get_slice, id2name, get_obj_class
 !! for submodules only
 public :: HSIZE_T, HID_T, H5T_NATIVE_DOUBLE, H5T_NATIVE_REAL, H5T_NATIVE_INTEGER, H5T_NATIVE_CHARACTER, H5T_STD_I64LE
 public :: H5T_INTEGER_F, H5T_FLOAT_F, H5T_STRING_F
@@ -324,6 +324,17 @@ class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
 end function
 
+module subroutine get_obj_class(self, obj_name, obj_id, class, size_bytes, pad_type)
+!! get the object class (integer, float, string, ...)
+!! {H5T_INTEGER_F, H5T_FLOAT_F, H5T_STRING_F}
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: obj_name
+integer(HID_T), intent(in) :: obj_id
+integer, intent(out) :: class
+integer(SIZE_T), intent(out), optional :: size_bytes
+integer, intent(out), optional :: pad_type
+end subroutine
+
 module integer(hid_t) function get_native_dtype(self, dname, obj_id)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
@@ -439,45 +450,45 @@ character(*), intent(in) :: obj_name, attr_name
 class(*), intent(inout) :: A
 end subroutine
 
-module subroutine readattr_1d(self, obj_name, attr, A)
+module subroutine readattr_1d(self, obj_name, attr_name, A)
 class(hdf5_file), intent(in) :: self
-character(*), intent(in) :: obj_name, attr
+character(*), intent(in) :: obj_name, attr_name
 class(*), intent(inout) :: A(:)
 end subroutine
 
-module subroutine readattr_2d(self, obj_name, attr, A)
+module subroutine readattr_2d(self, obj_name, attr_name, A)
 class(hdf5_file), intent(in) :: self
-character(*), intent(in) :: obj_name, attr
+character(*), intent(in) :: obj_name, attr_name
 class(*), intent(inout) :: A(:,:)
 end subroutine
 
-module subroutine readattr_3d(self, obj_name, attr, A)
+module subroutine readattr_3d(self, obj_name, attr_name, A)
 class(hdf5_file), intent(in) :: self
-character(*), intent(in) :: obj_name, attr
+character(*), intent(in) :: obj_name, attr_name
 class(*), intent(inout) :: A(:,:,:)
 end subroutine
 
-module subroutine readattr_4d(self, obj_name, attr, A)
+module subroutine readattr_4d(self, obj_name, attr_name, A)
 class(hdf5_file), intent(in) :: self
-character(*), intent(in) :: obj_name, attr
+character(*), intent(in) :: obj_name, attr_name
 class(*), intent(inout) :: A(:,:,:,:)
 end subroutine
 
-module subroutine readattr_5d(self, obj_name, attr, A)
+module subroutine readattr_5d(self, obj_name, attr_name, A)
 class(hdf5_file), intent(in) :: self
-character(*), intent(in) :: obj_name, attr
+character(*), intent(in) :: obj_name, attr_name
 class(*), intent(inout) :: A(:,:,:,:,:)
 end subroutine
 
-module subroutine readattr_6d(self, obj_name, attr, A)
+module subroutine readattr_6d(self, obj_name, attr_name, A)
 class(hdf5_file), intent(in) :: self
-character(*), intent(in) :: obj_name, attr
+character(*), intent(in) :: obj_name, attr_name
 class(*), intent(inout) :: A(:,:,:,:,:,:)
 end subroutine
 
-module subroutine readattr_7d(self, obj_name, attr, A)
+module subroutine readattr_7d(self, obj_name, attr_name, A)
 class(hdf5_file), intent(in) :: self
-character(*), intent(in) :: obj_name, attr
+character(*), intent(in) :: obj_name, attr_name
 class(*), intent(inout) :: A(:,:,:,:,:,:,:)
 end subroutine
 
