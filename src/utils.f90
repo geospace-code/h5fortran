@@ -181,13 +181,13 @@ end procedure h5close
 
 module procedure is_open
 
-integer :: hid_type, ier
+integer :: obj_type, ier
 
 call H5Iis_valid_f(self%file_id, is_open, ier)
 if(ier /= 0) error stop "ERROR:h5fortran:is_open:h5iis_valid: " // self%filename
 
-call H5Iget_type_f(self%file_id, hid_type, ier)
-if(ier /= 0 .or. hid_type /= H5I_FILE_F) is_open = .false.
+call H5Iget_type_f(self%file_id, obj_type, ier)
+if(ier /= 0 .or. obj_type /= H5I_FILE_F) is_open = .false.
 
 end procedure is_open
 

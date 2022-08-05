@@ -59,7 +59,7 @@ module procedure get_deflate
 !! if(mpi_id==0) with mpi_bcast does not work, same crash.
 !! better to use H5Pall_filters_avail_f when mpi=.true.
 
-integer :: i, j, ierr
+integer :: i, j, ier
 integer :: flags !< bit pattern
 integer(HID_T) :: dcpl, dset_id
 integer(SIZE_T) :: Naux
@@ -75,17 +75,17 @@ get_deflate = .false.
 Naux = size(Aux, kind=SIZE_T)
 
 if(.not.self%exist(dname)) error stop "ERROR:h5fortran:get_deflate: " // dname // " does not exist: " // self%filename
-call h5dopen_f(self%file_id, dname, dset_id, ierr)
-if (ierr/=0) error stop "ERROR:h5fortran:get_deflate:h5dopen: " // dname // " in " // self%filename
+call h5dopen_f(self%file_id, dname, dset_id, ier)
+if (ier/=0) error stop "ERROR:h5fortran:get_deflate:h5dopen: " // dname // " in " // self%filename
 
-call h5dget_create_plist_f(dset_id, dcpl, ierr)
-if (ierr/=0) error stop "ERROR:h5fortran:get_deflate:h5dget_create_plist: " // dname // " in " // self%filename
+call h5dget_create_plist_f(dset_id, dcpl, ier)
+if (ier/=0) error stop "ERROR:h5fortran:get_deflate:h5dget_create_plist: " // dname // " in " // self%filename
 
-call h5dclose_f(dset_id, ierr)
-if (ierr/=0) error stop "ERROR:h5fortran:get_deflate:h5dclose: " // dname // " in " // self%filename
+call h5dclose_f(dset_id, ier)
+if (ier/=0) error stop "ERROR:h5fortran:get_deflate:h5dclose: " // dname // " in " // self%filename
 
-call h5pget_nfilters_f(dcpl, Nf, ierr)
-if (ierr/=0) error stop "ERROR:h5fortran:get_deflate:h5pget_nfilters: " // dname // " in " // self%filename
+call h5pget_nfilters_f(dcpl, Nf, ier)
+if (ier/=0) error stop "ERROR:h5fortran:get_deflate:h5pget_nfilters: " // dname // " in " // self%filename
 
 filters: do i = 1, Nf
   filter_name = ""
@@ -94,8 +94,8 @@ filters: do i = 1, Nf
   flags, &
   Naux, Aux, &
   len(filter_name, SIZE_T), filter_name, &
-  filter_id, ierr)
-  if(ierr/=0) error stop "ERROR:h5fortran:get_deflate:h5pget_filter: " // dname // " in " // self%filename
+  filter_id, ier)
+  if(ier/=0) error stop "ERROR:h5fortran:get_deflate:h5pget_filter: " // dname // " in " // self%filename
   if(filter_id < 0) write(stderr,'(a,i0)') "ERROR:h5fortran:get_deflate:h5pget_filter: index error " // dname, i
 
   if (debug) then
@@ -108,7 +108,7 @@ filters: do i = 1, Nf
 
 end do filters
 
-call h5pclose_f(dcpl, ierr)
+call h5pclose_f(dcpl, ier)
 
 end procedure get_deflate
 
@@ -123,36 +123,36 @@ integer, intent(out) :: class
 integer(SIZE_T), intent(out), optional :: size_bytes
 integer, intent(out), optional :: pad_type
 
-integer :: ierr
+integer :: ier
 integer(HID_T) :: dtype_id, native_dtype_id
 
-call h5dget_type_f(obj_id, dtype_id, ierr)
-if(ierr/=0) error stop 'ERROR:h5fortran:get_class: dtype_id ' // obj_name // ' from ' // self%filename
+call h5dget_type_f(obj_id, dtype_id, ier)
+if(ier/=0) error stop 'ERROR:h5fortran:get_class: dtype_id ' // obj_name // ' from ' // self%filename
 
-call H5Tget_native_type_f(dtype_id, H5T_DIR_ASCEND_F, native_dtype_id, ierr)
-if(ierr/=0) error stop 'ERROR:h5fortran:get_class: native_dtype_id ' // obj_name // ' from ' // self%filename
+call H5Tget_native_type_f(dtype_id, H5T_DIR_ASCEND_F, native_dtype_id, ier)
+if(ier/=0) error stop 'ERROR:h5fortran:get_class: native_dtype_id ' // obj_name // ' from ' // self%filename
 
 !> compose datatype inferred
-call H5Tget_class_f(native_dtype_id, class, ierr)
-if(ierr/=0) error stop 'ERROR:h5fortran:get_class: class ' // obj_name // ' from ' // self%filename
+call H5Tget_class_f(native_dtype_id, class, ier)
+if(ier/=0) error stop 'ERROR:h5fortran:get_class: class ' // obj_name // ' from ' // self%filename
 
 if(present(size_bytes)) then
-  call H5Tget_size_f(native_dtype_id, size_bytes, ierr)
-  if(ierr/=0) error stop 'ERROR:h5fortran:get_class: byte size ' // obj_name // ' from ' // self%filename
+  call H5Tget_size_f(native_dtype_id, size_bytes, ier)
+  if(ier/=0) error stop 'ERROR:h5fortran:get_class: byte size ' // obj_name // ' from ' // self%filename
 endif
 
-call H5Tclose_f(native_dtype_id, ierr)
-if(ierr/=0) error stop 'ERROR:h5fortran:get_class: closing native dtype ' // obj_name // ' from ' // self%filename
+call H5Tclose_f(native_dtype_id, ier)
+if(ier/=0) error stop 'ERROR:h5fortran:get_class: closing native dtype ' // obj_name // ' from ' // self%filename
 
 if(present(pad_type)) then
   if(class /= H5T_STRING_F) error stop "ERROR:h5fortran:get_class: pad_type only for string"
 
-  call H5Tget_strpad_f(dtype_id, pad_type, ierr)
-  if(ierr /= 0) error stop "h5fortran:read:h5tget_strpad " // obj_name // " in " // self%filename
+  call H5Tget_strpad_f(dtype_id, pad_type, ier)
+  if(ier /= 0) error stop "h5fortran:read:h5tget_strpad " // obj_name // " in " // self%filename
 endif
 
-call H5Tclose_f(dtype_id, ierr)
-if(ierr/=0) error stop 'ERROR:h5fortran:get_class: closing dtype ' // obj_name // ' from ' // self%filename
+call H5Tclose_f(dtype_id, ier)
+if(ier/=0) error stop 'ERROR:h5fortran:get_class: closing dtype ' // obj_name // ' from ' // self%filename
 
 end subroutine get_obj_class
 
@@ -182,10 +182,10 @@ if(.not.present(obj_id)) then
 endif
 
 !> endianness and within type casting is handled by HDF5
-! call h5tget_order_f(native_dtype_id, order, ierr)
-! if(ierr/=0) error stop 'ERROR:h5fortran:reader: get endianness ' // dname // ' from ' // self%filename
+! call h5tget_order_f(native_dtype_id, order, ier)
+! if(ier/=0) error stop 'ERROR:h5fortran:reader: get endianness ' // dname // ' from ' // self%filename
 ! !> check dataset endianness matches machine (in future, could swap endianness if needed)
-! call h5tget_order_f(H5T_NATIVE_INTEGER, machine_order, ierr)
+! call h5tget_order_f(H5T_NATIVE_INTEGER, machine_order, ier)
 ! if(order /= machine_order) error stop 'ERROR:h5fortran:read: endianness /= machine native: ' &
 ! // dname // ' from ' // self%filename
 
@@ -285,7 +285,7 @@ if(self%is_chunked(dname)) then
 
   call h5pget_chunk_f(dapl, drank, cs, ier)
   if (ier /= drank) error stop 'ERROR:h5fortran:get_chunk:h5pget_chunk ' // dname // ' ' // self%filename
-  !! yes ierr == drank is success for this call
+  !! yes ier == drank is success for this call
 
   call h5pclose_f(dapl, ier)
   if (ier /= 0) error stop 'ERROR:h5fortran:get_chunk: close property list ' // dname // ' ' // self%filename
@@ -306,40 +306,40 @@ end procedure hdf_get_chunk
 module procedure hdf_get_layout
 
 integer(HID_T) :: dapl, dset_id
-integer :: ierr
+integer :: ier
 
 layout = -1
 
 if (.not. self%exist(dname)) error stop 'ERROR:h5fortran:get_layout: ' // dname // ' does not exist in ' // self%filename
 
-call h5dopen_f(self%file_id, dname, dset_id, ierr)
-if (ierr /= 0) error stop 'ERROR:h5fortran:get_layout: open dataset ' // dname // ' ' // self%filename
+call h5dopen_f(self%file_id, dname, dset_id, ier)
+if (ier /= 0) error stop 'ERROR:h5fortran:get_layout: open dataset ' // dname // ' ' // self%filename
 
-call h5dget_create_plist_f(dset_id, dapl, ierr)
-if (ierr /= 0) error stop 'ERROR:h5fortran:get_layout: get property list ID ' // dname // ' ' // self%filename
+call h5dget_create_plist_f(dset_id, dapl, ier)
+if (ier /= 0) error stop 'ERROR:h5fortran:get_layout: get property list ID ' // dname // ' ' // self%filename
 
-call h5dclose_f(dset_id, ierr)
-if (ierr /= 0) error stop 'ERROR:h5fortran:get_layout: close dataset: ' // dname //' ' // self%filename
+call h5dclose_f(dset_id, ier)
+if (ier /= 0) error stop 'ERROR:h5fortran:get_layout: close dataset: ' // dname //' ' // self%filename
 
-call h5pget_layout_f(dapl, layout, ierr)
-if (ierr /= 0) error stop 'ERROR:h5fortran:get_layout read ' // dname //' ' // self%filename
+call h5pget_layout_f(dapl, layout, ier)
+if (ier /= 0) error stop 'ERROR:h5fortran:get_layout read ' // dname //' ' // self%filename
 
-call h5pclose_f(dapl, ierr)
-if (ierr /= 0) error stop 'ERROR:h5fortran:get_chunk: close property list ' // dname // ' ' // self%filename
+call h5pclose_f(dapl, ier)
+if (ier /= 0) error stop 'ERROR:h5fortran:get_chunk: close property list ' // dname // ' ' // self%filename
 
 end procedure hdf_get_layout
 
 
 module procedure hdf_check_exist
 
-integer :: ierr
+integer :: ier
 
 if(.not. self%is_open()) error stop 'ERROR:h5fortran:exist: file handle is not open: ' // self%filename
 
-call h5ltpath_valid_f(self%file_id, dname, .true., hdf_check_exist, ierr)
+call h5ltpath_valid_f(self%file_id, dname, .true., hdf_check_exist, ier)
 !! h5lexists_f can false error with groups--just use h5ltpath_valid
 
-if (ierr/=0) error stop 'ERROR:h5fortran:check_exist: could not determine status of ' // dname // ' in ' // self%filename
+if (ier/=0) error stop 'ERROR:h5fortran:check_exist: could not determine status of ' // dname // ' in ' // self%filename
 
 end procedure hdf_check_exist
 
