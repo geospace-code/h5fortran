@@ -12,28 +12,6 @@ implicit none (type, external)
 contains
 
 
-subroutine attr_shape_check(self, obj_name, attr_name, space_id, dims)
-class(hdf5_file), intent(in) :: self
-character(*), intent(in) :: obj_name, attr_name
-integer(HID_T), intent(in) :: space_id
-integer(HSIZE_T), intent(in) :: dims(:)
-
-integer :: ier
-integer(HSIZE_T), dimension(size(dims)):: attr_dims, maxdims
-
-call hdf_rank_check(self, obj_name // ":" // attr_name, space_id, size(dims))
-
-call H5Sget_simple_extent_dims_f(space_id, attr_dims, maxdims, ier)
-if (ier /= size(dims)) error stop 'ERROR:h5fortran:shape_check:H5Sget_simple_extent_dims: ' // obj_name // ":" // attr_name
-
-if(.not. all(dims == attr_dims)) then
-  write(stderr,*) 'ERROR:h5fortran:attr_shape_check: ' // obj_name // ':' // attr_name //': ', attr_dims,' /= ', dims
-  error stop
-endif
-
-end subroutine attr_shape_check
-
-
 subroutine attr_create(self, obj_name, attr_name, dtype, attr_dims, space_id, attr_id, dtype_id, charlen)
 
 class(hdf5_file), intent(in) :: self

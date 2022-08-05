@@ -10,7 +10,7 @@ if(ier /= 0) error stop "ERROR:h5fortran:readattr:H5Aopen_by_name: " // obj_name
 call H5Aget_space_f(attr_id, space_id, ier)
 if(ier /= 0) error stop "ERROR:h5fortran:readattr:H5Aget_space: " // obj_name // ":" // attr_name // ":" // self%filename
 
-call attr_shape_check(self, obj_name, attr_name, space_id, attr_dims)
+call hdf_shape_check(self, obj_name // ":" // attr_name, space_id, attr_dims)
 
 call get_obj_class(self, obj_name // ":" // attr_name, attr_id, attr_class)
 
