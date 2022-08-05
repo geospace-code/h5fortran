@@ -54,23 +54,17 @@ fail_read_size_mismatch fail_read_rank_mismatch fail_nonexist_variable)
 
 setup_test("${test_names}")
 
-set_tests_properties(write PROPERTIES FIXTURES_SETUP test_files)
+set_property(TEST write PROPERTY FIXTURES_SETUP test_files)
 
-set_tests_properties(shape PROPERTIES FIXTURES_SETUP h5shape)
+set_property(TEST shape PROPERTY FIXTURES_SETUP h5shape)
 
-set_tests_properties(layout PROPERTIES
-FIXTURES_REQUIRED test_files
-REQUIRED_FILES ${CMAKE_CURRENT_BINARY_DIR}/test_write.h5
-)
+set_property(TEST layout PROPERTY FIXTURES_REQUIRED test_files)
+set_property(TEST layout PROPERTY REQUIRED_FILES ${CMAKE_CURRENT_BINARY_DIR}/test_write.h5)
 
-set_tests_properties(deflate_write PROPERTIES
-FIXTURES_SETUP deflate_files
-)
+set_property(TEST deflate_write PROPERTY FIXTURES_SETUP deflate_files)
 
-set_tests_properties(deflate_props deflate_read PROPERTIES
-FIXTURES_REQUIRED deflate_files
-REQUIRED_FILES ${CMAKE_CURRENT_BINARY_DIR}/deflate1.h5
-)
+set_property(TEST deflate_props deflate_read PROPERTY FIXTURES_REQUIRED deflate_files)
+set_property(TEST deflate_props deflate_read PROPERTY REQUIRED_FILES ${CMAKE_CURRENT_BINARY_DIR}/deflate1.h5)
 
 if(ENABLE_COVERAGE)
 setup_target_for_coverage_gcovr_html(
@@ -81,7 +75,7 @@ endif()
 
 # --- Windows shared DLLs
 if(WIN32 AND CMAKE_VERSION VERSION_GREATER_EQUAL 3.22)
-  set_tests_properties(${test_names} PROPERTIES
+  set_property(TEST ${test_names} PROPERTY
   ENVIRONMENT_MODIFICATION "PATH=path_list_append:${ZLIB_INCLUDE_DIRS}/../bin;PATH=path_list_append:${ZLIB_INCLUDE_DIR}/../bin"
   )
 endif()
@@ -101,7 +95,6 @@ endif()
 
 set_property(TEST string_read PROPERTY FIXTURES_REQUIRED h5str)
 set_property(TEST string_read PROPERTY REQUIRED_FILES ${string_file})
-set_property(TEST string_read PROPERTY DISABLED $<NOT:$<BOOL:${h5py_ok}>>)
 
 # --- attributes
 
@@ -110,11 +103,9 @@ COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test_attributes.py ${at
 )
 
 set_property(TEST PythonAttributes PROPERTY FIXTURES_SETUP h5attr)
-set_property(TEST PythonAttributes PROPERTY DISABLED $<NOT:$<BOOL:${h5py_ok}>>)
 
 set_property(TEST attributes_read PROPERTY FIXTURES_REQUIRED h5attr)
 set_property(TEST attributes_read PROPERTY REQUIRED_FILES ${attr_file})
-set_property(TEST attributes_read PROPERTY DISABLED $<NOT:$<BOOL:${h5py_ok}>>)
 
 # --- shape
 
@@ -122,20 +113,17 @@ add_test(NAME PythonShape
 COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test_shape.py ${shape_file}
 )
 
-set_tests_properties(PythonShape PROPERTIES
-REQUIRED_FILES ${shape_file}
-FIXTURES_REQUIRED h5shape
-DISABLED $<NOT:$<BOOL:${h5py_ok}>>
-)
+set_property(TEST PythonShape PROPERTY REQUIRED_FILES ${shape_file})
+set_property(TEST PythonShape PROPERTY FIXTURES_REQUIRED h5shape)
 
 add_test(NAME PythonString
 COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test_string.py ${string_file}
 )
 
-set_tests_properties(PythonString PROPERTIES
-FIXTURES_SETUP h5str
-DISABLED $<NOT:$<BOOL:${h5py_ok}>>
-)
+set_property(TEST PythonString PROPERTY FIXTURES_SETUP h5str)
+
+set_property(TEST string_read PythonAttributes PythonShape PythonString attributes_read PROPERTY DISABLED $<NOT:$<BOOL:${h5py_ok}>>)
+
 
 # --- Matlab HDF5
 
@@ -172,7 +160,5 @@ DISABLED $<NOT:$<BOOL:${h5ls}>>
 
 get_property(test_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY TESTS)
 
-set_tests_properties(${test_names} PROPERTIES
-TIMEOUT 60
-WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-)
+set_property(TEST ${test_names} PROPERTY TIMEOUT 60)
+set_property(TEST ${test_names} PROPERTY WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
