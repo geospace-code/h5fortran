@@ -7,7 +7,6 @@
 ![ci_macos](https://github.com/geospace-code/h5fortran/workflows/ci_macos/badge.svg)
 ![ci_windows](https://github.com/geospace-code/h5fortran/workflows/ci_windows/badge.svg)
 [![ci_fpm](https://github.com/geospace-code/h5fortran/actions/workflows/ci_fpm.yml/badge.svg)](https://github.com/geospace-code/h5fortran/actions/workflows/ci_fpm.yml)
-![ci_meson](https://github.com/geospace-code/h5fortran/workflows/ci_meson/badge.svg)
 [![intel-oneapi](https://github.com/geospace-code/h5fortran/actions/workflows/intel-oneapi.yml/badge.svg)](https://github.com/geospace-code/h5fortran/actions/workflows/intel-oneapi.yml)
 
 Simple, robust, thin HDF5 polymorphic Fortran read/write interface.
@@ -32,7 +31,6 @@ h5fortran is designed for easy use using static or shared linking from your proj
 * CMake [FetchContent (example)](https://github.com/scivision/h5fortran-fetchcontent)
 * CMake + Git submodule
 * Fortran Package Manager (fpm)
-* Meson subproject
 
 Uses Fortran `submodule` for clean template structure.
 This easy-to-use, thin object-oriented modern Fortran library abstracts away the messy parts of HDF5 so that you can read / write various types/ranks of data with a single command.
@@ -70,7 +68,7 @@ In general we hold to the geospace-code [code of conduct](https://github.com/geo
 
 ## Build
 
-h5fortran can be built with any one of CMake, [fpm](https://fpm.fortran-lang.org/), or [Meson](https://mesonbuild.com/).
+h5fortran can be built with CMake or [fpm](https://fpm.fortran-lang.org/).
 
 ### CMake
 
@@ -102,15 +100,6 @@ cmake -B build -DBUILD_TESTING=off
 fpm build
 fpm test
 fpm install
-```
-
-### Meson
-
-```sh
-meson build
-meson compile -C build
-meson test -C build
-meson install -C build
 ```
 
 ## Build HDF5
