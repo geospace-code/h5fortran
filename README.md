@@ -3,9 +3,8 @@
 [![DOI](https://joss.theoj.org/papers/10.21105/joss.02842/status.svg)](https://doi.org/10.21105/joss.02842)
 [![DOI](https://zenodo.org/badge/128736984.svg)](https://zenodo.org/badge/latestdoi/128736984)
 
-![ci_linux](https://github.com/geospace-code/h5fortran/workflows/ci/badge.svg)
-![ci_macos](https://github.com/geospace-code/h5fortran/workflows/ci_macos/badge.svg)
-![ci_windows](https://github.com/geospace-code/h5fortran/workflows/ci_windows/badge.svg)
+[![ci](https://github.com/geospace-code/h5fortran/actions/workflows/ci.yml/badge.svg)](https://github.com/geospace-code/h5fortran/actions/workflows/ci.yml)
+[![ci_build](https://github.com/geospace-code/h5fortran/actions/workflows/ci_build.yml/badge.svg)](https://github.com/geospace-code/h5fortran/actions/workflows/ci_build.yml)
 [![ci_fpm](https://github.com/geospace-code/h5fortran/actions/workflows/ci_fpm.yml/badge.svg)](https://github.com/geospace-code/h5fortran/actions/workflows/ci_fpm.yml)
 [![intel-oneapi](https://github.com/geospace-code/h5fortran/actions/workflows/intel-oneapi.yml/badge.svg)](https://github.com/geospace-code/h5fortran/actions/workflows/intel-oneapi.yml)
 

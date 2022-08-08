@@ -1,57 +1,55 @@
-name: ci_windows
+name: build
+
+env:
+   HOMEBREW_NO_INSTALL_CLEANUP: 1
 
 on:
   push:
     paths:
-      - "**/CMakeLists.txt"
-      - "**.cmake"
-      - "**.f90"
-      - ".github/workflows/ci_windows.yml"
-
+      - "scripts/CMakeLists.txt"
+      - "cmake/libraries.json"
+      - ".github/workflows/ci_build.yml"
 
 jobs:
 
-  msys2:
-    timeout-minutes: 30
-    runs-on: windows-latest
-    env:
-      CMAKE_GENERATOR: Ninja
+  linux_mac:
+    timeout-minutes: 20
 
     strategy:
       matrix:
-        shared: [false]
-        # true works on my computers, but CI is false failing
+        os: [ubuntu-latest, macos-latest]
+        shared: [true, false]
+        exclude:
+        - os: macos-latest
+          shared: true
+
+    runs-on: ${{ matrix.os}}
 
     steps:
-    - uses: msys2/setup-msys2@v2
-      with:
-        update: true
-        install: >-
-          mingw-w64-x86_64-ninja
-          mingw-w64-x86_64-gcc-fortran
-          mingw-w64-x86_64-hdf5
 
-    - name: Put MSYS2_MinGW64 on PATH
-      run: echo "D:/a/_temp/msys64/mingw64/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-
-    - uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
-
-    - name: install h5py
-      run: pip install h5py
+    - name: install GCC (MacOS)
+      if: runner.os == 'macOS'
+      run: brew reinstall gcc
 
     - uses: actions/checkout@v3
 
-    - run: cmake --preset multi -DCMAKE_INSTALL_PREFIX=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+    - name: Configure HDF5
+      run: cmake -S scripts -B scripts/build -DCMAKE_INSTALL_PREFIX=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
 
-    - run: cmake --build --parallel --preset debug
-    - run: ctest --preset debug -V
+    - name: Build/install HDF5
+      run: cmake --build scripts/build --parallel
 
-    - run: cmake --build --parallel --preset release
-    - run: ctest --preset release
+    - name: configure h5fortran
+      run: cmake -B build -DCMAKE_INSTALL_PREFIX=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }} -DCMAKE_PREFIX_PATH=${{ runner.temp }}
 
-    - run: cmake --install build
+    - name: build h5fortran
+      run: cmake --build build --parallel
+
+    - name: test h5fortran
+      run: ctest --test-dir build --preset default
+
+    - name: install h5fortran
+      run: cmake --install build
 
     - name: configure examples
       run: cmake -S example -B example/build -DCMAKE_PREFIX_PATH:PATH=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
@@ -60,9 +58,8 @@ jobs:
     - name: Test Examples
       run: ctest --test-dir example/build -V
 
-
 # build works but takes a long time, so skip
-  # msys2-build:
+  # msys2:
   #   timeout-minutes: 30
   #   runs-on: windows-latest
   #   env:
@@ -80,7 +77,7 @@ jobs:
   #         mingw-w64-x86_64-gcc-fortran
 
   #   - name: Put MSYS2_MinGW64 on PATH
-  #     run: echo "D:/a/_temp/msys64/mingw64/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+  #     run: echo "${{ runner.temp }}/msys64/mingw64/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
   #   - uses: actions/checkout@v3
 

@@ -1,25 +1,35 @@
 name: ci
 
+env:
+   HOMEBREW_NO_INSTALL_CLEANUP: 1
+
 on:
   push:
     paths:
+      - "**.c"
+      - "**.cpp"
+      - "**.f90"
+      - "**.F90"
       - "**/CMakeLists.txt"
       - "**.cmake"
-      - "**.f90"
       - ".github/workflows/ci.yml"
 
 
 jobs:
 
-  linux:
-    runs-on: ubuntu-latest
+  linux_mac:
     timeout-minutes: 15
 
     strategy:
       matrix:
+        os: [ubuntu-latest, macos-latest]
         shared: [true, false]
         gcc: [8, 11]
+        exclude:
+        - os: macos-latest
+          gcc: 8
 
+    runs-on: ${{ matrix.os }}
     env:
       CC: gcc-${{ matrix.gcc }}
       FC: gfortran-${{ matrix.gcc }}
@@ -30,17 +40,25 @@ jobs:
       with:
         python-version: '3.10'
 
-    - name: install h5py
-      run: pip install h5py
+    - name: Python pkgs
+      run: pip install numpy h5py
 
-    - name: install hdf5
+    - name: install HDF5 (Linux)
+      if: runner.os == 'Linux'
       run: |
         sudo apt update
         sudo apt install --no-install-recommends gcc-${{ matrix.gcc }} gfortran-${{ matrix.gcc}} ninja-build libhdf5-dev
 
+    - name: Install HDF5 (MacOS)
+      if: runner.os == 'macOS'
+      run: |
+        brew install hdf5 ninja
+        brew reinstall gcc
+
     - uses: actions/checkout@v3
 
-    - run: cmake --preset multi -DCMAKE_INSTALL_PREFIX=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+    - name: Configure h5fortran
+      run: cmake --preset multi -DCMAKE_INSTALL_PREFIX=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
 
     - name: Build Debug
       run: cmake --build --parallel --preset debug
@@ -53,10 +71,10 @@ jobs:
       run: ctest --preset release --output-junit test-release.xml
 
     - name: Publish Unit Test Results
-      uses: EnricoMi/publish-unit-test-result-action@v1
+      uses: EnricoMi/publish-unit-test-result-action@v2
       if: always()
       with:
-        files: build/test-*.xml
+        junit_files: build/test-*.xml
 
     - run: cmake --install build
 
@@ -69,7 +87,7 @@ jobs:
 
 
   linux-coverage:
-    needs: linux
+    needs: linux_mac
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -99,36 +117,48 @@ jobs:
         path: build-coverage/coverage/
 
 
-  linux-build:
-    needs: linux
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
+
+  msys2:
+    timeout-minutes: 30
+    runs-on: windows-latest
+    env:
+      CMAKE_GENERATOR: Ninja
 
     strategy:
       matrix:
-        shared: [true, false]
+        shared: [false]
+        # true works on my computers, but CI is false failing
 
     steps:
+    - uses: msys2/setup-msys2@v2
+      with:
+        update: true
+        install: >-
+          mingw-w64-x86_64-ninja
+          mingw-w64-x86_64-gcc-fortran
+          mingw-w64-x86_64-hdf5
+
+    - name: Put MSYS2_MinGW64 on PATH
+      run: echo "${{ runner.temp }}/msys64/mingw64/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: install h5py
+      run: pip install h5py
 
     - uses: actions/checkout@v3
 
-    - name: Configure HDF5
-      run: cmake -S scripts -B scripts/build -DCMAKE_INSTALL_PREFIX=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+    - run: cmake --preset multi -DCMAKE_INSTALL_PREFIX=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
 
-    - name: Build/install HDF5
-      run: cmake --build scripts/build --parallel
+    - run: cmake --build --parallel --preset debug
+    - run: ctest --preset debug -V
 
-    - name: configure h5fortran
-      run: cmake -B build -DCMAKE_INSTALL_PREFIX=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }} -DCMAKE_PREFIX_PATH=${{ runner.temp }}
+    - run: cmake --build --parallel --preset release
+    - run: ctest --preset release
 
-    - name: build h5fortran
-      run: cmake --build build --parallel
-
-    - name: test h5fortran
-      run: ctest --test-dir build --preset default
-
-    - name: install h5fortran
-      run: cmake --install build
+    - run: cmake --install build
 
     - name: configure examples
       run: cmake -S example -B example/build -DCMAKE_PREFIX_PATH:PATH=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
