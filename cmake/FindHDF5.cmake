@@ -60,7 +60,8 @@ Targets
 #]=======================================================================]
 
 include(CheckSymbolExists)
-include(CheckSourceCompiles)
+include(CheckCSourceCompiles)
+include(CheckFortranSourceCompiles)
 
 function(get_flags exec outvar)
 
@@ -156,7 +157,11 @@ if("${_def}" MATCHES
 endif()
 
 # avoid picking up incompatible zlib over the desired zlib
-cmake_path(GET HDF5_C_INCLUDE_DIR PARENT_PATH zlib_dir)
+if(CMAKE_VERSION VERSION_LESS 3.20)
+  get_filename_component(zlib_dir ${HDF5_C_INCLUDE_DIR} DIRECTORY)
+else()
+  cmake_path(GET HDF5_C_INCLUDE_DIR PARENT_PATH zlib_dir)
+endif()
 if(NOT ZLIB_ROOT)
   set(ZLIB_ROOT "${HDF5_ROOT};${zlib_dir}")
 endif()
@@ -648,7 +653,7 @@ endfunction(hdf5_c_wrap)
 
 function(check_c_links)
 
-list(PREPEND CMAKE_REQUIRED_LIBRARIES ${HDF5_C_LIBRARIES})
+list(INSERT CMAKE_REQUIRED_LIBRARIES 0 ${HDF5_C_LIBRARIES})
 set(CMAKE_REQUIRED_INCLUDES ${HDF5_C_INCLUDE_DIR})
 
 if(HDF5_parallel_FOUND)
@@ -691,14 +696,14 @@ else()
   ]=])
 endif(HDF5_parallel_FOUND)
 
-check_source_compiles(C "${src}" HDF5_C_links)
+check_c_source_compiles("${src}" HDF5_C_links)
 
 endfunction(check_c_links)
 
 
 function(check_fortran_links)
 
-list(PREPEND CMAKE_REQUIRED_LIBRARIES ${HDF5_Fortran_LIBRARIES} ${HDF5_C_LIBRARIES})
+list(INSERT CMAKE_REQUIRED_LIBRARIES 0 ${HDF5_Fortran_LIBRARIES} ${HDF5_C_LIBRARIES})
 set(CMAKE_REQUIRED_INCLUDES ${HDF5_Fortran_INCLUDE_DIR} ${HDF5_C_INCLUDE_DIR})
 
 if(HDF5_parallel_FOUND)
@@ -732,7 +737,7 @@ else()
   end program")
 endif()
 
-check_source_compiles(Fortran ${src} HDF5_Fortran_links)
+check_fortran_source_compiles(${src} HDF5_Fortran_links SRC_EXT f90)
 
 endfunction(check_fortran_links)
 
@@ -795,10 +800,10 @@ endif()
 set(hdf5_lsuf lib hdf5/lib)  # need explicit "lib" for self-built HDF5
 if(NOT HDF5_ROOT)
   if(parallel IN_LIST HDF5_FIND_COMPONENTS)
-    list(PREPEND hdf5_lsuf hdf5/openmpi hdf5/mpich)  # Ubuntu
-    list(PREPEND hdf5_lsuf openmpi/lib mpich/lib)  # CentOS
+    list(INSERT hdf5_lsuf 0 hdf5/openmpi hdf5/mpich)  # Ubuntu
+    list(INSERT hdf5_lsuf 0 openmpi/lib mpich/lib)  # CentOS
   else()
-    list(PREPEND hdf5_lsuf hdf5/serial)  # Ubuntu
+    list(INSERT hdf5_lsuf 0 hdf5/serial)  # Ubuntu
   endif()
 endif()
 
@@ -829,7 +834,7 @@ endif()
 if(NOT HDF5_ROOT AND CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
   # CentOS paths
   if(parallel IN_LIST HDF5_FIND_COMPONENTS)
-    list(PREPEND hdf5_msuf gfortran/modules/openmpi gfortran/modules/mpich)
+    list(INSERT hdf5_msuf 0 gfortran/modules/openmpi gfortran/modules/mpich)
   else()
     list(APPEND hdf5_msuf gfortran/modules)
   endif()
@@ -876,15 +881,15 @@ set(CMAKE_REQUIRED_LIBRARIES)
 set(CMAKE_REQUIRED_INCLUDES)
 
 # pop off ignored paths so rest of script can find Python
-list(REMOVE_ITEM CMAKE_IGNORE_PATH ${h5_ignore_path})
-
+if(DEFINED CMAKE_IGNORE_PATH)
+  list(REMOVE_ITEM CMAKE_IGNORE_PATH "${h5_ignore_path}")
+endif()
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(HDF5
 REQUIRED_VARS HDF5_C_LIBRARIES HDF5_links
 VERSION_VAR HDF5_VERSION
 HANDLE_COMPONENTS
-HANDLE_VERSION_RANGE
 )
 
 if(HDF5_FOUND)

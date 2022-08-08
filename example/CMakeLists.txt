@@ -1,9 +1,9 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.11...3.25)
 
 project(h5fortranExample
 LANGUAGES C CXX Fortran)
 
-include(CTest)
+enable_testing()
 
 find_package(h5fortran CONFIG REQUIRED)
 

@@ -7,7 +7,6 @@
     "downloadUrl": "https://github.com/geospace-code/h5fortran/releases",
     "issueTracker": "https://github.com/geospace-code/h5fortran/issues",
     "name": "h5fortran",
-    "version": "4.8.0",
     "identifier": "10.5281/zenodo.3757269",
     "description": "Lightweight object-oriented HDF5 Fortran interface",
     "applicationCategory": "file I/O",

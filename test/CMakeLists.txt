@@ -1,8 +1,8 @@
 set_property(DIRECTORY PROPERTY LABELS h5fortran)
 
-cmake_path(SET attr_file ${CMAKE_CURRENT_BINARY_DIR}/test_attr_py.h5)
-cmake_path(SET shape_file ${CMAKE_CURRENT_BINARY_DIR}/test_shape.h5)
-cmake_path(SET string_file ${CMAKE_CURRENT_BINARY_DIR}/test_string_py.h5)
+set(attr_file ${CMAKE_CURRENT_BINARY_DIR}/test_attr_py.h5)
+set(shape_file ${CMAKE_CURRENT_BINARY_DIR}/test_shape.h5)
+set(string_file ${CMAKE_CURRENT_BINARY_DIR}/test_string_py.h5)
 
 # --- fundamental HDF5 library check
 
@@ -23,7 +23,6 @@ foreach(name IN LISTS names)
 
 add_executable(test_${name} test_${name}.f90)
 target_link_libraries(test_${name} PRIVATE h5fortran::h5fortran)
-target_compile_options(test_${name} PRIVATE "$<$<Fortran_COMPILER_ID:GNU>:-Wno-compare-reals;-Wno-conversion>")
 
 if(${name} STREQUAL "string_read")
   add_test(NAME ${name} COMMAND test_${name} ${string_file})
@@ -81,7 +80,9 @@ if(WIN32 AND CMAKE_VERSION VERSION_GREATER_EQUAL 3.22)
 endif()
 
 # --- Python h5py
-find_package(Python COMPONENTS Interpreter)
+if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.12)
+  find_package(Python COMPONENTS Interpreter)
+endif()
 if(NOT DEFINED h5py_ok)
   execute_process(COMMAND ${Python_EXECUTABLE} -c "import h5py"
   RESULT_VARIABLE h5py_code

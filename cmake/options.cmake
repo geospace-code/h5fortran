@@ -7,6 +7,8 @@ option(concepts "conceptual testing, for devs only" off)
 
 set(CMAKE_TLS_VERIFY true)
 
+include(GNUInstallDirs)
+
 
 if(BUILD_SHARED_LIBS)
   if(WIN32 AND CMAKE_VERSION VERSION_LESS 3.21 AND ${PROJECT_NAME}_BUILD_TESTING)
@@ -18,7 +20,7 @@ if(BUILD_SHARED_LIBS)
   endif()
 endif()
 
-cmake_path(SET CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/Modules)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR})
 
 # Rpath options necessary for shared library install to work correctly in user projects
 set(CMAKE_INSTALL_NAME_DIR ${CMAKE_INSTALL_PREFIX}/lib)
