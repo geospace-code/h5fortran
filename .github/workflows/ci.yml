@@ -71,10 +71,11 @@ jobs:
       run: ctest --preset release --output-junit test-release.xml
 
     - name: Publish Unit Test Results
-      uses: EnricoMi/publish-unit-test-result-action@v2
+      uses: actions/upload-artifact@v3
       if: always()
       with:
-        junit_files: build/test-*.xml
+        name: test-junit
+        path: build/test-*.xml
 
     - run: cmake --install build
 
