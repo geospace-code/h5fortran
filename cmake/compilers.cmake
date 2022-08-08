@@ -38,7 +38,7 @@ endif()
 
 # --- code coverage
 if(ENABLE_COVERAGE)
-include(CodeCoverage)
-append_coverage_compiler_flags()
-set(COVERAGE_EXCLUDES ${PROJECT_SOURCE_DIR}/test)
+  include(${CMAKE_CURRENT_LIST_DIR}/Modules/CodeCoverage.cmake)
+  append_coverage_compiler_flags()
+  set(COVERAGE_EXCLUDES ${PROJECT_SOURCE_DIR}/test)
 endif()
