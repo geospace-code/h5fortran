@@ -37,7 +37,6 @@ if(HDF5_VERSION VERSION_LESS 1.8.7)
 endif()
 
 if(hdf5_parallel OR HDF5_HAVE_PARALLEL)
-  find_package(MPI COMPONENTS Fortran REQUIRED)
   target_link_libraries(HDF5::HDF5 INTERFACE MPI::MPI_Fortran)
 endif()
 

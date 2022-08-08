@@ -109,7 +109,7 @@ endif()
 endmacro(find_mpi)
 
 
-function(detect_config)
+macro(detect_config)
 
 set(CMAKE_REQUIRED_INCLUDES ${HDF5_C_INCLUDE_DIR})
 
@@ -120,7 +120,7 @@ NO_DEFAULT_PATH
 )
 
 if(NOT h5_conf)
-  set(HDF5_C_FOUND false PARENT_SCOPE)
+  set(HDF5_C_FOUND false)
   return()
 endif()
 
@@ -131,7 +131,7 @@ check_symbol_exists(H5_HAVE_FILTER_DEFLATE ${h5_conf} hdf5_have_zlib)
 # Always check for HDF5 MPI support because HDF5 link fails if MPI is linked into HDF5.
 check_symbol_exists(H5_HAVE_PARALLEL ${h5_conf} HDF5_HAVE_PARALLEL)
 
-set(HDF5_parallel_FOUND false PARENT_SCOPE)
+set(HDF5_parallel_FOUND false)
 
 if(HDF5_HAVE_PARALLEL)
   find_mpi()
@@ -139,7 +139,7 @@ if(HDF5_HAVE_PARALLEL)
     return()
   endif()
 
-  set(HDF5_parallel_FOUND true PARENT_SCOPE)
+  set(HDF5_parallel_FOUND true)
 endif()
 
 # get version
@@ -152,8 +152,6 @@ if("${_def}" MATCHES
   if(CMAKE_MATCH_3)
     set(HDF5_VERSION ${HDF5_VERSION}.${CMAKE_MATCH_3})
   endif()
-
-  set(HDF5_VERSION ${HDF5_VERSION} PARENT_SCOPE)
 endif()
 
 # avoid picking up incompatible zlib over the desired zlib
@@ -217,9 +215,7 @@ if(UNIX)
   list(APPEND CMAKE_REQUIRED_LIBRARIES m)
 endif()
 
-set(CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} PARENT_SCOPE)
-
-endfunction(detect_config)
+endmacro(detect_config)
 
 
 function(find_hdf5_fortran)
