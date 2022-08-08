@@ -1,5 +1,4 @@
 submodule (h5fortran:hdf5_read) hdf5_reader
-!! This submodule is for reading 1-D..7-D data
 
 use hdf5, only : H5Dread_f
 

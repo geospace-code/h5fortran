@@ -80,8 +80,6 @@ else
 endif
 if (ier /= 0) error stop 'ERROR:h5fortran:open: HDF5 library set traceback'
 
-fapl = H5P_DEFAULT_F
-
 select case(laction)
 case('r')
   file_mode = H5F_ACC_RDONLY_F
@@ -98,6 +96,8 @@ case ('w')
 case default
   error stop 'ERROR:h5fortran:open Unsupported action ' // laction // ' for ' // filename
 end select
+
+fapl = H5P_DEFAULT_F
 
 if (file_mode == H5F_ACC_RDONLY_F .or. file_mode == H5F_ACC_RDWR_F) then
   if(.not. is_hdf5(filename)) error stop "ERROR:h5fortran:open: not an HDF5 file: "//filename
@@ -146,6 +146,7 @@ if(Ndset > 0) then
     if(ierr /= 0) error stop "ERROR:h5fortran:close:h5fget_name: could not get filename of open dataset: " // self%filename
 
     call h5iget_name_f(obj_ids(i), dset_name, L, Lds_name, ierr)
+    if(ierr /= 0) error stop "ERROR:h5fortran:close:h5iget_name could not get dataset name: " // self%filename
 
     write(stderr,*) "h5fortran:close: open dataset: " // dset_name(:Lds_name) // " in file: " // file_name(:Lf_name)
   end do

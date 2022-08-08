@@ -251,6 +251,7 @@ end interface
 
 
 interface !< writer.f90
+
 module subroutine h5write_scalar(self, dname, A, compact)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname

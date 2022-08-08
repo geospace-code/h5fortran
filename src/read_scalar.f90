@@ -5,12 +5,14 @@ use hdf5, only : H5Dread_f
 implicit none (type, external)
 
 interface
+
 module subroutine read_scalar_char(A, dset_id, file_space_id, mem_space_id, dims)
 class(*), intent(inout) :: A
 integer(HID_T), intent(in) :: dset_id, file_space_id
 integer(HID_T), intent(inout) :: mem_space_id
 integer(HSIZE_T), intent(in) :: dims(:)
 end subroutine
+
 end interface
 
 contains

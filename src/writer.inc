@@ -2,8 +2,6 @@ integer(HID_T) :: file_space_id, mem_space_id, dset_id, xfer_id, dtype, dtype_id
 integer(HSIZE_T), dimension(rank(A)) :: mem_dims, dims_dset
 integer :: ier, charlen
 
-xfer_id = H5P_DEFAULT_F
-
 mem_dims = shape(A, HSIZE_T)
 
 if(present(dset_dims)) then
@@ -39,6 +37,8 @@ if(present(istart) .and. present(iend)) then
 else
   mem_space_id = H5S_ALL_F
 endif
+
+xfer_id = H5P_DEFAULT_F
 
 select type (A)
 type is (real(real32))

@@ -97,7 +97,7 @@ if(size(mem_dims) >= 2) then
   call set_deflate(self, mem_dims, dcpl, chunk_size)
 endif
 
-if(present(compact)) call set_compact(dcpl, dset_dims, compact)
+if(present(compact)) call set_compact(dcpl, dset_dims, compact, dname)
 
 !> create dataset dataspace
 if(size(dset_dims) == 0) then
@@ -154,21 +154,27 @@ if (ierr /= 0) error stop "ERROR:h5fortran:h5pclose: " // dname // ' in ' // sel
 end procedure hdf_create
 
 
-subroutine set_compact(dcpl, dset_dims, compact)
+subroutine set_compact(dcpl, dset_dims, compact, dset_name)
 !! compact dataset (for very small datasets to increase I/O speed)
 
 integer(HID_T), intent(inout) :: dcpl
 integer(HSIZE_T), intent(in) :: dset_dims(:)
 logical, intent(in) :: compact
+character(*), intent(in) :: dset_name
 
 integer :: ierr
+integer(HSIZE_T) :: Nbytes
 
 if(.not. compact) return
 
 if(dcpl /= H5P_DEFAULT_F) return
 !! datasets are EITHER compact or chunked.
 
-if(product(dset_dims) * 8 > 60000) return
+Nbytes = product(dset_dims) * 8
+if(Nbytes > 60000) then
+  write(stderr,'(a,i0,1x,a)') "WARNING:h5fortran:set_compact: dataset is too large to be compact: bytes: ", Nbytes, dset_name
+  return
+endif
 !! 64000 byte limit, here we assumed 8 bytes / element
 
 call h5pcreate_f(H5P_DATASET_CREATE_F, dcpl, ierr)

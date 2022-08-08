@@ -4,7 +4,6 @@ integer :: dclass, ier
 
 dset_id = 0 !< sentinel used in hdf_get_slice
 
-xfer_id = H5P_DEFAULT_F
 dims = shape(A, HSIZE_T)
 
 call h5dopen_f(self%file_id, dname, dset_id, ier)
@@ -18,6 +17,8 @@ else
   call hdf_shape_check(self, dname, file_space_id, dims)
   mem_space_id = H5S_ALL_F
 endif
+
+xfer_id = H5P_DEFAULT_F
 
 call get_obj_class(self, dname, dset_id, dclass)
 
