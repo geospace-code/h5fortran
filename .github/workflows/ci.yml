@@ -1,9 +1,5 @@
 name: ci
 
-env:
-  CTEST_PARALLEL_LEVEL: 4
-  CMAKE_BUILD_TYPE: Release
-
 on:
   push:
     paths:
@@ -11,8 +7,6 @@ on:
       - "**.cmake"
       - "**.f90"
       - ".github/workflows/ci.yml"
-  release:
-    types: [published]
 
 
 jobs:
@@ -32,7 +26,7 @@ jobs:
 
     steps:
 
-    - uses: actions/setup-python@v2
+    - uses: actions/setup-python@v4
       with:
         python-version: '3.10'
 
@@ -49,7 +43,7 @@ jobs:
         sudo apt update
         sudo apt install --no-install-recommends gcc-${{ matrix.gcc }} gfortran-${{ matrix.gcc}} ninja-build libhdf5-dev
 
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - run: cmake --preset multi -DCMAKE_INSTALL_PREFIX=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
 
@@ -85,8 +79,8 @@ jobs:
     timeout-minutes: 10
 
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-python@v2
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v4
       with:
         python-version: '3.x'
 
@@ -104,7 +98,7 @@ jobs:
     - name: Code coverage
       run: cmake --build --parallel --preset run-coverage
 
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: coverage-report-html
         path: build-coverage/coverage/
@@ -126,7 +120,7 @@ jobs:
       with:
         cmake-version: '3.20'
 
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Configure HDF5
       run: cmake -S scripts -B scripts/build -DCMAKE_INSTALL_PREFIX=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}

@@ -1,10 +1,7 @@
 name: ci_macos
 
 env:
-  CTEST_PARALLEL_LEVEL: 4
-  CMAKE_BUILD_TYPE: Release
   HOMEBREW_NO_INSTALL_CLEANUP: 1
-  FC: gfortran-11
 
 on:
   push:
@@ -13,8 +10,6 @@ on:
       - "**.cmake"
       - "**.f90"
       - ".github/workflows/ci_macos.yml"
-  release:
-    types: [published]
 
 jobs:
 
@@ -28,16 +23,18 @@ jobs:
 
     steps:
 
-    - uses: actions/setup-python@v2
+    - uses: actions/setup-python@v4
       with:
         python-version: '3.10'
 
     - name: install h5py
       run: pip install h5py
 
-    - run: brew install hdf5 ninja libaec
+    - run: |
+        brew install hdf5 ninja libaec
+        brew reinstall gcc
 
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - run: cmake --preset multi -DCMAKE_INSTALL_PREFIX=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
 
@@ -68,7 +65,9 @@ jobs:
 
     steps:
 
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
+
+    - run: brew reinstall gcc
 
     - name: Configure HDF5
       run: cmake -S scripts -B scripts/build -DCMAKE_INSTALL_PREFIX=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
