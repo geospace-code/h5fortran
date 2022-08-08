@@ -18,8 +18,7 @@ endif()
 include(cmake/options.cmake)
 include(cmake/compilers.cmake)
 
-# --- find or build HDF5 library
-find_package(HDF5 COMPONENTS Fortran HL)
+find_package(HDF5 COMPONENTS Fortran)
 if(NOT HDF5_FOUND)
   message(FATAL_ERROR "HDF5 not found or working on the system. First build HDF5 by:
 
@@ -32,6 +31,7 @@ if(NOT HDF5_FOUND)
   cmake --build build
   ")
 endif()
+
 if(HDF5_VERSION VERSION_LESS 1.8.7)
   message(WARNING "HDF5 >= 1.8.7 required for ${PROJECT_NAME}")
 endif()
@@ -44,17 +44,14 @@ endif()
 # --- h5fortran library
 
 add_library(h5fortran)
-target_include_directories(h5fortran
-PUBLIC
+target_include_directories(h5fortran PUBLIC
 $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
 $<INSTALL_INTERFACE:include>
 )
 target_link_libraries(h5fortran PUBLIC HDF5::HDF5)
-set_target_properties(h5fortran PROPERTIES
-Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include
-LABELS core
-VERSION ${PROJECT_VERSION}
-)
+set_property(TARGET h5fortran PROPERTY Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include)
+set_property(TARGET h5fortran PROPERTY LABELS core)
+set_property(TARGET h5fortran PROPERTY VERSION ${PROJECT_VERSION})
 
 # GLOBAL needed for use by FetchContent
 add_library(h5fortran::h5fortran INTERFACE IMPORTED GLOBAL)
