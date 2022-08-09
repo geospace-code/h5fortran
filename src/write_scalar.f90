@@ -1,6 +1,6 @@
 submodule (h5fortran:write) write_scalar
 
-use hdf5, only: h5dwrite_f
+use hdf5, only: H5Dwrite_f
 
 implicit none (type, external)
 
@@ -12,8 +12,6 @@ module procedure h5write_scalar
 integer(HSIZE_T) :: dset_dims(0), mem_dims(0)
 integer(HID_T) :: file_space_id, dset_id, dtype_id, xfer_id, dtype
 integer :: ier, L
-
-if(.not.self%is_open()) error stop 'ERROR:h5fortran:write: file handle is not open'
 
 select type (A)
 type is (real(real32))
@@ -32,23 +30,22 @@ class default
 end select
 
 call hdf_create(self, dname, dtype, mem_dims=mem_dims, dset_dims=dset_dims, &
-    filespace_id=file_space_id, dset_id=dset_id, dtype_id=dtype_id, compact=compact, &
-    charlen=L)
+  filespace_id=file_space_id, dset_id=dset_id, compact=compact, dtype_id=dtype_id, &
+  charlen=L)
 
 xfer_id = H5P_DEFAULT_F
 
 select type (A)
 type is (real(real32))
-  call h5dwrite_f(dset_id, dtype, A, dset_dims, ier, file_space_id=file_space_id, xfer_prp=xfer_id)
+  call H5Dwrite_f(dset_id, dtype, A, dset_dims, ier, file_space_id=file_space_id, xfer_prp=xfer_id)
 type is (real(real64))
-  call h5dwrite_f(dset_id, dtype, A, dset_dims, ier, file_space_id=file_space_id, xfer_prp=xfer_id)
+  call H5Dwrite_f(dset_id, dtype, A, dset_dims, ier, file_space_id=file_space_id, xfer_prp=xfer_id)
 type is (integer(int32))
-  call h5dwrite_f(dset_id, dtype, A, dset_dims, ier, file_space_id=file_space_id, xfer_prp=xfer_id)
+  call H5Dwrite_f(dset_id, dtype, A, dset_dims, ier, file_space_id=file_space_id, xfer_prp=xfer_id)
 type is (integer(int64))
-  call h5dwrite_f(dset_id, dtype, A, dset_dims, ier, file_space_id=file_space_id, xfer_prp=xfer_id)
+  call H5Dwrite_f(dset_id, dtype, A, dset_dims, ier, file_space_id=file_space_id, xfer_prp=xfer_id)
 type is (character(*))
-  call h5dwrite_f(dset_id, dtype_id, A, dset_dims, ier, &
-  file_space_id=file_space_id, xfer_prp=xfer_id)
+  call H5Dwrite_f(dset_id, dtype_id, A, dset_dims, ier, file_space_id=file_space_id, xfer_prp=xfer_id)
   if (ier /= 0) error stop 'ERROR:h5fortran:write:string: could not write ' // dname // ' to ' // self%filename
   call h5tclose_f(dtype_id, ier)
 class default
@@ -56,7 +53,7 @@ class default
 end select
 if (ier /= 0) error stop 'ERROR:h5fortran:write: could not write ' // dname // ' to ' // self%filename
 
-call h5dclose_f(dset_id, ier)
+call H5Dclose_f(dset_id, ier)
 if(ier /= 0) error stop "ERROR:h5fortran:writer: closing dataset: " // dname // " in " // self%filename
 
 call h5sclose_f(file_space_id, ier)

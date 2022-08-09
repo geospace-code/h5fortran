@@ -273,7 +273,6 @@ else
   if (ier /= drank) error stop 'ERROR:h5fortran:get_slice:H5Sget_simple_extent_dims: ' // dset_name
 endif
 
-
 istride = 1
 if(present(stride)) istride = int(stride, HSIZE_T)
 

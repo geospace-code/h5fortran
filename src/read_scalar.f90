@@ -21,7 +21,7 @@ contains
 module procedure h5read_scalar
 
 integer(HSIZE_T) :: dims(0)
-integer(HID_T) :: dset_id, file_space_id, mem_space_id
+integer(HID_T) :: dset_id, xfer_id, file_space_id, mem_space_id
 integer :: dclass, ier
 
 logical :: is_scalar
@@ -41,6 +41,8 @@ else
 endif
 
 call get_obj_class(self, dname, dset_id, dclass)
+
+xfer_id = H5P_DEFAULT_F
 
 !> cast the dataset read from disk to the variable type presented by user h5f%read("/my_dataset", x)
 !> We only cast when needed to save memory.
