@@ -265,7 +265,7 @@ if(present(dset_dims)) then
   ddims = dset_dims
 else
   call H5Sget_simple_extent_ndims_f(file_space_id, drank, ier)
-  if(ier /= 0) error stop "ERROR:h5fortran:hdf_get_slice: H5Sget_simple_extent_ndims: " // dset_name
+  if(ier /= 0) error stop "ERROR:h5fortran:get_slice: H5Sget_simple_extent_ndims: " // dset_name
 
   allocate(ddims(drank), maxdims(drank))
 
@@ -285,9 +285,12 @@ if(size(mem_dims) == 0) then
   !! rank(dims(0)) == 1, but size(dims(0)) == 0
   if (sum(c_mem_dims) /= 1) error stop "ERROR:h5fortran:hdf_get_slice: scalar index of array failed " // dset_name
 elseif(any(c_mem_dims /= mem_dims)) then
-  write(stderr,*) "ERROR:h5fortran:hdf_get_slice: memory size /= dataset size: check variable slice (index). " // &
+  write(stderr,*) "ERROR:h5fortran:get_slice: memory size /= dataset size: check variable slice (index). " // &
     " Dset_dims:", ddims, "C Mem_dims:", c_mem_dims, "mem_dims:", mem_dims, "rank(mem_dims):", rank(mem_dims)
-  error stop "ERROR:h5fortran:hdf_get_slice " // dset_name
+  error stop "ERROR:h5fortran:get_slice " // dset_name
+elseif(any(iend-1 > ddims)) then
+  write(stderr,*) "ERROR:h5fortran:get_slice: iend: ", iend, ' > dset_dims: ', ddims
+  error stop "ERROR:h5fortran:get_slice " // dset_name
 endif
 
 ! print *, 'TRACE:hdf_get_slice: ' // dset_name //': istart', i0, 'C mem_dims: ', c_mem_dims, 'mem_dims', mem_dims
