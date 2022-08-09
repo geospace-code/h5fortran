@@ -12,7 +12,7 @@ call H5Dget_space_f(dset_id, file_space_id, ier)
 if(ier/=0) error stop 'ERROR:h5fortran:reader:H5Dget_space ' // dname // ' from ' // self%filename
 
 if(present(istart) .and. present(iend)) then
-  call hdf_get_slice(self, dname, dset_id, file_space_id, mem_space_id, istart, iend, stride)
+  call hdf_get_slice(dims, dset_id, file_space_id, mem_space_id, istart, iend, stride)
 else
   call hdf_shape_check(self, dname, file_space_id, dims)
   mem_space_id = H5S_ALL_F

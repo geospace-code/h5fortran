@@ -35,7 +35,7 @@ if(ier/=0) error stop 'ERROR:h5fortran:reader:H5Dget_space ' // dname // ' from 
 call hdf_rank_check(self, dname, file_space_id, rank(A), is_scalar)
 
 if (is_scalar) then
-  call hdf_get_slice(self, dname, dset_id, file_space_id, mem_space_id, [1], [1])
+  call hdf_get_slice(dims, dset_id, file_space_id, mem_space_id, [1], [1])
 else
   mem_space_id = H5S_ALL_F
 endif

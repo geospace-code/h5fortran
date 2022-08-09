@@ -254,33 +254,57 @@ end procedure is_hdf5
 
 module procedure hdf_get_slice
 
-integer(HSIZE_T), dimension(size(i0)) :: istart, iend, stride, mem_dims
-integer :: ierr
+integer(HSIZE_T), dimension(size(istart)) :: c_mem_dims, i0, istride
+integer(HSIZE_T), dimension(:), allocatable :: ddims, maxdims
+integer :: ier, drank
+character(:), allocatable :: dset_name
 
-istart = int(i0, HSIZE_T)
-iend = int(i1, HSIZE_T)
+dset_name = id2name(dset_id)
 
-if (present(i2)) then
-  stride = int(i2, HSIZE_T)
+if(present(dset_dims)) then
+  ddims = dset_dims
 else
-  stride = 1
+  call H5Sget_simple_extent_ndims_f(file_space_id, drank, ier)
+  if(ier /= 0) error stop "ERROR:h5fortran:hdf_get_slice: H5Sget_simple_extent_ndims: " // dset_name
+
+  allocate(ddims(drank), maxdims(drank))
+
+  call H5Sget_simple_extent_dims_f(file_space_id, ddims, maxdims, ier)
+  if (ier /= drank) error stop 'ERROR:h5fortran:get_slice:H5Sget_simple_extent_dims: ' // dset_name
 endif
 
-!! compensate for 0-based hyperslab vs. 1-based Fortran
-istart = istart - 1
 
-mem_dims = iend - istart
+istride = 1
+if(present(stride)) istride = int(stride, HSIZE_T)
 
-call h5sselect_hyperslab_f(filespace_id, H5S_SELECT_SET_F, &
-start=istart, &
-count=mem_dims, &
-hdferr=ierr, &
-stride=stride)
-if(ierr /= 0) error stop 'ERROR:h5fortran:get_slice:h5sselect_hyperslab: ' // dname
+!! NOTE: 0-based hyperslab vs. 1-based Fortran
+i0 = istart - 1
+c_mem_dims = iend - i0
+
+if(size(mem_dims) == 0) then
+  !! rank(dims(0)) == 1, but size(dims(0)) == 0
+  if (sum(c_mem_dims) /= 1) error stop "ERROR:h5fortran:hdf_get_slice: scalar index of array failed " // dset_name
+elseif(any(c_mem_dims /= mem_dims)) then
+  write(stderr,*) "ERROR:h5fortran:hdf_get_slice: memory size /= dataset size: check variable slice (index). " // &
+    " Dset_dims:", ddims, "C Mem_dims:", c_mem_dims, "mem_dims:", mem_dims, "rank(mem_dims):", rank(mem_dims)
+  error stop "ERROR:h5fortran:hdf_get_slice " // dset_name
+endif
+
+! print *, 'TRACE:hdf_get_slice: ' // dset_name //': istart', i0, 'C mem_dims: ', c_mem_dims, 'mem_dims', mem_dims
+
+if(any(c_mem_dims < 1)) error stop "ERROR:h5fortran:get_slice:non-positive hyperslab: " // dset_name
+
+call h5sselect_hyperslab_f(file_space_id, H5S_SELECT_SET_F, &
+start=i0, &
+stride=istride, &
+count=c_mem_dims, &
+hdferr=ier)
+! block=blk  !< would this help performance?
+if (ier /= 0) error stop "ERROR:h5fortran:get_slice:h5sselect_hyperslab: " // dset_name
 
 !> create memory dataspace
-call h5screate_simple_f(rank=size(mem_dims), dims=mem_dims, space_id=memspace_id, hdferr=ierr)
-if (ierr /= 0) error stop "ERROR:h5fortran:get_slice:h5screate_simple:memspace " // dname
+call h5screate_simple_f(rank=size(c_mem_dims), dims=c_mem_dims, space_id=mem_space_id, hdferr=ier)
+if (ier /= 0) error stop "ERROR:h5fortran:get_slice:h5screate_simple:memspace " // dset_name
 
 end procedure hdf_get_slice
 

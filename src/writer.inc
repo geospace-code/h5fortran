@@ -33,7 +33,7 @@ call hdf_create(self, dname, dtype, mem_dims, dims_dset, file_space_id, dset_id,
   dtype_id=dtype_id, charlen=charlen)
 
 if(present(istart) .and. present(iend)) then
-  call hdf_get_slice(self, dname, dset_id, file_space_id, mem_space_id, istart, iend, stride)
+  call hdf_get_slice(mem_dims, dset_id, file_space_id, mem_space_id, istart, iend, stride=stride, dset_dims=dims_dset)
 else
   mem_space_id = H5S_ALL_F
 endif

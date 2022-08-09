@@ -661,16 +661,16 @@ module logical function is_hdf5(filename)
 character(*), intent(in) :: filename
 end function
 
-module subroutine hdf_get_slice(self, dname, dset_id, filespace_id, memspace_id, i0, i1, i2)
+module subroutine hdf_get_slice(mem_dims, dset_id, file_space_id, mem_space_id, istart, iend, stride, dset_dims)
 !! setup array slices for read and write
-class(hdf5_file), intent(in) :: self
-character(*), intent(in) :: dname
+integer(HSIZE_T), dimension(:), intent(in) :: mem_dims
 integer(HID_T), intent(inout) :: dset_id  !< inout for sentinel value
-integer(HID_T), intent(in) :: filespace_id
-integer(HID_T), intent(out) :: memspace_id
-integer, intent(in), dimension(:) :: i0
-integer, intent(in), dimension(size(i0)) :: i1
-integer, intent(in), dimension(size(i0)), optional :: i2
+integer(HID_T), intent(in) :: file_space_id
+integer(HID_T), intent(out) :: mem_space_id
+integer, intent(in), dimension(:) :: istart
+integer, intent(in), dimension(size(istart)) :: iend
+integer, intent(in), dimension(size(istart)), optional :: stride
+integer(HSIZE_T), intent(in), dimension(size(istart)), optional :: dset_dims
 end subroutine
 
 module subroutine hdf_rank_check(self, obj_name, file_space_id, mrank, is_scalar)
