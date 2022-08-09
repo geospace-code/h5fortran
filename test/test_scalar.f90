@@ -49,10 +49,10 @@ call h%write('/1d_real', r1)
 call h%write('/vector_scalar_real', [37.])
 
 !> create then write
-call h%create('/1d_int32', H5T_NATIVE_INTEGER, dset_dims=shape(i1, kind=hsize_t))
+call h%create('/1d_int32', H5T_NATIVE_INTEGER, dset_dims=shape(i1))
 call h%write('/1d_int32', i1)
 
-call h%create('/1d_int64', H5T_STD_I64LE, dset_dims=shape(i1_64, kind=hsize_t))
+call h%create('/1d_int64', H5T_STD_I64LE, dset_dims=shape(i1_64))
 call h%write('/1d_int64', i1_64)
 
 !> test rewrite

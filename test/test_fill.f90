@@ -19,17 +19,17 @@ NaN = ieee_value(0., ieee_quiet_nan)
 
 call h5%open(fn, "w")
 
-call h5%create("/r32", H5T_NATIVE_REAL, dset_dims=[integer(HSIZE_T) :: 3], fill_value=NaN)
-call h5%create("/r64", H5T_NATIVE_DOUBLE, dset_dims=[integer(HSIZE_T) :: 3], fill_value=NaN)
-call h5%create("/i32", H5T_NATIVE_INTEGER, dset_dims=[integer(HSIZE_T) :: 2], fill_value=-1)
+call h5%create("/r32", H5T_NATIVE_REAL, dset_dims=[3], fill_value=NaN)
+call h5%create("/r64", H5T_NATIVE_DOUBLE, dset_dims=[3], fill_value=NaN)
+call h5%create("/i32", H5T_NATIVE_INTEGER, dset_dims=[2], fill_value=-1)
 
 !> Note that character fill value must have same length as dataset, hence we use a character(10)
 fill_value = "NaN"
-call h5%create("/char", H5T_NATIVE_CHARACTER, dset_dims=[integer(HSIZE_T) :: 1], fill_value=fill_value, charlen=10)
+call h5%create("/char", H5T_NATIVE_CHARACTER, dset_dims=[1], fill_value=fill_value, charlen=10)
 fill_value = ""
-call h5%create("/char_blank", H5T_NATIVE_CHARACTER, dset_dims=[integer(HSIZE_T) :: 1], fill_value=fill_value, charlen=10)
+call h5%create("/char_blank", H5T_NATIVE_CHARACTER, dset_dims=[1], fill_value=fill_value, charlen=10)
 fill_value = " "
-call h5%create("/char_space", H5T_NATIVE_CHARACTER, dset_dims=[integer(HSIZE_T) :: 1], fill_value=fill_value, charlen=10)
+call h5%create("/char_space", H5T_NATIVE_CHARACTER, dset_dims=[1], fill_value=fill_value, charlen=10)
 
 call h5%close()
 

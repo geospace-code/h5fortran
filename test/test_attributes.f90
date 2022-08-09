@@ -75,7 +75,7 @@ real(real32) :: attr32(2)
 real(real64) :: attr64
 integer(HSIZE_T), allocatable :: dims(:)
 
-character(5), allocatable :: c1d(:), c2d(:,:)
+! character(5), allocatable :: c1d(:), c2d(:,:)
 
 integer :: x
 

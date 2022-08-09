@@ -112,11 +112,12 @@ public :: H5T_INTEGER_F, H5T_FLOAT_F, H5T_STRING_F
 
 interface !< write.f90
 
-module subroutine hdf_create_user(self, dname, dtype, dset_dims, chunk_size, compact, charlen, fill_value)
+module subroutine hdf_create_user(self, dname, dtype, dset_dims, mem_dims, chunk_size, compact, charlen, fill_value)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
 integer(HID_T), intent(in) :: dtype
-integer(HSIZE_T), dimension(:), intent(in) :: dset_dims
+integer, dimension(:), intent(in) :: dset_dims
+integer, dimension(:), intent(in), optional :: mem_dims
 integer, intent(in), dimension(:), optional :: chunk_size  !< (:) instead of size(dims) due to intel fortran quirk
 logical, intent(in), optional :: compact
 integer, intent(in), optional :: charlen
@@ -135,7 +136,6 @@ integer, intent(in), dimension(:), optional :: chunk_size, istart, iend, stride
 logical, intent(in), optional :: compact
 integer, intent(in), optional :: charlen !< length of character scalar
 class(*), intent(in), optional :: fill_value
-!! keep istart, iend, stride for future slice shape check
 end subroutine
 
 module subroutine write_group(self, group_path)

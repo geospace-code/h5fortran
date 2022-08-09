@@ -21,13 +21,23 @@ implicit none (type, external)
 
 contains
 
+
 module procedure hdf_create_user
 !! for user %create() method
 
 integer(HID_T) :: file_space_id, dset_id, dtype_id
+integer(HSIZE_T), dimension(size(dset_dims)) :: mdims, ddims
 integer :: ier
 
-call hdf_create(self, dname, dtype, mem_dims=dset_dims, dset_dims=dset_dims, &
+ddims = int(dset_dims, HSIZE_T)
+
+if(present(mem_dims)) then
+  mdims = int(mem_dims, HSIZE_T)
+else
+  mdims = ddims
+endif
+
+call hdf_create(self, dname, dtype, mem_dims=mdims, dset_dims=ddims, &
   filespace_id=file_space_id, dset_id=dset_id, dtype_id=dtype_id, compact=compact, &
   charlen=charlen, fill_value=fill_value)
 
@@ -58,7 +68,7 @@ if(self%exist(dname)) then
   call H5Dopen_f(self%file_id, dname, dset_id, ier)
   if (ier /= 0) error stop 'ERROR:h5fortran:create: could not open ' // dname // ' in ' // self%filename
 
-  call h5dget_space_f(dset_id, filespace_id, ier)
+  call H5Dget_space_f(dset_id, filespace_id, ier)
   if(ier /= 0) error stop 'ERROR:h5fortran:create could not get dataset ' // dname // ' in ' // self%filename
 
 
@@ -85,10 +95,10 @@ if(self%exist(dname)) then
   endif
 
   if(dtype == H5T_NATIVE_CHARACTER) then
-    call h5tcopy_f(dtype, type_id, ier)
+    call H5Tcopy_f(dtype, type_id, ier)
     if(ier /= 0) error stop "h5fortran:h5tcopy:character: " // dname // ' in ' // self%filename
 
-    call h5tset_size_f(type_id, int(charlen, SIZE_T), ier)
+    call H5Tset_size_f(type_id, int(charlen, SIZE_T), ier)
     if(ier /= 0) error stop "h5fortran:h5tset_size:character: " // dname // ' in ' // self%filename
 
     dtype_id = type_id
