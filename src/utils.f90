@@ -11,7 +11,8 @@ H5Sget_simple_extent_ndims_f, H5Sget_simple_extent_dims_f, H5Sget_simple_extent_
 H5F_ACC_RDONLY_F, H5F_ACC_RDWR_F, H5F_ACC_TRUNC_F, &
 H5F_OBJ_FILE_F, H5F_OBJ_GROUP_F, H5F_OBJ_DATASET_F, H5F_OBJ_DATATYPE_F, H5F_OBJ_ALL_F, &
 H5D_CONTIGUOUS_F, H5D_CHUNKED_F, H5D_COMPACT_F, &
-H5I_FILE_F
+H5I_FILE_F, &
+H5S_SELECT_SET_F
 
 implicit none (type, external)
 

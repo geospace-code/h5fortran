@@ -12,27 +12,30 @@ implicit none (type, external)
 contains
 
 
-subroutine attr_create(self, obj_name, attr_name, dtype, attr_dims, space_id, attr_id, dtype_id, charlen)
+subroutine attr_create(self, obj_name, attr_name, dtype, attr_dims, attr_id, dtype_id, charlen)
 
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: obj_name, attr_name
 integer(HID_T), intent(in) :: dtype
 integer(HSIZE_T), dimension(:), intent(in) :: attr_dims
-integer(HID_T), intent(out) :: space_id, attr_id
-integer(HID_T), intent(out), optional :: dtype_id
+integer(HID_T), intent(out) :: attr_id, dtype_id
 integer, intent(in), optional :: charlen !< length of character scalar
 
 logical :: attr_exists
 integer :: ier
-integer(HID_T) :: type_id
+integer(HID_T) :: space_id
+
+call H5Tcopy_f(dtype, dtype_id, ier)
+if(ier /= 0) error stop "ERROR:h5fortran:attr_create:H5Tcopy: " // obj_name // ":" // attr_name // ': ' // self%filename
 
 
 if(dtype == H5T_NATIVE_CHARACTER) then
-  if(.not. present(dtype_id)) error stop "ERROR:h5fortran:attr_create: character needs type_id"
   if(.not. present(charlen)) error stop "ERROR:h5fortran:attr_create: character type must specify charlen"
+
+  call H5Tset_size_f(dtype_id, int(charlen, SIZE_T), ier)
+  if(ier/=0) error stop "ERROR:h5fortran:attr_create:h5tset_size:char: " // obj_name // ":" // attr_name // ': ' // self%filename
 endif
 
-if(.not.self%is_open()) error stop 'ERROR:h5fortran:attr_create: file handle is not open'
 
 call H5Aexists_by_name_f(self%file_id, obj_name, attr_name, attr_exists, ier)
 if(ier /= 0) error stop "ERROR:h5fortran:attr_create:H5Aexists_by_name: " // obj_name // ":" // attr_name // ": " // self%filename
@@ -55,19 +58,11 @@ else
 endif
 if (ier /= 0) error stop "ERROR:h5fortran:attr_create:h5screate:filespace " // obj_name // ":" // attr_name // ": " // self%filename
 
-if(dtype == H5T_NATIVE_CHARACTER) then
-  call h5tcopy_f(dtype, type_id, ier)
-  if(ier /= 0) error stop "ERROR:h5fortran:attr_create:h5tcopy:character: " // obj_name // ":" // attr_name // ': ' // self%filename
-
-  call h5tset_size_f(type_id, int(charlen, SIZE_T), ier)
-  if(ier/=0) error stop "ERROR:h5fortran:attr_create:h5tset_size:char: " // obj_name // ":" // attr_name // ': ' // self%filename
-  dtype_id = type_id
-else
-  type_id = dtype
-endif
-
-call H5Acreate_by_name_f(self%file_id, obj_name, attr_name, type_id, space_id, attr_id, ier)
+call H5Acreate_by_name_f(self%file_id, obj_name, attr_name, dtype_id, space_id, attr_id, ier)
 if(ier/=0) error stop "ERROR:h5fortran:attr_create:H5Acreate_by_name: " // obj_name // ":" // attr_name // ": " // self%filename
+
+call H5Sclose_f(space_id, ier)
+if(ier /= 0) error stop "ERROR:h5fortran:writeattr:H5Sclose " // obj_name // ":" // attr_name // " in " // self%filename
 
 end subroutine attr_create
 
