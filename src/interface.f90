@@ -130,8 +130,7 @@ class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
 integer(HID_T), intent(in) :: dtype
 integer(HSIZE_T), dimension(:), intent(in) :: mem_dims, dset_dims
-integer(HID_T), intent(out) :: filespace_id, dset_id
-integer(HID_T), intent(out), optional :: dtype_id
+integer(HID_T), intent(out) :: filespace_id, dset_id, dtype_id
 integer, intent(in), dimension(:), optional :: chunk_size, istart, iend, stride
 logical, intent(in), optional :: compact
 integer, intent(in), optional :: charlen !< length of character scalar
@@ -262,7 +261,7 @@ end subroutine
 module subroutine h5write_1d(self, dname, A, chunk_size, istart, iend, stride, compact, dset_dims)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
-class(*), intent(in) :: A(:)
+class(*), intent(in), dimension(:) :: A
 integer, intent(in), dimension(1), optional :: chunk_size, istart, iend, stride, dset_dims
 logical, intent(in), optional :: compact
 end subroutine
@@ -270,7 +269,7 @@ end subroutine
 module subroutine h5write_2d(self, dname, A, chunk_size, istart, iend, stride, compact, dset_dims)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
-class(*), intent(in) :: A(:,:)
+class(*), intent(in), dimension(:,:) :: A
 integer, intent(in), dimension(2), optional :: chunk_size, istart, iend, stride, dset_dims
 logical, intent(in), optional :: compact
 end subroutine
@@ -278,7 +277,7 @@ end subroutine
 module subroutine h5write_3d(self, dname, A, chunk_size, istart, iend, stride, compact, dset_dims)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
-class(*), intent(in) :: A(:,:,:)
+class(*), intent(in), dimension(:,:,:) :: A
 integer, intent(in), dimension(3), optional :: chunk_size, istart, iend, stride, dset_dims
 logical, intent(in), optional :: compact
 end subroutine
@@ -286,7 +285,7 @@ end subroutine
 module subroutine h5write_4d(self, dname, A, chunk_size, istart, iend, stride, compact, dset_dims)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
-class(*), intent(in) :: A(:,:,:,:)
+class(*), intent(in), dimension(:,:,:,:) :: A
 integer, intent(in), dimension(4), optional :: chunk_size, istart, iend, stride, dset_dims
 logical, intent(in), optional :: compact
 end subroutine
@@ -294,7 +293,7 @@ end subroutine
 module subroutine h5write_5d(self, dname, A, chunk_size, istart, iend, stride, compact, dset_dims)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
-class(*), intent(in) :: A(:,:,:,:,:)
+class(*), intent(in), dimension(:,:,:,:,:) :: A
 integer, intent(in), dimension(5), optional :: chunk_size, istart, iend, stride, dset_dims
 logical, intent(in), optional :: compact
 end subroutine
@@ -302,7 +301,7 @@ end subroutine
 module subroutine h5write_6d(self, dname, A, chunk_size, istart, iend, stride, compact, dset_dims)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
-class(*), intent(in) :: A(:,:,:,:,:,:)
+class(*), intent(in), dimension(:,:,:,:,:,:) :: A
 integer, intent(in), dimension(6), optional :: chunk_size, istart, iend, stride, dset_dims
 logical, intent(in), optional :: compact
 end subroutine
@@ -310,7 +309,7 @@ end subroutine
 module subroutine h5write_7d(self, dname, A, chunk_size, istart, iend, stride, compact, dset_dims)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
-class(*), intent(in) :: A(:,:,:,:,:,:,:)
+class(*), intent(in), dimension(:,:,:,:,:,:,:) :: A
 integer, intent(in), dimension(7), optional :: chunk_size, istart, iend, stride, dset_dims
 logical, intent(in), optional :: compact
 end subroutine

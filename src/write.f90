@@ -47,7 +47,7 @@ if(ier /= 0) error stop "ERROR:h5fortran:write:create_user: closing dataset: " /
 call h5sclose_f(file_space_id, ier)
 if(ier /= 0) error stop "ERROR:h5fortran:write:create_user: closing file dataspace: " // dname // " in " // self%filename
 
-if(dtype == H5T_NATIVE_CHARACTER) call h5tclose_f(dtype_id, ier)
+call H5Tclose_f(dtype_id, ier)
 if(ier /= 0) error stop "ERROR:h5fortran:write:create_user: closing datatype: " // dname // " in " // self%filename
 
 end procedure hdf_create_user
@@ -56,13 +56,20 @@ end procedure hdf_create_user
 module procedure hdf_create
 
 integer :: ier, drank
-integer(HID_T) :: dcpl, type_id
+integer(HID_T) :: dcpl
 integer(HSIZE_T), dimension(:), allocatable :: ddims, maxdims
+
+
+call H5Tcopy_f(dtype, dtype_id, ier)
+if(ier /= 0) error stop "h5fortran:create:H5Tcopy: " // dname // ' in ' // self%filename
 
 if(dtype == H5T_NATIVE_CHARACTER) then
   if(.not. present(charlen)) error stop "h5fortran:hdf_create: character type must specify charlen"
-  if(.not. present(dtype_id)) error stop "h5fortran:hdf_create: character type must specify dtype_id"
+
+  call h5tset_size_f(dtype_id, int(charlen, SIZE_T), ier)
+  if(ier /= 0) error stop "h5fortran:h5tset_size:character: " // dname // " in " // self%filename
 endif
+
 
 if(self%exist(dname)) then
   call H5Dopen_f(self%file_id, dname, dset_id, ier)
@@ -94,16 +101,6 @@ if(self%exist(dname)) then
     endif
   endif
 
-  if(dtype == H5T_NATIVE_CHARACTER) then
-    call H5Tcopy_f(dtype, type_id, ier)
-    if(ier /= 0) error stop "h5fortran:h5tcopy:character: " // dname // ' in ' // self%filename
-
-    call H5Tset_size_f(type_id, int(charlen, SIZE_T), ier)
-    if(ier /= 0) error stop "h5fortran:h5tset_size:character: " // dname // ' in ' // self%filename
-
-    dtype_id = type_id
-  endif
-
   return
 endif
 
@@ -129,19 +126,6 @@ else
 endif
 if (ier /= 0) error stop "ERROR:h5fortran:hdf_create:h5screate:filespace " // dname // " in " // self%filename
 
-!> datatype id and size
-if(dtype == H5T_NATIVE_CHARACTER) then
-  call h5tcopy_f(dtype, type_id, ier)
-  if(ier /= 0) error stop "h5fortran:h5tcopy:character: " // dname // " in " // self%filename
-
-  call h5tset_size_f(type_id, int(charlen, SIZE_T), ier)
-  if(ier /= 0) error stop "h5fortran:h5tset_size:character: " // dname // " in " // self%filename
-
-  dtype_id = type_id
-else
-  type_id = dtype
-endif
-
 !> fill value
 if(present(fill_value)) then
   if(dcpl == H5P_DEFAULT_F) then
@@ -150,7 +134,7 @@ if(present(fill_value)) then
   endif
 
   select type (fill_value)
-  !! type_id MUST equal the fill_value type or "transfer()" like bit pattern unexpected data will result
+  !! dtype_id MUST equal the fill_value type or "transfer()" like bit pattern unexpected data will result
   type is (real(real32))
     call h5pset_fill_value_f(dcpl, H5T_NATIVE_REAL, fill_value, ier)
   type is (real(real64))
@@ -159,14 +143,14 @@ if(present(fill_value)) then
     call h5pset_fill_value_f(dcpl, H5T_NATIVE_INTEGER, fill_value, ier)
   !! int64 is NOT available for h5pset_fill_value_f
   type is (character(*))
-    call h5pset_fill_value_f(dcpl, type_id, fill_value, ier)
+    call h5pset_fill_value_f(dcpl, dtype_id, fill_value, ier)
   class default
     error stop "ERROR:h5fortran:create: unknown fill value type"
   end select
 endif
 
 !> create dataset
-call h5dcreate_f(self%file_id, dname, type_id=type_id, space_id=filespace_id, dset_id=dset_id, hdferr=ier, dcpl_id=dcpl)
+call h5dcreate_f(self%file_id, dname, type_id=dtype_id, space_id=filespace_id, dset_id=dset_id, hdferr=ier, dcpl_id=dcpl)
 if (ier /= 0) error stop "ERROR:h5fortran:hdf_create:h5dcreate: " // dname // " in " // self%filename
 
 !> free resources

@@ -22,8 +22,8 @@ type is (integer(int32))
 type is (integer(int64))
   dtype = H5T_STD_I64LE
 type is (character(*))
-  charlen = len(A)
   dtype = H5T_NATIVE_CHARACTER
+  charlen = len(A)  !< workaround for GCC 8.3.0 bug
 class default
   error stop "ERROR:h5fortran:writer:unknown variable type for " // dname
 end select
@@ -35,7 +35,8 @@ call hdf_create(self, dname, dtype, mem_dims, dims_dset, file_space_id, dset_id,
 if(present(istart) .and. present(iend)) then
   call hdf_get_slice(mem_dims, dset_id, file_space_id, mem_space_id, istart, iend, stride=stride, dset_dims=dims_dset)
 else
-  mem_space_id = H5S_ALL_F
+  call H5Dget_space_f(dset_id, mem_space_id, ier)
+  if(ier/=0) error stop "ERROR:h5fortran:writer:H5Dget_space " // dname
 endif
 
 xfer_id = H5P_DEFAULT_F
@@ -50,19 +51,20 @@ type is (integer(int32))
 type is (integer(int64))
   call h5dwrite_f(dset_id, dtype, A, dims_dset, ier, file_space_id=file_space_id, mem_space_id=mem_space_id, xfer_prp=xfer_id)
 type is (character(*))
-  call h5dwrite_f(dset_id, dtype_id, A, dims_dset, ier)
-  if (ier /= 0) error stop 'h5fortran:write:string: could not write ' // dname // ' to ' // self%filename
-  call h5tclose_f(dtype_id, ier)
+  call h5dwrite_f(dset_id, dtype_id, A, dims_dset, ier, file_space_id=file_space_id, mem_space_id=mem_space_id, xfer_prp=xfer_id)
 class default
   error stop "ERROR:h5fortran:writer: unknown variable type for " // dname
 end select
-if (ier /= 0) error stop 'ERROR:h5fortran:h5dwrite: could not write ' // dname // ' to ' // self%filename
+if (ier /= 0) error stop 'ERROR:h5fortran:write:H5Dwrite: could not write ' // dname // ' ' // self%filename
 
-call h5dclose_f(dset_id, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:writer: closing dataset: " // dname // " in " // self%filename
+call H5Tclose_f(dtype_id, ier)
+if (ier /= 0) error stop 'ERROR:h5fortran:write:H5Tclose ' // dname // ' ' // self%filename
 
-if(mem_space_id /= H5S_ALL_F) call h5sclose_f(mem_space_id, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:writer closing memory dataspace: " // dname // " in " // self%filename
+call H5Dclose_f(dset_id, ier)
+if(ier /= 0) error stop "ERROR:h5fortran:writer:H5Dclose: " // dname // " " // self%filename
 
-call h5sclose_f(file_space_id, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:writer closing file dataspace: " // dname // " in " // self%filename
+call H5Sclose_f(mem_space_id, ier)
+if(ier /= 0) error stop "ERROR:h5fortran:writer:H5Sclose memory: " // dname // " " // self%filename
+
+call H5Sclose_f(file_space_id, ier)
+if(ier /= 0) error stop "ERROR:h5fortran:writer:H5Sclose file: " // dname // " " // self%filename

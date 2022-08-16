@@ -75,7 +75,10 @@ endif
 
 !> vector scalar (length 1 vector)
 call h%read('/vector_scalar', vs)
-if(vs /= "vector scalar") error stop "test_string: vector_scalar"
+if(vs /= "vector scalar") then
+  write(stderr, *) "test_string: vector_scalar: expected 'vector_scalar' but got ", vs
+  error stop "test_string: vector_scalar"
+endif
 
 !> vector
 call h%shape("/1d", dims)

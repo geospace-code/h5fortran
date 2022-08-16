@@ -117,8 +117,9 @@ allocate(A(N(1)+1, M(2), 4))  !< dim 1 is deliberately not the "right" size, we 
 A = 0
 
 call h5f%open(fn, action='w', comp_lvl=1)
-
+print *, "#3 file opened"
 call h5f%write('/A', A(:M(1), :, :), dset_dims=M)
+print *, "#3 written slice of A"
 call h5f%chunks('/A', chunks)
 if(any(chunks < 1)) error stop '#3 auto chunk unexpected chunk size'
 
