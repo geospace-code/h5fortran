@@ -9,6 +9,11 @@ use h5lt, only: h5ltget_attribute_float_f, h5ltget_attribute_double_f, h5ltget_a
 
 implicit none (type, external)
 
+interface readattr_char
+procedure readattr_char_scalar, readattr_char1, readattr_char2, readattr_char3, readattr_char4, &
+  readattr_char5, readattr_char6, readattr_char7
+end interface
+
 interface
 module subroutine readattr_char_scalar(self, obj_name, attr_name, attr_id, space_id, A)
 class(hdf5_file), intent(in) :: self
@@ -17,67 +22,19 @@ integer(HID_T), intent(in) :: attr_id, space_id
 character(*), intent(inout) :: A
 end subroutine
 
+module subroutine open_attr_char(self, obj_name, attr_name, attr_id, space_id, type_id, attr_dims)
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: obj_name, attr_name
+integer(HID_T), intent(in) :: attr_id, space_id
+integer(HID_T), intent(out) :: type_id, attr_dims(:)
+end subroutine
 end interface
 
 contains
 
 module procedure readattr_scalar
-
-integer :: ier, attr_class
-integer(HID_T) :: attr_id, space_id
-integer(HSIZE_T) :: attr_dims(rank(A))
-logical :: is_scalar
-
-attr_dims = shape(A, HSIZE_T)
-
-call H5Aopen_by_name_f(self%file_id, obj_name, attr_name, attr_id, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:readattr:H5Aopen_by_name: " // obj_name // ":" // attr_name // ":" // self%filename
-
-call H5Aget_space_f(attr_id, space_id, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:readattr:H5Aget_space: " // obj_name // ":" // attr_name // ":" // self%filename
-
-call hdf_rank_check(self, obj_name // ":" // attr_name, space_id, rank(A), is_scalar)
-
-call get_obj_class(self, obj_name // ":" // attr_name, attr_id, attr_class)
-
-!> cast the dataset read from disk to the variable type presented by user h5f%read("/my_dataset", x, "y")
-!! select case doesn't allow H5T_*
-if(attr_class == H5T_FLOAT_F .OR. attr_class == H5T_INTEGER_F) then
-  select type(A)
-  type is (real(real64))
-    call H5Aread_f(attr_id, H5T_NATIVE_DOUBLE, A, attr_dims, ier)
-  type is (real(real32))
-    call H5Aread_f(attr_id, H5T_NATIVE_REAL, A, attr_dims, ier)
-  type is (integer(int32))
-    call H5Aread_f(attr_id, H5T_NATIVE_INTEGER, A, attr_dims, ier)
-  type is (integer(int64))
-    call H5Aread_f(attr_id, H5T_STD_I64LE, A, attr_dims, ier)
-  class default
-    error stop 'ERROR:h5fortran:readattr: numeric dataset ' // obj_name // ':' // attr_name // ' needs real or integer variable'
-  end select
-elseif(attr_class == H5T_STRING_F) then
-  select type(A)
-  type is (character(*)) !< kind=c_char too
-    call readattr_char_scalar(self, obj_name, attr_name, attr_id, space_id, A)
-  class default
-    error stop 'ERROR:h5fortran:readattr: string dataset ' // obj_name // ':' // attr_name // ' needs character memory variable'
-  end select
-else
-  error stop "ERROR:h5fortran:readattr: unknown attribute type for " // obj_name // ':' // attr_name
-endif
-
-if(ier /= 0) error stop 'ERROR:h5fortran:readattr: reading ' // obj_name // ':' // attr_name // ":" // self%filename
-
-call H5Aclose_f(attr_id, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:readattr:H5Aclose: " // obj_name // ":" // attr_name // ":" // self%filename
-
-call H5Sclose_f(space_id, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:readattr:H5Sclose: " // obj_name // ":" // attr_name // ":" // self%filename
-
-end procedure readattr_scalar
-
-
-
+include 'attr_read.inc'
+end procedure
 
 module procedure readattr_1d
 include 'attr_read.inc'
@@ -128,5 +85,40 @@ call h%close()
 
 end procedure lt1readattr
 
+
+subroutine readattr_char1(self, obj_name, attr_name, attr_id, space_id, A)
+character(*), intent(inout), dimension(:) :: A
+include 'attr_read_char.inc'
+end subroutine
+
+subroutine readattr_char2(self, obj_name, attr_name, attr_id, space_id, A)
+character(*), intent(inout), dimension(:,:) :: A
+include 'attr_read_char.inc'
+end subroutine
+
+subroutine readattr_char3(self, obj_name, attr_name, attr_id, space_id, A)
+character(*), intent(inout), dimension(:,:,:) :: A
+include 'attr_read_char.inc'
+end subroutine
+
+subroutine readattr_char4(self, obj_name, attr_name, attr_id, space_id, A)
+character(*), intent(inout), dimension(:,:,:,:) :: A
+include 'attr_read_char.inc'
+end subroutine
+
+subroutine readattr_char5(self, obj_name, attr_name, attr_id, space_id, A)
+character(*), intent(inout), dimension(:,:,:,:,:) :: A
+include 'attr_read_char.inc'
+end subroutine
+
+subroutine readattr_char6(self, obj_name, attr_name, attr_id, space_id, A)
+character(*), intent(inout), dimension(:,:,:,:,:,:) :: A
+include 'attr_read_char.inc'
+end subroutine
+
+subroutine readattr_char7(self, obj_name, attr_name, attr_id, space_id, A)
+character(*), intent(inout), dimension(:,:,:,:,:,:,:) :: A
+include 'attr_read_char.inc'
+end subroutine
 
 end submodule attr_read

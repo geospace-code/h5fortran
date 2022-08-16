@@ -5,12 +5,7 @@ implicit none (type, external)
 contains
 
 
-subroutine open_attr_char(self, obj_name, attr_name, attr_id, space_id, type_id, attr_dims)
-!! work for 1-D...7-D
-class(hdf5_file), intent(in) :: self
-character(*), intent(in) :: obj_name, attr_name
-integer(HID_T), intent(in) :: attr_id, space_id
-integer(HID_T), intent(out) :: type_id, attr_dims(:)
+module procedure open_attr_char
 
 integer :: drank, ier
 integer(HSIZE_T), dimension(size(attr_dims)) :: maxdims
@@ -28,7 +23,7 @@ else
   attr_dims(1) = 1
 endif
 
-end subroutine open_attr_char
+end procedure open_attr_char
 
 
 subroutine readattr_char_scalar_vlen(self, obj_name, attr_name, attr_id, type_id, Lbuf, A)
