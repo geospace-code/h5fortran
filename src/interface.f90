@@ -388,55 +388,55 @@ interface !< reader.f90
 module subroutine h5read_scalar(self, dname, A)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-class(*), intent(inout)        :: A
+class(*), intent(inout)          :: A
 end subroutine
 
 module subroutine h5read_1d(self, dname, A, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-class(*), intent(inout) :: A(:)
+class(*), intent(inout), dimension(:) :: A
 integer, intent(in), dimension(1), optional :: istart, iend, stride
 end subroutine
 
 module subroutine h5read_2d(self, dname, A, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-class(*), intent(inout) :: A(:,:)
+class(*), intent(inout), dimension(:,:) :: A
 integer, intent(in), dimension(2), optional :: istart, iend, stride
 end subroutine
 
 module subroutine h5read_3d(self, dname, A, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-class(*), intent(inout) :: A(:,:,:)
+class(*), intent(inout), dimension(:,:,:) :: A
 integer, intent(in), dimension(3), optional :: istart, iend, stride
 end subroutine
 
 module subroutine h5read_4d(self, dname, A,  istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-class(*), intent(inout) :: A(:,:,:,:)
+class(*), intent(inout), dimension(:,:,:,:) :: A
 integer, intent(in), dimension(4), optional :: istart, iend, stride
 end subroutine
 
 module subroutine h5read_5d(self, dname, A, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-class(*), intent(inout) :: A(:,:,:,:,:)
+class(*), intent(inout), dimension(:,:,:,:,:) :: A
 integer, intent(in), dimension(5), optional :: istart, iend, stride
 end subroutine
 
 module subroutine h5read_6d(self, dname, A, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-class(*), intent(inout) :: A(:,:,:,:,:,:)
+class(*), intent(inout), dimension(:,:,:,:,:,:) :: A
 integer, intent(in), dimension(6), optional :: istart, iend, stride
 end subroutine
 
 module subroutine h5read_7d(self, dname, A, istart, iend, stride)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname
-class(*), intent(inout) :: A(:,:,:,:,:,:,:)
+class(*), intent(inout), dimension(:,:,:,:,:,:,:) :: A
 integer, intent(in), dimension(7), optional :: istart, iend, stride
 end subroutine
 

@@ -6,11 +6,9 @@ implicit none (type, external)
 
 interface
 
-module subroutine read_scalar_char(A, dset_id, file_space_id, mem_space_id, dims)
+module subroutine read_scalar_char(A, dset_id, file_space_id, mem_space_id)
 class(*), intent(inout) :: A
-integer(HID_T), intent(in) :: dset_id, file_space_id
-integer(HID_T), intent(inout) :: mem_space_id
-integer(HSIZE_T), intent(in) :: dims(:)
+integer(HID_T), intent(in) :: dset_id, file_space_id, mem_space_id
 end subroutine
 
 end interface
@@ -37,7 +35,8 @@ call hdf_rank_check(self, dname, file_space_id, rank(A), is_scalar)
 if (is_scalar) then
   call hdf_get_slice(dims, dset_id, file_space_id, mem_space_id, [1], [1])
 else
-  mem_space_id = H5S_ALL_F
+  call H5Dget_space_f(dset_id, mem_space_id, ier)
+  if(ier/=0) error stop "ERROR:h5fortran:read_scalar:H5Dget_space " // dname
 endif
 
 call get_obj_class(self, dname, dset_id, dclass)
@@ -67,7 +66,7 @@ elseif(dclass == H5T_INTEGER_F) then
     error stop 'ERROR:h5fortran:read: integer disk dataset ' // dname // ' needs integer memory variable'
   end select
 elseif(dclass == H5T_STRING_F) then
-  call read_scalar_char(A, dset_id, file_space_id, mem_space_id, dims)
+  call read_scalar_char(A, dset_id, file_space_id, mem_space_id)
 else
   error stop 'ERROR:h5fortran:reader: non-handled datatype--please reach out to developers.'
 end if
@@ -76,7 +75,7 @@ if(ier/=0) error stop 'ERROR:h5fortran:reader: reading ' // dname // ' from ' //
 call H5Dclose_f(dset_id, ier)
 if(ier /= 0) error stop "ERROR:h5fortran:read_scalar: closing dataset: " // dname // " in " // self%filename
 
-if(mem_space_id /= H5S_ALL_F) call H5Sclose_f(mem_space_id, ier)
+call H5Sclose_f(mem_space_id, ier)
 if(ier /= 0) error stop "ERROR:h5fortran:read_scalar closing memory dataspace: " // dname // " in " // self%filename
 
 call H5Sclose_f(file_space_id, ier)

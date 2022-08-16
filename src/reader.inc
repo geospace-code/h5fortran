@@ -14,7 +14,9 @@ if(present(istart) .and. present(iend)) then
   call hdf_get_slice(dims, dset_id, file_space_id, mem_space_id, istart=istart, iend=iend, stride=stride)
 else
   call hdf_shape_check(self, dname, file_space_id, dims)
-  mem_space_id = H5S_ALL_F
+
+  call H5Dget_space_f(dset_id, mem_space_id, ier)
+  if(ier/=0) error stop "ERROR:h5fortran:reader:H5Dget_space " // dname
 endif
 
 xfer_id = H5P_DEFAULT_F
@@ -48,11 +50,11 @@ else
 end if
 if(ier /= 0) error stop 'ERROR:h5fortran:reader:h5dread: ' // dname // ' from ' // self%filename
 
-call h5dclose_f(dset_id, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:reader: closing dataset: " // dname // " in " // self%filename
+call H5Dclose_f(dset_id, ier)
+if(ier /= 0) error stop "ERROR:h5fortran:reader:H5Dclose " // dname // " in " // self%filename
 
-if(mem_space_id /= H5S_ALL_F) call h5sclose_f(mem_space_id, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:reader closing memory dataspace: " // dname // " in " // self%filename
+call H5Sclose_f(mem_space_id, ier)
+if(ier /= 0) error stop "ERROR:h5fortran:reader:H5Sclose: memory: " // dname // " in " // self%filename
 
-call h5sclose_f(file_space_id, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:reader closing file dataspace: " // dname // " in " // self%filename
+call H5Sclose_f(file_space_id, ier)
+if(ier /= 0) error stop "ERROR:h5fortran:reader:H5Sclose: file " // dname // " in " // self%filename

@@ -305,8 +305,9 @@ hdferr=ier)
 if (ier /= 0) error stop "ERROR:h5fortran:get_slice:h5sselect_hyperslab: " // dset_name
 
 !> create memory dataspace
+!! H5Dread needs this for non-scalar
 call h5screate_simple_f(rank=size(c_mem_dims), dims=c_mem_dims, space_id=mem_space_id, hdferr=ier)
-if (ier /= 0) error stop "ERROR:h5fortran:get_slice:h5screate_simple:memspace " // dset_name
+if (ier /= 0) error stop "ERROR:h5fortran:get_slice:h5screate_simple: memory space " // dset_name
 
 end procedure hdf_get_slice
 

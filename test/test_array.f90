@@ -46,6 +46,8 @@ do i = 1,size(i2,2)
   i2(i,:) = i2(1,:) * i
 enddo
 
+i2_8(3:6, 4:7) = i2
+
 r1 = i1
 r2 = i2
 
@@ -55,6 +57,9 @@ call h%write('/int32-1d', i1)
 call h%write('/test/group2/int32-2d', i2)
 call h%write('/real32-2d', r2)
 call h%write('/nan', nan)
+!> write from subarray
+call h%write('/sub-int32-2d', i2_8(3:6, 4:7))
+print '(4i3)', i2_8(3:6, 4:7)
 
 call h%close()
 
@@ -71,7 +76,17 @@ if (.not.all(i2==i2t)) error stop 'read 2-D: int32 does not match write'
 !> verify reading into larger array
 i2_8 = 0
 call h%read('/test/group2/int32-2d', i2_8(2:5,3:6))
-if (.not.all(i2_8(2:5,3:6) == i2)) error stop 'read into larger array fail'
+if (.not.all(i2_8(2:5,3:6) == i2)) then
+  write(stderr, '(a,4i3)') 'read 2-D: int32 slice does not match write: ', i2_8(2:5,3:6)
+  error stop 'ERROR: read into larger array fail'
+endif
+
+!> verify reading written subarray
+call h%read('/sub-int32-2d', i2t)
+if (.not.all(i2==i2t)) then
+write(stderr, '(a,4i3)') 'read 2-D: int32 write subarray slice does not match: ', i2t
+error stop 'ERROR: read into larger array fail'
+endif
 
 !> real
 call h%shape('/real32-2d',dims)
