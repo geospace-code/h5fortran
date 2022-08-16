@@ -23,49 +23,37 @@ contains
 
 module procedure readattr_scalar
 
-integer(HSIZE_T) :: attr_dims(0)
+integer :: ier, attr_class
 integer(HID_T) :: attr_id, space_id
-integer :: attr_class, ier
-logical :: is_scalar, attr_exists
+integer(HSIZE_T) :: attr_dims(rank(A))
+logical :: is_scalar
 
-if(.not.self%is_open()) error stop 'ERROR:h5fortran:attr_read: file handle is not open'
-
-call H5Aexists_by_name_f(self%file_id, obj_name, attr_name, attr_exists, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:attr_read:H5Aexists_by_name " // obj_name // ":" // attr_name // " : " // self%filename
-if(.not.attr_exists) then
-  error stop 'ERROR:h5fortran:attr_read: attribute not exist: ' // obj_name // ":" // attr_name // " : " // self%filename
-endif
+attr_dims = shape(A, HSIZE_T)
 
 call H5Aopen_by_name_f(self%file_id, obj_name, attr_name, attr_id, ier)
-if(ier/=0) error stop 'ERROR:h5fortran:readattr:H5Aopen ' // obj_name // ":" // attr_name // " : " // self%filename
+if(ier /= 0) error stop "ERROR:h5fortran:readattr:H5Aopen_by_name: " // obj_name // ":" // attr_name // ":" // self%filename
 
 call H5Aget_space_f(attr_id, space_id, ier)
-if(ier/=0) error stop 'ERROR:h5fortran:readattr:H5Aget_space ' // obj_name // ":" // attr_name
+if(ier /= 0) error stop "ERROR:h5fortran:readattr:H5Aget_space: " // obj_name // ":" // attr_name // ":" // self%filename
 
 call hdf_rank_check(self, obj_name // ":" // attr_name, space_id, rank(A), is_scalar)
 
 call get_obj_class(self, obj_name // ":" // attr_name, attr_id, attr_class)
 
-!> cast the dataset read from disk to the variable type presented by user h5f%readattr("/my_dataset", x, "y")
-!> We only cast when needed to save memory.
+!> cast the dataset read from disk to the variable type presented by user h5f%read("/my_dataset", x, "y")
 !! select case doesn't allow H5T_*
-if(attr_class == H5T_FLOAT_F) then
+if(attr_class == H5T_FLOAT_F .OR. attr_class == H5T_INTEGER_F) then
   select type(A)
   type is (real(real64))
     call H5Aread_f(attr_id, H5T_NATIVE_DOUBLE, A, attr_dims, ier)
   type is (real(real32))
     call H5Aread_f(attr_id, H5T_NATIVE_REAL, A, attr_dims, ier)
-  class default
-    error stop 'ERROR:h5fortran:readattr: real disk dataset ' // obj_name // ':' // attr_name // ' needs real memory variable'
-  end select
-elseif(attr_class == H5T_INTEGER_F) then
-  select type(A)
   type is (integer(int32))
     call H5Aread_f(attr_id, H5T_NATIVE_INTEGER, A, attr_dims, ier)
   type is (integer(int64))
     call H5Aread_f(attr_id, H5T_STD_I64LE, A, attr_dims, ier)
   class default
-    error stop 'ERROR:h5fortran:readattr: integer disk dataset ' // obj_name // ':' // attr_name // ' needs integer memory variable'
+    error stop 'ERROR:h5fortran:readattr: numeric dataset ' // obj_name // ':' // attr_name // ' needs real or integer variable'
   end select
 elseif(attr_class == H5T_STRING_F) then
   select type(A)
@@ -75,15 +63,16 @@ elseif(attr_class == H5T_STRING_F) then
     error stop 'ERROR:h5fortran:readattr: string dataset ' // obj_name // ':' // attr_name // ' needs character memory variable'
   end select
 else
-  error stop 'ERROR:h5fortran:attr_read: non-handled datatype--please reach out to developers.'
-end if
-if(ier/=0) error stop 'ERROR:h5fortran:readattr: reading ' // obj_name // ':' // attr_name // ' from ' // self%filename
+  error stop "ERROR:h5fortran:readattr: unknown attribute type for " // obj_name // ':' // attr_name
+endif
+
+if(ier /= 0) error stop 'ERROR:h5fortran:readattr: reading ' // obj_name // ':' // attr_name // ":" // self%filename
 
 call H5Aclose_f(attr_id, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:readattr_scalar:H5Aclose: " // obj_name // ':' // attr_name // " in " // self%filename
+if(ier /= 0) error stop "ERROR:h5fortran:readattr:H5Aclose: " // obj_name // ":" // attr_name // ":" // self%filename
 
 call H5Sclose_f(space_id, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:readattr_scalar:H5Sclose: " // obj_name // ':' // attr_name // " in " // self%filename
+if(ier /= 0) error stop "ERROR:h5fortran:readattr:H5Sclose: " // obj_name // ":" // attr_name // ":" // self%filename
 
 end procedure readattr_scalar
 

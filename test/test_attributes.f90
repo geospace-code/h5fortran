@@ -11,11 +11,13 @@ character(8) :: s32  !< arbitrary length
 integer :: i32(1)
 
 call test_write_attributes(filename)
+
 call h5write_attr(filename, '/x', 'str29', '29')
 call h5write_attr(filename, '/x', 'int29', [29])
 print *,'PASSED: HDF5 write attributes'
 
 call test_read_attributes(filename)
+
 call h5read_attr(filename, '/x', 'str29', s32)
 if (s32 /= '29') error stop 'readattr_lt string'
 
@@ -38,6 +40,7 @@ call h%open(path, action='w')
 call h%write('/x', 1)
 
 call h%writeattr('/x', 'int32-scalar', 42)
+call h%writeattr('/x', 'real32-scalar', 42.0)
 call h%writeattr('/x', 'char','this is just a little number')
 call h%writeattr('/x', 'hello', 'hi')
 call h%writeattr('/x', 'real32_1d', [real(real32) :: 42, 84])
@@ -97,6 +100,13 @@ if (any(attr32 /= [real(real32) :: 142, 84])) error stop 'readattr: real32'
 
 call h%readattr('/x', 'real64_1d0', attr64)
 if (attr64 /= 42._real64) error stop 'readattr: real64'
+
+!> casting
+call h%readattr('/x', 'real32-scalar', int32_0)
+if(int32_0 /= 42) error stop "readattr cast real to int"
+
+call h%readattr('/x', 'int32-scalar', attr64)
+if(attr64 /= 142) error stop "readattr cast int to real"
 
 if (h%exist_attr('/x', 'hello')) error stop "delete attr failed"
 
