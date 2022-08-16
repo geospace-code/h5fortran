@@ -119,43 +119,43 @@ end procedure get_deflate
 module procedure get_obj_class
 
 integer :: ier, obj_type
-integer(HID_T) :: dtype_id, native_dtype_id
+integer(HID_T) :: obj_dtype, native_dtype
 
 call H5Iget_type_f(obj_id, obj_type, ier)
 if(ier /= 0) error stop "ERROR:h5fortran:get_obj_class:H5Iget_type: " // obj_name // " " // self%filename
 
 if(obj_type == H5I_DATASET_F) then
-  call H5Dget_type_f(obj_id, dtype_id, ier)
+  call H5Dget_type_f(obj_id, obj_dtype, ier)
 elseif(obj_type == H5I_ATTR_F) then
-  call H5Aget_type_f(obj_id, dtype_id, ier)
+  call H5Aget_type_f(obj_id, obj_dtype, ier)
 else
   error stop "ERROR:h5fortran:get_obj_class: only datasets and attributes have datatype " // obj_name // " " // self%filename
 endif
-if(ier/=0) error stop 'ERROR:h5fortran:get_class: dtype_id ' // obj_name // ' from ' // self%filename
+if(ier/=0) error stop 'ERROR:h5fortran:get_class: obj_dtype ' // obj_name // ' from ' // self%filename
 
-call H5Tget_native_type_f(dtype_id, H5T_DIR_ASCEND_F, native_dtype_id, ier)
-if(ier/=0) error stop 'ERROR:h5fortran:get_class: native_dtype_id ' // obj_name // ' from ' // self%filename
+call H5Tget_native_type_f(obj_dtype, H5T_DIR_ASCEND_F, native_dtype, ier)
+if(ier/=0) error stop 'ERROR:h5fortran:get_class: native_dtype ' // obj_name // ' from ' // self%filename
 
 !> compose datatype inferred
-call H5Tget_class_f(native_dtype_id, class, ier)
+call H5Tget_class_f(native_dtype, class, ier)
 if(ier/=0) error stop 'ERROR:h5fortran:get_class: class ' // obj_name // ' from ' // self%filename
 
 if(present(size_bytes)) then
-  call H5Tget_size_f(native_dtype_id, size_bytes, ier)
+  call H5Tget_size_f(native_dtype, size_bytes, ier)
   if(ier/=0) error stop 'ERROR:h5fortran:get_class: byte size ' // obj_name // ' from ' // self%filename
 endif
 
-call H5Tclose_f(native_dtype_id, ier)
+call H5Tclose_f(native_dtype, ier)
 if(ier/=0) error stop 'ERROR:h5fortran:get_class: closing native dtype ' // obj_name // ' from ' // self%filename
 
 if(present(pad_type)) then
   if(class /= H5T_STRING_F) error stop "ERROR:h5fortran:get_class: pad_type only for string"
 
-  call H5Tget_strpad_f(dtype_id, pad_type, ier)
+  call H5Tget_strpad_f(obj_dtype, pad_type, ier)
   if(ier /= 0) error stop "h5fortran:read:h5tget_strpad " // obj_name // " in " // self%filename
 endif
 
-call H5Tclose_f(dtype_id, ier)
+call H5Tclose_f(obj_dtype, ier)
 if(ier/=0) error stop 'ERROR:h5fortran:get_class: closing dtype ' // obj_name // ' from ' // self%filename
 
 end procedure get_obj_class
@@ -186,7 +186,7 @@ if(.not.present(obj_id)) then
 endif
 
 !> endianness and within type casting is handled by HDF5
-! call h5tget_order_f(native_dtype_id, order, ier)
+! call h5tget_order_f(native_dtype, order, ier)
 ! if(ier/=0) error stop 'ERROR:h5fortran:reader: get endianness ' // dname // ' from ' // self%filename
 ! !> check dataset endianness matches machine (in future, could swap endianness if needed)
 ! call h5tget_order_f(H5T_NATIVE_INTEGER, machine_order, ier)
