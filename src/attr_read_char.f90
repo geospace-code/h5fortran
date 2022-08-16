@@ -19,19 +19,23 @@ if(ier /= 0) error stop "ERROR:h5fortran:readattr:H5Sget_simple_extent_ndims " /
 if(drank > 0) then
   CALL H5Sget_simple_extent_dims_f(space_id, attr_dims, maxdims, ier)
   if(ier /= drank) error stop "ERROR:h5fortran:readattr:H5Sget_simple_extent_dims " // obj_name // ":" // attr_name
+
+  call H5Sget_simple_extent_npoints_f(space_id, Npts, ier)
+  if (ier /= 0) error stop 'ERROR:h5fortran:readattr:H5Sget_simple_extent_npoints: ' // obj_name // ":" // attr_name
 else
   attr_dims(1) = 1
+  Npts = 1
 endif
 
 end procedure open_attr_char
 
 
-subroutine readattr_char_scalar_vlen(self, obj_name, attr_name, attr_id, type_id, Lbuf, A)
+subroutine readattr_char_scalar_vlen(self, obj_name, attr_name, attr_id, type_id, Npts, A)
 
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: obj_name, attr_name
 integer(HID_T), intent(in) :: attr_id, type_id
-integer(HSIZE_T), intent(in) :: Lbuf
+integer(HSIZE_T), intent(in) :: Npts
 character(*), intent(inout) :: A
 
 TYPE(C_PTR), DIMENSION(:), ALLOCATABLE, TARGET :: cbuf
@@ -43,8 +47,8 @@ integer :: ier, i, L
 
 L = len(A)
 
-allocate(cbuf(1:Lbuf))
-f_ptr = C_LOC(cbuf(1))
+allocate(cbuf(Npts))
+f_ptr = C_LOC(cbuf)
 
 call H5Aread_f(attr_id, type_id, f_ptr, ier)
 if(ier/=0) error stop "h5fortran:read:readattr:H5Aread " // obj_name // ":" // attr_name // " " // self%filename
@@ -64,12 +68,12 @@ A = cstr(:i)
 end subroutine readattr_char_scalar_vlen
 
 
-subroutine readattr_char_scalar_fixed(self, obj_name, attr_name, attr_id, type_id, Lbuf, A)
+subroutine readattr_char_scalar_fixed(self, obj_name, attr_name, attr_id, type_id, Npts, A)
 
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: obj_name, attr_name
 integer(HID_T), intent(in) :: attr_id, type_id
-integer(HSIZE_T), intent(in) :: Lbuf
+integer(HSIZE_T), intent(in) :: Npts
 character(*), intent(inout) :: A
 
 TYPE(C_PTR) :: f_ptr
@@ -89,9 +93,9 @@ if(dsize > L) then
   error stop
 endif
 
-allocate(character(dsize) :: buf_char(Lbuf))
+allocate(character(dsize) :: buf_char(Npts))
 
-f_ptr = C_LOC(buf_char(1)(1:1))
+f_ptr = C_LOC(buf_char)
 
 call H5Aread_f(attr_id, type_id, f_ptr, ier)
 if(ier/=0) error stop "ERROR:h5fortran:readattr:H5Aread " // obj_name // ":" // attr_name
@@ -106,24 +110,22 @@ end subroutine readattr_char_scalar_fixed
 
 module procedure readattr_char_scalar
 
-integer(HSIZE_T) :: attr_dims(1), Lbuf
+integer(HSIZE_T) :: attr_dims(1), Npts
 integer(HID_T) :: type_id
 integer :: ier
 
 logical :: is_vlen
 
 
-call open_attr_char(self, obj_name, attr_name, attr_id, space_id, type_id, attr_dims)
-
-Lbuf = sum(attr_dims)
+call open_attr_char(self, obj_name, attr_name, attr_id, space_id, type_id, attr_dims, Npts)
 
 call H5Tis_variable_str_f(type_id, is_vlen, ier)
 if(ier/=0) error stop "ERROR:h5fortran:readattr:H5Tis_variable_str " // obj_name // ":" // attr_name
 
 if(is_vlen) then
-  call readattr_char_scalar_vlen(self, obj_name, attr_name, attr_id, type_id, Lbuf, A)
+  call readattr_char_scalar_vlen(self, obj_name, attr_name, attr_id, type_id, Npts, A)
 else
-  call readattr_char_scalar_fixed(self, obj_name, attr_name, attr_id, type_id, Lbuf, A)
+  call readattr_char_scalar_fixed(self, obj_name, attr_name, attr_id, type_id, Npts, A)
 endif
 
 call H5Tclose_f(type_id, ier)
