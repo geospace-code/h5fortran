@@ -11,7 +11,7 @@ character(4), parameter :: smiley = "😀", wink = "😉"
 character(4) :: u1
 
 character(:), allocatable :: dn
-character(20), allocatable :: c1d(:)
+character(20), allocatable :: c1d(:), c2d(:,:)
 
 integer(HSIZE_T), allocatable :: dims(:)
 
@@ -38,6 +38,15 @@ if(c1d(1) /= "eight") then
 endif
 if(c1d(2) /= "nine") error stop "h5py read_attr variable length failed index 2: " // trim(c1d(2))
 
+call h%shape(dn, dims, "variable_str2")
+allocate(c2d(dims(1), dims(2)))
+call h%readattr(dn, "variable_str2", c2d)
+if(c2d(1, 1) /= "eight") then
+  write(stderr,*) "ERROR: read_attr var. length index 1,1: " // trim(c2d(1, 1)) // " len: ", len(c2d(1,1)), len_trim(c2d(1,1))
+  error stop
+endif
+if(c2d(3, 2) /= "thirteen") error stop "h5py read_attr variable length failed index 3,2: " // trim(c2d(3,2))
+
 call h%readattr(dn, "nullpad", fstr)
 if(fstr /= "Hello World!") error stop "h5py read null pad failed: " // trim(fstr)
 
@@ -49,6 +58,14 @@ call h%readattr(dn, "nullpad1", c1d)
 if(c1d(1) /= "two") error stop "h5py read null pad failed index 1: " // trim(c1d(1))
 if(c1d(2) /= "three") error stop "h5py read null pad failed index 2: " // trim(c1d(2))
 if(c1d(3) /= "four") error stop "h5py read null pad failed index 3: " // trim(c1d(3))
+
+!> 2-D array of character fixed string
+call h%shape(dn, dims, "nullpad2")
+deallocate(c2d)
+allocate(c2d(dims(1), dims(2)))
+call h%readattr(dn, "nullpad2", c2d)
+if(c2d(1,1) /= "eight") error stop "h5py read null pad failed index 1,1: " // trim(c2d(1,1))
+if(c2d(3,2) /= "thirteen") error stop "h5py read null pad failed index 3,2: " // trim(c2d(3,2))
 
 call h%readattr(dn, "smiley", u1)
 print '(a)', "smiley: " // u1

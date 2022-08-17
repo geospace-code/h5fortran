@@ -72,7 +72,7 @@ subroutine readattr_char1_vlen(self, obj_name, attr_name, attr_id, type_id, attr
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: obj_name, attr_name
 integer(HID_T), intent(in) :: attr_id, type_id
-character(*), intent(inout) :: A(:)
+character(*), intent(inout), dimension(:) :: A
 integer(HSIZE_T), intent(in) :: attr_dims(rank(A)), dsize
 
 TYPE(C_PTR), DIMENSION(:), ALLOCATABLE, TARGET :: cbuf
@@ -94,6 +94,37 @@ do j = 1, attr_dims(1)
 enddo
 
 end subroutine readattr_char1_vlen
+
+
+subroutine readattr_char2_vlen(self, obj_name, attr_name, attr_id, type_id, attr_dims, dsize, A)
+
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: obj_name, attr_name
+integer(HID_T), intent(in) :: attr_id, type_id
+character(*), intent(inout), dimension(:,:) :: A
+integer(HSIZE_T), intent(in) :: attr_dims(rank(A)), dsize
+
+TYPE(C_PTR), DIMENSION(:,:), ALLOCATABLE, TARGET :: cbuf
+CHARACTER(dsize, kind=C_CHAR), POINTER :: cstr
+TYPE(C_PTR) :: f_ptr
+
+integer :: ier
+integer(HSIZE_T) :: j, k
+
+allocate(cbuf(attr_dims(1), attr_dims(2)))
+f_ptr = C_LOC(cbuf)
+
+call H5Aread_f(attr_id, type_id, f_ptr, ier)
+if(ier/=0) error stop "h5fortran:read:readattr:H5Aread " // obj_name // ":" // attr_name // " " // self%filename
+
+do k = 1, attr_dims(2)
+  do j = 1, attr_dims(1)
+    call C_F_POINTER(cbuf(j, k), cstr)
+    A(j, k) = pad_trim(cstr)
+  enddo
+enddo
+
+end subroutine readattr_char2_vlen
 
 
 subroutine readattr_char0_fixed(self, obj_name, attr_name, attr_id, type_id, attr_dims, dsize, A)
@@ -126,7 +157,7 @@ subroutine readattr_char1_fixed(self, obj_name, attr_name, attr_id, type_id, att
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: obj_name, attr_name
 integer(HID_T), intent(in) :: attr_id, type_id
-character(*), intent(inout) :: A(:)
+character(*), intent(inout), dimension(:) :: A
 integer(HSIZE_T), intent(in) :: attr_dims(rank(A)), dsize
 
 TYPE(C_PTR) :: f_ptr
@@ -146,6 +177,33 @@ if(ier/=0) error stop "ERROR:h5fortran:readattr:H5Aread " // obj_name // ":" // 
 A = pad_trim(buf)
 
 end subroutine readattr_char1_fixed
+
+
+subroutine readattr_char2_fixed(self, obj_name, attr_name, attr_id, type_id, attr_dims, dsize, A)
+
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: obj_name, attr_name
+integer(HID_T), intent(in) :: attr_id, type_id
+character(*), intent(inout), dimension(:,:) :: A
+integer(HSIZE_T), intent(in) :: attr_dims(rank(A)), dsize
+
+TYPE(C_PTR) :: f_ptr
+CHARACTER(:), DIMENSION(:,:), ALLOCATABLE, TARGET :: buf
+
+integer :: ier
+
+allocate(character(dsize) :: buf(attr_dims(1), attr_dims(2)))
+
+! print *, "TRACE: ", obj_name,":",attr_name, " allocated attr_dims = ", attr_dims, "shape ", shape(buf), "len: ", len(buf)
+
+f_ptr = C_LOC(buf)
+
+call H5Aread_f(attr_id, type_id, f_ptr, ier)
+if(ier/=0) error stop "ERROR:h5fortran:readattr:H5Aread " // obj_name // ":" // attr_name // " " // self%filename
+
+A = pad_trim(buf)
+
+end subroutine readattr_char2_fixed
 
 
 module procedure readattr_char_scalar
@@ -173,7 +231,7 @@ end procedure readattr_char_scalar
 
 module procedure readattr_char1
 
-integer(HSIZE_T) :: attr_dims(1), Npts, dsize
+integer(HSIZE_T) :: attr_dims(rank(A)), Npts, dsize
 integer(HID_T) :: type_id
 integer :: ier, charlen
 logical :: is_vlen
@@ -192,6 +250,29 @@ call H5Tclose_f(type_id, ier)
 if(ier/=0) error stop "ERROR:h5fortran:read:H5Tclose " // obj_name // ":" // attr_name
 
 end procedure readattr_char1
+
+
+module procedure readattr_char2
+
+integer(HSIZE_T) :: attr_dims(rank(A)), Npts, dsize
+integer(HID_T) :: type_id
+integer :: ier, charlen
+logical :: is_vlen
+
+charlen = len(A)
+
+call open_attr_char(self, obj_name, attr_name, attr_id, space_id, charlen, type_id, attr_dims, Npts, dsize, is_vlen)
+
+if(is_vlen) then
+  call readattr_char2_vlen(self, obj_name, attr_name, attr_id, type_id, attr_dims, dsize, A)
+else
+  call readattr_char2_fixed(self, obj_name, attr_name, attr_id, type_id, attr_dims, dsize, A)
+endif
+
+call H5Tclose_f(type_id, ier)
+if(ier/=0) error stop "ERROR:h5fortran:read:H5Tclose " // obj_name // ":" // attr_name
+
+end procedure readattr_char2
 
 
 elemental function pad_trim(s) result(t)
