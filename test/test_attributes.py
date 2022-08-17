@@ -23,7 +23,10 @@ with h5py.File(fn, "w") as f:
     v.attrs["real16-scalar"] = np.float16(3.)
 
     v.attrs["variable_str"] = "Hi there"
+    v.attrs["variable_str1"] = ["eight", "nine"]
+
     v.attrs.create("nullpad", dtype=h5py.string_dtype("utf-8", 40), data="Hello World!")
+    v.attrs.create("nullpad1", dtype=h5py.string_dtype("utf-8", 20), data=["two", "three", "four"])
 
     v.attrs["smiley"] = "😀"
     v.attrs["wink"] = "😉"

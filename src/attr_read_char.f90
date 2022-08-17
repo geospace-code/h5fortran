@@ -52,9 +52,7 @@ TYPE(C_PTR), DIMENSION(:), ALLOCATABLE, TARGET :: cbuf
 CHARACTER(dsize, kind=c_char), POINTER :: cstr
 TYPE(C_PTR) :: f_ptr
 
-integer :: ier, i, L
-
-L = len(A)
+integer :: i, ier
 
 allocate(cbuf(attr_dims(1)))
 f_ptr = C_LOC(cbuf)
@@ -64,14 +62,7 @@ if(ier/=0) error stop "h5fortran:read:readattr:H5Aread " // obj_name // ":" // a
 
 call C_F_POINTER(cbuf(1), cstr)
 
-i = index(cstr, c_null_char) - 1
-if (i == -1) i = len_trim(cstr)
-if(i > L) then
-  write(stderr,'(a,i0,a3,i0,1x,a)') "ERROR:h5fortran:readattr_vlen: buffer too small: ", &
-    i, " > ", L, obj_name // ":" // attr_name // " " // self%filename
-  error stop
-endif
-
+i = pad_trim(cstr)
 A = cstr(:i)
 
 end subroutine readattr_char0_vlen
@@ -81,14 +72,15 @@ subroutine readattr_char1_vlen(self, obj_name, attr_name, attr_id, type_id, attr
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: obj_name, attr_name
 integer(HID_T), intent(in) :: attr_id, type_id
-integer(HSIZE_T), intent(in) :: attr_dims(1), dsize
 character(*), intent(inout) :: A(:)
+integer(HSIZE_T), intent(in) :: attr_dims(rank(A)), dsize
 
 TYPE(C_PTR), DIMENSION(:), ALLOCATABLE, TARGET :: cbuf
-CHARACTER(dsize, kind=c_char), POINTER :: cstr
+CHARACTER(dsize, kind=C_CHAR), POINTER :: cstr
 TYPE(C_PTR) :: f_ptr
 
-integer :: ier
+integer :: i, ier
+integer(HSIZE_T) :: j
 
 allocate(cbuf(attr_dims(1)))
 f_ptr = C_LOC(cbuf)
@@ -96,9 +88,11 @@ f_ptr = C_LOC(cbuf)
 call H5Aread_f(attr_id, type_id, f_ptr, ier)
 if(ier/=0) error stop "h5fortran:read:readattr:H5Aread " // obj_name // ":" // attr_name // " " // self%filename
 
-call C_F_POINTER(cbuf(1), cstr)
-
-A = cstr
+do j = 1, attr_dims(1)
+  call C_F_POINTER(cbuf(j), cstr)
+  i = pad_trim(cstr)
+  A(j) = cstr(:i)
+enddo
 
 end subroutine readattr_char1_vlen
 
@@ -123,8 +117,7 @@ f_ptr = C_LOC(buf)
 call H5Aread_f(attr_id, type_id, f_ptr, ier)
 if(ier/=0) error stop "ERROR:h5fortran:readattr:H5Aread " // obj_name // ":" // attr_name // " " // self%filename
 
-i = index(buf(1), c_null_char) - 1
-if (i == -1) i = len_trim(buf(1))
+i = pad_trim(buf(1))
 
 A = buf(1)(:i)
 
@@ -136,13 +129,14 @@ subroutine readattr_char1_fixed(self, obj_name, attr_name, attr_id, type_id, att
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: obj_name, attr_name
 integer(HID_T), intent(in) :: attr_id, type_id
-integer(HSIZE_T), intent(in) :: attr_dims(1), dsize
 character(*), intent(inout) :: A(:)
+integer(HSIZE_T), intent(in) :: attr_dims(rank(A)), dsize
 
 TYPE(C_PTR) :: f_ptr
 CHARACTER(:), DIMENSION(:), ALLOCATABLE, TARGET :: buf
 
-integer :: ier
+integer :: ier, i(attr_dims(1))
+integer(HSIZE_T) :: j
 
 allocate(character(dsize) :: buf(attr_dims(1)))
 
@@ -153,7 +147,11 @@ f_ptr = C_LOC(buf)
 call H5Aread_f(attr_id, type_id, f_ptr, ier)
 if(ier/=0) error stop "ERROR:h5fortran:readattr:H5Aread " // obj_name // ":" // attr_name // " " // self%filename
 
-A = buf
+i = pad_trim(buf)
+
+do j = 1, attr_dims(1)
+  A(j) = buf(j)(:i(j))
+end do
 
 end subroutine readattr_char1_fixed
 
@@ -202,5 +200,19 @@ call H5Tclose_f(type_id, ier)
 if(ier/=0) error stop "ERROR:h5fortran:read:H5Tclose " // obj_name // ":" // attr_name
 
 end procedure readattr_char1
+
+
+elemental integer function pad_trim(s) result(i)
+!! trim string for nullpad or spacepad
+character(*), intent(in) :: s
+
+i = index(s, C_NULL_CHAR) - 1
+if (i >= 0) return
+
+i = len_trim(s)
+if (i == 0) i = 1
+
+end function pad_trim
+
 
 end submodule attr_read_char
