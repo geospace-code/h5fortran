@@ -104,7 +104,7 @@ end interface
 
 public :: hdf5_file, hdf5_close, h5write, h5read, h5exist, is_hdf5, h5write_attr, h5read_attr, hdf5version
 !! for users
-public :: hdf_shape_check, hdf_rank_check, hdf_get_slice, id2name, get_obj_class, pad_trim
+public :: hdf_shape_check, hdf_rank_check, hdf_get_slice, id2name, get_obj_class
 !! for submodules only
 public :: HSIZE_T, HID_T, H5T_NATIVE_DOUBLE, H5T_NATIVE_REAL, H5T_NATIVE_INTEGER, H5T_NATIVE_CHARACTER, H5T_STD_I64LE
 public :: H5T_INTEGER_F, H5T_FLOAT_F, H5T_STRING_F
@@ -342,13 +342,6 @@ module integer(hid_t) function get_native_dtype(self, dname, obj_id)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
 integer(hid_t), intent(in), optional :: obj_id
-end function
-
-
-module elemental function pad_trim(s) result(t)
-!! trim string for nullpad or spacepad
-character(*), intent(in) :: s
-character(len(s)) :: t
 end function
 
 module integer function hdf_get_ndim(self, dname) result (drank)
