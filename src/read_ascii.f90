@@ -6,6 +6,14 @@ H5Aread_f
 
 implicit none (type, external)
 
+interface read_vlen
+procedure read_vlen0, read_vlen1, read_vlen2, read_vlen3, read_vlen4, read_vlen5, read_vlen6, read_vlen7
+end interface
+
+interface read_fixed
+procedure read_fixed0, read_fixed1, read_fixed2, read_fixed3, read_fixed4, read_fixed5, read_fixed6, read_fixed7
+end interface
+
 contains
 
 module procedure read_char0
@@ -22,9 +30,9 @@ charlen = len(A)
 call open_char(self, obj_name, obj_id, file_space_id, charlen, obj_type, type_id, dims, Npts, dsize, is_vlen)
 
 if(is_vlen) then
-  call read_vlen0(self, obj_name, obj_type, obj_id, type_id, dims, dsize, A, mem_space_id, file_space_id)
+  call read_vlen(self, obj_name, obj_type, obj_id, type_id, dims, dsize, A, mem_space_id, file_space_id)
 else
-  call read_fixed0(self, obj_name, obj_type, obj_id, type_id, dims, dsize, A, mem_space_id, file_space_id)
+  call read_fixed(self, obj_name, obj_type, obj_id, type_id, dims, dsize, A, mem_space_id, file_space_id)
 endif
 
 call H5Tclose_f(type_id, ier)
@@ -33,174 +41,32 @@ if(ier/=0) error stop "ERROR:h5fortran:read:H5Tclose " // obj_name
 end procedure read_char0
 
 module procedure read_char1
-
-integer(HID_T) :: type_id
-integer :: ier, charlen, obj_type
-logical :: is_vlen
-
-!> variable length string
-integer(HSIZE_T) :: dims(rank(A)), Npts, dsize
-
-charlen = len(A)
-
-call open_char(self, obj_name, obj_id, file_space_id, charlen, obj_type, type_id, dims, Npts, dsize, is_vlen)
-
-if(is_vlen) then
-  call read_vlen1(self, obj_name, obj_type, obj_id, type_id, dims, dsize, A, mem_space_id, file_space_id)
-else
-  call read_fixed1(self, obj_name, obj_type, obj_id, type_id, dims, dsize, A, mem_space_id, file_space_id)
-endif
-
-call H5Tclose_f(type_id, ier)
-if(ier/=0) error stop "ERROR:h5fortran:read:H5Tclose " // obj_name
-
-end procedure read_char1
+include 'read_char.inc'
+end procedure
 
 module procedure read_char2
-
-integer(HID_T) :: type_id
-integer :: ier, charlen, obj_type
-logical :: is_vlen
-
-!> variable length string
-integer(HSIZE_T) :: dims(rank(A)), Npts, dsize
-
-charlen = len(A)
-
-call open_char(self, obj_name, obj_id, file_space_id, charlen, obj_type, type_id, dims, Npts, dsize, is_vlen)
-
-if(is_vlen) then
-  call read_vlen2(self, obj_name, obj_type, obj_id, type_id, dims, dsize, A, mem_space_id, file_space_id)
-else
-  call read_fixed2(self, obj_name, obj_type, obj_id, type_id, dims, dsize, A, mem_space_id, file_space_id)
-endif
-
-call H5Tclose_f(type_id, ier)
-if(ier/=0) error stop "ERROR:h5fortran:read:H5Tclose " // obj_name
-
-end procedure read_char2
-
+include 'read_char.inc'
+end procedure
 
 module procedure read_char3
-
-integer(HID_T) :: type_id
-integer :: ier, charlen, obj_type
-logical :: is_vlen
-
-!> variable length string
-integer(HSIZE_T) :: dims(rank(A)), Npts, dsize
-
-charlen = len(A)
-
-call open_char(self, obj_name, obj_id, file_space_id, charlen, obj_type, type_id, dims, Npts, dsize, is_vlen)
-
-if(is_vlen) then
-  call read_vlen3(self, obj_name, obj_type, obj_id, type_id, dims, dsize, A, mem_space_id, file_space_id)
-else
-  call read_fixed3(self, obj_name, obj_type, obj_id, type_id, dims, dsize, A, mem_space_id, file_space_id)
-endif
-
-call H5Tclose_f(type_id, ier)
-if(ier/=0) error stop "ERROR:h5fortran:read:H5Tclose " // obj_name
-
-end procedure read_char3
-
+include 'read_char.inc'
+end procedure
 
 module procedure read_char4
-
-integer(HID_T) :: type_id
-integer :: ier, charlen, obj_type
-logical :: is_vlen
-
-!> variable length string
-integer(HSIZE_T) :: dims(rank(A)), Npts, dsize
-
-charlen = len(A)
-
-call open_char(self, obj_name, obj_id, file_space_id, charlen, obj_type, type_id, dims, Npts, dsize, is_vlen)
-
-if(is_vlen) then
-  call read_vlen4(self, obj_name, obj_type, obj_id, type_id, dims, dsize, A, mem_space_id, file_space_id)
-else
-  call read_fixed4(self, obj_name, obj_type, obj_id, type_id, dims, dsize, A, mem_space_id, file_space_id)
-endif
-
-call H5Tclose_f(type_id, ier)
-if(ier/=0) error stop "ERROR:h5fortran:read:H5Tclose " // obj_name
-
-end procedure read_char4
+include 'read_char.inc'
+end procedure
 
 module procedure read_char5
-
-integer(HID_T) :: type_id
-integer :: ier, charlen, obj_type
-logical :: is_vlen
-
-!> variable length string
-integer(HSIZE_T) :: dims(rank(A)), Npts, dsize
-
-charlen = len(A)
-
-call open_char(self, obj_name, obj_id, file_space_id, charlen, obj_type, type_id, dims, Npts, dsize, is_vlen)
-
-if(is_vlen) then
-  call read_vlen5(self, obj_name, obj_type, obj_id, type_id, dims, dsize, A, mem_space_id, file_space_id)
-else
-  call read_fixed5(self, obj_name, obj_type, obj_id, type_id, dims, dsize, A, mem_space_id, file_space_id)
-endif
-
-call H5Tclose_f(type_id, ier)
-if(ier/=0) error stop "ERROR:h5fortran:read:H5Tclose " // obj_name
-
-end procedure read_char5
+include 'read_char.inc'
+end procedure
 
 module procedure read_char6
-
-integer(HID_T) :: type_id
-integer :: ier, charlen, obj_type
-logical :: is_vlen
-
-!> variable length string
-integer(HSIZE_T) :: dims(rank(A)), Npts, dsize
-
-charlen = len(A)
-
-call open_char(self, obj_name, obj_id, file_space_id, charlen, obj_type, type_id, dims, Npts, dsize, is_vlen)
-
-if(is_vlen) then
-  call read_vlen6(self, obj_name, obj_type, obj_id, type_id, dims, dsize, A, mem_space_id, file_space_id)
-else
-  call read_fixed6(self, obj_name, obj_type, obj_id, type_id, dims, dsize, A, mem_space_id, file_space_id)
-endif
-
-call H5Tclose_f(type_id, ier)
-if(ier/=0) error stop "ERROR:h5fortran:read:H5Tclose " // obj_name
-
-end procedure read_char6
+include 'read_char.inc'
+end procedure
 
 module procedure read_char7
-
-integer(HID_T) :: type_id
-integer :: ier, charlen, obj_type
-logical :: is_vlen
-
-!> variable length string
-integer(HSIZE_T) :: dims(rank(A)), Npts, dsize
-
-charlen = len(A)
-
-call open_char(self, obj_name, obj_id, file_space_id, charlen, obj_type, type_id, dims, Npts, dsize, is_vlen)
-
-if(is_vlen) then
-  call read_vlen7(self, obj_name, obj_type, obj_id, type_id, dims, dsize, A, mem_space_id, file_space_id)
-else
-  call read_fixed7(self, obj_name, obj_type, obj_id, type_id, dims, dsize, A, mem_space_id, file_space_id)
-endif
-
-call H5Tclose_f(type_id, ier)
-if(ier/=0) error stop "ERROR:h5fortran:read:H5Tclose " // obj_name
-
-end procedure read_char7
+include 'read_char.inc'
+end procedure
 
 
 subroutine read_fixed0(self, obj_name, obj_type, obj_id, type_id, dims, dsize, A, mem_space_id, file_space_id)
