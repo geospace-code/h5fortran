@@ -1,3 +1,7 @@
+# AssignProcessToJobObject: (87) The parameter is incorrect.
+# Not sure which test this is coming from. On Windows, avoiding parallel run works around this error.
+
+
 set_property(DIRECTORY PROPERTY LABELS h5fortran)
 
 set(attr_file ${CMAKE_CURRENT_BINARY_DIR}/test_attr_py.h5)

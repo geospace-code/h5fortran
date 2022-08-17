@@ -25,17 +25,12 @@ call get_obj_class(self, dname, dset_id, dclass)
 
 !> casting is handled by HDF5 library internally
 !! select case doesn't allow H5T_*
-if(dclass == H5T_FLOAT_F) then
+if(dclass == H5T_FLOAT_F .OR. dclass == H5T_INTEGER_F) then
   select type(A)
   type is (real(real64))
     call h5dread_f(dset_id, H5T_NATIVE_DOUBLE, A, dims, ier, mem_space_id, file_space_id, xfer_id)
   type is (real(real32))
     call h5dread_f(dset_id, H5T_NATIVE_REAL, A, dims, ier, mem_space_id, file_space_id, xfer_id)
-  class default
-    error stop 'ERROR:h5fortran:read: real disk dataset ' // dname // ' needs real memory variable'
-  end select
-elseif(dclass == H5T_INTEGER_F) then
-  select type(A)
   type is (integer(int32))
     call h5dread_f(dset_id, H5T_NATIVE_INTEGER, A, dims, ier, mem_space_id, file_space_id, xfer_id)
   type is (integer(int64))
