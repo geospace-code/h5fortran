@@ -37,7 +37,7 @@ if(attr_class == H5T_FLOAT_F .OR. attr_class == H5T_INTEGER_F) then
 elseif(attr_class == H5T_STRING_F) then
   select type(A)
   type is (character(*)) !< kind=c_char too
-    call readattr_char(self, obj_name, attr_name, attr_id, space_id, A)
+    call read_char(self, obj_name//":"//attr_name, A, attr_id, H5S_ALL_F, space_id)
   class default
     error stop 'ERROR:h5fortran:readattr: string dataset ' // obj_name // ':' // attr_name // ' needs character memory variable'
   end select

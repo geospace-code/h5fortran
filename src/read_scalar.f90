@@ -4,14 +4,6 @@ use hdf5, only : H5Dread_f
 
 implicit none (type, external)
 
-interface
-
-module subroutine read_scalar_char(A, dset_id, file_space_id, mem_space_id)
-class(*), intent(inout) :: A
-integer(HID_T), intent(in) :: dset_id, file_space_id, mem_space_id
-end subroutine
-
-end interface
 
 contains
 
@@ -58,10 +50,15 @@ if(dclass == H5T_FLOAT_F .OR. dclass == H5T_INTEGER_F) then
   type is (integer(int64))
     call H5Dread_f(dset_id, H5T_STD_I64LE, A, dims, ier, mem_space_id, file_space_id)
   class default
-    error stop 'ERROR:h5fortran:read: integer disk dataset ' // dname // ' needs integer memory variable'
+    error stop 'ERROR:h5fortran:read: numeric dataset ' // dname // ' needs numeric memory variable'
   end select
 elseif(dclass == H5T_STRING_F) then
-  call read_scalar_char(A, dset_id, file_space_id, mem_space_id)
+  select type(A)
+  type is (character(*)) !< kind=c_char too
+    call read_char0(self, dname, A, dset_id, mem_space_id, file_space_id)
+  class default
+    error stop 'ERROR:h5fortran:read: string dataset ' // dname // ' needs character memory variable'
+  end select
 else
   error stop 'ERROR:h5fortran:reader: non-handled datatype--please reach out to developers.'
 end if

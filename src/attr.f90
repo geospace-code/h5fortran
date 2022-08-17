@@ -3,7 +3,7 @@ submodule (h5fortran) attr_smod
 use hdf5, only : H5S_SCALAR_F, &
 H5Aexists_by_name_f, H5Aopen_by_name_f, H5Aclose_f, H5Acreate_by_name_f, H5Adelete_f, H5Aget_space_f, &
 H5Screate_f, H5Screate_simple_f, H5Sclose_f, &
-H5Sget_simple_extent_dims_f, H5Sget_simple_extent_ndims_f, H5Sget_simple_extent_npoints_f, &
+H5Sget_simple_extent_dims_f, H5Sget_simple_extent_ndims_f, &
 H5Tcopy_f, H5Tset_size_f, H5Tclose_f, &
 H5Dopen_f, H5Dclose_f
 

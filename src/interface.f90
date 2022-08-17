@@ -98,9 +98,13 @@ interface h5read_attr
 procedure lt0readattr, lt1readattr
 end interface
 
+interface read_char
+procedure read_char0, read_char1, read_char2, read_char3, read_char4, read_char5, read_char6, read_char7
+end interface
+
 public :: hdf5_file, hdf5_close, h5write, h5read, h5exist, is_hdf5, h5write_attr, h5read_attr, hdf5version
 !! for users
-public :: hdf_shape_check, hdf_rank_check, hdf_get_slice, id2name, get_obj_class
+public :: hdf_shape_check, hdf_rank_check, hdf_get_slice, id2name, get_obj_class, pad_trim
 !! for submodules only
 public :: HSIZE_T, HID_T, H5T_NATIVE_DOUBLE, H5T_NATIVE_REAL, H5T_NATIVE_INTEGER, H5T_NATIVE_CHARACTER, H5T_STD_I64LE
 public :: H5T_INTEGER_F, H5T_FLOAT_F, H5T_STRING_F
@@ -340,6 +344,13 @@ character(*), intent(in) :: dname
 integer(hid_t), intent(in), optional :: obj_id
 end function
 
+
+module elemental function pad_trim(s) result(t)
+!! trim string for nullpad or spacepad
+character(*), intent(in) :: s
+character(len(s)) :: t
+end function
+
 module integer function hdf_get_ndim(self, dname) result (drank)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
@@ -384,6 +395,61 @@ end interface
 
 interface !< reader.f90
 
+module subroutine read_char0(self, obj_name, A, obj_id, mem_space_id, file_space_id)
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: obj_name
+character(*), intent(inout) :: A
+integer(HID_T), intent(in) :: obj_id, mem_space_id, file_space_id
+end subroutine
+
+module subroutine read_char1(self, obj_name, A, obj_id, mem_space_id, file_space_id)
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: obj_name
+character(*), intent(inout), dimension(:) :: A
+integer(HID_T), intent(in) :: obj_id, mem_space_id, file_space_id
+end subroutine
+
+module subroutine read_char2(self, obj_name, A, obj_id, mem_space_id, file_space_id)
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: obj_name
+character(*), intent(inout), dimension(:,:) :: A
+integer(HID_T), intent(in) :: obj_id, mem_space_id, file_space_id
+end subroutine
+
+module subroutine read_char3(self, obj_name, A, obj_id, mem_space_id, file_space_id)
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: obj_name
+character(*), intent(inout), dimension(:,:,:) :: A
+integer(HID_T), intent(in) :: obj_id, mem_space_id, file_space_id
+end subroutine
+
+module subroutine read_char4(self, obj_name, A, obj_id, mem_space_id, file_space_id)
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: obj_name
+character(*), intent(inout), dimension(:,:,:,:) :: A
+integer(HID_T), intent(in) :: obj_id, mem_space_id, file_space_id
+end subroutine
+
+module subroutine read_char5(self, obj_name, A, obj_id, mem_space_id, file_space_id)
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: obj_name
+character(*), intent(inout), dimension(:,:,:,:,:) :: A
+integer(HID_T), intent(in) :: obj_id, mem_space_id, file_space_id
+end subroutine
+
+module subroutine read_char6(self, obj_name, A, obj_id, mem_space_id, file_space_id)
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: obj_name
+character(*), intent(inout), dimension(:,:,:,:,:,:) :: A
+integer(HID_T), intent(in) :: obj_id, mem_space_id, file_space_id
+end subroutine
+
+module subroutine read_char7(self, obj_name, A, obj_id, mem_space_id, file_space_id)
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: obj_name
+character(*), intent(inout), dimension(:,:,:,:,:,:,:) :: A
+integer(HID_T), intent(in) :: obj_id, mem_space_id, file_space_id
+end subroutine
 module subroutine h5read_scalar(self, dname, A)
 class(hdf5_file), intent(in)     :: self
 character(*), intent(in)         :: dname

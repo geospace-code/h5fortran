@@ -54,7 +54,9 @@ character(13) :: vs
 integer(HSIZE_T), allocatable :: dims(:)
 
 call h%open(fn, action='r')
+print *, "hi"
 call h%read('/little', value)
+print *, "value ", value
 
 if(len_trim(value) /= 2) then
   write(stderr,'(a,i0,a)') "test_string: read length ", len_trim(value), " /= 2"

@@ -39,7 +39,12 @@ if(dclass == H5T_FLOAT_F .OR. dclass == H5T_INTEGER_F) then
     error stop 'ERROR:h5fortran:read: integer disk dataset ' // dname // ' needs integer memory variable'
   end select
 elseif(dclass == H5T_STRING_F) then
-  error stop "ERROR:h5fortran:reader: character arrays (non-singleton) not yet supported by h5fortran."
+  select type(A)
+  type is (character(*)) !< kind=c_char too
+    call read_char(self, dname, A, dset_id, mem_space_id, file_space_id)
+  class default
+    error stop 'ERROR:h5fortran:read: string dataset ' // dname // ' needs character memory variable'
+  end select
 else
   error stop 'ERROR:h5fortran:reader: non-handled datatype--please reach out to developers.'
 end if
