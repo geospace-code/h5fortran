@@ -22,6 +22,13 @@ integer(HID_T), intent(in) :: attr_id, space_id
 character(*), intent(inout) :: A
 end subroutine
 
+module subroutine readattr_char1(self, obj_name, attr_name, attr_id, space_id, A)
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: obj_name, attr_name
+integer(HID_T), intent(in) :: attr_id, space_id
+character(*), intent(inout), dimension(:) :: A
+end subroutine
+
 module subroutine open_attr_char(self, obj_name, attr_name, attr_id, space_id, type_id, attr_dims, Npts)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: obj_name, attr_name
@@ -87,10 +94,6 @@ call h%close()
 end procedure lt1readattr
 
 
-subroutine readattr_char1(self, obj_name, attr_name, attr_id, space_id, A)
-character(*), intent(inout), dimension(:) :: A
-include 'attr_read_char.inc'
-end subroutine
 
 subroutine readattr_char2(self, obj_name, attr_name, attr_id, space_id, A)
 character(*), intent(inout), dimension(:,:) :: A

@@ -78,7 +78,7 @@ real(real32) :: attr32(2)
 real(real64) :: attr64
 integer(HSIZE_T), allocatable :: dims(:)
 
-! character(5), allocatable :: c1d(:), c2d(:,:)
+character(5), allocatable :: c1d(:)
 
 integer :: x
 
@@ -118,6 +118,13 @@ call h%readattr('/x', 'i6', i6)
 call h%readattr('/x', 'i7', i7)
 
 call h%shape("/x", dims, "c1d")
+if(dims(1) /= 3) error stop "attr % shape: c1d"
+
+allocate(c1d(dims(1)))
+call h%readattr('/x', 'c1d', c1d)
+if(c1d(1) /= 'one') error stop "attr:char:1d: index=1 " // c1d(1)
+if(c1d(2) /= 'two') error stop "attr:char:1d: index=2 " // c1d(2)
+if(c1d(3) /= 'three') error stop "attr:char:1d: index=3 " // c1d(3)
 
 call h%close()
 
