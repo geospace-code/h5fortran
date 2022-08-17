@@ -463,37 +463,37 @@ end subroutine read_vlen0
 
 subroutine read_vlen1(self, obj_name, obj_type, obj_id, type_id, dims, dsize, A, mem_space_id, file_space_id)
 character(*), intent(inout), dimension(:) :: A
-include 'attr_read_vlen.inc'
+include 'read_vlen.inc'
 end subroutine
 
 subroutine read_vlen2(self, obj_name, obj_type, obj_id, type_id, dims, dsize, A, mem_space_id, file_space_id)
 character(*), intent(inout), dimension(:,:) :: A
-include 'attr_read_vlen.inc'
+include 'read_vlen.inc'
 end subroutine
 
 subroutine read_vlen3(self, obj_name, obj_type, obj_id, type_id, dims, dsize, A, mem_space_id, file_space_id)
 character(*), intent(inout), dimension(:,:,:) :: A
-include 'attr_read_vlen.inc'
+include 'read_vlen.inc'
 end subroutine
 
 subroutine read_vlen4(self, obj_name, obj_type, obj_id, type_id, dims, dsize, A, mem_space_id, file_space_id)
 character(*), intent(inout), dimension(:,:,:,:) :: A
-include 'attr_read_vlen.inc'
+include 'read_vlen.inc'
 end subroutine
 
 subroutine read_vlen5(self, obj_name, obj_type, obj_id, type_id, dims, dsize, A, mem_space_id, file_space_id)
 character(*), intent(inout), dimension(:,:,:,:,:) :: A
-include 'attr_read_vlen.inc'
+include 'read_vlen.inc'
 end subroutine
 
 subroutine read_vlen6(self, obj_name, obj_type, obj_id, type_id, dims, dsize, A, mem_space_id, file_space_id)
 character(*), intent(inout), dimension(:,:,:,:,:,:) :: A
-include 'attr_read_vlen.inc'
+include 'read_vlen.inc'
 end subroutine
 
 subroutine read_vlen7(self, obj_name, obj_type, obj_id, type_id, dims, dsize, A, mem_space_id, file_space_id)
 character(*), intent(inout), dimension(:,:,:,:,:,:,:) :: A
-include 'attr_read_vlen.inc'
+include 'read_vlen.inc'
 end subroutine
 
 end submodule read_scalar_ascii
