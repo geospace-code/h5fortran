@@ -19,6 +19,11 @@ if(ier/=0) error stop "ERROR:h5fortran:readattr:H5Tis_variable_str " // obj_name
 call H5Tget_size_f(type_id, dsize, ier)
 if(ier/=0) error stop "ERROR:h5fortran:attr_read:H5Tget_size " // obj_name // ":" // attr_name // " " // self%filename
 
+if(.not. is_vlen .and. dsize > charlen) then
+  write(stderr,'(a,i0,a3,i0,1x,a)') "ERROR:h5fortran:readattr: buffer too small: ", dsize, " > ", charlen, obj_name//":"//attr_name
+  error stop
+endif
+
 CALL H5Sget_simple_extent_ndims_f(space_id, drank, ier)
 if(ier /= 0) error stop "ERROR:h5fortran:readattr:H5Sget_simple_extent_ndims " // obj_name // ":" // attr_name
 
@@ -35,7 +40,7 @@ endif
 end procedure open_attr_char
 
 
-subroutine readattr_char_scalar_vlen(self, obj_name, attr_name, attr_id, type_id, attr_dims, dsize, A)
+subroutine readattr_char0_vlen(self, obj_name, attr_name, attr_id, type_id, attr_dims, dsize, A)
 
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: obj_name, attr_name
@@ -69,40 +74,54 @@ endif
 
 A = cstr(:i)
 
-end subroutine readattr_char_scalar_vlen
+end subroutine readattr_char0_vlen
 
-
-subroutine readattr_char0_fixed(self, obj_name, attr_name, attr_id, type_id, attr_dims, A)
+subroutine readattr_char1_vlen(self, obj_name, attr_name, attr_id, type_id, attr_dims, dsize, A)
 
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: obj_name, attr_name
 integer(HID_T), intent(in) :: attr_id, type_id
-integer(HSIZE_T), intent(in) :: attr_dims(1)
+integer(HSIZE_T), intent(in) :: attr_dims(1), dsize
+character(*), intent(inout) :: A(:)
+
+TYPE(C_PTR), DIMENSION(:), ALLOCATABLE, TARGET :: cbuf
+CHARACTER(dsize, kind=c_char), POINTER :: cstr
+TYPE(C_PTR) :: f_ptr
+
+integer :: ier
+
+allocate(cbuf(attr_dims(1)))
+f_ptr = C_LOC(cbuf)
+
+call H5Aread_f(attr_id, type_id, f_ptr, ier)
+if(ier/=0) error stop "h5fortran:read:readattr:H5Aread " // obj_name // ":" // attr_name // " " // self%filename
+
+call C_F_POINTER(cbuf(1), cstr)
+
+A = cstr
+
+end subroutine readattr_char1_vlen
+
+
+subroutine readattr_char0_fixed(self, obj_name, attr_name, attr_id, type_id, attr_dims, dsize, A)
+
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: obj_name, attr_name
+integer(HID_T), intent(in) :: attr_id, type_id
+integer(HSIZE_T), intent(in) :: attr_dims(1), dsize
 character(*), intent(inout) :: A
 
 TYPE(C_PTR) :: f_ptr
-integer(HSIZE_T) :: dsize
-
 CHARACTER(:), DIMENSION(:), ALLOCATABLE, TARGET :: buf
 
-integer :: i, L, ier
-
-L = len(A)
-
-call H5Tget_size_f(type_id, dsize, ier)
-if(ier/=0) error stop "ERROR:h5fortran:attr_read:H5Tget_size " // obj_name // ":" // attr_name // " " // self%filename
-
-if(dsize > L) then
-  write(stderr,'(a,i0,a3,i0,1x,a)') "ERROR:h5fortran:readattr: buffer too small: ", dsize, " > ", L, obj_name // ":" // attr_name
-  error stop
-endif
+integer :: i, ier
 
 allocate(character(dsize) :: buf(attr_dims(1)))
 
 f_ptr = C_LOC(buf)
 
 call H5Aread_f(attr_id, type_id, f_ptr, ier)
-if(ier/=0) error stop "ERROR:h5fortran:readattr:H5Aread " // obj_name // ":" // attr_name
+if(ier/=0) error stop "ERROR:h5fortran:readattr:H5Aread " // obj_name // ":" // attr_name // " " // self%filename
 
 i = index(buf(1), c_null_char) - 1
 if (i == -1) i = len_trim(buf(1))
@@ -112,30 +131,18 @@ A = buf(1)(:i)
 end subroutine readattr_char0_fixed
 
 
-subroutine readattr_char1_fixed(self, obj_name, attr_name, attr_id, type_id, attr_dims, A)
+subroutine readattr_char1_fixed(self, obj_name, attr_name, attr_id, type_id, attr_dims, dsize, A)
 
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: obj_name, attr_name
 integer(HID_T), intent(in) :: attr_id, type_id
-integer(HSIZE_T), intent(in) :: attr_dims(1)
+integer(HSIZE_T), intent(in) :: attr_dims(1), dsize
 character(*), intent(inout) :: A(:)
 
 TYPE(C_PTR) :: f_ptr
-integer(HSIZE_T) :: dsize
-
 CHARACTER(:), DIMENSION(:), ALLOCATABLE, TARGET :: buf
 
-integer :: L, ier
-
-L = len(A)
-
-call H5Tget_size_f(type_id, dsize, ier)
-if(ier/=0) error stop "ERROR:h5fortran:attr_read:H5Tget_size " // obj_name // ":" // attr_name // " " // self%filename
-
-if(dsize > L) then
-  write(stderr,'(a,i0,a3,i0,1x,a)') "ERROR:h5fortran:readattr: buffer too small: ", dsize, " > ", L, obj_name // ":" // attr_name
-  error stop
-endif
+integer :: ier
 
 allocate(character(dsize) :: buf(attr_dims(1)))
 
@@ -144,7 +151,7 @@ allocate(character(dsize) :: buf(attr_dims(1)))
 f_ptr = C_LOC(buf)
 
 call H5Aread_f(attr_id, type_id, f_ptr, ier)
-if(ier/=0) error stop "ERROR:h5fortran:readattr:H5Aread " // obj_name // ":" // attr_name
+if(ier/=0) error stop "ERROR:h5fortran:readattr:H5Aread " // obj_name // ":" // attr_name // " " // self%filename
 
 A = buf
 
@@ -155,17 +162,17 @@ module procedure readattr_char_scalar
 
 integer(HSIZE_T) :: attr_dims(1), Npts, dsize
 integer(HID_T) :: type_id
-integer :: ier
-
+integer :: ier, charlen
 logical :: is_vlen
 
+charlen = len(A)
 
-call open_attr_char(self, obj_name, attr_name, attr_id, space_id, type_id, attr_dims, Npts, dsize, is_vlen)
+call open_attr_char(self, obj_name, attr_name, attr_id, space_id, charlen, type_id, attr_dims, Npts, dsize, is_vlen)
 
 if(is_vlen) then
-  call readattr_char_scalar_vlen(self, obj_name, attr_name, attr_id, type_id, attr_dims, dsize, A)
+  call readattr_char0_vlen(self, obj_name, attr_name, attr_id, type_id, attr_dims, dsize, A)
 else
-  call readattr_char0_fixed(self, obj_name, attr_name, attr_id, type_id, attr_dims, A)
+  call readattr_char0_fixed(self, obj_name, attr_name, attr_id, type_id, attr_dims, dsize, A)
 endif
 
 call H5Tclose_f(type_id, ier)
@@ -178,18 +185,17 @@ module procedure readattr_char1
 
 integer(HSIZE_T) :: attr_dims(1), Npts, dsize
 integer(HID_T) :: type_id
-integer :: ier
-
+integer :: ier, charlen
 logical :: is_vlen
 
+charlen = len(A)
 
-call open_attr_char(self, obj_name, attr_name, attr_id, space_id, type_id, attr_dims, Npts, dsize, is_vlen)
+call open_attr_char(self, obj_name, attr_name, attr_id, space_id, charlen, type_id, attr_dims, Npts, dsize, is_vlen)
 
 if(is_vlen) then
-  error stop "readattr_char1: variable length strings not supported"
-  ! call readattr_char1_vlen(self, obj_name, attr_name, attr_id, type_id, attr_dims, A)
+  call readattr_char1_vlen(self, obj_name, attr_name, attr_id, type_id, attr_dims, dsize, A)
 else
-  call readattr_char1_fixed(self, obj_name, attr_name, attr_id, type_id, attr_dims, A)
+  call readattr_char1_fixed(self, obj_name, attr_name, attr_id, type_id, attr_dims, dsize, A)
 endif
 
 call H5Tclose_f(type_id, ier)
