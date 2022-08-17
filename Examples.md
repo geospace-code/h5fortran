@@ -93,8 +93,6 @@ call h5write_attr('myfile.h5', '/x', 'units', 'Nm^-2')
 
 ### read attributes
 
-For attributes, HDF5 character values are *space-terminated* instead of null terminated.
-
 ```fortran
 character(1024) :: attr_str
 integer :: attr_int(1)

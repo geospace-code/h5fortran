@@ -50,12 +50,10 @@ Uses Fortran `submodule` for clean template structure.
 This easy-to-use, thin object-oriented modern Fortran library abstracts away the messy parts of HDF5 so that you can read / write various types/ranks of data with a single command.
 In distinction from other high-level HDF5 interfaces, h5fortran works to deduplicate code, using polymorphism wherever feasible and extensive test suite.
 
-Polymorphic [API](./API.md) with read/write types int32, int64, real32, real64 with rank scalar (0-D) through 7-D
-as well as **character (string)**.
+Polymorphic [API](./API.md) with read/write types int32, int64, real32, real64, character with rank scalar (0-D) through 7-D.
 If you need int64, we have a working example for that: src/concepts/int64.f90 that can easily be put into the h5fortran API--just make a GitHub Issue.
 
-* HDF5 **attributes** are also supported for read/write types int32, int64, real32, real64 with rank scalar (0-D) through 7-D
-as well as **character (string)**.
+* HDF5 **attributes** are also supported for read/write types int32, int64, real32, real64, character with rank scalar (0-D) through 7-D.
 * **Array slicing on read and write** is supported, that is, reading or writing part of a disk HDF5 array into a variable matching the slice shape.
 * Mismatched datatypes are coerced as per standard Fortran rules. For example, reading a float HDF5 variable into an integer Fortran variable:  42.3 => 42
 * Zlib (deflate) compression / decompression -- h5fortran will work without Zlib, but will save/load uncompressed data only.
