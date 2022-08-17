@@ -2,15 +2,17 @@ class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: obj_name
 integer, intent(in) :: obj_type
 integer(HID_T), intent(in) :: obj_id, type_id, mem_space_id, file_space_id
-integer(HSIZE_T), intent(in) :: dims(rank(A)), dsize
+integer(HSIZE_T), intent(in) :: dsize
 
 TYPE(C_PTR), DIMENSION(:), ALLOCATABLE, TARGET :: cbuf
 character(dsize), dimension(:), allocatable :: buf
 CHARACTER(dsize, kind=C_CHAR), POINTER :: cstr
 TYPE(C_PTR) :: f_ptr
 
-integer :: ier
+integer :: ier, dims(rank(A))
 integer(HSIZE_T) :: i
+
+dims = shape(A)
 
 allocate(cbuf(product(dims)), buf(product(dims)))
 f_ptr = C_LOC(cbuf)
