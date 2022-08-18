@@ -43,6 +43,7 @@ endif()
 # --- h5fortran library
 
 add_library(h5fortran)
+target_compile_options(h5fortran PRIVATE ${CMAKE_Fortran_FLAGS})
 target_include_directories(h5fortran PUBLIC
 $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
 $<INSTALL_INTERFACE:include>
