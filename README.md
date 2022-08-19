@@ -36,12 +36,14 @@ This easy-to-use, thin object-oriented modern Fortran library abstracts away the
 In distinction from other high-level HDF5 interfaces, h5fortran works to deduplicate code, using polymorphism wherever feasible and extensive test suite.
 
 Polymorphic [API](./API.md) with read / write **dataset** types int32, int64, real32, real64, character (string) with rank scalar (0-D) through 7-D.
+Variable-length datasets "H5S_UNLIMITED" can also be read.
 
 HDF5 **attributes** are also supported for read/write types int32, int64, real32, real64, character (string) with rank scalar (0-D) through 7-D.
 
 For **character**, datasets and attributes are supported for fixed length and variable length strings.
 Character padding uses spaces as this is the default for Fortran.
 Space-padded, null-terminated and null-padded strings are also supported on read.
+UTF8 characters are passed through on read and write using the Fortran default character kind.
 
 * **Array slicing on read and write** is supported, that is, reading or writing part of a disk HDF5 array into a variable matching the slice shape.
 * Mismatched datatypes are coerced as per standard Fortran rules. For example, reading a float HDF5 variable into an integer Fortran variable:  42.3 => 42
@@ -161,11 +163,15 @@ For detailed [examples](./example/) see [Examples.md](./Examples.md).
 * The first character of the filename should be a character, NOT whitespace to avoid file open/creation errors.
 * Polymorphic array rank is implemented.
 
-### h5fortran: missing Fortran datatypes
+### h5fortran: missing HDF5 features
 
 * arrays of rank > 7: prototyped in reader_nd.f90, writer_nd.f90. Fortran 2008 arrays are up to rank 15, but only recent compilers support.
 * complex64 / complex128: not natively handled in HDF5. There are performance impacts for compound datatypes. Many choose to write two datasets, one each for real and imaginary like `A_real` and `A_imag`
-* non-default character kind
+* non-default character kind -- we do pass-through UTF8
 * logical / boolean: not supported natively by HDF5. h5py implements as [enum](https://docs.h5py.org/en/stable/faq.html#what-datatypes-are-supported).
+* variable length dataset writing
+
+We didn't use `type(c_ptr)` and `c_loc()` internally for datasets as we observed problems when the actual argument is sliced on read/write.
+The current h5fortran impementation (Fortran `select type` for H5Dwrite/H5Dread) does work with sliced actual arguments.
 
 HDF5 Fortran 2003 [features](https://docs.hdfgroup.org/archive/support/HDF5/doc/fortran/NewFeatures_F2003.pdf)
