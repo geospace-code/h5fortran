@@ -34,8 +34,10 @@ set(zlib_cmake_args
 -DCMAKE_BUILD_TYPE=Release
 -DZLIB_COMPAT:BOOL=on
 -DZLIB_ENABLE_TESTS:BOOL=off
+-DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
 -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
 )
+# NetCDF 4.9/4.6 needs fPIC
 
 if(zlib_legacy)
 ExternalProject_Add(ZLIB
