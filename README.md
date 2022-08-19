@@ -39,6 +39,10 @@ Polymorphic [API](./API.md) with read / write **dataset** types int32, int64, re
 
 HDF5 **attributes** are also supported for read/write types int32, int64, real32, real64, character (string) with rank scalar (0-D) through 7-D.
 
+For **character**, datasets and attributes are supported for fixed length and variable length strings.
+Character padding uses spaces as this is the default for Fortran.
+Space-padded, null-terminated and null-padded strings are also supported on read.
+
 * **Array slicing on read and write** is supported, that is, reading or writing part of a disk HDF5 array into a variable matching the slice shape.
 * Mismatched datatypes are coerced as per standard Fortran rules. For example, reading a float HDF5 variable into an integer Fortran variable:  42.3 => 42
 * Zlib (deflate) compression / decompression -- h5fortran will work without Zlib, but will save/load uncompressed data only.
@@ -57,6 +61,11 @@ Compilers known to work (tested on CI) include:
 
 * GCC (gfortran) &ge; 8
 * Intel oneAPI &ge; 2021
+
+Compilers not currently working:
+
+* NVidia HPC SDK 22.7: missing "rank()" intrinsic and trouble with "select type()"
+* AOCC 3.2 (same problems as NVHPC 22.7)
 
 ---
 
@@ -158,3 +167,5 @@ For detailed [examples](./example/) see [Examples.md](./Examples.md).
 * complex64 / complex128: not natively handled in HDF5. There are performance impacts for compound datatypes. Many choose to write two datasets, one each for real and imaginary like `A_real` and `A_imag`
 * non-default character kind
 * logical / boolean: not supported natively by HDF5. h5py implements as [enum](https://docs.h5py.org/en/stable/faq.html#what-datatypes-are-supported).
+
+HDF5 Fortran 2003 [features](https://docs.hdfgroup.org/archive/support/HDF5/doc/fortran/NewFeatures_F2003.pdf)
