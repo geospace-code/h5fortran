@@ -36,7 +36,10 @@ set(CPACK_OUTPUT_FILE_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/package")
 set(CPACK_PACKAGE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
 # not .gitignore as its regex syntax is more advanced than CMake
-set(CPACK_SOURCE_IGNORE_FILES ".git/;.git*/;.vscode/;.mypy_cache/;_CPack_Packages/;${CMAKE_BINARY_DIR}/")
+set(CPACK_SOURCE_IGNORE_FILES .git/ .github/ .vscode/ .mypy_cache/ _CPack_Packages/
+${CMAKE_BINARY_DIR}/ ${PROJECT_BINARY_DIR}/
+.archive/ concepts/ paper/
+)
 
 install(FILES ${CPACK_RESOURCE_FILE_README} ${CPACK_RESOURCE_FILE_LICENSE}
 DESTINATION share/docs/${PROJECT_NAME}
