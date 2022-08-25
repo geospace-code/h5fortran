@@ -1,7 +1,7 @@
 # builds HDF5 library from scratch
 # note: the use of "lib" vs. CMAKE_*_LIBRARY_PREFIX is deliberate based on HDF5
 # across Intel Fortran on Windows (MSVC-like) vs. Gfortran on Windows vs. Linux.
-
+include(GNUInstallDirs)
 include(ExternalProject)
 
 if(hdf5_parallel)
@@ -17,16 +17,16 @@ set(HDF5_LIBRARIES)
 foreach(_name hdf5_hl_fortran hdf5_hl_f90cstub hdf5_fortran hdf5_f90cstub hdf5_hl hdf5)
   if(BUILD_SHARED_LIBS)
     if(WIN32)
-      list(APPEND HDF5_LIBRARIES ${CMAKE_INSTALL_PREFIX}/bin/lib${_name}${CMAKE_SHARED_LIBRARY_SUFFIX})
+      list(APPEND HDF5_LIBRARIES ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}/lib${_name}${CMAKE_SHARED_LIBRARY_SUFFIX})
     else()
-      list(APPEND HDF5_LIBRARIES ${CMAKE_INSTALL_PREFIX}/lib/lib${_name}${CMAKE_SHARED_LIBRARY_SUFFIX})
+      list(APPEND HDF5_LIBRARIES ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/lib${_name}${CMAKE_SHARED_LIBRARY_SUFFIX})
     endif()
   else()
-    list(APPEND HDF5_LIBRARIES ${CMAKE_INSTALL_PREFIX}/lib/lib${_name}${CMAKE_STATIC_LIBRARY_SUFFIX})
+    list(APPEND HDF5_LIBRARIES ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/lib${_name}${CMAKE_STATIC_LIBRARY_SUFFIX})
   endif()
 endforeach()
 
-set(HDF5_INCLUDE_DIRS ${CMAKE_INSTALL_PREFIX}/include)
+set(HDF5_INCLUDE_DIRS ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR})
 
 # --- Zlib
 if(NOT TARGET ZLIB::ZLIB)
