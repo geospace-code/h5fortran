@@ -2,6 +2,7 @@ program array_test
 
 use, intrinsic:: ieee_arithmetic, only: ieee_value, ieee_quiet_nan, ieee_is_nan
 use, intrinsic :: iso_fortran_env, only: real32, real64, int32, stderr=>error_unit
+
 use h5fortran, only : hdf5_file, HSIZE_T, H5T_NATIVE_INTEGER
 
 implicit none (type, external)
@@ -9,9 +10,11 @@ implicit none (type, external)
 real(real32) :: nan
 
 call test_basic_array('test_array.h5')
-print *,'PASSED: array write'
+print *, 'PASSED: array write'
+
 call test_read_slice('test_array.h5')
 print *, 'PASSED: slice read'
+
 call test_write_slice('test_array.h5')
 print *, 'PASSED: slice write'
 
@@ -159,11 +162,13 @@ character(*), intent(in) :: filename
 type(hdf5_file) :: h
 integer(int32), dimension(4) :: i1t
 integer(int32), dimension(4,4) :: i2t
+integer :: dims(1), dims2(2)
 
+dims = [3]
 
 call h%open(filename, action='r+', debug=.true.)
 
-call h%create('/int32a-1d', dtype=H5T_NATIVE_INTEGER, dset_dims=int([3]))
+call h%create('/int32a-1d', dtype=H5T_NATIVE_INTEGER, dset_dims=dims)
 call h%write('/int32a-1d', [1,3], istart=[1], iend=[2])
 print *, 'PASSED: create dataset and write slice 1D'
 
@@ -171,7 +176,7 @@ call h%write('/int32-1d', [35, 70], istart=[2], iend=[3], stride=[1])
 
 call h%read('/int32-1d', i1t)
 if (.not.all(i1t==[1,35,70,4])) then
-  write(stderr, *) 'write 1D slice does not match. got ',i1t
+  write(stderr, *) 'write 1D slice does not match. Got ',i1t, ' in ', filename
   error stop
 endif
 print *, 'PASSED: overwrite slice 1d, stride=1'
@@ -179,15 +184,17 @@ print *, 'PASSED: overwrite slice 1d, stride=1'
 call h%write('/int32-1d', [23,34,45], istart=[2], iend=[4])
 call h%read('/int32-1d', i1t)
 if (.not.all(i1t==[1,23,34,45])) then
-  write(stderr, *) 'read 1D slice does not match.got ',i1t
+  write(stderr, *) 'read 1D slice does not match. Got ',i1t
   error stop
 endif
 print *, 'PASSED: overwrite slice 1d, no stride'
 
+dims2 = [4,4]
 
-call h%create('/int32a-2d', dtype=H5T_NATIVE_INTEGER, dset_dims=int([4,4]))
+call h%create('/int32a-2d', dtype=H5T_NATIVE_INTEGER, dset_dims=dims2)
 print *, 'create and write slice 2d, stride=1'
 call h%write('/int32a-2d', reshape([76,65,54,43], [2,2]), istart=[2,1], iend=[3,2])
+
 call h%read('/int32a-2d', i2t)
 
 call h%close()
