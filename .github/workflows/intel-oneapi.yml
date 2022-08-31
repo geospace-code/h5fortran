@@ -1,7 +1,6 @@
 name: intel-oneapi
 
 env:
-  CMAKE_GENERATOR: Ninja
   CC: icx
   FC: ifx
 
