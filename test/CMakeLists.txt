@@ -124,6 +124,7 @@ COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test_shape.py ${shape_f
 set_property(TEST PythonShape PROPERTY REQUIRED_FILES ${shape_file})
 set_property(TEST PythonShape PROPERTY FIXTURES_REQUIRED h5shape)
 
+# --- String
 add_test(NAME PythonString
 COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test_string.py ${string_file}
 )
