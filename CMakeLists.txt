@@ -22,10 +22,11 @@ find_package(HDF5 COMPONENTS Fortran)
 if(NOT HDF5_FOUND)
   message(FATAL_ERROR "HDF5 not found or working on the system. First build HDF5 by:
 
-  cmake -S scripts -B scripts/build -DCMAKE_INSTALL_PREFIX=~/mylibs
-  cmake --build scripts/build
+  cmake -S ${CMAKE_CURRENT_SOURCE_DIR}/scripts -B build -DCMAKE_INSTALL_PREFIX=~/mylibs
+  cmake --build build
 
-  Then build h5fortran:
+  The '~/mylibs' is an arbitrary directory.
+  Then build h5fortran, referring to this HDF5 installation:
 
   cmake -B build -DCMAKE_PREFIX_PATH=~/mylibs
   cmake --build build
