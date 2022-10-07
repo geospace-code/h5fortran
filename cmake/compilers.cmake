@@ -23,16 +23,22 @@ endif()
 # we left off "-std=f2018" type flags as they tend to issue false warnings
 
 if(CMAKE_Fortran_COMPILER_ID MATCHES "^Intel")
+
 add_compile_options(
 "$<$<COMPILE_LANGUAGE:Fortran>:-warn>"
 "$<$<AND:$<COMPILE_LANGUAGE:Fortran>,$<CONFIG:Debug>>:-traceback;-check;-debug>"
 )
+if(WIN32)
+  add_compile_options($<$<CONFIG:Debug>:/Od>)
+else()
+  add_compile_options($<$<CONFIG:Debug>:-O0>)
+endif()
+
 elseif(CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
 add_compile_options(-Wall
 $<$<COMPILE_LANGUAGE:Fortran>:-fimplicit-none>
 "$<$<AND:$<COMPILE_LANGUAGE:Fortran>,$<CONFIG:Debug>>:-Wextra;-fcheck=all;-Werror=array-bounds>"
 "$<$<AND:$<COMPILE_LANGUAGE:Fortran>,$<CONFIG:Release>>:-fno-backtrace;-Wno-maybe-uninitialized>"
-"$<$<AND:$<COMPILE_LANGUAGE:Fortran>,$<CONFIG:RelWithDebInfo>>:-Wno-maybe-uninitialized>"
 )
 endif()
 

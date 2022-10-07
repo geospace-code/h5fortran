@@ -28,7 +28,7 @@ logical, intent(out) :: is_vlen
 
 integer :: drank, ier
 integer(HSIZE_T), dimension(size(dims)) :: maxdims
-
+integer(SIZE_T) :: ds_size
 
 call H5Iget_type_f(obj_id, obj_type, ier)
 if(ier /= 0) error stop "ERROR:h5fortran:read:H5Iget_type: " // obj_name // " " // self%filename
@@ -54,13 +54,15 @@ if(is_vlen) then
   endif
   if(ier/=0) error stop "ERROR:h5fortran:read:H5Tget_storage_size " // obj_name // " " // self%filename
 else
-  call H5Tget_size_f(type_id, dsize, ier)
+  call H5Tget_size_f(type_id, ds_size, ier)
   if(ier/=0) error stop "ERROR:h5fortran:read:H5Tget_size " // obj_name // " " // self%filename
 
-  if(dsize > charlen) then
-    write(stderr,'(a,i0,a3,i0,1x,a)') "ERROR:h5fortran:read: buffer too small: ", dsize, " > ", charlen, obj_name
+  if(ds_size > charlen) then
+    write(stderr,'(a,i0,a3,i0,1x,a)') "ERROR:h5fortran:read: buffer too small: ", ds_size, " > ", charlen, obj_name
     error stop
   endif
+
+  dsize = int(ds_size, HSIZE_T)
 endif
 
 
