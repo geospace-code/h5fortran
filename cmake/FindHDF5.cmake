@@ -795,10 +795,9 @@ endif()
 
 set(hdf5_lsuf lib hdf5/lib)  # need explicit "lib" for self-built HDF5
 if(NOT HDF5_ROOT)
-  if(parallel IN_LIST HDF5_FIND_COMPONENTS)
-    list(INSERT hdf5_lsuf 0 hdf5/openmpi hdf5/mpich)  # Ubuntu
-    list(INSERT hdf5_lsuf 0 openmpi/lib mpich/lib)  # CentOS
-  else()
+  list(INSERT hdf5_lsuf 0 hdf5/openmpi hdf5/mpich)  # Ubuntu
+  list(INSERT hdf5_lsuf 0 openmpi/lib mpich/lib)  # CentOS
+  if(NOT parallel IN_LIST HDF5_FIND_COMPONENTS)
     list(INSERT hdf5_lsuf 0 hdf5/serial)  # Ubuntu
   endif()
 endif()
@@ -813,12 +812,14 @@ else()
   set(hdf5_msuf static include)
 endif()
 
-if(parallel IN_LIST HDF5_FIND_COMPONENTS)
-  list(APPEND hdf5_isuf hdf5/openmpi hdf5/mpich)  # Ubuntu
-  list(APPEND hdf5_msuf hdf5/openmpi hdf5/mpich)  # Ubuntu
-else()
-  list(APPEND hdf5_isuf hdf5/serial)  # Ubuntu
-  list(APPEND hdf5_msuf hdf5/serial)  # Ubuntu
+# Ubuntu
+list(INSERT hdf5_isuf 0 hdf5/openmpi hdf5/mpich)
+list(INSERT hdf5_msuf 0 hdf5/openmpi hdf5/mpich)
+
+if(NOT parallel IN_LIST HDF5_FIND_COMPONENTS)
+  # Ubuntu
+  list(INSERT hdf5_isuf 0 hdf5/serial)
+  list(INSERT hdf5_msuf 0 hdf5/serial)
 endif()
 
 if(CMAKE_SYSTEM_PROCESSOR MATCHES "(x86_64|AMD64)")
