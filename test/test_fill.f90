@@ -3,7 +3,7 @@ program fill
 use, intrinsic:: ieee_arithmetic, only : ieee_value, ieee_quiet_nan, ieee_is_finite
 
 use h5fortran, only : hdf5_file
-use hdf5, only : HSIZE_T, H5T_NATIVE_REAL, H5T_NATIVE_DOUBLE, H5T_NATIVE_INTEGER, H5T_NATIVE_CHARACTER
+use hdf5, only : H5T_NATIVE_REAL, H5T_NATIVE_DOUBLE, H5T_NATIVE_INTEGER, H5T_NATIVE_CHARACTER
 
 implicit none (type, external)
 
