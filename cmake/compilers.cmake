@@ -51,7 +51,7 @@ add_compile_options(
 elseif(CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
 
 add_compile_options(
-"$<$<COMPILE_LANGUAGE:Fortran>:-Wall;-fimplicit-none>"
+"$<$<COMPILE_LANGUAGE:Fortran>:-Wall;-fimplicit-none;-Wno-maybe-uninitialized>"
 "$<$<AND:$<COMPILE_LANGUAGE:Fortran>,$<CONFIG:Debug>>:-Wextra;-fcheck=all;-Werror=array-bounds>"
 "$<$<AND:$<COMPILE_LANGUAGE:Fortran>,$<CONFIG:Release>>:-fno-backtrace>"
 )
