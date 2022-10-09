@@ -17,17 +17,24 @@ on:
 
 jobs:
 
-  linux_mac:
+  core:
     timeout-minutes: 15
 
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
-        shared: [true, false]
-        gcc: [8, 11]
-        exclude:
+        os: [ubuntu-latest]
+        shared: [false]
+        gcc: [8, 9, 10, 11]
+        include:
+        - os: ubuntu-latest
+          shared: true
+          gcc: 11
         - os: macos-latest
-          gcc: 8
+          shared: true
+          gcc: 11
+        - os: macos-latest
+          shared: false
+          gcc: 11
 
     runs-on: ${{ matrix.os }}
     env:
@@ -51,14 +58,16 @@ jobs:
 
     - name: Install HDF5 (MacOS)
       if: runner.os == 'macOS'
-      run: |
-        brew install hdf5 ninja
-        brew reinstall gcc
+      run: brew install hdf5 ninja
 
     - uses: actions/checkout@v3
 
     - name: Configure h5fortran
-      run: cmake --preset multi -DCMAKE_INSTALL_PREFIX=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+      run: >-
+        cmake --preset multi
+        -DCMAKE_INSTALL_PREFIX=${{ runner.temp }}
+        -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+        -DCMAKE_COMPILE_WARNING_AS_ERROR:BOOL=ON
 
     - name: Build Debug
       run: cmake --build --parallel --preset debug
@@ -80,7 +89,10 @@ jobs:
     - run: cmake --install build
 
     - name: configure examples
-      run: cmake -S example -B example/build -DCMAKE_PREFIX_PATH:PATH=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+      run: >-
+        cmake -S example -B example/build
+        -DCMAKE_PREFIX_PATH:PATH=${{ runner.temp }}
+        -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
     - name: build examples
       run: cmake --build example/build --parallel
     - name: Test examples
@@ -151,7 +163,11 @@ jobs:
 
     - uses: actions/checkout@v3
 
-    - run: cmake --preset multi -DCMAKE_INSTALL_PREFIX=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+    - run: >-
+        cmake --preset multi
+        -DCMAKE_INSTALL_PREFIX=${{ runner.temp }}
+        -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+        -DCMAKE_COMPILE_WARNING_AS_ERROR:BOOL=ON
 
     - run: cmake --build --parallel --preset debug
     - run: ctest --preset debug -V
