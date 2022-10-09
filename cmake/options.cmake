@@ -1,8 +1,11 @@
+message(STATUS "${PROJECT_NAME} ${PROJECT_VERSION} CMake ${CMAKE_VERSION} Toolchain ${CMAKE_TOOLCHAIN_FILE}")
+
 include(GNUInstallDirs)
 
 message(STATUS "${PROJECT_NAME} ${PROJECT_VERSION}  CMake ${CMAKE_VERSION}")
 
 option(ENABLE_COVERAGE "Code coverage tests")
+option(tidy "Run clang-tidy on the code")
 
 option(matlab "check HDF5 file writes with Matlab")
 option(concepts "conceptual testing, for devs only" off)
