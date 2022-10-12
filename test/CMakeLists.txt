@@ -3,7 +3,9 @@
 
 set_property(DIRECTORY PROPERTY LABELS h5fortran)
 
-add_compile_options("$<$<COMPILE_LANG_AND_ID:Fortran,GNU>:-Wno-compare-reals;-Wno-maybe-uninitialized>")
+if(CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
+  add_compile_options("$<$<COMPILE_LANGUAGE:Fortran>:-Wno-compare-reals;-Wno-maybe-uninitialized>")
+endif()
 
 set(attr_file ${CMAKE_CURRENT_BINARY_DIR}/test_attr_py.h5)
 set(shape_file ${CMAKE_CURRENT_BINARY_DIR}/test_shape.h5)
