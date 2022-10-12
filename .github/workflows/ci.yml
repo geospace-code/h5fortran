@@ -99,6 +99,23 @@ jobs:
       run: ctest --test-dir example/build -V
 
 
+  valgrind-memory:
+    runs-on: ubuntu-22.04
+    needs: core
+    timeout-minutes: 10
+
+    steps:
+
+    - name: install valgrind
+      run: |
+        sudo apt update
+        sudo apt install --no-install-recommends valgrind libhdf5-dev
+
+    - uses: actions/checkout@v3
+
+    - run: ctest -Dexclude_label=python -S memcheck.cmake -VV
+
+
   linux-coverage:
     needs: core
     runs-on: ubuntu-latest

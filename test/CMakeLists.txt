@@ -134,24 +134,24 @@ set_property(TEST PythonString PROPERTY FIXTURES_SETUP h5str)
 
 set_property(TEST string_read PythonAttributes PythonShape PythonString attributes_read PROPERTY DISABLED $<NOT:$<BOOL:${h5py_ok}>>)
 
+set_property(TEST PythonAttributes PythonShape PythonString PROPERTY LABELS python)
 
 # --- Matlab HDF5
 
 if(matlab)
-find_package(Matlab COMPONENTS MAIN_PROGRAM)
-if(Matlab_FOUND)
-  set(matlab_cmd "i=h5info('${shape_file}', '/d7').Dataspace.Size; assert(all(i == [2, 1, 3, 4, 7, 6, 5]))")
+find_package(Matlab COMPONENTS MAIN_PROGRAM REQUIRED)
 
-  add_test(NAME MatlabShape COMMAND ${Matlab_MAIN_PROGRAM} -batch ${matlab_cmd})
+set(matlab_cmd "i=h5info('${shape_file}', '/d7').Dataspace.Size; assert(all(i == [2, 1, 3, 4, 7, 6, 5]))")
 
-  set_tests_properties(MatlabShape PROPERTIES
-  LABELS shaky
-  DEPENDS shape
-  REQUIRED_FILES ${shape_file}
-  FIXTURES_REQUIRED h5shape
-  )
+add_test(NAME MatlabShape COMMAND ${Matlab_MAIN_PROGRAM} -batch ${matlab_cmd})
 
-endif(Matlab_FOUND)
+set_tests_properties(MatlabShape PROPERTIES
+LABELS "shaky;matlab"
+DEPENDS shape
+REQUIRED_FILES ${shape_file}
+FIXTURES_REQUIRED h5shape
+)
+
 endif(matlab)
 
 # --- h5ls
