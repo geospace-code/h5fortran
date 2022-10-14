@@ -3,8 +3,14 @@
 
 "configurePresets": [
 {
-  "name": "multi",
+  "name": "default",
   "binaryDir": "${sourceDir}/build",
+  "cacheVariables": {
+    "CMAKE_COMPILE_WARNING_AS_ERROR": true
+  }
+},
+{
+  "name": "multi", "inherits": "default",
   "displayName": "Ninja Multi-Config",
   "generator": "Ninja Multi-Config"
 },
@@ -17,12 +23,13 @@
     "CMAKE_BUILD_TYPE": "Debug",
     "ENABLE_COVERAGE": true
   }
-},
-{
-  "name": "phony"
 }
 ],
 "buildPresets": [
+  {
+    "name": "default",
+    "configurePreset": "default"
+  },
   {
     "name": "release",
     "configurePreset": "multi",
@@ -52,10 +59,10 @@
 "testPresets": [
 {
   "name": "default",
-  "configurePreset": "phony",
+  "configurePreset": "default",
   "output": {
     "outputOnFailure": true,
-    "verbosity": "default"
+    "verbosity": "verbose"
   },
   "execution": {
     "noTestsAction": "error",

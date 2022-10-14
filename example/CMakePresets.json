@@ -1,0 +1,34 @@
+{
+  "version": 3,
+
+"configurePresets": [
+{
+  "name": "default",
+  "binaryDir": "${sourceDir}/build"
+}
+],
+"buildPresets": [
+  {
+    "name": "default",
+    "configurePreset": "default",
+    "configuration": "Release"
+  }
+],
+"testPresets": [
+  {
+    "name": "default",
+    "configurePreset": "default",
+    "configuration": "Release",
+    "output": {
+      "outputOnFailure": true,
+      "verbosity": "verbose"
+    },
+    "execution": {
+      "noTestsAction": "error",
+      "scheduleRandom": true,
+      "stopOnFailure": false,
+      "timeout": 60
+    }
+  }
+]
+}

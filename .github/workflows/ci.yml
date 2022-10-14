@@ -1,7 +1,7 @@
 name: ci
 
 env:
-   HOMEBREW_NO_INSTALL_CLEANUP: 1
+  HOMEBREW_NO_INSTALL_CLEANUP: 1
 
 on:
   push:
@@ -62,41 +62,42 @@ jobs:
 
     - uses: actions/checkout@v3
 
-    - name: Configure h5fortran
+    - name: Configure
       run: >-
-        cmake --preset multi
-        -DCMAKE_INSTALL_PREFIX=${{ runner.temp }}
+        cmake
+        --preset multi
+        --install-prefix ${{ runner.temp }}
         -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
-        -DCMAKE_COMPILE_WARNING_AS_ERROR:BOOL=ON
 
     - name: Build Debug
-      run: cmake --build --parallel --preset debug
+      run: cmake --build --preset debug
     - name: Test Debug
-      run: ctest --preset debug --output-junit test-debug.xml
+      run: ctest --preset debug
 
     - name: Build Release
-      run: cmake --build --parallel --preset release
+      run: cmake --build --preset release
     - name: Test Release
-      run: ctest --preset release --output-junit test-release.xml
+      run: ctest --preset release
 
-    - name: Publish Unit Test Results
-      uses: actions/upload-artifact@v3
-      if: always()
-      with:
-        name: test-junit
-        path: build/test-*.xml
+    - name: install package
+      run: cmake --install build
 
-    - run: cmake --install build
-
-    - name: configure examples
+    - name: example config
       run: >-
-        cmake -S example -B example/build
+        cmake
+        --preset default
+        -GNinja
         -DCMAKE_PREFIX_PATH:PATH=${{ runner.temp }}
         -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
-    - name: build examples
-      run: cmake --build example/build --parallel
-    - name: Test examples
-      run: ctest --test-dir example/build -V
+      working-directory: example
+
+    - name: example build
+      run: cmake --build --preset default
+      working-directory: example
+
+    - name: example test
+      run: ctest --preset default
+      working-directory: example
 
 
   valgrind-memory:
@@ -151,8 +152,6 @@ jobs:
   msys2:
     timeout-minutes: 30
     runs-on: windows-latest
-    env:
-      CMAKE_GENERATOR: Ninja
 
     strategy:
       matrix:
@@ -180,23 +179,39 @@ jobs:
 
     - uses: actions/checkout@v3
 
-    - run: >-
-        cmake --preset multi
-        -DCMAKE_INSTALL_PREFIX=${{ runner.temp }}
+    - name: config
+      run: >-
+        cmake
+        --preset multi
+        --install-prefix ${{ runner.temp }}
         -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
-        -DCMAKE_COMPILE_WARNING_AS_ERROR:BOOL=ON
 
-    - run: cmake --build --parallel --preset debug
-    - run: ctest --preset debug -V
+    - name: Build Debug
+      run: cmake --build --preset debug
+    - name: Test Debug
+      run: ctest --preset debug
 
-    - run: cmake --build --parallel --preset release
-    - run: ctest --preset release
+    - name: Build Release
+      run: cmake --build --preset release
+    - name: Test Release
+      run: ctest --preset release
 
-    - run: cmake --install build
+    - name: install package
+      run: cmake --install build
 
-    - name: configure examples
-      run: cmake -S example -B example/build -DCMAKE_PREFIX_PATH:PATH=${{ runner.temp }} -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
-    - name: build Examples
-      run: cmake --build example/build --parallel
-    - name: Test Examples
-      run: ctest --test-dir example/build -V
+    - name: example config
+      run: >-
+        cmake
+        --preset default
+        -GNinja
+        -DCMAKE_PREFIX_PATH:PATH=${{ runner.temp }}
+        -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+      working-directory: example
+
+    - name: example build
+      run: cmake --build --preset default
+      working-directory: example
+
+    - name: example test
+      run: ctest --preset default
+      working-directory: example
