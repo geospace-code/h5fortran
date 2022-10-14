@@ -2,6 +2,7 @@ name: intel-oneapi
 
 env:
   CC: icx
+  CXX: icpx
   FC: ifx
 
 on:
@@ -49,42 +50,55 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: Configure HDF5
-      run: cmake -S scripts -B scripts/build -DCMAKE_INSTALL_PREFIX=${{ runner.temp }}
+      run: >-
+        cmake
+        -GNinja
+        -S scripts -B scripts/build
+        --install-prefix ${{ runner.temp }}
 
     - name: Build/install HDF5
-      run: cmake --build scripts/build --parallel
+      run: cmake --build scripts/build
 
     - name: Configure h5fortran
-      run: cmake --preset multi -DCMAKE_INSTALL_PREFIX=${{ runner.temp }} -DCMAKE_PREFIX_PATH=${{ runner.temp }}
+      run: >-
+        cmake
+        --preset multi
+        --install-prefix ${{ runner.temp }}
+        -DCMAKE_PREFIX_PATH=${{ runner.temp }}
+        -DCMAKE_COMPILE_WARNING_AS_ERROR:BOOL=false
+# bug fixed in CMake 3.24.3 -- Fortran errors not supported for oneAPI
 
     - name: print config log
       if: ${{ failure() }}
       run: cat build/CMakeFiles/CMakeError.log
 
     - name: Release build
-      run: cmake --build --preset release --parallel
+      run: cmake --build --preset release
 
     - name: Release unit test
-      run: ctest --preset release --output-junit test-release-oneapi.xml
+      run: ctest --preset release
 
     - name: debug build
-      run: cmake --build --preset debug --parallel
+      run: cmake --build --preset debug
 
     - name: debug unit test
-      run: ctest --preset debug --output-junit test-debug-oneapi.xml
+      run: ctest --preset debug
 
     - name: install package
       run: cmake --install build
 
-    - name: configure example
-      run: cmake -S example -B example/build -DCMAKE_PREFIX_PATH=${{ runner.temp }}
+    - name: example config
+      run: >-
+        cmake
+        --preset default
+        -GNinja
+        -DCMAKE_PREFIX_PATH=${{ runner.temp }}
+      working-directory: example
 
-    - name: print config log
-      if: ${{ failure() }}
-      run: cat example/build/CMakeFiles/CMakeError.log
+    - name: example build
+      run: cmake --build --preset default
+      working-directory: example
 
-    - name: build example
-      run: cmake --build example/build --parallel || cmake --build example/build -v
-
-    - name: test example
-      run: ctest --test-dir example/build -V
+    - name: example test
+      run: ctest --preset default
+      working-directory: example
