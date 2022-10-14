@@ -13,6 +13,8 @@ on:
       - "**/CMakeLists.txt"
       - "**.cmake"
       - ".github/workflows/ci.yml"
+      - "!memcheck.cmake"
+      - "!coverage.cmake"
 
 
 jobs:
@@ -88,7 +90,6 @@ jobs:
         --preset default
         -GNinja
         -DCMAKE_PREFIX_PATH:PATH=${{ runner.temp }}
-        -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
       working-directory: example
 
     - name: example build
@@ -205,7 +206,6 @@ jobs:
         --preset default
         -GNinja
         -DCMAKE_PREFIX_PATH:PATH=${{ runner.temp }}
-        -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
       working-directory: example
 
     - name: example build

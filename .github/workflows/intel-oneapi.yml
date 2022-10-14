@@ -16,6 +16,7 @@ on:
       - "**/CMakeLists.txt"
       - ".github/workflows/intel-oneapi.yml"
       - "!memcheck.cmake"
+      - "!coverage.cmake"
 
 
 jobs:
