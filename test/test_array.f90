@@ -5,7 +5,7 @@ use, intrinsic :: iso_fortran_env, only: real32, real64, int32, stderr=>error_un
 
 use h5fortran, only : hdf5_file, HSIZE_T, H5T_NATIVE_INTEGER
 
-implicit none (type, external)
+implicit none
 
 real(real32) :: nan
 

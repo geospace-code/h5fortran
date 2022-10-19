@@ -5,7 +5,7 @@ program test_destruct
 use, intrinsic :: iso_fortran_env, only : stderr=>error_unit
 use h5fortran, only: hdf5_file
 
-implicit none (type, external)
+implicit none
 
 character(*), parameter :: fn = "test_destruct.h5"
 

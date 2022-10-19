@@ -1,6 +1,6 @@
 submodule (h5fortran:hdf5_read) reader_lt
 
-implicit none (type, external)
+implicit none
 
 contains
 

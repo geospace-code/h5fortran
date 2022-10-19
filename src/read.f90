@@ -16,7 +16,7 @@ H5I_ATTR_F, H5I_DATASET_F
 
 use H5LT, only : h5ltpath_valid_f, h5ltget_dataset_ndims_f
 
-implicit none (type, external)
+implicit none
 
 contains
 

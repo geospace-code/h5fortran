@@ -3,7 +3,7 @@ program test_version
 
 use h5fortran, only : hdf5version
 
-implicit none (type, external)
+implicit none
 
 character(24) :: vstr
 integer :: v(3), i, j, k, c

@@ -14,7 +14,7 @@ H5D_CONTIGUOUS_F, H5D_CHUNKED_F, H5D_COMPACT_F, &
 H5I_FILE_F, &
 H5S_SELECT_SET_F
 
-implicit none (type, external)
+implicit none
 
 contains
 

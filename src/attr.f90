@@ -7,7 +7,7 @@ H5Sget_simple_extent_dims_f, H5Sget_simple_extent_ndims_f, &
 H5Tcopy_f, H5Tset_size_f, H5Tclose_f, &
 H5Dopen_f, H5Dclose_f
 
-implicit none (type, external)
+implicit none
 
 contains
 

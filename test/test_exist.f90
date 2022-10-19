@@ -3,7 +3,7 @@ program exist_tests
 use, intrinsic :: iso_fortran_env, only : stderr=>error_unit
 use h5fortran, only: hdf5_file, h5write, h5exist, is_hdf5, hdf5_close
 
-implicit none (type, external)
+implicit none
 
 call test_is_hdf5()
 print *, 'OK: is_hdf5'

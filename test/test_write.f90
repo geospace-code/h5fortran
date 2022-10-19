@@ -4,7 +4,7 @@ use, intrinsic :: iso_fortran_env, only : real32, real64, int32
 
 use h5fortran, only : hdf5_file
 
-implicit none (type, external)
+implicit none
 
 call test_simple_write('test_write.h5')
 print *, "OK: test simple write"

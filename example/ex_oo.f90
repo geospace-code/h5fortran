@@ -1,7 +1,7 @@
 program example2
 
 use h5fortran, only : hdf5_file
-implicit none (type, external)
+implicit none
 
 character(:), allocatable :: filename
 integer :: i32

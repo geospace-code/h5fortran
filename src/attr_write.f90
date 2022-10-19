@@ -2,7 +2,7 @@ submodule (h5fortran:attr_smod) attr_write
 
 use hdf5, only: H5Awrite_f
 
-implicit none (type, external)
+implicit none
 
 contains
 

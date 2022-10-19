@@ -9,7 +9,7 @@ H5T_NATIVE_DOUBLE, H5T_NATIVE_REAL, H5T_NATIVE_INTEGER, H5T_NATIVE_CHARACTER, H5
 H5T_INTEGER_F, H5T_FLOAT_F, H5T_STRING_F, &
 H5P_DEFAULT_F
 
-implicit none (type, external)
+implicit none
 
 private
 

@@ -17,7 +17,7 @@ H5F_SCOPE_GLOBAL_F
 
 use h5lt, only: h5ltpath_valid_f
 
-implicit none (type, external)
+implicit none
 
 contains
 

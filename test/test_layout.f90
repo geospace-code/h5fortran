@@ -4,7 +4,7 @@ use, intrinsic :: iso_fortran_env, only : real32, real64, int32
 use h5fortran, only : hdf5_file
 use hdf5, only : H5D_COMPACT_F
 
-implicit none (type, external)
+implicit none
 
 character(*), parameter :: fn = 'test_layout.h5'
 

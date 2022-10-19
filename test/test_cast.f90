@@ -6,7 +6,7 @@ use h5fortran, only : hdf5_file, &
  H5T_NATIVE_REAL, H5T_NATIVE_DOUBLE, H5T_NATIVE_INTEGER, H5T_NATIVE_CHARACTER, H5T_STD_I64LE
 use, intrinsic :: iso_fortran_env, only : real32, real64, int32, int64
 
-implicit none (type, external)
+implicit none
 
 character(*), parameter :: fn = 'test_cast.h5'
 

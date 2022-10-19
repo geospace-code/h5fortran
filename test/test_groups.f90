@@ -4,7 +4,7 @@ use, intrinsic:: iso_fortran_env, only: int32, real32, real64, stderr=>error_uni
 
 use h5fortran, only: hdf5_file, h5write, h5read
 
-implicit none (type, external)
+implicit none
 
 call test_group('test_groups.h5')
 print *,'OK: HDF5 group'

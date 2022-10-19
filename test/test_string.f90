@@ -5,7 +5,7 @@ use, intrinsic:: iso_fortran_env, only:  stderr=>error_unit
 use hdf5, only: H5T_STR_SPACEPAD_F, HSIZE_T
 use h5fortran, only: hdf5_file
 
-implicit none (type, external)
+implicit none
 
 character(*), parameter :: fn='test_string.h5'
 

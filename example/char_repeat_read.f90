@@ -1,7 +1,7 @@
 program repeat_read
 
 use h5fortran, only : hdf5_file
-implicit none (type, external)
+implicit none
 
 type(hdf5_file) :: h
 

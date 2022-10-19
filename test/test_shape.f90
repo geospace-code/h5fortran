@@ -3,7 +3,7 @@ program test_shape
 use h5fortran, only: hdf5_file,hsize_t, is_hdf5
 use, intrinsic:: iso_fortran_env, only: real64, stdout=>output_unit, stderr=>error_unit
 
-implicit none (type, external)
+implicit none
 
 character(*), parameter :: fn = 'test_shape.h5'
 

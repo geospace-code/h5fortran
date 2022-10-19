@@ -2,7 +2,7 @@ program test_lt
 
 use h5fortran, only : h5write, h5read
 
-implicit none (type, external)
+implicit none
 
 integer :: L, L1(8), L2(2,1), L3(1,1,1), L4(1,1,1,1), L5(1,1,1,1,1), L6(1,1,1,1,1,1), L7(1,1,1,1,1,1,1)
 

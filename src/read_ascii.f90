@@ -4,7 +4,7 @@ use, intrinsic :: iso_c_binding, only : C_CHAR, C_F_POINTER
 use hdf5, only : H5T_STR_NULLTERM_F, &
 H5Aread_f
 
-implicit none (type, external)
+implicit none
 
 interface read_vlen
 procedure read_vlen0, read_vlen1, read_vlen2, read_vlen3, read_vlen4, read_vlen5, read_vlen6, read_vlen7

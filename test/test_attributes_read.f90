@@ -4,7 +4,7 @@ use, intrinsic :: iso_fortran_env, only : stderr=>error_unit
 
 use h5fortran, only: hdf5_file, HSIZE_T
 
-implicit none (type, external)
+implicit none
 
 character(1000) :: pyp, vstr, fstr
 character(4), parameter :: smiley = "😀", wink = "😉"

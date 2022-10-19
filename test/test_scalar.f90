@@ -5,7 +5,7 @@ use, intrinsic :: iso_fortran_env, only: real32, real64, int32, int64, stderr=>e
 use hdf5, only: HSIZE_T, H5T_NATIVE_INTEGER, H5T_STD_I64LE
 use h5fortran, only: hdf5_file
 
-implicit none (type, external)
+implicit none
 
 character(*), parameter :: fn = 'test_scalar.h5'
 

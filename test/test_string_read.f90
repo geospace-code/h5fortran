@@ -3,7 +3,7 @@ program main
 use hdf5, only: H5T_STR_NULLPAD_F, H5T_STR_NULLTERM_F
 use h5fortran, only: hdf5_file
 
-implicit none (type, external)
+implicit none
 
 character(1000) :: pyp, vstr, fstr
 character(4), parameter :: smiley = "😀", wink = "😉"

@@ -5,7 +5,7 @@ use, intrinsic:: ieee_arithmetic, only : ieee_value, ieee_quiet_nan, ieee_is_fin
 use h5fortran, only : hdf5_file
 use hdf5, only : H5T_NATIVE_REAL, H5T_NATIVE_DOUBLE, H5T_NATIVE_INTEGER, H5T_NATIVE_CHARACTER
 
-implicit none (type, external)
+implicit none
 
 type(hdf5_file) :: h5
 

@@ -1,7 +1,7 @@
 program nonexistvar
 
 use h5fortran, only : hdf5_file
-implicit none (type, external)
+implicit none
 
 integer :: u
 type(hdf5_file) :: h

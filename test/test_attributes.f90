@@ -4,7 +4,7 @@ use, intrinsic:: iso_fortran_env, only: int32, real32, real64, stderr=>error_uni
 
 use h5fortran, only: hdf5_file, h5write_attr, h5read_attr, HSIZE_T
 
-implicit none (type, external)
+implicit none
 
 character(*), parameter :: filename = 'test_attr.h5'
 character(8) :: s32  !< arbitrary length

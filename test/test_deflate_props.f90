@@ -6,7 +6,7 @@ use hdf5, only : H5D_CHUNKED_F, H5D_CONTIGUOUS_F
 
 use h5fortran, only: hdf5_file, HSIZE_T
 
-implicit none (type, external)
+implicit none
 
 character(*), parameter :: fn1='deflate1.h5'
 integer, parameter :: N(2) = [50, 1000], &

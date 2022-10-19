@@ -7,7 +7,7 @@ H5Tget_class_f, H5Tget_native_type_f, H5Tget_size_f, H5Tget_strpad_f, &
 H5T_DIR_ASCEND_F, &
 H5S_ALL_F
 
-implicit none (type, external)
+implicit none
 
 contains
 

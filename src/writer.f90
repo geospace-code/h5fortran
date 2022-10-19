@@ -2,7 +2,7 @@ submodule (h5fortran:write) writer
 
 use hdf5, only: h5dwrite_f
 
-implicit none (type, external)
+implicit none
 
 contains
 
