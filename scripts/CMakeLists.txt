@@ -15,6 +15,8 @@ endif()
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../cmake)
 
 
+if(hdf5_parallel)
+
 if(NOT MPI_ROOT AND DEFINED ENV{MPI_ROOT})
   set(MPI_ROOT $ENV{MPI_ROOT})
 endif()
@@ -30,6 +32,8 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND MPI_ROOT)
     Fix this by adding to ~/.bashrc or similar:
       export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${MPI_ROOT}/lib")
   endif()
+endif()
+
 endif()
 
 # HDF5 install fails to work (link) if prior HDF5 library is installed there
