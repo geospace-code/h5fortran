@@ -10,14 +10,12 @@ if(NOT abi_ok)
   if(abi_ok)
     message(CHECK_PASS "OK")
   else()
-    set(err_log ${CMAKE_CURRENT_BINARY_DIR}/abi_check/CMakeError.log)
     message(FATAL_ERROR "ABI-incompatible compilers:
     C compiler ${CMAKE_C_COMPILER_ID} ${CMAKE_C_COMPILER_VERSION}
     Fortran compiler ${CMAKE_Fortran_COMPILER_ID} ${CMAKE_Fortran_COMPILER_VERSION}
-    For logged errors see ${err_log}
+    ${abi_log}
     "
     )
-    file(WRITE ${err_log} ${abi_log})
   endif()
 endif()
 
