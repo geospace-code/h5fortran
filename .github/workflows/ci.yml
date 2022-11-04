@@ -67,6 +67,7 @@ jobs:
     - name: Configure
       run: >-
         cmake
+        -DCMAKE_COMPILE_WARNING_AS_ERROR:BOOL=ON
         --preset multi
         --install-prefix ${{ runner.temp }}
         -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
@@ -183,6 +184,7 @@ jobs:
     - name: config
       run: >-
         cmake
+        -DCMAKE_COMPILE_WARNING_AS_ERROR:BOOL=ON
         --preset multi
         --install-prefix ${{ runner.temp }}
         -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
