@@ -50,7 +50,6 @@ $<INSTALL_INTERFACE:include>
 )
 target_link_libraries(h5fortran PUBLIC HDF5::HDF5)
 set_property(TARGET h5fortran PROPERTY Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include)
-set_property(TARGET h5fortran PROPERTY LABELS core)
 set_property(TARGET h5fortran PROPERTY VERSION ${PROJECT_VERSION})
 
 # GLOBAL needed for use by FetchContent

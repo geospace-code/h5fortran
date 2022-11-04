@@ -2,17 +2,16 @@ cmake_minimum_required(VERSION 3.20)
 
 set(CTEST_PROJECT_NAME "h5fortran")
 
-set(CTEST_LABELS_FOR_SUBPROJECTS "unit;core;shaky")
+set(opts
+-DCMAKE_COMPILE_WARNING_AS_ERROR:BOOL=ON
+)
 
-set(opts)
+option(submit "use CDash upload" true)
 
 # --- main script
 
 set(CTEST_NIGHTLY_START_TIME "01:00:00 UTC")
 set(CTEST_SUBMIT_URL "https://my.cdash.org/submit.php?project=${CTEST_PROJECT_NAME}")
-
-# --- Experimental, Nightly, Continuous
-# https://cmake.org/cmake/help/latest/manual/ctest.1.html#dashboard-client-modes
 
 if(NOT CTEST_MODEL)
   set(CTEST_MODEL "Experimental")
@@ -21,26 +20,17 @@ endif()
 # --- other defaults
 set(CTEST_TEST_TIMEOUT 10)
 
-set(CTEST_USE_LAUNCHERS 1)
+set(CTEST_USE_LAUNCHERS true)
 set(CTEST_OUTPUT_ON_FAILURE true)
+set(CTEST_START_WITH_EMPTY_BINARY_DIRECTORY_ONCE true)
 
 set(CTEST_SOURCE_DIRECTORY ${CTEST_SCRIPT_DIRECTORY})
 if(NOT DEFINED CTEST_BINARY_DIRECTORY)
   set(CTEST_BINARY_DIRECTORY ${CTEST_SOURCE_DIRECTORY}/build)
 endif()
 
-if(EXISTS ${CTEST_BINARY_DIRECTORY}/CMakeCache.txt)
-  ctest_empty_binary_directory(${CTEST_BINARY_DIRECTORY})
-endif()
-
-if(NOT DEFINED CTEST_SITE)
-  if(DEFINED ENV{CTEST_SITE})
-    set(CTEST_SITE $ENV{CTEST_SITE})
-  else()
-    cmake_host_system_information(RESULT sys_name QUERY OS_NAME OS_RELEASE OS_VERSION)
-    string(REPLACE ";" " " sys_name ${sys_name})
-    set(CTEST_SITE ${sys_name})
-  endif()
+if(NOT DEFINED CTEST_SITE AND DEFINED ENV{CTEST_SITE})
+  set(CTEST_SITE $ENV{CTEST_SITE})
 endif()
 
 find_program(GIT_EXECUTABLE NAMES git REQUIRED)
@@ -51,37 +41,30 @@ if(NOT CTEST_BUILD_NAME)
   execute_process(COMMAND ${GIT_EXECUTABLE} describe --tags
   WORKING_DIRECTORY ${CTEST_SOURCE_DIRECTORY}
   OUTPUT_VARIABLE git_rev OUTPUT_STRIP_TRAILING_WHITESPACE
-  COMMAND_ERROR_IS_FATAL ANY
+  RESULT_VARIABLE ret
   )
-  set(CTEST_BUILD_NAME ${git_rev})
+  if(ret EQUAL 0)
+    set(CTEST_BUILD_NAME ${git_rev})
+  endif()
 endif()
 
-# --- find generator
+
 function(find_generator)
 
-if(CTEST_CMAKE_GENERATOR)
-  return()
-elseif(DEFINED ENV{CMAKE_GENERATOR})
+if(NOT CTEST_CMAKE_GENERATOR AND DEFINED ENV{CMAKE_GENERATOR})
   set(CTEST_CMAKE_GENERATOR $ENV{CMAKE_GENERATOR} PARENT_SCOPE)
+  return()
+  # return here as if(...) wouldn't detect it in parent_scope
+endif()
+if(CTEST_CMAKE_GENERATOR)
   return()
 endif()
 
 find_program(ninja NAMES ninja ninja-build samu)
 
 if(ninja)
-  execute_process(COMMAND ${ninja} --version
-  OUTPUT_VARIABLE ninja_version OUTPUT_STRIP_TRAILING_WHITESPACE
-  RESULT_VARIABLE ret
-  TIMEOUT 5
-  )
-  if(ret EQUAL 0 AND ninja_version VERSION_GREATER_EQUAL 1.10)
-    set(CTEST_CMAKE_GENERATOR Ninja PARENT_SCOPE)
-    return()
-  endif()
-endif(ninja)
-
-set(CTEST_BUILD_FLAGS -j)  # not --parallel as this goes to generator directly
-if(WIN32)
+  set(CTEST_CMAKE_GENERATOR "Ninja" PARENT_SCOPE)
+elseif(WIN32)
   set(CTEST_CMAKE_GENERATOR "MinGW Makefiles" PARENT_SCOPE)
 else()
   set(CTEST_CMAKE_GENERATOR "Unix Makefiles" PARENT_SCOPE)
@@ -135,28 +118,46 @@ RETURN_VALUE ret
 CAPTURE_CMAKE_ERROR err
 )
 if(NOT (ret EQUAL 0 AND err EQUAL 0))
-  ctest_submit(BUILD_ID build_id)
+  if(submit)
+    ctest_submit(BUILD_ID build_id)
+  endif()
   message(FATAL_ERROR "Configure ${build_id} failed: return ${ret} cmake return ${err}")
 endif()
 
+if(DEFINED ENV{CMAKE_BUILD_PARALLEL_LEVEL})
+  set(Ncpu $ENV{CMAKE_BUILD_PARALLEL_LEVEL})
+else()
+  cmake_host_system_information(RESULT Ncpu QUERY NUMBER_OF_PHYSICAL_CORES)
+endif()
+
 ctest_build(
+PARALLEL_LEVEL ${Ncpu}
 RETURN_VALUE ret
 CAPTURE_CMAKE_ERROR err
 )
-ctest_submit(BUILD_ID build_id)
 if(NOT (ret EQUAL 0 AND err EQUAL 0))
+  if(submit)
+    ctest_submit(BUILD_ID build_id)
+  endif()
   message(FATAL_ERROR "Build ${build_id} failed: return ${ret} cmake return ${err}")
 endif()
 
+if(DEFINED ENV{CTEST_PARALLEL_LEVEL})
+  set(Ntest $ENV{CTEST_PARALLEL_LEVEL})
+else()
+  set(Ntest ${Ncpu})
+endif()
+
 ctest_test(
-SCHEDULE_RANDOM ON
-OUTPUT_JUNIT ${CTEST_BINARY_DIRECTORY}/junit_${build_id}.xml
+SCHEDULE_RANDOM true
+PARALLEL_LEVEL ${Ntest}
 RETURN_VALUE ret
 CAPTURE_CMAKE_ERROR err
 )
 
-ctest_submit(BUILD_ID build_id)
-
+if(submit)
+  ctest_submit(BUILD_ID build_id)
+endif()
 if(NOT (ret EQUAL 0 AND err EQUAL 0))
   message(FATAL_ERROR "Test ${build_id} failed: CTest code ${ret}, CMake code ${err}.")
 endif()
