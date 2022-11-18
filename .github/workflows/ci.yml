@@ -24,11 +24,11 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-22.04]
         shared: [false]
-        gcc: [8, 9, 10, 11]
+        gcc: [9, 10, 11]
         include:
-        - os: ubuntu-latest
+        - os: ubuntu-22.04
           shared: true
           gcc: 11
         - os: macos-latest
@@ -56,7 +56,7 @@ jobs:
       if: runner.os == 'Linux'
       run: |
         sudo apt update
-        sudo apt install --no-install-recommends gcc-${{ matrix.gcc }} gfortran-${{ matrix.gcc}} ninja-build libhdf5-dev
+        sudo apt install --no-install-recommends ninja-build libhdf5-dev
 
     - name: Install HDF5 (MacOS)
       if: runner.os == 'macOS'
