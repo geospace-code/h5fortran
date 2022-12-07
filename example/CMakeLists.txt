@@ -22,6 +22,13 @@ add_test(NAME Fortran_oo COMMAND ex_oo)
 add_executable(repeat_char_read char_repeat_read.f90)
 target_link_libraries(repeat_char_read PRIVATE h5fortran::h5fortran)
 
+## VTK HDF5 write example
+add_executable(vtk_write vtk_write.f90)
+target_link_libraries(vtk_write PRIVATE h5fortran::h5fortran)
+add_test(NAME VTK COMMAND vtk_write)
+
+## C, C++ examples
+
 add_executable(c_fcn ex_fcn.c)
 target_link_libraries(c_fcn PRIVATE fortran_interface)
 target_compile_features(c_fcn PRIVATE c_std_99)
