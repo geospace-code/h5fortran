@@ -1,9 +1,10 @@
 {
-  "version": 3,
+  "version": 6,
 
 "configurePresets": [
 {
   "name": "default",
+  "generator": "Ninja",
   "binaryDir": "${sourceDir}/build",
   "cacheVariables": {
     "CMAKE_COMPILE_WARNING_AS_ERROR": true
@@ -29,6 +30,21 @@
   {
     "name": "default",
     "configurePreset": "default"
+  },
+  {
+    "name": "explain",
+    "configurePreset": "default",
+    "nativeToolOptions": ["-d", "explain"]
+  },
+  {
+    "name": "keep",
+    "configurePreset": "default",
+    "nativeToolOptions": ["-d", "keeprsp", "-d", "keepdepfile"]
+  },
+  {
+    "name": "stats",
+    "configurePreset": "default",
+    "nativeToolOptions": ["-d", "stats"]
   },
   {
     "name": "release",
@@ -87,5 +103,58 @@
   "configurePreset": "multi",
   "configuration": "Debug"
 }
+],
+"workflowPresets": [
+  {
+    "name": "default",
+    "steps": [
+      {
+        "type": "configure",
+        "name": "default"
+      },
+      {
+        "type": "build",
+        "name": "default"
+      },
+      {
+        "type": "test",
+        "name": "default"
+      }
+    ]
+  },
+  {
+    "name": "debug",
+    "steps": [
+      {
+        "type": "configure",
+        "name": "multi"
+      },
+      {
+        "type": "build",
+        "name": "debug"
+      },
+      {
+        "type": "test",
+        "name": "debug"
+      }
+    ]
+  },
+  {
+    "name": "release",
+    "steps": [
+      {
+        "type": "configure",
+        "name": "multi"
+      },
+      {
+        "type": "build",
+        "name": "release"
+      },
+      {
+        "type": "test",
+        "name": "release"
+      }
+    ]
+  }
 ]
 }

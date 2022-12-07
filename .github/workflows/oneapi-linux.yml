@@ -14,9 +14,10 @@ on:
       - "**.F90"
       - "**.cmake"
       - "**/CMakeLists.txt"
-      - ".github/workflows/intel-oneapi.yml"
+      - ".github/workflows/oneapi-linux.yml"
       - "!memcheck.cmake"
       - "!coverage.cmake"
+      - "!example/*"
 
 
 jobs:
@@ -62,44 +63,29 @@ jobs:
 
     - name: Configure h5fortran
       run: >-
-        cmake
-        --preset multi
+        cmake --preset multi
         --install-prefix ${{ runner.temp }}
         -DCMAKE_PREFIX_PATH=${{ runner.temp }}
-        -DCMAKE_COMPILE_WARNING_AS_ERROR:BOOL=false
-# bug fixed in CMake 3.24.3 -- Fortran errors not supported for oneAPI
 
     - name: print config log
       if: ${{ failure() }}
       run: cat build/CMakeFiles/CMakeError.log
 
-    - name: Release build
-      run: cmake --build --preset release
+    - name: Release build / test
+      run: cmake --workflow --preset release
 
-    - name: Release unit test
-      run: ctest --preset release
-
-    - name: debug build
-      run: cmake --build --preset debug
-
-    - name: debug unit test
-      run: ctest --preset debug
+    - name: debug build / test
+      run: cmake --workflow --preset debug
 
     - name: install package
       run: cmake --install build
 
     - name: example config
       run: >-
-        cmake
-        --preset default
-        -GNinja
+        cmake --preset default
         -DCMAKE_PREFIX_PATH=${{ runner.temp }}
       working-directory: example
 
-    - name: example build
-      run: cmake --build --preset default
-      working-directory: example
-
-    - name: example test
-      run: ctest --preset default
+    - name: example build / test
+      run: cmake --workflow --preset default
       working-directory: example

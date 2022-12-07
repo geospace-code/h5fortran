@@ -17,11 +17,11 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest]
         shared: [true, false]
-        exclude:
+        include:
         - os: macos-latest
-          shared: true
+          shared: false
 
     runs-on: ${{ matrix.os}}
 
@@ -39,7 +39,7 @@ jobs:
 
     - uses: actions/checkout@v3
 
-    - name: Configure HDF5-MPI
+    - name: Configure HDF5 library
       run: >-
         cmake
         -GNinja
@@ -52,34 +52,23 @@ jobs:
 
     - name: configure h5fortran
       run: >-
-        cmake
-        --preset default
-        -GNinja
+        cmake --preset default
         --install-prefix ${{ runner.temp }}
         -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
         -DCMAKE_PREFIX_PATH=${{ runner.temp }}
 
-    - name: build h5fortran
-      run: cmake --build --preset default
-
-    - name: test h5fortran
-      run: ctest --preset default
+    - name: build / test h5fortran
+      run: cmake --workflow --preset default
 
     - name: install h5fortran
       run: cmake --install build
 
     - name: configure examples
       run: >-
-        cmake
-        --preset default
-        -GNinja
+        cmake --preset default
         -DCMAKE_PREFIX_PATH:PATH=${{ runner.temp }}
       working-directory: example
 
-    - name: build Examples
-      run: cmake --build --preset default
-      working-directory: example
-
-    - name: Test Examples
-      run: ctest --preset default
+    - name: build / test examples
+      run: cmake --workflow --preset default
       working-directory: example

@@ -1,34 +1,52 @@
 {
-  "version": 3,
+  "version": 6,
 
 "configurePresets": [
 {
   "name": "default",
+  "generator": "Ninja",
   "binaryDir": "${sourceDir}/build"
 }
 ],
 "buildPresets": [
   {
     "name": "default",
-    "configurePreset": "default",
-    "configuration": "Release"
+    "configurePreset": "default"
   }
 ],
 "testPresets": [
+{
+  "name": "default",
+  "configurePreset": "default",
+  "output": {
+    "outputOnFailure": true,
+    "verbosity": "verbose"
+  },
+  "execution": {
+    "noTestsAction": "error",
+    "scheduleRandom": true,
+    "stopOnFailure": false,
+    "timeout": 60
+  }
+}
+],
+"workflowPresets": [
   {
     "name": "default",
-    "configurePreset": "default",
-    "configuration": "Release",
-    "output": {
-      "outputOnFailure": true,
-      "verbosity": "verbose"
-    },
-    "execution": {
-      "noTestsAction": "error",
-      "scheduleRandom": true,
-      "stopOnFailure": false,
-      "timeout": 60
-    }
+    "steps": [
+      {
+        "type": "configure",
+        "name": "default"
+      },
+      {
+        "type": "build",
+        "name": "default"
+      },
+      {
+        "type": "test",
+        "name": "default"
+      }
+    ]
   }
 ]
 }

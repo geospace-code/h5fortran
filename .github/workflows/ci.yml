@@ -66,39 +66,27 @@ jobs:
 
     - name: Configure
       run: >-
-        cmake
-        -DCMAKE_COMPILE_WARNING_AS_ERROR:BOOL=ON
-        --preset multi
+        cmake --preset multi
         --install-prefix ${{ runner.temp }}
         -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
 
-    - name: Build Debug
-      run: cmake --build --preset debug
-    - name: Test Debug
-      run: ctest --preset debug
+    - name: Build / test Debug
+      run: cmake --workflow --preset debug
 
     - name: Build Release
-      run: cmake --build --preset release
-    - name: Test Release
-      run: ctest --preset release
+      run: cmake --workflow --preset release
 
     - name: install package
       run: cmake --install build
 
     - name: example config
       run: >-
-        cmake
-        --preset default
-        -GNinja
+        cmake --preset default
         -DCMAKE_PREFIX_PATH:PATH=${{ runner.temp }}
       working-directory: example
 
-    - name: example build
-      run: cmake --build --preset default
-      working-directory: example
-
-    - name: example test
-      run: ctest --preset default
+    - name: example build / test
+      run: cmake --workflow --preset default
       working-directory: example
 
 
@@ -183,37 +171,25 @@ jobs:
 
     - name: config
       run: >-
-        cmake
-        -DCMAKE_COMPILE_WARNING_AS_ERROR:BOOL=ON
-        --preset multi
+        cmake --preset multi
         --install-prefix ${{ runner.temp }}
         -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
 
-    - name: Build Debug
-      run: cmake --build --preset debug
-    - name: Test Debug
-      run: ctest --preset debug
+    - name: Build / test Debug
+      run: cmake --workflow --preset debug
 
     - name: Build Release
-      run: cmake --build --preset release
-    - name: Test Release
-      run: ctest --preset release
+      run: cmake --workflow --preset release
 
     - name: install package
       run: cmake --install build
 
     - name: example config
       run: >-
-        cmake
-        --preset default
-        -GNinja
+        cmake --preset default
         -DCMAKE_PREFIX_PATH:PATH=${{ runner.temp }}
       working-directory: example
 
     - name: example build
-      run: cmake --build --preset default
-      working-directory: example
-
-    - name: example test
-      run: ctest --preset default
+      run: cmake --workflow --preset default
       working-directory: example
