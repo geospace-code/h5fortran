@@ -1,13 +1,13 @@
 #include <stdio.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include "fortran_interface.h"
 
 
 
 int main(void) {
 
-int_least32_t x = 321;
-int_least32_t y;
+int32_t x = 321, y;
 
 char filename[256] = "h5fortran_example3.h5";
 char varname[64] = "/x_c";
