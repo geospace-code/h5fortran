@@ -40,10 +40,10 @@ type is(character(*))
 class default
   error stop "ERROR:h5fortran:writeattr: unknown dataset type for " // obj_name // ":" // attr // " in " // self%filename
 end select
-if (ier /= 0) error stop 'ERROR:h5fortran:writeattr:H5Awrite: ' // obj_name // ":" // attr // " in " // self%filename
+call estop(ier, "attr_write:H5Awrite", self%filename, obj_name, attr)
 
 call H5Tclose_f(dtype_id, ier)
-if (ier /= 0) error stop 'ERROR:h5fortran:writeattr:H5Tclose ' // obj_name // ":" // attr // " in " // self%filename
+call estop(ier, "attr_write:H5Tclose", self%filename, obj_name, attr)
 
 call H5Aclose_f(attr_id, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:writeattr:H5Aclose " // obj_name // ":" // attr // " in " // self%filename
+call estop(ier, "attr_write:H5Aclose", self%filename, obj_name, attr)
