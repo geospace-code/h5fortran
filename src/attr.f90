@@ -21,7 +21,6 @@ integer(HSIZE_T), dimension(:), intent(in) :: attr_dims
 integer(HID_T), intent(out) :: attr_id, dtype_id
 integer, intent(in), optional :: charlen !< length of character scalar
 
-logical :: attr_exists
 integer :: ier
 integer(HID_T) :: space_id
 
@@ -36,11 +35,7 @@ if(dtype == H5T_NATIVE_CHARACTER) then
   call estop(ier, "attr_create:H5Aset_size", self%filename, obj_name, attr_name)
 endif
 
-
-call H5Aexists_by_name_f(self%file_id, obj_name, attr_name, attr_exists, ier)
-call estop(ier, "attr_create:H5Aexists_by_name", self%filename, obj_name, attr_name)
-
-if(attr_exists) then
+if(self % exist_attr(obj_name, attr_name)) then
   !! unlike datasets, H5Awrite_f doesn't seem to handle overwrites. Errors result like "H5Oattribute.c line 918 in H5O__attr_write(): can't locate open attribute?"
   !! since attribute writes are whole dataset, so we workaround by deleting attribute and creating a new attribute of the same name.
 
@@ -89,9 +84,11 @@ module procedure attr_exist
 
 integer :: ier
 
+attr_exist = self%exist(obj_name)
+if(.not. attr_exist) return
+
 call H5Aexists_by_name_f(self%file_id, obj_name, attr_name, attr_exist, ier)
 call estop(ier, "attr_exist:H5Aexists_by_name", self%filename, obj_name, attr_name)
-
 
 end procedure attr_exist
 
