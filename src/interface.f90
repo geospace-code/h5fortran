@@ -34,7 +34,8 @@ contains
 !> define methods (procedures) that don't need generic procedure
 procedure, public :: open => h5open
 procedure, public :: close => h5close
-procedure, public :: write_group
+procedure, public :: write_group => create_group !< legacy
+procedure, public :: create_group
 procedure, public :: create => hdf_create_user
 procedure, public :: flush => hdf_flush
 procedure, public :: filesize => hdf_filesize
@@ -140,7 +141,7 @@ integer, intent(in), optional :: charlen !< length of character scalar
 class(*), intent(in), optional :: fill_value
 end subroutine
 
-module subroutine write_group(self, group_path)
+module subroutine create_group(self, group_path)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: group_path   !< full path to group
 end subroutine

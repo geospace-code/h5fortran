@@ -265,7 +265,7 @@ real :: val2(1000,1000,3) = 0.
 
 call h5f%open('test.h5')
 
-call h5f%write_group('/scope/')
+call h5f%create_group('/scope')
 
 call h5f%close()
 ```

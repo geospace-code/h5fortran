@@ -22,7 +22,7 @@ type(hdf5_file) :: h5f
 
 call h5f%open(fn, action='w')
 
-call h5f%write_group('/test/')
+call h5f%create_group('/test/')
 
 call h5f%write('/test/group3/scalar', 1_int32)
 

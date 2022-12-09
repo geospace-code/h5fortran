@@ -197,6 +197,13 @@ character(*), intent(in) :: dname, attr  !< dataset name, attribute name
 class(*), intent(in) :: attrval(:)  !< character, real, integer
 ```
 
+Create group and write attributes
+
+```fortran
+call h % create_group("/elephants")
+call h % write_attr("/elephants", "regions", ["Asia", "Africa"])
+```
+
 ## file read operations
 
 Read data from disk to memory
