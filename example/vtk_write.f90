@@ -22,9 +22,18 @@ type(hdf5_file) :: h
 call get_command_argument(1, filename, status=ierr)
 if(ierr /= 0) error stop "please give filename to write"
 
-call h % open(filename, 'w')
+call h % open(filename, 'w', debug=.true.)
 
-call h % write("/VTKHDF/Version", [1, 0])
+!> minimum necessary VTKHDF5 headers
+call h % create_group("/VTKHDF")
+call h % close()
+
+stop
+
+call h % writeattr("/VTKHDF", "Version", [1, 0])
+!! Version == [1, 0]
+call h % writeattr("/VTKHDF", "Type", "ImageData")
+!! Type: ImageData, UnstructuredGrid or OverlappingAMR
 
 call h % close()
 

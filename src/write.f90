@@ -8,7 +8,7 @@ h5pset_chunk_f, h5pset_layout_f, h5pset_deflate_f, h5pset_shuffle_f, h5pset_flet
 h5pcreate_f, h5pclose_f, h5pset_fill_value_f, &
 H5P_DATASET_CREATE_F, &
 h5gopen_f, h5gcreate_f, h5gclose_f, &
-H5Lcreate_soft_f, h5lexists_f, &
+H5Lcreate_soft_f, &
 h5tcopy_f, h5tclose_f, h5tset_size_f, &
 H5S_SCALAR_F, &
 H5D_COMPACT_F, &
@@ -55,7 +55,7 @@ end procedure hdf_create_user
 
 module procedure hdf_create
 
-integer :: ier, drank
+integer :: ier, drank, i
 integer(HID_T) :: dcpl
 integer(HSIZE_T), dimension(:), allocatable :: ddims, maxdims
 
@@ -107,7 +107,8 @@ endif
 !> Only new datasets go past this point
 dcpl = H5P_DEFAULT_F
 
-call self%create_group(dname)
+i = index(dname, "/", back=.true.)
+if(i > 1) call self%create_group(dname(:i-1))
 !! create_group is needed for any dataset in a group e.g. /hi/there/var
 
 !> compression
@@ -211,33 +212,32 @@ integer(HID_T)  :: gid
 integer :: ier
 
 integer :: sp, ep, L
-logical :: gexist
+character(len_trim(group_path)) :: p
 
 if(.not.self%is_open()) error stop 'ERROR:h5fortran:create_group: file handle is not open'
 
 L = len_trim(group_path)
-if(L < 2) return  !< not a new group
+if(L <= 1) return  !< not a new group
 
 sp = 1
-ep = 0
+ep = 1
 
-grps: do
+do while (ep > 0)
   ep = index(group_path(sp+1:L), "/")
-  if (ep == 0) return
 
   ! check subgroup exists
   sp = sp + ep
-  call h5lexists_f(self%file_id, group_path(:sp-1), gexist, ier)
-  if (ier /= 0) error stop "ERROR:h5fortran:create_group: check exists group " // group_path // " in " // self%filename
+  p = group_path(:sp-1)
+  print *, "TRACE: group_path:", p, "len_trim: ", len_trim(p), "sp: ", sp, "ep: ", ep, "L: ", L
 
-  if(gexist) cycle grps
+  if(self % exist(p)) cycle
 
-  call h5gcreate_f(self%file_id, group_path(:sp-1), gid, ier)
-  if (ier /= 0) error stop "ERROR:h5fortran:create_group: create group " // group_path // " in " // self%filename
+  call h5gcreate_f(self%file_id, p, gid, ier)
+  call estop(ier, "create_group:H5Gcreate", self%filename, group_path)
 
   call h5gclose_f(gid, ier)
-  if (ier /= 0) error stop "ERROR:h5fortran:create_group: close new group " // group_path // " in " // self%filename
-end do grps
+  call estop(ier, "create_group:H5Gclose", self%filename, group_path)
+end do
 
 end procedure create_group
 
@@ -363,6 +363,16 @@ call h5fflush_f(self%file_id, H5F_SCOPE_GLOBAL_F, ier)
 if (ier /= 0) error stop 'ERROR:h5fortran:flush ' // self%filename
 
 end procedure hdf_flush
+
+
+pure subroutine estop(ier, id, filename, obj_name)
+integer, intent(in) :: ier
+character(*), intent(in) :: id, filename, obj_name
+
+if(ier == 0) return
+error stop "ERROR:h5fortran:" // trim(id) // ":" // trim(obj_name) // ":" // trim(filename)
+
+end subroutine estop
 
 
 end submodule write
