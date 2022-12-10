@@ -31,7 +31,7 @@ integer(HSIZE_T), dimension(size(dims)) :: maxdims
 integer(SIZE_T) :: ds_size
 
 call H5Iget_type_f(obj_id, obj_type, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:read:H5Iget_type: " // obj_name // " " // self%filename
+call estop(ier, "open_char:H5Iget_type", self%filename, obj_name)
 
 if(obj_type == H5I_DATASET_F) then
   call H5Dget_type_f(obj_id, type_id, ier)
@@ -40,11 +40,11 @@ elseif(obj_type == H5I_ATTR_F) then
 else
   error stop "ERROR:h5fortran:read: only datasets and attributes have datatype " // obj_name // " " // self%filename
 endif
-if(ier/=0) error stop 'ERROR:h5fortran:read: obj_dtype ' // obj_name // ' from ' // self%filename
+call estop(ier, "open_char:H5[D,A]get_type", self%filename, obj_name)
 
 
 call H5Tis_variable_str_f(type_id, is_vlen, ier)
-if(ier/=0) error stop "ERROR:h5fortran:read:H5Tis_variable_str " // obj_name // " " // self%filename
+call estop(ier, "open_char:H5Tis_variable", self%filename, obj_name)
 
 if(is_vlen) then
   if(obj_type == H5I_DATASET_F) then
@@ -52,10 +52,10 @@ if(is_vlen) then
   elseif(obj_type == H5I_ATTR_F) then
     call H5Aget_storage_size_f(obj_id, dsize, ier)
   endif
-  if(ier/=0) error stop "ERROR:h5fortran:read:H5Tget_storage_size " // obj_name // " " // self%filename
+  call estop(ier, "open_char:H5[D,a]get_storage_size", self%filename, obj_name)
 else
   call H5Tget_size_f(type_id, ds_size, ier)
-  if(ier/=0) error stop "ERROR:h5fortran:read:H5Tget_size " // obj_name // " " // self%filename
+  call estop(ier, "open_char:H5Tget_size", self%filename, obj_name)
 
   if(ds_size > charlen) then
     write(stderr,'(a,i0,a3,i0,1x,a)') "ERROR:h5fortran:read: buffer too small: ", ds_size, " > ", charlen, obj_name
@@ -67,10 +67,10 @@ endif
 
 
 CALL H5Sget_simple_extent_ndims_f(space_id, drank, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:read:H5Sget_simple_extent_ndims " // obj_name // " " // self%filename
+call estop(ier, "open_char:H5Sget_simple_extent_ndims", self%filename, obj_name)
 
 call H5Sget_simple_extent_npoints_f(space_id, Npts, ier)
-if (ier /= 0) error stop 'ERROR:h5fortran:read:H5Sget_simple_extent_npoints: ' // obj_name // " " // self%filename
+call estop(ier, "open_char:H5Sget_simple_extent_npoints", self%filename, obj_name)
 
 if(drank > 0) then
   CALL H5Sget_simple_extent_dims_f(space_id, dims, maxdims, ier)
@@ -117,7 +117,7 @@ else
 endif
 
 call H5Tclose_f(type_id, ier)
-if(ier/=0) error stop "ERROR:h5fortran:read:H5Tclose " // obj_name
+call estop(ier, "read_char0:H5Tclose", self%filename, obj_name)
 
 end procedure read_char0
 
@@ -173,7 +173,7 @@ if(obj_type == H5I_DATASET_F) then
 elseif(obj_type == H5I_ATTR_F) then
   call H5Aread_f(obj_id, type_id, f_ptr, ier)
 endif
-if(ier/=0) error stop "ERROR:h5fortran:read_ascii: read " // obj_name // " " // self%filename
+call estop(ier, "read_fixed0:H5[D,A]read", self%filename, obj_name)
 
 A = pad_trim(buf(1))
 
@@ -253,7 +253,7 @@ if(obj_type == H5I_DATASET_F) then
 elseif(obj_type == H5I_ATTR_F) then
   call H5Aread_f(obj_id, type_id, f_ptr, ier)
 endif
-if(ier/=0) error stop "h5fortran:read:read_ascii: read " // obj_name // " " // self%filename
+call estop(ier, "open_char:H5[D,A]read", self%filename, obj_name)
 
 call C_F_POINTER(cbuf(1), cstr)
 

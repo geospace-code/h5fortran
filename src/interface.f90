@@ -379,9 +379,9 @@ character(*), intent(in) :: dname
 class(*), intent(out) :: chunk_size(:)
 end subroutine
 
-module logical function hdf_check_exist(self, dname)
+module logical function hdf_check_exist(self, obj_name)
 class(hdf5_file), intent(in) :: self
-character(*), intent(in) :: dname
+character(*), intent(in) :: obj_name
 end function
 
 end interface

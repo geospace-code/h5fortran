@@ -18,9 +18,9 @@ logical :: is_scalar
 
 
 call H5Dopen_f(self%file_id, dname, dset_id, ier)
-if(ier/=0) error stop 'ERROR:h5fortran:reader: ' // dname // ' could not be opened in ' // self%filename
+call estop(ier, "read_scalar:H5Dopen", self%filename, dname)
 call H5Dget_space_f(dset_id, file_space_id, ier)
-if(ier/=0) error stop 'ERROR:h5fortran:reader:H5Dget_space ' // dname // ' from ' // self%filename
+call estop(ier, "read_scalar:H5Dget_space", self%filename, dname)
 
 call hdf_rank_check(self, dname, file_space_id, rank(A), is_scalar)
 
@@ -28,7 +28,7 @@ if (is_scalar) then
   call hdf_get_slice(dims, dset_id, file_space_id, mem_space_id, [1], [1])
 else
   call H5Dget_space_f(dset_id, mem_space_id, ier)
-  if(ier/=0) error stop "ERROR:h5fortran:read_scalar:H5Dget_space " // dname
+  call estop(ier, "read_scalar:H5Dget_space", self%filename, dname)
 endif
 
 call get_obj_class(self, dname, dset_id, dclass)
@@ -52,6 +52,7 @@ if(dclass == H5T_FLOAT_F .OR. dclass == H5T_INTEGER_F) then
   class default
     error stop 'ERROR:h5fortran:read: numeric dataset ' // dname // ' needs numeric memory variable'
   end select
+  call estop(ier, "read_scalar:H5Dread", self%filename, dname)
 elseif(dclass == H5T_STRING_F) then
   select type(A)
   type is (character(*)) !< kind=c_char too
@@ -62,16 +63,15 @@ elseif(dclass == H5T_STRING_F) then
 else
   error stop 'ERROR:h5fortran:reader: non-handled datatype--please reach out to developers.'
 end if
-if(ier/=0) error stop 'ERROR:h5fortran:reader: reading ' // dname // ' from ' // self%filename
 
 call H5Dclose_f(dset_id, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:read_scalar: closing dataset: " // dname // " in " // self%filename
+call estop(ier, "read_scalar:H5Dclose", self%filename, dname)
 
 call H5Sclose_f(mem_space_id, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:read_scalar closing memory dataspace: " // dname // " in " // self%filename
+call estop(ier, "read_scalar:H5Sclose", self%filename, dname)
 
 call H5Sclose_f(file_space_id, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:read_scalar closing file dataspace: " // dname // " in " // self%filename
+call estop(ier, "read_scalar:H5Sclose", self%filename, dname)
 
 end procedure h5read_scalar
 

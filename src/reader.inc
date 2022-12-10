@@ -38,6 +38,7 @@ if(dclass == H5T_FLOAT_F .OR. dclass == H5T_INTEGER_F) then
   class default
     error stop 'ERROR:h5fortran:read: integer disk dataset ' // dname // ' needs integer memory variable'
   end select
+  call estop(ier, "reader:H5Dread", self%filename, dname)
 elseif(dclass == H5T_STRING_F) then
   select type(A)
   type is (character(*)) !< kind=c_char too
@@ -48,13 +49,12 @@ elseif(dclass == H5T_STRING_F) then
 else
   error stop 'ERROR:h5fortran:reader: non-handled datatype--please reach out to developers.'
 end if
-if(ier /= 0) error stop 'ERROR:h5fortran:reader:h5dread: ' // dname // ' from ' // self%filename
 
 call H5Dclose_f(dset_id, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:reader:H5Dclose " // dname // " in " // self%filename
+call estop(ier, "reader:H5Dclose", self%filename, dname)
 
 call H5Sclose_f(mem_space_id, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:reader:H5Sclose: memory: " // dname // " in " // self%filename
+call estop(ier, "reader:H5Sclose", self%filename, dname)
 
 call H5Sclose_f(file_space_id, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:reader:H5Sclose: file " // dname // " in " // self%filename
+call estop(ier, "reader:H5Sclose", self%filename, dname)

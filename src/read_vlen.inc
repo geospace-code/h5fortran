@@ -22,7 +22,7 @@ if(obj_type == H5I_DATASET_F) then
 elseif(obj_type == H5I_ATTR_F) then
   call H5Aread_f(obj_id, type_id, f_ptr, ier)
 endif
-if(ier/=0) error stop "h5fortran:read:read_ascii: read " // obj_name // " " // self%filename
+call estop(ier, "read_vlen:H5[D,A]read", self%filename, obj_name)
 
 do i = 1, size(cbuf)
   call C_F_POINTER(cbuf(i), cstr)

@@ -16,4 +16,4 @@ else
 endif
 
 call H5Tclose_f(type_id, ier)
-if(ier/=0) error stop "ERROR:h5fortran:read:H5Tclose " // obj_name
+call estop(ier, "read_char:H5Tclose", self%filename, obj_name)

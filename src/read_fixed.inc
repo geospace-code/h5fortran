@@ -15,6 +15,6 @@ if(obj_type == H5I_DATASET_F) then
 elseif(obj_type == H5I_ATTR_F) then
   call H5Aread_f(obj_id, type_id, f_ptr, ier)
 endif
-if(ier/=0) error stop "ERROR:h5fortran:read_ascii: read " // obj_name // " " // self%filename
+call estop(ier, "read_fixed:H5[D,A]read", self%filename, obj_name)
 
 A = pad_trim(buf)
