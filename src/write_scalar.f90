@@ -51,16 +51,16 @@ type is (character(*))
 class default
   error stop "ERROR:h5fortran:write: unsupported type for " // dname
 end select
-if (ier /= 0) error stop 'ERROR:h5fortran:write:H5Dwrite ' // dname // ' to ' // self%filename
+call estop(ier, "write_scalar:H5Dwrite", self%filename, dname)
 
 call H5Tclose_f(dtype_id, ier)
-if (ier /= 0) error stop 'ERROR:h5fortran:write:H5Tclose ' // dname // ' ' // self%filename
+call estop(ier, "write_scalar:H5Tclose", self%filename, dname)
 
 call H5Dclose_f(dset_id, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:writer:H5Dclose: " // dname // " " // self%filename
+call estop(ier, "write_scalar:H5Dclose", self%filename, dname)
 
 call H5Sclose_f(file_space_id, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:writer:H5Sclose file: " // dname // " " // self%filename
+call estop(ier, "write_scalar:H5Sclose", self%filename, dname)
 
 
 end procedure h5write_scalar

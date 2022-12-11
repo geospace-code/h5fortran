@@ -36,7 +36,7 @@ if(present(istart) .and. present(iend)) then
   call hdf_get_slice(mem_dims, dset_id, file_space_id, mem_space_id, istart, iend, stride=stride, dset_dims=dims_dset)
 else
   call H5Dget_space_f(dset_id, mem_space_id, ier)
-  if(ier/=0) error stop "ERROR:h5fortran:writer:H5Dget_space " // dname
+  call estop(ier, "writer:H5Dget_space", self%filename, dname)
 endif
 
 xfer_id = H5P_DEFAULT_F
@@ -55,16 +55,16 @@ type is (character(*))
 class default
   error stop "ERROR:h5fortran:writer: unknown variable type for " // dname
 end select
-if (ier /= 0) error stop 'ERROR:h5fortran:write:H5Dwrite: could not write ' // dname // ' ' // self%filename
+call estop(ier, "writer:H5Dwrite", self%filename, dname)
 
 call H5Tclose_f(dtype_id, ier)
-if (ier /= 0) error stop 'ERROR:h5fortran:write:H5Tclose ' // dname // ' ' // self%filename
+call estop(ier, "writer:H5Tclose", self%filename, dname)
 
 call H5Dclose_f(dset_id, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:writer:H5Dclose: " // dname // " " // self%filename
+call estop(ier, "writer:H5Dclose", self%filename, dname)
 
 call H5Sclose_f(mem_space_id, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:writer:H5Sclose memory: " // dname // " " // self%filename
+call estop(ier, "writer:H5Sclose", self%filename, dname)
 
 call H5Sclose_f(file_space_id, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:writer:H5Sclose file: " // dname // " " // self%filename
+call estop(ier, "writer:H5Sclose", self%filename, dname)

@@ -8,7 +8,7 @@ h5pset_chunk_f, h5pset_layout_f, h5pset_deflate_f, h5pset_shuffle_f, h5pset_flet
 h5pcreate_f, h5pclose_f, h5pset_fill_value_f, &
 H5P_DATASET_CREATE_F, &
 h5gopen_f, h5gcreate_f, h5gclose_f, &
-H5Lcreate_soft_f, h5lexists_f, &
+H5Lcreate_soft_f, &
 h5tcopy_f, h5tclose_f, h5tset_size_f, &
 H5S_SCALAR_F, &
 H5D_COMPACT_F, &
@@ -41,14 +41,14 @@ call hdf_create(self, dname, dtype, mem_dims=mdims, dset_dims=ddims, &
   filespace_id=file_space_id, dset_id=dset_id, dtype_id=dtype_id, compact=compact, &
   charlen=charlen, fill_value=fill_value)
 
-call h5dclose_f(dset_id, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:write:create_user: closing dataset: " // dname // " in " // self%filename
+call H5Dclose_f(dset_id, ier)
+call estop(ier, "create_user:H5Dclose", self%filename, dname)
 
-call h5sclose_f(file_space_id, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:write:create_user: closing file dataspace: " // dname // " in " // self%filename
+call H5Sclose_f(file_space_id, ier)
+call estop(ier, "create_user:H5Sclose", self%filename, dname)
 
 call H5Tclose_f(dtype_id, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:write:create_user: closing datatype: " // dname // " in " // self%filename
+call estop(ier, "create_user:H5Tclose", self%filename, dname)
 
 end procedure hdf_create_user
 
@@ -61,22 +61,22 @@ integer(HSIZE_T), dimension(:), allocatable :: ddims, maxdims
 
 
 call H5Tcopy_f(dtype, dtype_id, ier)
-if(ier /= 0) error stop "h5fortran:create:H5Tcopy: " // dname // ' in ' // self%filename
+call estop(ier, "create:H5Tcopy", self%filename, dname)
 
 if(dtype == H5T_NATIVE_CHARACTER) then
   if(.not. present(charlen)) error stop "h5fortran:hdf_create: character type must specify charlen"
 
   call h5tset_size_f(dtype_id, int(charlen, SIZE_T), ier)
-  if(ier /= 0) error stop "h5fortran:h5tset_size:character: " // dname // " in " // self%filename
+  call estop(ier, "create:H5Tset_size", self%filename, dname)
 endif
 
 
 if(self%exist(dname)) then
   call H5Dopen_f(self%file_id, dname, dset_id, ier)
-  if (ier /= 0) error stop 'ERROR:h5fortran:create: could not open ' // dname // ' in ' // self%filename
+  call estop(ier, "create:H5Dopen", self%filename, dname)
 
   call H5Dget_space_f(dset_id, filespace_id, ier)
-  if(ier /= 0) error stop 'ERROR:h5fortran:create could not get dataset ' // dname // ' in ' // self%filename
+  call estop(ier, "create:H5Dget_space", self%filename, dname)
 
 
   if (present(istart)) then
@@ -84,7 +84,7 @@ if(self%exist(dname)) then
     if(any(iend <= istart)) error stop 'ERROR:h5fortran:create: iend must be > istart'
 
     call H5Sget_simple_extent_ndims_f(filespace_id, drank, ier)
-    if(ier /= 0) error stop "ERROR:h5fortran:create: H5Sget_simple_extent_ndims: "  // dname // ' in ' // self%filename
+    call estop(ier, "create:H5Sget_simple_extent_ndims", self%filename, dname)
 
     allocate(ddims(drank), maxdims(drank))
 
@@ -124,13 +124,13 @@ if(size(dset_dims) == 0) then
 else
   call h5screate_simple_f(size(dset_dims), dset_dims, filespace_id, ier)
 endif
-if (ier /= 0) error stop "ERROR:h5fortran:hdf_create:h5screate:filespace " // dname // " in " // self%filename
+call estop(ier, "create:H5Screate", self%filename, dname)
 
 !> fill value
 if(present(fill_value)) then
   if(dcpl == H5P_DEFAULT_F) then
     call h5pcreate_f(H5P_DATASET_CREATE_F, dcpl, ier)
-    if (ier /= 0) error stop "ERROR:h5fortran:set_fill:h5pcreate: " // self%filename
+    call estop(ier, "create:H5Pcreate", self%filename, dname)
   endif
 
   select type (fill_value)
@@ -151,11 +151,11 @@ endif
 
 !> create dataset
 call h5dcreate_f(self%file_id, dname, type_id=dtype_id, space_id=filespace_id, dset_id=dset_id, hdferr=ier, dcpl_id=dcpl)
-if (ier /= 0) error stop "ERROR:h5fortran:hdf_create:h5dcreate: " // dname // " in " // self%filename
+call estop(ier, "create:H5Dcreate", self%filename, dname)
 
 !> free resources
 call h5pclose_f(dcpl, ier)
-if (ier /= 0) error stop "ERROR:h5fortran:h5pclose: " // dname // ' in ' // self%filename
+call estop(ier, "create:H5Pclose", self%filename, dname)
 
 end procedure hdf_create
 
@@ -184,10 +184,10 @@ endif
 !! 64000 byte limit, here we assumed 8 bytes / element
 
 call h5pcreate_f(H5P_DATASET_CREATE_F, dcpl, ier)
-if (ier /= 0) error stop "ERROR:h5fortran:hdf_create:h5pcreate:set_compact"
+call estop(ier, "set_compact:H5Pcreate", "", dset_name)
 
 call h5pset_layout_f(dcpl, H5D_COMPACT_F, ier)
-if (ier /= 0) error stop "ERROR:h5fortran:hdf_create:h5pset_layout:set_compact"
+call estop(ier, "set_compact:H5Pset_layout", "", dset_name)
 
 end subroutine set_compact
 
@@ -200,7 +200,7 @@ module procedure create_softlink
 integer :: ier
 
 call H5Lcreate_soft_f(tgt, self%file_id, link, ier)
-if (ier /= 0) error stop 'ERROR:h5fortran:create_softlink: ' // link // ' in ' // self%filename
+call estop(ier, "create_softlink:H5Lcreate_soft", self%filename, link)
 
 end procedure create_softlink
 
@@ -211,9 +211,8 @@ integer(HID_T)  :: gid
 integer :: ier
 
 integer :: sp, ep, L
-logical :: gexist
 
-if(.not.self%is_open()) error stop 'ERROR:h5fortran:create_group: file handle is not open'
+if(.not.self%is_open()) error stop 'ERROR:h5fortran:create_group: file handle is not open: ' // self%filename
 
 L = len_trim(group_path)
 if(L < 2) return  !< not a new group
@@ -227,16 +226,13 @@ grps: do
 
   ! check subgroup exists
   sp = sp + ep
-  call h5lexists_f(self%file_id, group_path(:sp-1), gexist, ier)
-  if (ier /= 0) error stop "ERROR:h5fortran:create_group: check exists group " // group_path // " in " // self%filename
+  if(self % exist(group_path(:sp-1))) cycle grps
 
-  if(gexist) cycle grps
+  call H5Gcreate_f(self%file_id, group_path(:sp-1), gid, ier)
+  call estop(ier, "create_group:H5Gcreate", self%filename, group_path)
 
-  call h5gcreate_f(self%file_id, group_path(:sp-1), gid, ier)
-  if (ier /= 0) error stop "ERROR:h5fortran:create_group: create group " // group_path // " in " // self%filename
-
-  call h5gclose_f(gid, ier)
-  if (ier /= 0) error stop "ERROR:h5fortran:create_group: close new group " // group_path // " in " // self%filename
+  call H5Gclose_f(gid, ier)
+  call estop(ier, "create_group:H5Gclose", self%filename, group_path)
 end do grps
 
 end procedure create_group
@@ -275,26 +271,26 @@ if(self%debug) print *,'DEBUG:set_deflate: dims: ',dims,'chunk size: ', cs
 if(any(cs == 0)) return  !< array too small to chunk
 if(any(cs < 0)) error stop "ERROR:h5fortran:set_deflate: chunk_size must be strictly positive"
 
-call h5pcreate_f(H5P_DATASET_CREATE_F, dcpl, ier)
-if (ier /= 0) error stop "ERROR:h5fortran:set_deflate:h5pcreate: " // self%filename
+call H5Pcreate_f(H5P_DATASET_CREATE_F, dcpl, ier)
+call estop(ier, "set_deflate:H5Pcreate", self%filename, "")
 
 call h5pset_chunk_f(dcpl, size(dims), cs, ier)
-if (ier /= 0) error stop "ERROR:h5fortran:set_deflate:h5pset_chunk: " // self%filename
+call estop(ier, "set_deflate:H5Pset_chunk", self%filename, "")
 
 if (self%fletcher32) then
   !! fletcher32 filter adds a checksum to the data
   call h5pset_fletcher32_f(dcpl, ier)
-  if (ier /= 0) error stop "ERROR:h5fortran:set_deflate:h5pset_fletcher32: " // self%filename
+  call estop(ier, "set_deflate:H5Pset_fletcher32", self%filename, "")
 endif
 
 if(self%shuffle) then
   !! shuffle filter improves compression
   call h5pset_shuffle_f(dcpl, ier)
-  if (ier /= 0) error stop "ERROR:h5fortran:set_deflate:h5pset_shuffle: " // self%filename
+  call estop(ier, "set_deflate:H5Pset_shuffle", self%filename, "")
 endif
 
 call h5pset_deflate_f(dcpl, self%comp_lvl, ier)
-if (ier/=0) error stop "ERROR:h5fortran:set_deflate:h5pset_deflate: " // self%filename
+call estop(ier, "set_deflate:H5Pset_deflate", self%filename, "")
 
 if(self%debug) print '(a,i0)','TRACE:set_deflate done, comp_lvl: ', self%comp_lvl
 
@@ -359,10 +355,20 @@ module procedure hdf_flush
 
 integer :: ier
 
-call h5fflush_f(self%file_id, H5F_SCOPE_GLOBAL_F, ier)
-if (ier /= 0) error stop 'ERROR:h5fortran:flush ' // self%filename
+call H5Fflush_f(self%file_id, H5F_SCOPE_GLOBAL_F, ier)
+call estop(ier, "flush:H5Fflush", self%filename, "")
 
 end procedure hdf_flush
+
+
+pure subroutine estop(ier, id, filename, obj_name)
+integer, intent(in) :: ier
+character(*), intent(in) :: id, filename, obj_name
+
+if(ier == 0) return
+error stop "ERROR:h5fortran:" // trim(id) // ":" // trim(obj_name) // ":" // trim(filename)
+
+end subroutine estop
 
 
 end submodule write
