@@ -25,8 +25,7 @@ target_link_libraries(repeat_char_read PRIVATE h5fortran::h5fortran)
 ## VTK HDF5 write example
 add_executable(vtk_write vtk_write.f90)
 target_link_libraries(vtk_write PRIVATE h5fortran::h5fortran)
-add_test(NAME VTK COMMAND vtk_write)
-set_property(TEST VTK PROPERTY DISABLED true)
+add_test(NAME VTK COMMAND vtk_write ${CMAKE_CURRENT_BINARY_DIR}/vtk.hdf)
 
 ## C, C++ examples
 
