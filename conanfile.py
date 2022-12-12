@@ -21,5 +21,5 @@ class H5fortranConan(ConanFile):
         cmake = CMake(self)
         args = f'-DCMAKE_INSTALL_PREFIX="{self.package_folder}"'
         print(cmake.command_line)
-        self.run(f"cmake {self.source_folder} {cmake.command_line} {args}")
-        self.run("cmake --build . --target install")
+        self.run(f"cmake -S{self.source_folder} {cmake.command_line} {args}")
+        self.run("cmake --install .")

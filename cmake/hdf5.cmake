@@ -14,7 +14,7 @@ if(NOT MPI_ROOT AND DEFINED ENV{MPI_ROOT})
 endif()
 
 set(HDF5_LIBRARIES)
-foreach(_name hdf5_hl_fortran hdf5_hl_f90cstub hdf5_fortran hdf5_f90cstub hdf5_hl hdf5)
+foreach(_name IN ITEMS hdf5_hl_fortran hdf5_hl_f90cstub hdf5_fortran hdf5_f90cstub hdf5_hl hdf5)
   if(BUILD_SHARED_LIBS)
     if(WIN32)
       list(APPEND HDF5_LIBRARIES ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}/lib${_name}${CMAKE_SHARED_LIBRARY_SUFFIX})
