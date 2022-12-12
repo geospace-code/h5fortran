@@ -354,6 +354,8 @@ integer :: ier
 
 if(.not. self%is_open()) error stop 'ERROR:h5fortran:exist: file handle is not open: ' // self%filename
 
+if(len_trim(obj_name) == 0) error stop "ERROR:h5fortran:check_exist: object name must not be empty"
+
 call h5ltpath_valid_f(self%file_id, obj_name, .true., hdf_check_exist, ier)
 !! h5lexists_f can false error with groups--just use h5ltpath_valid
 

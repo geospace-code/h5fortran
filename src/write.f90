@@ -55,7 +55,7 @@ end procedure hdf_create_user
 
 module procedure hdf_create
 
-integer :: ier, drank
+integer :: ier, drank, i
 integer(HID_T) :: dcpl
 integer(HSIZE_T), dimension(:), allocatable :: ddims, maxdims
 
@@ -107,7 +107,8 @@ endif
 !> Only new datasets go past this point
 dcpl = H5P_DEFAULT_F
 
-call self%create_group(dname)
+i = index(dname, "/", back=.true.)
+if (i>1) call self%create_group(dname(:i-1))
 !! create_group is needed for any dataset in a group e.g. /hi/there/var
 
 !> compression
@@ -210,30 +211,39 @@ module procedure create_group
 integer(HID_T)  :: gid
 integer :: ier
 
-integer :: sp, ep, L
+integer :: j, i, L
+character(len_trim(group_path)) :: p, r
 
 if(.not.self%is_open()) error stop 'ERROR:h5fortran:create_group: file handle is not open: ' // self%filename
 
 L = len_trim(group_path)
-if(L < 2) return  !< not a new group
+if(L <= 1) return  !< not a new group
 
-sp = 1
-ep = 0
+j = 1
+r = group_path(j+1:L)
+i = index(r, "/")
 
-grps: do
-  ep = index(group_path(sp+1:L), "/")
-  if (ep == 0) return
-
+do while (i > 0 .or. len_trim(r) > 0)
   ! check subgroup exists
-  sp = sp + ep
-  if(self % exist(group_path(:sp-1))) cycle grps
+  if(i == 0) then
+    p = group_path
+    r = ""
+  else
+    j = j + i
+    p = group_path(:j-1)
+    r = group_path(j+1:L)
+    i = index(r, "/")
+  endif
+  ! print '(a,i0,1x,i0,1x,a)', "TRACE: create_group: ",i,j, group_path // " " // p // " " // r
 
-  call H5Gcreate_f(self%file_id, group_path(:sp-1), gid, ier)
+  if(self % exist(p)) cycle
+
+  call H5Gcreate_f(self%file_id, p, gid, ier)
   call estop(ier, "create_group:H5Gcreate", self%filename, group_path)
 
   call H5Gclose_f(gid, ier)
   call estop(ier, "create_group:H5Gclose", self%filename, group_path)
-end do grps
+end do
 
 end procedure create_group
 
