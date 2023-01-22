@@ -54,9 +54,12 @@ endfunction(setup_test)
 # --- setup unit tests
 
 set(test_names array attributes attributes_read
-cast deflate_write deflate_read deflate_props destructor exist fill
+cast deflate_write deflate_read deflate_props destructor exist
 groups layout lt scalar shape string string_read version write
 fail_read_size_mismatch fail_read_rank_mismatch fail_nonexist_variable)
+if(HAVE_IEEE_ARITH)
+  list(APPEND test_names fill)
+endif()
 
 setup_test("${test_names}")
 
@@ -95,9 +98,11 @@ if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.12)
 endif()
 if(NOT DEFINED h5py_ok)
   execute_process(COMMAND ${Python_EXECUTABLE} -c "import h5py"
-  RESULT_VARIABLE h5py_code
+  RESULT_VARIABLE ret
+  ERROR_VARIABLE err
   )
-  if(h5py_code EQUAL 0)
+  message(VERBOSE "${ret} ${err}")
+  if(ret EQUAL 0)
     set(h5py_ok true CACHE BOOL "h5py OK")
   else()
     set(h5py_ok false CACHE BOOL "h5py not OK")

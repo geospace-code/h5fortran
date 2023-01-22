@@ -1,13 +1,10 @@
 program array_test
 
-use, intrinsic:: ieee_arithmetic, only: ieee_value, ieee_quiet_nan, ieee_is_nan
 use, intrinsic :: iso_fortran_env, only: real32, real64, int32, stderr=>error_unit
 
 use h5fortran, only : hdf5_file, HSIZE_T, H5T_NATIVE_INTEGER
 
 implicit none
-
-real(real32) :: nan
 
 call test_basic_array('test_array.h5')
 print *, 'PASSED: array write'
@@ -34,11 +31,9 @@ integer(HSIZE_T), allocatable :: dims(:)
 integer(int32), dimension(4) :: i1, i1t
 integer(int32), dimension(4,4) :: i2, i2t
 real(real32), allocatable :: rr2(:,:)
-real(real32)  ::  nant, r1(4), r2(4,4), B(6,6)
+real(real32)  ::  r1(4), r2(4,4), B(6,6)
 integer :: i
 integer(int32) :: i2_8(8,8)
-
-nan = ieee_value(1.0, ieee_quiet_nan)
 
 do i = 1,size(i1)
   i1(i) = i
@@ -59,7 +54,6 @@ call h%open(filename, action='w', comp_lvl=1)
 call h%write('/int32-1d', i1)
 call h%write('/test/group2/int32-2d', i2)
 call h%write('/real32-2d', r2)
-call h%write('/nan', nan)
 !> write from subarray
 call h%write('/sub-int32-2d', i2_8(3:6, 4:7))
 print '(4i3)', i2_8(3:6, 4:7)
@@ -100,9 +94,6 @@ if (.not.all(r2 == rr2)) error stop 'real 2-D: read does not match write'
 ! check read into a variable slice
 call h%read('real32-2d', B(2:5,3:6))
 if(.not.all(B(2:5,3:6) == r2)) error stop 'real 2D: reading into variable slice'
-
-call h%read('/nan',nant)
-if (.not.ieee_is_nan(nant)) error stop 'failed storing or reading NaN'
 
 call h%close()
 

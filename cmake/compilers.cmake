@@ -1,3 +1,5 @@
+include(CheckFortranSourceCompiles)
+
 # check C and Fortran compiler ABI compatibility
 
 if(NOT abi_ok)
@@ -19,12 +21,21 @@ if(NOT abi_ok)
   endif()
 endif()
 
+# --- not all platforms have ieee_arithmetic e.g. aarch64 GCC
+check_fortran_source_compiles("program a
+use, intrinsic :: ieee_arithmetic, only : ieee_quiet_nan, ieee_value
+real :: NaN
+NaN = ieee_value(0., ieee_quiet_nan)
+end program"
+HAVE_IEEE_ARITH
+SRC_EXT f90
+)
+
 # --- C compile flags
 if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU|^Intel")
   add_compile_options(
   "$<$<AND:$<COMPILE_LANGUAGE:C>,$<CONFIG:Debug>>:-Wextra>"
-  "$<$<COMPILE_LANGUAGE:C>:-Wall>"
-  "$<$<COMPILE_LANGUAGE:C>:-Werror=implicit-function-declaration>"
+  "$<$<COMPILE_LANGUAGE:C>:-Wall;-Werror=implicit-function-declaration>"
   )
 elseif(CMAKE_C_COMPILER_ID MATCHES "MSVC")
   add_compile_options("$<$<COMPILE_LANGUAGE:C>:/W3>")
