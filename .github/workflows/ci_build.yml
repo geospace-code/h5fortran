@@ -1,7 +1,8 @@
 name: build
 
 env:
-   HOMEBREW_NO_INSTALL_CLEANUP: 1
+  HOMEBREW_NO_INSTALL_CLEANUP: 1
+  CTEST_NO_TESTS_ACTION: error
 
 on:
   push:

@@ -4,6 +4,10 @@ env:
   CC: icx
   CXX: icpx
   FC: ifx
+  LINUX_CPP_COMPONENTS: intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic
+  LINUX_FORTRAN_COMPONENTS: intel-oneapi-compiler-fortran
+# https://github.com/oneapi-src/oneapi-ci/blob/master/.github/workflows/build_all.yml
+  CTEST_NO_TESTS_ACTION: error
 
 on:
   push:
@@ -27,18 +31,27 @@ jobs:
     timeout-minutes: 10
 
     steps:
-    - name: Intel Apt repository
-      timeout-minutes: 1
-      run: |
-        wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
-        sudo apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
-        rm GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
-        echo "deb https://apt.repos.intel.com/oneapi all main" | sudo tee /etc/apt/sources.list.d/oneAPI.list
-        sudo apt-get update
+    - uses: actions/checkout@v3
 
-    - name: Install Intel oneAPI
-      timeout-minutes: 10
-      run: sudo apt-get install intel-oneapi-compiler-fortran intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic
+    - name: cache install oneAPI
+      id: cache-install
+      uses: actions/cache@v3
+      with:
+        path: |
+          /opt/intel/oneapi
+        key: install-apt
+
+    - name: non-cache install oneAPI
+      if: steps.cache-install.outputs.cache-hit != 'true'
+      timeout-minutes: 5
+      run: |
+        .github/workflows/oneapi_setup_apt_repo_linux.sh
+        sudo apt install ${{ env.LINUX_CPP_COMPONENTS }} ${{ env.LINUX_FORTRAN_COMPONENTS }}
+
+    - name: Setup Intel oneAPI environment
+      run: |
+        source /opt/intel/oneapi/setvars.sh
+        printenv >> $GITHUB_ENV
 
     - name: Install tools
       timeout-minutes: 2
@@ -89,3 +102,7 @@ jobs:
     - name: example build / test
       run: cmake --workflow --preset default
       working-directory: example
+
+    - name: exclude unused files from cache
+      if: steps.cache-install.outputs.cache-hit != 'true'
+      run: .github/workflows/oneapi_cache_exclude_linux.sh

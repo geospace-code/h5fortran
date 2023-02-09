@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1...3.25)
+cmake_minimum_required(VERSION 3.5)
 project(abi_check LANGUAGES C Fortran)
 
 enable_testing()
@@ -14,4 +14,3 @@ add_executable(main_c main.c $<TARGET_OBJECTS:addone_f>)
 set_property(TARGET main_c PROPERTY LINKER_LANGUAGE C)
 add_test(NAME C_main COMMAND main_c)
 
-set_property(TEST Fortran_main C_main PROPERTY TIMEOUT 10)
