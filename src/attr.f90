@@ -93,23 +93,4 @@ call estop(ier, "attr_exist:H5Aexists_by_name", self%filename, obj_name, attr_na
 end procedure attr_exist
 
 
-pure subroutine estop(ier, id, filename, obj_name, attr_name)
-
-integer, intent(in) :: ier
-character(*), intent(in) :: id, filename, obj_name, attr_name
-
-character(1000) :: buf
-character(8) :: bufi
-
-if(ier == 0) return
-
-write(bufi, "(i0)") ier
-
-buf = "ERROR:h5fortran:" // trim(id) // ":" // trim(obj_name) // ":" // trim(attr_name) // ":" // trim(filename) &
-  // " code=" // trim(bufi)
-
-error stop trim(buf)
-
-end subroutine estop
-
 end submodule attr_smod

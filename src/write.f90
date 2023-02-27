@@ -64,7 +64,7 @@ call H5Tcopy_f(dtype, dtype_id, ier)
 call estop(ier, "create:H5Tcopy", self%filename, dname)
 
 if(dtype == H5T_NATIVE_CHARACTER) then
-  if(.not. present(charlen)) error stop "h5fortran:hdf_create: character type must specify charlen"
+  if(.not. present(charlen)) error stop "ERROR:h5fortran:hdf_create: character type must specify charlen"
 
   call h5tset_size_f(dtype_id, int(charlen, SIZE_T), ier)
   call estop(ier, "create:H5Tset_size", self%filename, dname)
@@ -369,16 +369,6 @@ call H5Fflush_f(self%file_id, H5F_SCOPE_GLOBAL_F, ier)
 call estop(ier, "flush:H5Fflush", self%filename, "")
 
 end procedure hdf_flush
-
-
-pure subroutine estop(ier, id, filename, obj_name)
-integer, intent(in) :: ier
-character(*), intent(in) :: id, filename, obj_name
-
-if(ier == 0) return
-error stop "ERROR:h5fortran:" // trim(id) // ":" // trim(obj_name) // ":" // trim(filename)
-
-end subroutine estop
 
 
 end submodule write

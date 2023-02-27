@@ -100,13 +100,22 @@ end select
 
 fapl = H5P_DEFAULT_F
 
+!! these enums will all be 0 if h5open_f isn't called first
+! print *, "TRACE: file_mode = ", file_mode, " filename = ", filename
+! print *, "TRACE: H5F_ACC_RDONLY_F = ", H5F_ACC_RDONLY_F
+! print *, "TRACE: H5F_ACC_RDWR_F = ", H5F_ACC_RDWR_F
+! print *, "TRACE: H5F_ACC_TRUNC_F = ", H5F_ACC_TRUNC_F
+
+
 if (file_mode == H5F_ACC_RDONLY_F .or. file_mode == H5F_ACC_RDWR_F) then
-  if(.not. is_hdf5(filename)) error stop "ERROR:h5fortran:open: not an HDF5 file: "//filename
+  if(.not. is_hdf5(filename)) then
+    error stop "ERROR:h5fortran:open: action=" // laction // "  not an HDF5 file: " // filename
+  endif
   call H5Fopen_f(filename, file_mode, self%file_id, ier, access_prp=fapl)
-  if (ier /= 0) error stop "ERROR:h5fortran:open:H5Fopen: " // filename
+  call estop(ier, "h5open:H5Fopen", filename)
 elseif(file_mode == H5F_ACC_TRUNC_F) then
   call H5Fcreate_f(filename, file_mode, self%file_id, ier, access_prp=fapl)
-  if (ier /= 0) error stop "ERROR:h5fortran:open:H5Fcreate: " // filename
+  call estop(ier, "h5open:H5Fcreate", filename)
 else
   error stop "ERROR:h5fortran:open: Unsupported file mode: " // filename
 endif
@@ -144,7 +153,7 @@ if(Ndset > 0) then
 
   do i = 1, int(Ndset)
     call h5fget_name_f(obj_ids(i), file_name, Lf_name, ierr)
-    if(ierr /= 0) error stop "ERROR:h5fortran:close:h5fget_name: could not get filename of open dataset: " // self%filename
+    call estop(ierr, "h5close:h5fget_name: could not get filename of open dataset: ", self%filename)
 
     call h5iget_name_f(obj_ids(i), dset_name, L, Lds_name, ierr)
     if(ierr /= 0) error stop "ERROR:h5fortran:close:h5iget_name could not get dataset name: " // self%filename
@@ -154,11 +163,11 @@ if(Ndset > 0) then
 endif
 
 call h5fget_obj_count_f(self%file_id, H5F_OBJ_DATATYPE_F, Ndtype, ierr)
-if(ierr /= 0) error stop "ERROR:h5fortran:close:h5fget_obj_count: could not count open datatypes: " // self%filename
+call estop(ierr, "h5close:h5fget_obj_count: could not count open datatypes: ", self%filename)
 if(Ndtype > 0) write(stderr,'(a,i0,a)') "ERROR:h5fortran:close: there are ", Ndtype, " datatypes open: " // self%filename
 
 call h5fget_obj_count_f(self%file_id, H5F_OBJ_FILE_F, Nfile, ierr)
-if(ierr /= 0) error stop "ERROR:h5fortran:close:h5fget_obj_count: could not count open files: " // self%filename
+call estop(ierr, "h5close:h5fget_obj_count: could not count open files: ", self%filename)
 if(Nfile < 1) write(stderr,'(a,i0,a)') "ERROR:h5fortran:close: there are ", Nfile, " files open: " // self%filename
 
 if(Ngroup > 0 .or. Ndset > 0 .or. Ndtype > 0) error stop "ERROR:h5fortran:close: hanging HID handles open: " // self%filename
@@ -166,17 +175,14 @@ if(Ngroup > 0 .or. Ndset > 0 .or. Ndtype > 0) error stop "ERROR:h5fortran:close:
 
 !> close hdf5 file
 call h5fclose_f(self%file_id, ierr)
-if (ierr /= 0) then
-  write(stderr,'(a,i0)') 'ERROR:h5fortran:h5fclose: HDF5 file close: ' // self%filename
-  error stop
-endif
+call estop(ierr, "h5close:h5fclose: HDF5 file close", self%filename)
 
 deallocate(self%filename)
 
 if (present(close_hdf5_interface)) then
   if (close_hdf5_interface) then
     call h5close_f(ierr)
-    if (ierr /= 0) error stop 'ERROR:h5fortran:h5close: HDF5 library close'
+    call estop(ierr, "h5close:h5close: HDF5 library close", self%filename)
   endif
 endif
 
@@ -188,7 +194,7 @@ module procedure is_open
 integer :: obj_type, ier
 
 call H5Iis_valid_f(self%file_id, is_open, ier)
-if(ier /= 0) error stop "ERROR:h5fortran:is_open:h5iis_valid: " // self%filename
+call estop(ier, "is_open:h5iis_valid", self%filename)
 
 call H5Iget_type_f(self%file_id, obj_type, ier)
 if(ier /= 0 .or. obj_type /= H5I_FILE_F) is_open = .false.
@@ -370,6 +376,26 @@ call h5fget_filesize_f(self%file_id, hdf_filesize, ierr)
 if(ierr/=0) error stop "ERROR:h5fortran: could not get file size " // self%filename
 
 end procedure hdf_filesize
+
+
+module procedure estop
+
+character(1000) :: buf
+character(8) :: bufi
+
+if(ier == 0) return
+
+buf = "ERROR:h5fortran:" // trim(id) // ":"
+
+if(present(obj_name)) buf = trim(buf) // trim(obj_name) // ":"
+if(present(attr_name)) buf = trim(buf) // trim(attr_name) // ":"
+
+write(bufi, "(i0)") ier
+buf = trim(buf) // trim(filename) // " code=" // trim(bufi)
+
+error stop trim(buf)
+
+end procedure estop
 
 
 end submodule utils_smod

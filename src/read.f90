@@ -364,14 +364,4 @@ call estop(ier, "check_exist:H5LTpath_valid", self%filename, obj_name)
 end procedure hdf_check_exist
 
 
-pure subroutine estop(ier, id, filename, obj_name)
-integer, intent(in) :: ier
-character(*), intent(in) :: id, filename, obj_name
-
-if(ier == 0) return
-error stop "ERROR:h5fortran:" // trim(id) // ":" // trim(obj_name) // ":" // trim(filename)
-
-end subroutine estop
-
-
 end submodule hdf5_read

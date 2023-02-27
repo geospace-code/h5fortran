@@ -105,7 +105,7 @@ end interface
 
 public :: hdf5_file, hdf5_close, h5write, h5read, h5exist, is_hdf5, h5write_attr, h5read_attr, hdf5version
 !! for users
-public :: hdf_shape_check, hdf_rank_check, hdf_get_slice, id2name, get_obj_class
+public :: hdf_shape_check, hdf_rank_check, hdf_get_slice, id2name, get_obj_class, estop
 !! for submodules only
 public :: HSIZE_T, HID_T, H5T_NATIVE_DOUBLE, H5T_NATIVE_REAL, H5T_NATIVE_INTEGER, H5T_NATIVE_CHARACTER, H5T_STD_I64LE
 public :: H5T_INTEGER_F, H5T_FLOAT_F, H5T_STRING_F
@@ -653,12 +653,13 @@ module subroutine h5open(self, filename, action, comp_lvl, shuffle, fletcher32, 
 !! PARAMETERS:
 !! ----------
 !! filename
-!! action: "r", "w", "rw"
+!! action: "r", "r+", "rw", "w", "a"
+!! comp_lvl; < 0: no compression. 1-9: ZLIB compression, higher is more compression
 
 class(hdf5_file), intent(inout) :: self
 character(*), intent(in) :: filename
-character(*), intent(in), optional :: action !< r, r+, rw, w, a
-integer, intent(in), optional :: comp_lvl  !< 0: no compression. 1-9: ZLIB compression, higher is more compressior
+character(*), intent(in), optional :: action
+integer, intent(in), optional :: comp_lvl
 logical, intent(in), optional :: shuffle
 logical, intent(in), optional :: fletcher32
 logical, intent(in), optional :: debug
@@ -752,6 +753,12 @@ module integer(HSIZE_T) function hdf_filesize(self)
 !! returns the size of the HDF5 file in bytes
 class(hdf5_file), intent(in) :: self
 end function
+
+module pure subroutine estop(ier, id, filename, obj_name, attr_name)
+integer, intent(in) :: ier
+character(*), intent(in) :: id, filename
+character(*), intent(in), optional :: obj_name, attr_name
+end subroutine
 
 end interface
 
