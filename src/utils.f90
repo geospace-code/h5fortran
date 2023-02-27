@@ -73,7 +73,8 @@ endif
 !> Initialize FORTRAN interface
 !! HDF5 1.14.0 introduced bug that if H5open_f is called more than once,
 !! it will error.
-if (H5F_ACC_RDONLY_F == H5F_ACC_TRUNC_F) then
+if (.not. hdf5_is_initialized()) then
+  if(self%debug) print '(a)', 'TRACE:h5fortran:h5open: initializing HDF5 library'
   call H5open_f(ier)
   call estop(ier, 'h5open:H5open HDF5 library initialize', filename)
 endif
@@ -178,15 +179,15 @@ if(Ngroup > 0 .or. Ndset > 0 .or. Ndtype > 0) error stop "ERROR:h5fortran:close:
 
 
 !> close hdf5 file
-call h5fclose_f(self%file_id, ierr)
-call estop(ierr, "h5close:h5fclose: HDF5 file close", self%filename)
+call H5Fclose_f(self%file_id, ierr)
+call estop(ierr, "h5close:H5Fclose: HDF5 file close", self%filename)
 
 deallocate(self%filename)
 
 if (present(close_hdf5_interface)) then
   if (close_hdf5_interface) then
-    call h5close_f(ierr)
-    call estop(ierr, "h5close:h5close: HDF5 library close", self%filename)
+    call H5close_f(ierr)
+    call estop(ierr, "h5close:H5close: HDF5 library close", self%filename)
   endif
 endif
 
@@ -204,6 +205,11 @@ call H5Iget_type_f(self%file_id, obj_type, ier)
 if(ier /= 0 .or. obj_type /= H5I_FILE_F) is_open = .false.
 
 end procedure is_open
+
+
+module procedure hdf5_is_initialized
+hdf5_is_initialized = H5F_ACC_RDONLY_F /= H5F_ACC_TRUNC_F
+end procedure
 
 
 module procedure destructor
@@ -231,8 +237,8 @@ module procedure hdf5_close
 
 integer :: ier
 
-call h5close_f(ier)
-if (ier /= 0) error stop 'ERROR: h5fortran:h5close: HDF5 library close'
+call H5close_f(ier)
+if (ier /= 0) error stop 'ERROR: h5fortran:H5close: HDF5 library close'
 
 end procedure hdf5_close
 

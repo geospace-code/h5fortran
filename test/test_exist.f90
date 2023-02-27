@@ -1,7 +1,7 @@
 program exist_tests
 !! test "exist" variable
 use, intrinsic :: iso_fortran_env, only : stderr=>error_unit
-use h5fortran, only: hdf5_file, h5exist, is_hdf5, hdf5_close, H5T_NATIVE_INTEGER
+use h5fortran, only: hdf5_file, h5exist, is_hdf5, hdf5_close, H5T_NATIVE_INTEGER, hdf5_is_initialized
 
 implicit none
 
@@ -41,7 +41,7 @@ type(hdf5_file) :: h
 character(*), intent(in) :: fn
 
 print '(a)', 'test_exist: creating file ' // fn
-call h%open(fn, action='w')
+call h%open(fn, action='w', debug=.true.)
 
 print '(a)', "creating test dataset /x"
 call h%create('/x', H5T_NATIVE_INTEGER, [0])
@@ -51,17 +51,20 @@ call h%close()
 if(.not.is_hdf5(fn)) error stop 'file does not exist'
 
 print *, "test_exist: attemping to open file: ", fn
-call h%open(fn, action='r')
+call h%open(fn, action='r', debug=.true.)
 if (.not. h%exist('/x')) error stop 'x exists'
 
 if (h%exist('/A')) error stop 'variable /A should not exist in ' // h%filename
 
 call h%close()
 
+print '(a,L1)', "test_exist: library still initialized: ", hdf5_is_initialized()
+
 if(h%is_open()) error stop 'file is closed'
 
-if (.not. h5exist(fn, '/x')) error stop 'x exists'
-if (h5exist(fn, '/A')) error stop 'A not exist'
+print '(a)', "test_exist: check h5exist() on file: " // fn
+if (.not. h5exist(fn, '/x', debug=.true.)) error stop 'x exists'
+if (h5exist(fn, '/A', debug=.true.)) error stop 'A not exist'
 
 end subroutine test_exist
 

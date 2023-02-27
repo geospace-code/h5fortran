@@ -8,7 +8,12 @@ module procedure h5exist
 
 type(hdf5_file) :: h
 
-call h%open(filename, action='r')
+logical :: d
+
+d = .false.
+if(present(debug)) d = debug
+
+call h%open(filename, action='r', debug=d)
 h5exist = h%exist(dname)
 call h%close()
 

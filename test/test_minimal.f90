@@ -11,8 +11,14 @@ character(*), parameter :: filename='test_minimal.h5'
 
 p = 42
 
+!! check that repeated calls to h5open_f() do not cause problems as per docs
+!! not calling h5open_f() at all makes failures as library isn't initialized
+!! unlike C HDF5, Fortran HDF5 does not auto-initialize.
 call h5open_f(i)
-if (i /= 0) error stop 'minimal: could not open hdf5 library'
+if(i /= 0) error stop "test_minimal: h5open_f failed [0]"
+
+call h5open_f(i)
+if(i /= 0) error stop "test_minimal: h5open_f failed [1]"
 
 call h5fcreate_f(filename, H5F_ACC_TRUNC_F, lid, i)
 if (i/=0) error stop 'minimal: could not create file'
@@ -27,7 +33,10 @@ if (i/=0) error stop 'minimal: could not close file'
 print *, 'minimal: closed '//filename
 
 call h5close_f(i)
-if (i /= 0) error stop 'could not close hdf5 library'
+if (i /= 0) error stop 'could not close hdf5 library [0]'
+
+call H5close_f(i)
+if (i /= 0) error stop 'could not close hdf5 library [1]'
 
 ! this is a Fortran-standard way to delete files
 open(newunit=i, file=filename)

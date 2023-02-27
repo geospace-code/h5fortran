@@ -103,6 +103,7 @@ interface read_char
 procedure read_char0, read_char1, read_char2, read_char3, read_char4, read_char5, read_char6, read_char7
 end interface
 
+public :: hdf5_is_initialized
 public :: hdf5_file, hdf5_close, h5write, h5read, h5exist, is_hdf5, h5write_attr, h5read_attr, hdf5version
 !! for users
 public :: hdf_shape_check, hdf_rank_check, hdf_get_slice, id2name, get_obj_class, estop
@@ -207,8 +208,9 @@ end interface
 
 interface !< reader_lt.f90
 
-module logical function h5exist(filename, dname)
+module logical function h5exist(filename, dname, debug)
 character(*), intent(in) :: filename, dname
+logical, intent(in), optional :: debug
 end function
 
 module subroutine lt0read(filename, dname, A)
@@ -683,14 +685,18 @@ module logical function is_open(self)
 class(hdf5_file), intent(in) :: self
 end function
 
+module logical function hdf5_is_initialized()
+!! check if HDF5 library is initialized from any object (including outside h5fortran)
+end function
+
 module subroutine destructor(self)
 !! Close file and handle if user forgets to do so
 type(hdf5_file), intent(inout) :: self
 end subroutine
 
-module function hdf5version() result(v)
+module integer function hdf5version() result(v)
 !! tell HDF5 library version (major, minor, release)
-integer , dimension(3) :: v
+dimension :: v(3)
 end function
 
 module subroutine hdf5_close()
