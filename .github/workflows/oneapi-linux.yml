@@ -57,11 +57,6 @@ jobs:
       timeout-minutes: 2
       run: sudo apt install hdf5-tools ninja-build
 
-    - name: Setup Intel oneAPI environment
-      run: |
-        source /opt/intel/oneapi/setvars.sh
-        printenv >> $GITHUB_ENV
-
     - uses: actions/checkout@v3
 
     - name: Configure HDF5

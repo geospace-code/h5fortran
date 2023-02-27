@@ -25,19 +25,19 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-22.04]
+        os: [ubuntu-latest]
         shared: [false]
-        gcc: [9, 10, 11]
+        gcc: [9, 10, 11, 12]
         include:
-        - os: ubuntu-22.04
+        - os: ubuntu-latest
           shared: true
-          gcc: 11
+          gcc: 12
         - os: macos-latest
           shared: true
-          gcc: 11
+          gcc: 12
         - os: macos-latest
           shared: false
-          gcc: 11
+          gcc: 12
 
     runs-on: ${{ matrix.os }}
     env:
@@ -48,7 +48,7 @@ jobs:
 
     - uses: actions/setup-python@v4
       with:
-        python-version: '3.10'
+        python-version: '3.11'
 
     - name: Python pkgs
       run: pip install numpy h5py
@@ -92,7 +92,7 @@ jobs:
 
 
   valgrind-memory:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     needs: core
     timeout-minutes: 10
 
