@@ -70,16 +70,20 @@ elseif(self%comp_lvl > 9) then
   self%comp_lvl = 9
 endif
 
-!> Initialize FORTRAN interface.
-call h5open_f(ier)
-if (ier /= 0) error stop 'ERROR:h5fortran:open: HDF5 library initialize'
+!> Initialize FORTRAN interface
+!! HDF5 1.14.0 introduced bug that if H5open_f is called more than once,
+!! it will error.
+if (H5F_ACC_RDONLY_F == H5F_ACC_TRUNC_F) then
+  call H5open_f(ier)
+  call estop(ier, 'h5open:H5open HDF5 library initialize', filename)
+endif
 
 if(self%debug) then
-  call h5eset_auto_f(1, ier)
+  call H5Eset_auto_f(1, ier)
 else
-  call h5eset_auto_f(0, ier)
+  call H5Eset_auto_f(0, ier)
 endif
-if (ier /= 0) error stop 'ERROR:h5fortran:open: HDF5 library set traceback'
+call estop(ier, 'h5open:H5Eset_auto: HDF5 library set traceback', filename)
 
 select case(laction)
 case('r')
