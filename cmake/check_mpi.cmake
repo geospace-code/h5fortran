@@ -30,12 +30,11 @@ try_run(mpi_run_code mpi_build_code
 ${CMAKE_CURRENT_BINARY_DIR}/find_mpi/build
 ${CMAKE_CURRENT_BINARY_DIR}/find_mpi/get_mpi_version.c
 CMAKE_FLAGS "-DINCLUDE_DIRECTORIES:PATH=${MPI_C_INCLUDE_DIRS}"
-# must have quotes as include_dirs is a list
-# LINK_OPTIONS ${MPI_C_LINK_FLAGS}  # breaks CentOS GCC with -Wl,-rpath
 LINK_LIBRARIES ${MPI_C_LIBRARIES}
 RUN_OUTPUT_VARIABLE MPI_VERSION_STRING
 COMPILE_OUTPUT_VARIABLE mpi_vers_build_out
 )
+# CMAKE_FLAGS must have quotes to handles CMake list
 
 if(NOT mpi_build_code)
   message(CHECK_FAIL "MPI_VERSION test failed to build:
