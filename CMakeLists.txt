@@ -20,25 +20,28 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 include(options.cmake)
 include(cmake/compilers.cmake)
+include(cmake/CheckHDF5.cmake)
 
 find_package(HDF5 COMPONENTS Fortran)
 if(NOT HDF5_FOUND)
   message(FATAL_ERROR "HDF5 not found or working on the system. First build HDF5 by:
 
-  cmake -S ${CMAKE_CURRENT_SOURCE_DIR}/scripts -B build -DCMAKE_INSTALL_PREFIX=~/mylibs
+  cmake -S ${CMAKE_CURRENT_SOURCE_DIR}/scripts -B build -DCMAKE_INSTALL_PREFIX=~/hdf5
   cmake --build build
 
   The '~/mylibs' is an arbitrary directory.
   Then build h5fortran, referring to this HDF5 installation:
 
-  cmake -B build -DCMAKE_PREFIX_PATH=~/mylibs
-  cmake --build build
+  cmake -S ${CMAKE_CURRENT_SOURCE_DIR} -B ${PROJECT_BINARY_DIR} -DCMAKE_PREFIX_PATH=~/hdf5
+  cmake --build ${PROJECT_BINARY_DIR}
   ")
 endif()
 
 if(HDF5_VERSION VERSION_LESS 1.8.7)
   message(WARNING "HDF5 >= 1.8.7 required for ${PROJECT_NAME}")
 endif()
+
+check_hdf5()
 
 if(hdf5_parallel OR HDF5_HAVE_PARALLEL)
   target_link_libraries(HDF5::HDF5 INTERFACE MPI::MPI_Fortran)
