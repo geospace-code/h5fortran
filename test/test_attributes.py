@@ -18,17 +18,26 @@ fn = Path(P.file).expanduser()
 with h5py.File(fn, "w") as f:
     v = f.create_dataset("/empty", dtype=float)
 
-    v.attrs["real32-scalar"] = np.float32(3.)
-    v.attrs["real64-scalar"] = np.float64(3.)
-    v.attrs["real16-scalar"] = np.float16(3.)
+    v.attrs["real32-scalar"] = np.float32(3.0)
+    v.attrs["real64-scalar"] = np.float64(3.0)
+    v.attrs["real16-scalar"] = np.float16(3.0)
 
     v.attrs["variable_str"] = "Hi there"
     v.attrs["variable_str1"] = ["eight", "nine"]
-    v.attrs["variable_str2"] = [["eight", "nine", "ten"], ["eleven", "twelve", "thirteen"]]
+    v.attrs["variable_str2"] = [
+        ["eight", "nine", "ten"],
+        ["eleven", "twelve", "thirteen"],
+    ]
 
     v.attrs.create("nullpad", dtype=h5py.string_dtype("utf-8", 40), data="Hello World!")
-    v.attrs.create("nullpad1", dtype=h5py.string_dtype("utf-8", 20), data=["two", "three", "four"])
-    v.attrs.create("nullpad2", dtype=h5py.string_dtype("utf-8", 20), data=[["eight", "nine", "ten"], ["eleven", "twelve", "thirteen"]])
+    v.attrs.create(
+        "nullpad1", dtype=h5py.string_dtype("utf-8", 20), data=["two", "three", "four"]
+    )
+    v.attrs.create(
+        "nullpad2",
+        dtype=h5py.string_dtype("utf-8", 20),
+        data=[["eight", "nine", "ten"], ["eleven", "twelve", "thirteen"]],
+    )
 
     v.attrs["smiley"] = "😀"
     v.attrs["wink"] = "😉"

@@ -1,7 +1,7 @@
 program exist_tests
 !! test "exist" variable
 use, intrinsic :: iso_fortran_env, only : stderr=>error_unit
-use h5fortran, only: hdf5_file, h5write, h5exist, is_hdf5, hdf5_close
+use h5fortran, only: hdf5_file, h5exist, is_hdf5, hdf5_close
 
 implicit none
 
@@ -40,10 +40,14 @@ type(hdf5_file) :: h
 
 character(*), intent(in) :: fn
 
-call h5write(fn, '/x', 42)
+print '(a)', 'test_exist: creating file ' // fn
+call h%open(fn, action='w')
+print '(a)', 'test_exist: closing file ' // fn
+call h%close()
 if(.not.is_hdf5(fn)) error stop 'file does not exist'
 
-call h%open(fn)
+print *, "test_exist: attemping to open file: ", fn
+call h%open(fn, action='r')
 if (.not. h%exist('/x')) error stop 'x exists'
 
 if (h%exist('/A')) error stop 'variable /A should not exist in ' // h%filename
