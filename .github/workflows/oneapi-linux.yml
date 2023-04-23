@@ -77,7 +77,7 @@ jobs:
 
     - name: print config log
       if: ${{ failure() }}
-      run: cat build/CMakeFiles/CMakeError.log
+      run: cat build/CMakeFiles/CMakeConfigureLog.yaml
 
     - name: Release build / test
       run: cmake --workflow --preset release
