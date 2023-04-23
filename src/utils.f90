@@ -199,7 +199,12 @@ module procedure is_open
 integer :: obj_type, ier
 
 call H5Iis_valid_f(self%file_id, is_open, ier)
-call estop(ier, "is_open:h5iis_valid", self%filename)
+
+if(allocated(self%filename)) then
+  call estop(ier, "is_open:h5iis_valid", self%filename)
+else
+  call estop(ier, "is_open:h5iis_valid", "")
+endif
 
 call H5Iget_type_f(self%file_id, obj_type, ier)
 if(ier /= 0 .or. obj_type /= H5I_FILE_F) is_open = .false.
