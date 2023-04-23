@@ -8,10 +8,6 @@ function(check_hdf5_c)
 
 set(CMAKE_REQUIRED_LIBRARIES HDF5::HDF5)
 
-if(ZLIB_FOUND)
-  list(APPEND CMAKE_REQUIRED_LIBRARIES ZLIB::ZLIB)
-endif()
-
 set(_src
 [=[
 // no newline characters because that trips up CMake check_source_runs() string expansion
@@ -52,9 +48,6 @@ endfunction(check_hdf5_c)
 function(check_hdf5_fortran)
 
 set(CMAKE_REQUIRED_LIBRARIES HDF5::HDF5)
-if(ZLIB_FOUND)
-  list(APPEND CMAKE_REQUIRED_LIBRARIES ZLIB::ZLIB)
-endif()
 
 set(_src [=[
 program main
