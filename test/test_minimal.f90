@@ -32,11 +32,8 @@ call h5fclose_f(lid, i)
 if (i/=0) error stop 'minimal: could not close file'
 print *, 'minimal: closed '//filename
 
-call h5close_f(i)
-if (i /= 0) error stop 'could not close hdf5 library [0]'
-
 call H5close_f(i)
-if (i /= 0) error stop 'could not close hdf5 library [1]'
+if (i /= 0) error stop 'could not close hdf5 library [0]'
 
 ! this is a Fortran-standard way to delete files
 open(newunit=i, file=filename)
