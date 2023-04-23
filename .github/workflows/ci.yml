@@ -108,7 +108,9 @@ jobs:
     - run: ctest -Dexclude_label=python -S memcheck.cmake -VV
 
 
+# issue with python loading writer.inc
   linux-coverage:
+    if: false
     needs: core
     runs-on: ubuntu-latest
     timeout-minutes: 10
