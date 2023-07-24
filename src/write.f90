@@ -65,8 +65,9 @@ call estop(ier, "create:H5Tcopy", self%filename, dname)
 
 if(dtype == H5T_NATIVE_CHARACTER) then
   if(.not. present(charlen)) error stop "ERROR:h5fortran:hdf_create: character type must specify charlen"
+  if (charlen < 1) error stop "ERROR:h5fortran:attr_create: character type must specify charlen > 0"
 
-  call h5tset_size_f(dtype_id, int(charlen, SIZE_T), ier)
+  call H5Tset_size_f(dtype_id, int(charlen, SIZE_T), ier)
   call estop(ier, "create:H5Tset_size", self%filename, dname)
 endif
 

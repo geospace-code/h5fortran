@@ -29,11 +29,14 @@ character(*), intent(in) :: fn
 
 type(hdf5_file) :: h
 
-call h%open(fn, action='w')
+call h%open(fn, action='w', debug=.true.)
 
+call h%write("/empty", "")
 call h%write('/little', '42')
 call h%write('/MySentence', 'this is a little sentence.')
 call h%write('/vector_scalar', ['vector scalar'])
+
+call h%write("/1d_empty", [character(1) :: ""])
 call h%write("/1d", [character(3) :: "hi", "bye"])
 call h%write("/2d", reshape([character(5) :: "one", "two", "three", "four", "five", "six"], [2,3]))
 
@@ -54,6 +57,10 @@ character(13) :: vs
 integer(HSIZE_T), allocatable :: dims(:)
 
 call h%open(fn, action='r')
+
+call h%read('/empty', value)
+if(len_trim(value) /= 0) error stop 'test_string: empty string failure: len_trim /= 0'
+if (value /= '') error stop 'test_string: empty string failure: value = ' // trim(value)
 
 call h%read('/little', value)
 

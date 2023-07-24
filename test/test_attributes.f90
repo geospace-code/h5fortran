@@ -54,6 +54,7 @@ call h%writeattr('/x', 'i5', i5)
 call h%writeattr('/x', 'i6', i6)
 call h%writeattr('/x', 'i7', i7)
 
+call h%writeattr("/x", "1d_emptyp", [character(1) :: "", ""])
 call h%writeattr("/x", "c1d", [character(5) :: 'one', 'two', 'three'])
 call h%writeattr("/x", "c2d", reshape([character(5) :: 'one', 'two', 'three', 'four', 'five', 'six'], [2,3]))
 call h%writeattr("/x", "empty_char", "")
