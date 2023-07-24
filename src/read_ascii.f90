@@ -90,9 +90,12 @@ integer :: i
 
 i = index(s, C_NULL_CHAR) - 1
 if (i < 0) i = len_trim(s)
-if (i == 0) i = 1
 
-t = s(:i)
+if (i > 0) then
+  t = s(1:i)
+else
+  t = ""
+endif
 
 end function pad_trim
 

@@ -20,6 +20,7 @@ type is (integer(int64))
 type is(character(*))
   dtype = H5T_NATIVE_CHARACTER
   charlen = len(A)  !< workaround for GCC 8.3.0 bug
+  if(charlen == 0) charlen = 1 !< empty string is OK but charlen is strictly positive.
 class default
   error stop "ERROR:h5fortran:writeattr: unknown dataset type for " // obj_name // ":" // attr // " in " // self%filename
 end select

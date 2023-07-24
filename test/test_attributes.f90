@@ -1,6 +1,7 @@
 program test_attributes
 
 use, intrinsic:: iso_fortran_env, only: int32, real32, real64, stderr=>error_unit
+use, intrinsic:: iso_c_binding
 
 use h5fortran, only: hdf5_file, h5write_attr, h5read_attr, HSIZE_T
 
@@ -35,7 +36,7 @@ character(*), intent(in) :: path
 
 integer :: i2(1,1), i3(1,1,1), i4(1,1,1,1), i5(1,1,1,1,1), i6(1,1,1,1,1,1), i7(1,1,1,1,1,1,1)
 
-call h%open(path, action='w')
+call h%open(path, action='w', debug=.true.)
 
 call h%write('/x', 1)
 
@@ -55,9 +56,11 @@ call h%writeattr('/x', 'i7', i7)
 
 call h%writeattr("/x", "c1d", [character(5) :: 'one', 'two', 'three'])
 call h%writeattr("/x", "c2d", reshape([character(5) :: 'one', 'two', 'three', 'four', 'five', 'six'], [2,3]))
+call h%writeattr("/x", "empty_char", "")
 
 call h%close()
 
+!> test overwrite of attributes
 call h%open(path, action='a')
 call h%writeattr('/x', 'int32-scalar', 142)
 call h%writeattr('/x', 'real32_1d', [real(real32) :: 142, 84])
@@ -89,9 +92,19 @@ call h%open(path, action='r')
 call h%read('/x', x)
 if (x/=1) error stop 'readattr: unexpected value'
 
+!> character scalar
 call h%readattr('/x', 'char', attr_str)
 if (attr_str /= 'overwrite attrs') error stop 'overwrite attrs failed: ' // attr_str
 
+call h%readattr("/x", "empty_char", attr_str)
+print *, trim(attr_str) == c_null_char
+if (len_trim(attr_str) /= 0) then
+    write(stderr, '(a,i0)') "empty char attribute: expected 0 length, got length: ", len_trim(attr_str)
+    error stop "empty char attribute failed"
+endif
+if (trim(attr_str) /= "") error stop "empty char attribute failed, got: " // trim(attr_str)
+
+!> scalar numbers
 call h%readattr('/x', 'int32-scalar', int32_0)
 if (int32_0 /= 142) error stop 'readattr: int32-scalar'
 
@@ -116,6 +129,8 @@ call h%readattr('/x', 'i4', i4)
 call h%readattr('/x', 'i5', i5)
 call h%readattr('/x', 'i6', i6)
 call h%readattr('/x', 'i7', i7)
+
+!> character array
 
 call h%shape("/x", dims, "c1d")
 if(dims(1) /= 3) error stop "attr % shape: c1d"
