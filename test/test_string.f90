@@ -1,6 +1,7 @@
 program test_string
 
 use, intrinsic:: iso_fortran_env, only:  stderr=>error_unit
+use, intrinsic:: iso_c_binding, only : C_NULL_CHAR
 
 use hdf5, only: H5T_STR_SPACEPAD_F, HSIZE_T
 use h5fortran, only: hdf5_file
@@ -29,9 +30,14 @@ character(*), intent(in) :: fn
 
 type(hdf5_file) :: h
 
+character(123) :: aux
+
 call h%open(fn, action='w', debug=.true.)
 
-call h%write("/empty", "")
+aux = ""
+!! compillers like oneAPI need an auxiliary variable not a raw constant
+call h%write("/empty", aux)
+
 call h%write('/little', '42')
 call h%write('/MySentence', 'this is a little sentence.')
 call h%write('/vector_scalar', ['vector scalar'])
@@ -58,7 +64,9 @@ integer(HSIZE_T), allocatable :: dims(:)
 
 call h%open(fn, action='r')
 
+value = ""
 call h%read('/empty', value)
+print '(L1,1x,i0,1x,a)', trim(value) == C_NULL_CHAR, len_trim(value), trim(value)
 if(len_trim(value) /= 0) error stop 'test_string: empty string failure: len_trim /= 0'
 if (value /= '') error stop 'test_string: empty string failure: value = ' // trim(value)
 

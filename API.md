@@ -2,6 +2,8 @@
 
 This document provides a listing of h5fortran `public` scoped user-facing procedures and methods with a summary of their parameters.
 
+Reading or writing {real64,real32,int32,int64} from scalar to 7d is supported.
+
 All examples assume:
 
 ```fortran
@@ -16,6 +18,40 @@ Query HDF5 library version:
 ```fortran
 use h5fortran, only : hdf5version
 print *, hdf5version()
+```
+
+## Character variables
+
+Character variables are also supported for datasets and attributes.
+On some compilers (e.g. oneAPI), it's more stable to use an auxiliary variable when writing character data to avoid "junk" in the string.
+
+For example:
+
+```fortran
+character(5) :: aux
+
+aux = "hello"
+
+h%write("/mystr", aux)
+```
+
+rather than simply
+
+```fortran
+h%write("/mystr", "hello")
+```
+
+This is ESPECIALLY true if writing empty character to a dataset or attribute:
+
+```fortran
+
+h%write("/mystr", "")  !< DON'T: may have junk characters in file
+
+
+!! instead do like:
+character(123) :: aux  !< arbitrary length
+aux = ""
+h%write("/mystr", aux)
 ```
 
 ## Open HDF5 file reference
@@ -48,7 +84,7 @@ call h%close(close_hdf5_interface)
 logical, intent(in), optional :: close_hdf5_interface
 ```
 
-To avoid memory leaks or corrupted files, always "close" files before STOPping the Fortran program.
+To avoid memory leaks or corrupted files, always "close" files before Stopping the Fortran program.
 
 ## Flush data to disk while file is open
 

@@ -1,7 +1,7 @@
 program test_attributes
 
 use, intrinsic:: iso_fortran_env, only: int32, real32, real64, stderr=>error_unit
-use, intrinsic:: iso_c_binding
+use, intrinsic:: iso_c_binding, only: C_NULL_CHAR
 
 use h5fortran, only: hdf5_file, h5write_attr, h5read_attr, HSIZE_T
 
@@ -34,6 +34,8 @@ subroutine test_write_attributes(path)
 type(hdf5_file) :: h
 character(*), intent(in) :: path
 
+character(123) :: buf
+
 integer :: i2(1,1), i3(1,1,1), i4(1,1,1,1), i5(1,1,1,1,1), i6(1,1,1,1,1,1), i7(1,1,1,1,1,1,1)
 
 call h%open(path, action='w', debug=.true.)
@@ -54,10 +56,16 @@ call h%writeattr('/x', 'i5', i5)
 call h%writeattr('/x', 'i6', i6)
 call h%writeattr('/x', 'i7', i7)
 
-call h%writeattr("/x", "1d_emptyp", [character(1) :: "", ""])
+buf = ""
+!! This auxiliary buffer fixes GCC 11.3.0 and oneAPI.
+!! It wasn't necessary on GCC 11.4.1 and newer.
+!! with h5dump, what's seen on disk file is "\001" value instead of "\000" or space.
+call h%writeattr("/x", "empty_char", buf)
+
+call h%writeattr("/x", "1d_empty", [character(1) :: "", ""])
 call h%writeattr("/x", "c1d", [character(5) :: 'one', 'two', 'three'])
 call h%writeattr("/x", "c2d", reshape([character(5) :: 'one', 'two', 'three', 'four', 'five', 'six'], [2,3]))
-call h%writeattr("/x", "empty_char", "")
+
 
 call h%close()
 

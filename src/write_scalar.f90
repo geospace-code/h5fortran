@@ -26,7 +26,7 @@ type is (integer(int64))
   dtype = H5T_STD_I64LE
 type is (character(*))
   dtype = H5T_NATIVE_CHARACTER
-  charlen = len(A)  !< workaround for GCC 8.3.0 bug
+  charlen = len_trim(A)  !< workaround for GCC 8.3.0 bug
   if(charlen == 0) charlen = 1 !< empty string is OK but charlen is strictly positive.
 class default
   error stop "ERROR:h5fortran:write: unknown variable type for " // dname
@@ -48,7 +48,7 @@ type is (integer(int32))
 type is (integer(int64))
   call H5Dwrite_f(dset_id, dtype, A, dset_dims, ier, file_space_id=file_space_id, xfer_prp=xfer_id)
 type is (character(*))
-  call H5Dwrite_f(dset_id, dtype_id, A, dset_dims, ier, file_space_id=file_space_id, xfer_prp=xfer_id)
+  call H5Dwrite_f(dset_id, dtype_id, trim(A), dset_dims, ier, file_space_id=file_space_id, xfer_prp=xfer_id)
 class default
   error stop "ERROR:h5fortran:write: unsupported type for " // dname
 end select
