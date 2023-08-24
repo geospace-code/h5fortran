@@ -118,6 +118,7 @@ NAMES H5pubconf.h H5pubconf-64.h
 HINTS ${HDF5_C_INCLUDE_DIR}
 NO_DEFAULT_PATH
 )
+message(VERBOSE "HDF5 config: ${h5_conf}")
 
 if(NOT h5_conf)
   set(HDF5_C_FOUND false)
@@ -145,23 +146,19 @@ endif()
 # get version
 # from CMake/Modules/FindHDF5.cmake
 file(STRINGS ${h5_conf} _def
-REGEX "^[ \t]*#[ \t]*define[ \t]+H5_VERSION[ \t]+" )
-if("${_def}" MATCHES
-"H5_VERSION[ \t]+\"([0-9]+\\.[0-9]+\\.[0-9]+)(-patch([0-9]+))?\"" )
-  set(HDF5_VERSION "${CMAKE_MATCH_1}" )
-  if(CMAKE_MATCH_3)
-    set(HDF5_VERSION ${HDF5_VERSION}.${CMAKE_MATCH_3})
-  endif()
+ REGEX "^[ \t]*#[ \t]*define[ \t]+H5_VERSION[ \t]+"
+)
+message(DEBUG "HDF5 version define: ${_def}")
+
+if("${_def}" MATCHES "H5_VERSION[ \t]+\"([0-9]+\\.[0-9]+\\.[0-9]+)")
+  set(HDF5_VERSION "${CMAKE_MATCH_1}")
 endif()
+message(DEBUG "HDF5 version match 0, 1: ${CMAKE_MATCH_0}   ${CMAKE_MATCH_1}")
 
 # avoid picking up incompatible zlib over the desired zlib
-if(CMAKE_VERSION VERSION_LESS 3.20)
-  get_filename_component(zlib_dir ${HDF5_C_INCLUDE_DIR} DIRECTORY)
-else()
-  cmake_path(GET HDF5_C_INCLUDE_DIR PARENT_PATH zlib_dir)
-endif()
 if(NOT ZLIB_ROOT)
-  set(ZLIB_ROOT "${HDF5_ROOT};${zlib_dir}")
+  get_filename_component(ZLIB_ROOT ${HDF5_C_INCLUDE_DIR} DIRECTORY)
+  list(APPEND ZLIB_ROOT ${HDF5_ROOT})
 endif()
 
 
