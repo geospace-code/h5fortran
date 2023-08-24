@@ -9,7 +9,7 @@ option(zlib_legacy "use legacy zlib 1.x")
 # --- system checks
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   message(FATAL_ERROR "please specify where to install HDF5 under, like
-  cmake -B build -DCMAKE_INSTALL_PREFIX=~/mylibs")
+  cmake -B build -DCMAKE_INSTALL_PREFIX=~/hdf5")
 endif()
 
 if(hdf5_parallel)
