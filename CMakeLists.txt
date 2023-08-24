@@ -66,6 +66,8 @@ set_property(TARGET h5fortran PROPERTY VERSION ${PROJECT_VERSION})
 # GLOBAL needed for use by FetchContent
 add_library(h5fortran::h5fortran INTERFACE IMPORTED GLOBAL)
 target_link_libraries(h5fortran::h5fortran INTERFACE h5fortran)
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include)
+# avoid race condition when used by FetchContent
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/h5fortran.mod DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
