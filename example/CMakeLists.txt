@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.11...3.25)
+cmake_minimum_required(VERSION 3.22...3.27)
 
 project(h5fortranExample
 LANGUAGES C CXX Fortran)
@@ -43,11 +43,14 @@ add_test(NAME CPP_fcn COMMAND cpp_fcn)
 
 # properties
 get_property(test_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY TESTS)
-set_property(TEST ${test_names} PROPERTY TIMEOUT 10)
 set_property(TEST ${test_names} PROPERTY WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
-if(WIN32 AND CMAKE_VERSION VERSION_GREATER_EQUAL 3.22)
+if(WIN32)
 set_property(TEST ${test_names} PROPERTY
-  ENVIRONMENT_MODIFICATION "PATH=path_list_append:${ZLIB_INCLUDE_DIRS}/../bin;PATH=path_list_append:${ZLIB_INCLUDE_DIR}/../bin;PATH=path_list_append:${PROJECT_BINARY_DIR}/bin;PATH=path_list_append:${h5fortran_DIR}/../bin"
+  ENVIRONMENT_MODIFICATION "PATH=path_list_append:${ZLIB_INCLUDE_DIRS}/../bin;PATH=path_list_append:${h5fortran_DIR}/../bin"
+  )
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+set_property(TEST ${test_names} PROPERTY
+  ENVIRONMENT_MODIFICATION "LD_LIBRARY_PATH=path_list_append:${ZLIB_INCLUDE_DIRS}/../lib;LD_LIBRARY_PATH=path_list_append:${h5fortran_DIR}/../lib"
   )
 endif()
