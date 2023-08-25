@@ -6,7 +6,6 @@
 [![ci](https://github.com/geospace-code/h5fortran/actions/workflows/ci.yml/badge.svg)](https://github.com/geospace-code/h5fortran/actions/workflows/ci.yml)
 [![ci_build](https://github.com/geospace-code/h5fortran/actions/workflows/ci_build.yml/badge.svg)](https://github.com/geospace-code/h5fortran/actions/workflows/ci_build.yml)
 [![ci_fpm](https://github.com/geospace-code/h5fortran/actions/workflows/ci_fpm.yml/badge.svg)](https://github.com/geospace-code/h5fortran/actions/workflows/ci_fpm.yml)
-[![intel-oneapi](https://github.com/geospace-code/h5fortran/actions/workflows/intel-oneapi.yml/badge.svg)](https://github.com/geospace-code/h5fortran/actions/workflows/intel-oneapi.yml)
 
 Simple, robust, thin HDF5 polymorphic Fortran read/write interface.
 Reading or writing {real64,real32,int32,int64} from scalar to 7d is as simple as
