@@ -63,6 +63,9 @@ include(CheckSymbolExists)
 include(CheckCSourceCompiles)
 include(CheckFortranSourceCompiles)
 
+# this is to help avoid unwanted Anaconda HDF5 or stray h5cc compiler script
+set(_use_sys_env_path ${CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH})
+set(CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH false)
 function(get_flags exec outvar)
 
 execute_process(COMMAND ${exec} -show
@@ -501,6 +504,7 @@ if(HDF5_ROOT)
   NO_DEFAULT_PATH
   HINTS ${HDF5_ROOT}
   PATH_SUFFIXES ${hdf5_binsuf}
+  DOC "HDF5 Fortran compiler script"
   )
 else()
   find_program(HDF5_Fortran_COMPILER_EXECUTABLE
@@ -508,6 +512,7 @@ else()
   NAMES_PER_DIR
   PATHS ${hdf5_binpref}
   PATH_SUFFIXES ${hdf5_binsuf}
+  DOC "HDF5 Fortran compiler script"
   )
 endif()
 
@@ -556,6 +561,7 @@ if(HDF5_ROOT)
   NO_DEFAULT_PATH
   HINTS ${HDF5_ROOT}
   PATH_SUFFIXES ${hdf5_binsuf}
+  DOC "HDF5 C++ compiler script"
   )
 else()
   find_program(HDF5_CXX_COMPILER_EXECUTABLE
@@ -563,6 +569,7 @@ else()
   NAMES_PER_DIR
   PATHS ${hdf5_binpref}
   PATH_SUFFIXES ${hdf5_binsuf}
+  DOC "HDF5 C++ compiler script"
   )
 endif()
 
@@ -605,6 +612,7 @@ if(HDF5_ROOT)
   NO_DEFAULT_PATH
   HINTS ${HDF5_ROOT}
   PATH_SUFFIXES ${hdf5_binsuf}
+  DOC "HDF5 C compiler script"
   )
 else()
   find_program(HDF5_C_COMPILER_EXECUTABLE
@@ -612,6 +620,7 @@ else()
   NAMES_PER_DIR
   PATHS ${hdf5_binpref}
   PATH_SUFFIXES ${hdf5_binsuf}
+  DOC "HDF5 C compiler script"
   )
 endif()
 
@@ -779,14 +788,6 @@ if(NOT HDF5_ROOT)
   endif()
 endif()
 
-# Conda causes numerous problems with finding HDF5, so exclude from search
-if(DEFINED ENV{CONDA_PREFIX})
-  set(h5_ignore_path
-    $ENV{CONDA_PREFIX}/bin $ENV{CONDA_PREFIX}/lib $ENV{CONDA_PREFIX}/include
-    $ENV{CONDA_PREFIX}/Library/bin $ENV{CONDA_PREFIX}/Library/lib $ENV{CONDA_PREFIX}/Library/include
-  )
-  list(APPEND CMAKE_IGNORE_PATH ${h5_ignore_path})
-endif()
 
 # --- library suffixes
 
@@ -874,10 +875,7 @@ check_hdf5_link()
 set(CMAKE_REQUIRED_LIBRARIES)
 set(CMAKE_REQUIRED_INCLUDES)
 
-# pop off ignored paths so rest of script can find Python
-if(DEFINED CMAKE_IGNORE_PATH)
-  list(REMOVE_ITEM CMAKE_IGNORE_PATH "${h5_ignore_path}")
-endif()
+set(CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH ${_use_sys_env_path})
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(HDF5

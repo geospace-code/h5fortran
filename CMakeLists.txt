@@ -22,6 +22,10 @@ endif()
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
+# --- avoid Anaconda libraries
+if(DEFINED ENV{CONDA_PREFIX})
+  list(APPEND CMAKE_IGNORE_PREFIX_PATH $ENV{CONDA_PREFIX})
+endif()
 
 include(options.cmake)
 include(cmake/compilers.cmake)
