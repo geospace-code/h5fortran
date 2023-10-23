@@ -11,6 +11,23 @@ else()
   string(JSON zlib_tag GET ${json} zlib2 tag)
 endif()
 
+set(ZLIB_INCLUDE_DIRS ${CMAKE_INSTALL_FULL_INCLUDEDIR})
+
+if(BUILD_SHARED_LIBS)
+  if(WIN32)
+    set(ZLIB_LIBRARIES ${CMAKE_INSTALL_FULL_BINDIR}/${CMAKE_SHARED_LIBRARY_PREFIX}zlib1${CMAKE_SHARED_LIBRARY_SUFFIX})
+  else()
+    set(ZLIB_LIBRARIES ${CMAKE_INSTALL_FULL_LIBDIR}/${CMAKE_SHARED_LIBRARY_PREFIX}z${CMAKE_SHARED_LIBRARY_SUFFIX})
+  endif()
+else()
+  if(MSVC OR (WIN32 AND zlib_legacy))
+    set(ZLIB_LIBRARIES ${CMAKE_INSTALL_FULL_LIBDIR}/${CMAKE_STATIC_LIBRARY_PREFIX}zlibstatic${CMAKE_STATIC_LIBRARY_SUFFIX})
+  else()
+    set(ZLIB_LIBRARIES ${CMAKE_INSTALL_FULL_LIBDIR}/${CMAKE_STATIC_LIBRARY_PREFIX}z${CMAKE_STATIC_LIBRARY_SUFFIX})
+  endif()
+endif()
+
+
 set(zlib_cmake_args
 -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
 -DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS}
@@ -23,20 +40,39 @@ set(zlib_cmake_args
 # NetCDF 4.9/4.6 needs fPIC
 
 if(zlib_legacy)
-ExternalProject_Add(ZLIB
+set(zlib_download
 URL ${zlib_url}
 URL_HASH SHA256=${zlib_sha256}
-CMAKE_ARGS ${zlib_cmake_args}
-CONFIGURE_HANDLED_BY_BUILD ON
-INACTIVITY_TIMEOUT 60
 )
 else()
-ExternalProject_Add(ZLIB
+set(zlib_download
 GIT_REPOSITORY ${zlib_url}
 GIT_TAG ${zlib_tag}
 GIT_SHALLOW true
-CMAKE_ARGS ${zlib_cmake_args}
-CONFIGURE_HANDLED_BY_BUILD ON
-INACTIVITY_TIMEOUT 60
 )
 endif()
+
+ExternalProject_Add(ZLIB
+${zlib_download}
+CMAKE_ARGS ${zlib_cmake_args}
+BUILD_BYPRODUCTS ${ZLIB_LIBRARIES}
+CONFIGURE_HANDLED_BY_BUILD ON
+INACTIVITY_TIMEOUT 60
+USES_TERMINAL_DOWNLOAD true
+USES_TERMINAL_UPDATE true
+USES_TERMINAL_PATCH true
+USES_TERMINAL_CONFIGURE true
+USES_TERMINAL_BUILD true
+USES_TERMINAL_INSTALL true
+USES_TERMINAL_TEST true
+)
+
+# --- imported target
+
+file(MAKE_DIRECTORY ${ZLIB_INCLUDE_DIRS})
+# avoid race condition
+
+add_library(ZLIB::ZLIB INTERFACE IMPORTED GLOBAL)
+add_dependencies(ZLIB::ZLIB ZLIB)  # to avoid include directory race condition
+target_link_libraries(ZLIB::ZLIB INTERFACE ${ZLIB_LIBRARIES})
+target_include_directories(ZLIB::ZLIB INTERFACE ${ZLIB_INCLUDE_DIRS})
