@@ -1,23 +1,5 @@
 include(CheckFortranSourceCompiles)
 
-# check C and Fortran compiler ABI compatibility
-
-if(NOT abi_ok)
-  message(CHECK_START "checking that compilers can link together")
-  try_compile(abi_ok
-  ${CMAKE_CURRENT_BINARY_DIR}/abi_check ${CMAKE_CURRENT_LIST_DIR}/abi_check
-  abi_check
-  )
-  if(abi_ok)
-    message(CHECK_PASS "OK")
-  else()
-    message(FATAL_ERROR "ABI-incompatible compilers:
-    C compiler ${CMAKE_C_COMPILER_ID} ${CMAKE_C_COMPILER_VERSION}
-    Fortran compiler ${CMAKE_Fortran_COMPILER_ID} ${CMAKE_Fortran_COMPILER_VERSION}"
-    )
-  endif()
-endif()
-
 # --- not all platforms have ieee_arithmetic e.g. aarch64 GCC
 check_fortran_source_compiles("program a
 use, intrinsic :: ieee_arithmetic, only : ieee_quiet_nan, ieee_value
