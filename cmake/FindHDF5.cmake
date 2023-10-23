@@ -60,8 +60,7 @@ Targets
 #]=======================================================================]
 
 include(CheckSymbolExists)
-include(CheckCSourceCompiles)
-include(CheckFortranSourceCompiles)
+include(CheckSourceCompiles)
 
 
 function(get_flags exec outvar)
@@ -696,7 +695,7 @@ else()
   ]=])
 endif(HDF5_parallel_FOUND)
 
-check_c_source_compiles("${src}" HDF5_C_links)
+check_source_compiles(C "${src}" HDF5_C_links)
 
 endfunction(check_c_links)
 
@@ -737,7 +736,7 @@ else()
   end program")
 endif()
 
-check_fortran_source_compiles(${src} HDF5_Fortran_links SRC_EXT f90)
+check_source_compiles(Fortran ${src} HDF5_Fortran_links)
 
 endfunction(check_fortran_links)
 

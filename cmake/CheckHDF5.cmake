@@ -1,8 +1,8 @@
 # HDF5 1.14.0 has a bug where basic types are not correct, which causes confusing runtime errors
 # check for those and other problems that may arise before build.
 
-include(CheckCSourceRuns)
-include(CheckFortranSourceRuns)
+include(CheckSourceRuns)
+
 
 function(check_hdf5_c)
 
@@ -36,7 +36,7 @@ return EXIT_SUCCESS;
 }
 ]=])
 
-check_c_source_runs("${_src}" hdf5_c_types)
+check_source_runs(C "${_src}" hdf5_c_types)
 
 if(NOT hdf5_c_types)
   message(FATAL_ERROR "HDF5 C types failed check")
@@ -82,7 +82,7 @@ end program
 ]=]
 )
 
-check_fortran_source_runs("${_src}" hdf5_fortran_types)
+check_source_runs(Fortran "${_src}" hdf5_fortran_types)
 
 if(NOT hdf5_fortran_types)
   message(FATAL_ERROR "HDF5 Fortran types failed check")

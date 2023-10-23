@@ -1,13 +1,13 @@
-include(CheckFortranSourceCompiles)
+include(CheckSourceCompiles)
 
 # --- not all platforms have ieee_arithmetic e.g. aarch64 GCC
-check_fortran_source_compiles("program a
+check_source_compiles(Fortran
+"program a
 use, intrinsic :: ieee_arithmetic, only : ieee_quiet_nan, ieee_value
 real :: NaN
 NaN = ieee_value(0., ieee_quiet_nan)
 end program"
 HAVE_IEEE_ARITH
-SRC_EXT f90
 )
 
 # --- C compile flags

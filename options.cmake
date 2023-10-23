@@ -10,9 +10,6 @@ option(concepts "conceptual testing, for devs only" off)
 
 option(CMAKE_TLS_VERIFY "Verify TLS certificates" on)
 
-include(GNUInstallDirs)
-
-
 if(BUILD_SHARED_LIBS AND MSVC)
   message(WARNING "Intel oneAPI has trouble with shared libs in general on Windows, try
     cmake -DBUILD_SHARED_LIBS=off")
