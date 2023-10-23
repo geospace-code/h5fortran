@@ -8,7 +8,7 @@ option(tidy "Run clang-tidy on the code")
 option(matlab "check HDF5 file writes with Matlab")
 option(concepts "conceptual testing, for devs only" off)
 
-set(CMAKE_TLS_VERIFY true)
+option(CMAKE_TLS_VERIFY "Verify TLS certificates" on)
 
 include(GNUInstallDirs)
 
@@ -20,10 +20,5 @@ endif()
 
 # Necessary for shared library with Visual Studio / Windows oneAPI
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS true)
-
-# allow CMAKE_PREFIX_PATH with ~ expand
-if(CMAKE_PREFIX_PATH)
-  get_filename_component(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} ABSOLUTE)
-endif()
 
 file(GENERATE OUTPUT .gitignore CONTENT "*")
