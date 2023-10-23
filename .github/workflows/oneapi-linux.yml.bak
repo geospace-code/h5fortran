@@ -31,7 +31,7 @@ jobs:
     timeout-minutes: 10
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: cache install oneAPI
       id: cache-install
@@ -57,7 +57,7 @@ jobs:
       timeout-minutes: 2
       run: sudo apt install hdf5-tools ninja-build
 
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Configure HDF5
       run: >-

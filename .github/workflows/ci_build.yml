@@ -3,6 +3,7 @@ name: build
 env:
   HOMEBREW_NO_INSTALL_CLEANUP: 1
   CTEST_NO_TESTS_ACTION: error
+  FC: gfortran-12
 
 on:
   push:
@@ -34,11 +35,9 @@ jobs:
 
     - name: prereqs (MacOS)
       if: runner.os == 'macOS'
-      run: |
-        brew install ninja
-        brew reinstall gcc
+      run: brew install ninja
 
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Configure HDF5 library
       run: >-
