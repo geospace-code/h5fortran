@@ -63,9 +63,7 @@ include(CheckSymbolExists)
 include(CheckCSourceCompiles)
 include(CheckFortranSourceCompiles)
 
-# this is to help avoid unwanted Anaconda HDF5 or stray h5cc compiler script
-set(_use_sys_env_path ${CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH})
-set(CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH false)
+
 function(get_flags exec outvar)
 
 execute_process(COMMAND ${exec} -show
@@ -874,8 +872,6 @@ check_hdf5_link()
 
 set(CMAKE_REQUIRED_LIBRARIES)
 set(CMAKE_REQUIRED_INCLUDES)
-
-set(CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH ${_use_sys_env_path})
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(HDF5
