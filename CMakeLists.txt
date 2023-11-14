@@ -84,3 +84,5 @@ DESTINATION cmake
 
 include(cmake/pkgconf.cmake)
 include(cmake/install.cmake)
+
+file(GENERATE OUTPUT .gitignore CONTENT "*")
