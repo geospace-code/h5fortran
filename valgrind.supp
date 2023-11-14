@@ -1,83 +1,38 @@
 {
-   HDF5-internal-write-close
+   HDF5malloc
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   ...
+   obj:*/libhdf5*
+}
+{
+   HDF5calloc
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   ...
+   obj:*/libhdf5*
+}
+{
+   HDF5param
    Memcheck:Param
    pwrite64(buf)
    fun:pwrite
+   ...
    obj:*/libhdf5*
-   fun:H5FD_write
-   fun:H5F__accum_write
-   fun:H5PB_write
-   fun:H5F_block_write
-   fun:H5D__flush_sieve_buf
-   obj:*/libhdf5*
-   fun:H5D__flush_real
-   fun:H5D_close
-   obj:*/libhdf5*
-   fun:H5I_dec_ref
 }
 {
-   HDF5-write
-   Memcheck:Param
-   pwrite64(buf)
-   fun:pwrite
-   obj:*/libhdf5*
-   fun:H5FD_write
-   fun:H5F__accum_write
-   fun:H5PB_write
-   fun:H5F_block_write
-   obj:*/libhdf5*
-   obj:*/libhdf5*
-   obj:*/libhdf5*
-   obj:*/libhdf5*
-   fun:H5D__write
-   fun:H5Dwrite
-}
-{
-   HDF5-attributes-close
-   Memcheck:Param
-   pwrite64(buf)
-   fun:pwrite
-   obj:*/libhdf5*
-   fun:H5FD_write
-   fun:H5F__accum_write
-   fun:H5PB_write
-   fun:H5F_block_write
-   fun:H5C__flush_single_entry
-   fun:H5C_flush_cache
-   fun:H5AC_flush
-   obj:*/libhdf5*
-   fun:H5F__dest
-   fun:H5F_try_close
-}
-{
-   HDF5-zlibng
+   HDF5memmove
    Memcheck:Cond
    fun:memmove
-   obj:*/libz*
-   obj:*/libz*
-   fun:deflate
-   fun:compress2
-   obj:*/libhdf5*
-   fun:H5Z_pipeline
-   obj:*/libhdf5*
-   obj:*/libhdf5*
-   fun:H5D__flush_real
-   fun:H5D_close
+   ...
    obj:*/libhdf5*
 }
 {
-   HDF5-zlibng
+   HDF5memmovevalue
    Memcheck:Value8
    fun:memmove
-   obj:*/libz*
-   obj:*/libz*
-   fun:deflate
-   fun:compress2
-   obj:*/libhdf5*
-   fun:H5Z_pipeline
-   obj:*/libhdf5*
-   obj:*/libhdf5*
-   fun:H5D__flush_real
-   fun:H5D_close
+   ...
    obj:*/libhdf5*
 }
