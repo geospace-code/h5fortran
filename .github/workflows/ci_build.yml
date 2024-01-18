@@ -3,7 +3,10 @@ name: build
 env:
   HOMEBREW_NO_INSTALL_CLEANUP: 1
   CTEST_NO_TESTS_ACTION: error
-  FC: gfortran-12
+  FC: gfortran-13
+  CTEST_PARALLEL_LEVEL: 4
+  CMAKE_BUILD_PARALLEL_LEVEL: 4
+
 
 on:
   push:
@@ -28,21 +31,11 @@ jobs:
     runs-on: ${{ matrix.os}}
 
     steps:
-
-    - name: prereqs (Linux)
-      if: runner.os == 'Linux'
-      run: sudo apt install --no-install-recommends ninja-build
-
-    - name: prereqs (MacOS)
-      if: runner.os == 'macOS'
-      run: brew install ninja
-
     - uses: actions/checkout@v4
 
     - name: Configure HDF5 library
       run: >-
         cmake
-        -GNinja
         -S scripts -B scripts/build
         --install-prefix ${{ runner.temp }}
         -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
@@ -63,12 +56,9 @@ jobs:
     - name: install h5fortran
       run: cmake --install build
 
-    - name: configure examples
-      run: >-
-        cmake --preset default
-        -DCMAKE_PREFIX_PATH:PATH=${{ runner.temp }}
-      working-directory: example
+    - name: example workflow
+      run: cmake -S example -B example/build -DCMAKE_PREFIX_PATH=${{ runner.temp }}
 
-    - name: build / test examples
-      run: cmake --workflow --preset default
-      working-directory: example
+    - run: cmake --build example/build
+
+    - run: ctest --test-dir example/build -V

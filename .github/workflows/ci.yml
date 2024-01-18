@@ -4,6 +4,7 @@ env:
   HOMEBREW_NO_INSTALL_CLEANUP: 1
   CTEST_NO_TESTS_ACTION: error
   CTEST_PARALLEL_LEVEL: 4
+  CMAKE_BUILD_PARALLEL_LEVEL: 4
 
 on:
   push:
@@ -81,15 +82,12 @@ jobs:
     - name: install package
       run: cmake --install build
 
-    - name: example config
-      run: >-
-        cmake --preset default
-        -DCMAKE_PREFIX_PATH:PATH=${{ runner.temp }}
-      working-directory: example
+    - name: example workflow
+      run: cmake -S example -B example/build -DCMAKE_PREFIX_PATH=${{ runner.temp }}
 
-    - name: example build / test
-      run: cmake --workflow --preset default
-      working-directory: example
+    - run: cmake --build example/build
+
+    - run: ctest --test-dir example/build -V
 
 
   valgrind-memory:
@@ -152,6 +150,9 @@ jobs:
         shared: [false]
         # true works on my computers, but CI is false failing
 
+    env:
+      CMAKE_GENERATOR: "Ninja"
+
     steps:
     - uses: msys2/setup-msys2@v2
       with:
@@ -166,7 +167,7 @@ jobs:
 
     - uses: actions/setup-python@v4
       with:
-        python-version: '3.11'
+        python-version: '3.12'
 
     - name: install h5py
       run: pip install h5py
@@ -188,12 +189,9 @@ jobs:
     - name: install package
       run: cmake --install build
 
-    - name: example config
-      run: >-
-        cmake --preset default
-        -DCMAKE_PREFIX_PATH:PATH=${{ runner.temp }}
-      working-directory: example
+    - name: example workflow
+      run: cmake -S example -B example/build -DCMAKE_PREFIX_PATH=${{ runner.temp }}
 
-    - name: example build
-      run: cmake --workflow --preset default
-      working-directory: example
+    - run: cmake --build example/build
+
+    - run: ctest --test-dir example/build -V
