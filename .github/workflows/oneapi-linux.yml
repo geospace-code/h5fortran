@@ -1,13 +1,14 @@
-name: intel-oneapi
+name: oneapi-linux
 
 env:
   CC: icx
   CXX: icpx
   FC: ifx
-  LINUX_CPP_COMPONENTS: intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic
-  LINUX_FORTRAN_COMPONENTS: intel-oneapi-compiler-fortran
 # https://github.com/oneapi-src/oneapi-ci/blob/master/.github/workflows/build_all.yml
   CTEST_NO_TESTS_ACTION: error
+  CMAKE_BUILD_PARALLEL_LEVEL: 4
+  CMAKE_BUILD_TYPE: Release
+  # debug triggers asan build errors, peculiar to GitHub Actions
 
 on:
   push:
@@ -46,57 +47,37 @@ jobs:
       timeout-minutes: 5
       run: |
         .github/workflows/oneapi_setup_apt_repo_linux.sh
-        sudo apt install ${{ env.LINUX_CPP_COMPONENTS }} ${{ env.LINUX_FORTRAN_COMPONENTS }}
+        sudo apt install intel-oneapi-compiler-dpcpp-cpp intel-oneapi-compiler-fortran
 
     - name: Setup Intel oneAPI environment
       run: |
         source /opt/intel/oneapi/setvars.sh
         printenv >> $GITHUB_ENV
 
-    - name: Install tools
-      timeout-minutes: 2
-      run: sudo apt install hdf5-tools ninja-build
-
-    - uses: actions/checkout@v4
-
-    - name: Configure HDF5
+    - name: Configure CMake
       run: >-
-        cmake
-        -GNinja
-        -S scripts -B scripts/build
-        --install-prefix ${{ runner.temp }}
-
-    - name: Build/install HDF5
-      run: cmake --build scripts/build
-
-    - name: Configure h5fortran
-      run: >-
-        cmake --preset multi
-        --install-prefix ${{ runner.temp }}
-        -DCMAKE_PREFIX_PATH=${{ runner.temp }}
+        cmake --preset default --install-prefix ${{ runner.temp }}
 
     - name: print config log
       if: ${{ failure() }}
       run: cat build/CMakeFiles/CMakeConfigureLog.yaml
 
-    - name: Release build / test
-      run: cmake --workflow --preset release
-
-    - name: debug build / test
-      run: cmake --workflow --preset debug
+    - name: Release workflow
+      run: cmake --workflow --preset default
 
     - name: install package
       run: cmake --install build
 
-    - name: example config
-      run: >-
-        cmake --preset default
-        -DCMAKE_PREFIX_PATH=${{ runner.temp }}
-      working-directory: example
+    - name: example workflow
+      run: cmake -S example -B example/build -DCMAKE_PREFIX_PATH=${{ runner.temp }}
 
-    - name: example build / test
-      run: cmake --workflow --preset default
-      working-directory: example
+    - run: cmake --build example/build
+
+    - run: ctest --test-dir example/build -V
+
+# BUILD_SHARED_LIBS=false since as with any C++ / Fortran program with Intel compiler,
+# need to have GCC environment carefully set
+# so that underlying libstdc++ is compatible.
 
     - name: exclude unused files from cache
       if: steps.cache-install.outputs.cache-hit != 'true'
