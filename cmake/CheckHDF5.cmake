@@ -39,7 +39,10 @@ return EXIT_SUCCESS;
 check_source_runs(C "${_src}" hdf5_c_types)
 
 if(NOT hdf5_c_types)
-  message(FATAL_ERROR "HDF5 C types failed check")
+  if(DEFINED ENV{CONDA_PREFIX})
+    message(WARNING "suggest running 'conda deactivate' and re-running cmake as Conda may be interfering with HDF5 library.")
+  endif()
+  message(WARNING "HDF5 C types failed check")
 endif()
 
 endfunction(check_hdf5_c)
@@ -85,7 +88,10 @@ end program
 check_source_runs(Fortran "${_src}" hdf5_fortran_types)
 
 if(NOT hdf5_fortran_types)
-  message(FATAL_ERROR "HDF5 Fortran types failed check")
+  if(DEFINED ENV{CONDA_PREFIX})
+    message(WARNING "suggest running 'conda deactivate' and re-running cmake as Conda may be interfering with HDF5 library.")
+  endif()
+  message(WARNING "HDF5 Fortran types failed check")
 endif()
 
 endfunction(check_hdf5_fortran)
