@@ -8,7 +8,6 @@
     "tag": "2.1.6"
   },
   "hdf5": {
-    "url": "https://github.com/HDFGroup/hdf5.git",
-    "tag": "hdf5-1_14_3"
+    "url": "https://github.com/HDFGroup/hdf5/archive/refs/tags/hdf5-1_14_3.tar.gz"
   }
 }

@@ -70,14 +70,9 @@ if(MPI_ROOT)
 endif()
 
 string(JSON hdf5_url GET ${json} hdf5 url)
-if(NOT hdf5_tag)
-  string(JSON hdf5_tag GET ${json} hdf5 tag)
-endif()
 
 ExternalProject_Add(HDF5
-GIT_REPOSITORY ${hdf5_url}
-GIT_TAG ${hdf5_tag}
-GIT_SHALLOW true
+URL ${hdf5_url}
 CMAKE_ARGS ${hdf5_cmake_args}
 BUILD_BYPRODUCTS ${HDF5_LIBRARIES}
 DEPENDS ZLIB
