@@ -19,7 +19,7 @@ set(h5fortran_cmake_args
 -DCMAKE_BUILD_TYPE=Release
 -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
 -DCMAKE_Fortran_COMPILER=${CMAKE_Fortran_COMPILER}
--DBUILD_TESTING:BOOL=false
+-Dh5fortran_BUILD_TESTING:BOOL=false
 )
 if(HDF5_ROOT)
   list(APPEND h5fortran_cmake_args -DHDF5_ROOT:PATH=${HDF5_ROOT})

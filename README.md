@@ -99,7 +99,7 @@ For general use with non-CMake build systems, "h5fortran.pc" pkg-config file is 
 To save time, if not intended to use self-tests, you can skip the build of the test suite:
 
 ```sh
-cmake -B build -DBUILD_TESTING=off
+cmake -B build -Dh5fortran_BUILD_TESTING=off
 ```
 
 ### Fortran Package Manager (fpm)
