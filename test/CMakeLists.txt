@@ -18,7 +18,7 @@ add_executable(test_minimal test_minimal.f90)
 # as part of h5fortran
 target_link_libraries(test_minimal PRIVATE h5fortran::h5fortran)
 add_test(NAME minimal COMMAND test_minimal)
-
+set_property(TEST minimal PROPERTY FIXTURES_SETUP minimal)
 
 # --- h5fortran unit tests
 
@@ -177,3 +177,12 @@ DISABLED $<NOT:$<BOOL:${h5ls}>>
 get_property(test_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY TESTS)
 
 set_property(TEST ${test_names} PROPERTY WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+
+foreach(n IN LISTS test_names)
+  if(n STREQUAL "minimal")
+    continue()
+  endif()
+
+  get_property(f TEST ${n} PROPERTY FIXTURES_REQUIRED)
+  set_property(TEST ${n} PROPERTY FIXTURES_REQUIRED "minimal;${f}")
+endforeach()
