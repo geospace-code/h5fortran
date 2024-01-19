@@ -5,10 +5,10 @@
   },
   "zlib2": {
     "url" : "https://github.com/zlib-ng/zlib-ng.git",
-    "tag": "2.1.4"
+    "tag": "2.1.6"
   },
   "hdf5": {
     "url": "https://github.com/HDFGroup/hdf5.git",
-    "tag": "hdf5-1_14_2"
+    "tag": "hdf5-1_14_3"
   }
 }
