@@ -19,6 +19,10 @@ include(CTest)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
+if(NOT DEFINED CRAY AND DEFINED ENV{PE_ENV})
+  set(CRAY true)
+endif()
+
 # --- avoid Anaconda libraries
 if(DEFINED ENV{CONDA_PREFIX})
   list(APPEND CMAKE_IGNORE_PREFIX_PATH $ENV{CONDA_PREFIX})
@@ -32,7 +36,7 @@ include(options.cmake)
 include(cmake/compilers.cmake)
 include(cmake/CheckHDF5.cmake)
 
-if(find)
+if(find OR CRAY)
   find_package(HDF5 COMPONENTS Fortran)
 endif()
 
