@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.19...3.28)
+cmake_minimum_required(VERSION 3.19...3.29)
 
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
   message(FATAL_ERROR "Please do out of source build like
@@ -48,6 +48,15 @@ endif()
 
 if(hdf5_parallel OR HDF5_HAVE_PARALLEL)
   target_link_libraries(HDF5::HDF5 INTERFACE MPI::MPI_Fortran)
+endif()
+
+# HDF5 bug #3663 for HDF5 1.14.2, 1.14.3, ...?
+# https://github.com/HDFGroup/hdf5/issues/3663
+if(WIN32 AND CMAKE_Fortran_COMPILER_ID MATCHES "^Intel")
+if(hdf5_url MATCHES "1_14_[2-3]")
+  message(VERBOSE "HDF5: applying workaround for HDF5 bug #3663 with Intel oneAPI on Windows")
+  target_link_libraries(HDF5::HDF5 INTERFACE shlwapi)
+endif()
 endif()
 
 # --- h5fortran library
