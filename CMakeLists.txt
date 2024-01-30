@@ -53,7 +53,7 @@ endif()
 # HDF5 bug #3663 for HDF5 1.14.2, 1.14.3, ...?
 # https://github.com/HDFGroup/hdf5/issues/3663
 if(WIN32 AND CMAKE_Fortran_COMPILER_ID MATCHES "^Intel")
-if(hdf5_url MATCHES "1_14_[2-3]")
+if(HDF5_VERSION MATCHES "1.14.[2-3]")
   message(VERBOSE "HDF5: applying workaround for HDF5 bug #3663 with Intel oneAPI on Windows")
   target_link_libraries(HDF5::HDF5 INTERFACE shlwapi)
 endif()
