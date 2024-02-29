@@ -53,14 +53,14 @@ add_compile_options(
 endif()
 
 # --- code coverage
-if(ENABLE_COVERAGE)
+if(${PROJECT_NAME}_COVERAGE)
   include(${CMAKE_CURRENT_LIST_DIR}/Modules/CodeCoverage.cmake)
   append_coverage_compiler_flags()
   set(COVERAGE_EXCLUDES ${PROJECT_SOURCE_DIR}/test)
 endif()
 
 # --- clang-tidy
-if(tidy)
+if(tidy AND PROJECT_IS_TOP_LEVEL)
   find_program(CLANG_TIDY_EXE NAMES "clang-tidy" REQUIRED)
   set(CMAKE_C_CLANG_TIDY ${CLANG_TIDY_EXE})
   set(CMAKE_CXX_CLANG_TIDY ${CLANG_TIDY_EXE})

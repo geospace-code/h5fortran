@@ -4,7 +4,7 @@ include(GNUInstallDirs)
 
 option(find "try to find libraries" on)
 
-option(ENABLE_COVERAGE "Code coverage tests")
+option(${PROJECT_NAME}_COVERAGE "Code coverage tests")
 option(tidy "Run clang-tidy on the code")
 
 option(matlab "check HDF5 file writes with Matlab")
