@@ -4,6 +4,7 @@
 [![DOI](https://zenodo.org/badge/128736984.svg)](https://zenodo.org/badge/latestdoi/128736984)
 
 [![ci](https://github.com/geospace-code/h5fortran/actions/workflows/ci.yml/badge.svg)](https://github.com/geospace-code/h5fortran/actions/workflows/ci.yml)
+[![ci_windows](https://github.com/geospace-code/h5fortran/actions/workflows/ci_windows.yml/badge.svg)](https://github.com/geospace-code/h5fortran/actions/workflows/ci_windows.yml)
 [![ci_build](https://github.com/geospace-code/h5fortran/actions/workflows/ci_build.yml/badge.svg)](https://github.com/geospace-code/h5fortran/actions/workflows/ci_build.yml)
 [![oneapi-linux](https://github.com/geospace-code/h5fortran/actions/workflows/oneapi-linux.yml/badge.svg)](https://github.com/geospace-code/h5fortran/actions/workflows/oneapi-linux.yml)
 [![ci_fpm](https://github.com/geospace-code/h5fortran/actions/workflows/ci_fpm.yml/badge.svg)](https://github.com/geospace-code/h5fortran/actions/workflows/ci_fpm.yml)

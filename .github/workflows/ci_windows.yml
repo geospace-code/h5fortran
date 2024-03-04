@@ -14,7 +14,7 @@ on:
       - "**.F90"
       - "**/CMakeLists.txt"
       - "**.cmake"
-      - ".github/workflows/ci.yml"
+      - ".github/workflows/ci_windows.yml"
       - "!memcheck.cmake"
       - "!coverage.cmake"
 
@@ -24,9 +24,6 @@ jobs:
   msys2:
     timeout-minutes: 30
     runs-on: windows-latest
-
-    env:
-      CMAKE_GENERATOR: "Ninja"
 
     steps:
     - uses: msys2/setup-msys2@v2
@@ -42,9 +39,10 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: config
-      run: cmake --preset default -G "MinGW Makefiles" --install-prefix ${{ runner.temp }}
+      run: cmake --preset default -G "MinGW Makefiles" --debug-find-pkg=HDF5 --install-prefix ${{ runner.temp }}
 
     - name: print config log
+      if: ${{ failure() }}
       run: cat build/CMakeFiles/CMakeConfigureLog.yaml
 
     - name: Build
@@ -57,7 +55,7 @@ jobs:
       run: cmake --install build
 
     - name: example workflow
-      run: cmake -S example -B example/build -DCMAKE_PREFIX_PATH=${{ runner.temp }}
+      run: cmake -S example -B example/build -G "MinGW Makefiles" -DCMAKE_PREFIX_PATH=${{ runner.temp }}
 
     - run: cmake --build example/build
 
