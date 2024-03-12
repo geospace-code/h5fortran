@@ -1,4 +1,6 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.20...3.29)
+# use max version to avoid deprecation warnings
+
 project(HDF5_build
 LANGUAGES C Fortran
 )
