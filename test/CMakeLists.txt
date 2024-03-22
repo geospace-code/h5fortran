@@ -89,7 +89,7 @@ endif()
 # --- Windows shared DLLs
 if(WIN32 AND CMAKE_VERSION VERSION_GREATER_EQUAL 3.22)
   set_property(TEST ${test_names} PROPERTY
-  ENVIRONMENT_MODIFICATION "PATH=path_list_append:${ZLIB_INCLUDE_DIRS}/../bin;PATH=path_list_append:${ZLIB_INCLUDE_DIR}/../bin"
+  ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:${ZLIB_INCLUDE_DIRS}/../bin;PATH=path_list_prepend:${ZLIB_INCLUDE_DIR}/../bin"
   )
 endif()
 

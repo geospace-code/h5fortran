@@ -47,10 +47,10 @@ set_property(TEST ${test_names} PROPERTY WORKING_DIRECTORY ${CMAKE_CURRENT_BINAR
 
 if(WIN32)
 set_property(TEST ${test_names} PROPERTY
-  ENVIRONMENT_MODIFICATION "PATH=path_list_append:${ZLIB_INCLUDE_DIRS}/../bin;PATH=path_list_append:${h5fortran_DIR}/../bin"
+  ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:${ZLIB_INCLUDE_DIRS}/../bin;PATH=path_list_prepend:${h5fortran_DIR}/../bin"
   )
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
 set_property(TEST ${test_names} PROPERTY
-  ENVIRONMENT_MODIFICATION "LD_LIBRARY_PATH=path_list_append:${ZLIB_INCLUDE_DIRS}/../lib;LD_LIBRARY_PATH=path_list_append:${h5fortran_DIR}/../lib"
+  ENVIRONMENT_MODIFICATION "LD_LIBRARY_PATH=path_list_prepend:${ZLIB_INCLUDE_DIRS}/../lib;LD_LIBRARY_PATH=path_list_prepend:${h5fortran_DIR}/../lib"
   )
 endif()
