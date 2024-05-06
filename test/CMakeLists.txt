@@ -94,11 +94,6 @@ if(WIN32 AND CMAKE_VERSION VERSION_GREATER_EQUAL 3.22)
 endif()
 
 # --- Python h5py
-set(Python_FIND_VIRTUALENV STANDARD)
-# use order in PATH to pick Python interpreter
-# this avoids unexpected old system Python getting used IF conda environment has been activated
-find_package(Python COMPONENTS Interpreter)
-
 if(NOT DEFINED h5py_ok)
   execute_process(COMMAND ${Python_EXECUTABLE} -c "import h5py"
   RESULT_VARIABLE ret

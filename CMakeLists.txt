@@ -24,6 +24,8 @@ if(NOT DEFINED CRAY AND DEFINED ENV{PE_ENV})
 endif()
 
 # --- avoid Anaconda libraries
+find_package(Python COMPONENTS Interpreter)
+
 if(DEFINED ENV{CONDA_PREFIX})
   list(APPEND CMAKE_IGNORE_PREFIX_PATH $ENV{CONDA_PREFIX})
   list(APPEND CMAKE_IGNORE_PATH $ENV{CONDA_PREFIX}/bin)
@@ -52,10 +54,10 @@ if(hdf5_parallel OR HDF5_HAVE_PARALLEL)
   target_link_libraries(HDF5::HDF5 INTERFACE MPI::MPI_Fortran)
 endif()
 
-# HDF5 bug #3663 for HDF5 1.14.2, 1.14.3, ...?
+# HDF5 bug #3663 for HDF5 1.14.2..4, ...?
 # https://github.com/HDFGroup/hdf5/issues/3663
 if(WIN32 AND CMAKE_Fortran_COMPILER_ID MATCHES "^Intel")
-if(HDF5_VERSION MATCHES "1.14.[2-3]")
+if(HDF5_VERSION MATCHES "1.14.[2-4]")
   message(VERBOSE "HDF5: applying workaround for HDF5 bug #3663 with Intel oneAPI on Windows")
   target_link_libraries(HDF5::HDF5 INTERFACE shlwapi)
 endif()
