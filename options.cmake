@@ -2,6 +2,14 @@ message(STATUS "${PROJECT_NAME} ${PROJECT_VERSION} CMake ${CMAKE_VERSION} Toolch
 
 include(GNUInstallDirs)
 
+# this is NECESSARY for CMake 3.21 -- parent projects will error on CMake configure!
+if(CMAKE_VERSION VERSION_LESS 3.21)
+  get_property(not_top DIRECTORY PROPERTY PARENT_DIRECTORY)
+  if(NOT not_top)
+    set(PROJECT_IS_TOP_LEVEL true)
+ endif()
+endif()
+
 option(find "try to find libraries" on)
 
 option(${PROJECT_NAME}_COVERAGE "Code coverage tests")
@@ -12,16 +20,7 @@ option(concepts "conceptual testing, for devs only" off)
 
 option(CMAKE_TLS_VERIFY "Verify TLS certificates" on)
 
-if(BUILD_SHARED_LIBS AND MSVC)
-  message(WARNING "Intel oneAPI has trouble with shared libs in general on Windows, try
-    cmake -DBUILD_SHARED_LIBS=off")
-endif()
-
 option(h5fortran_BUILD_TESTING "build tests" ${PROJECT_IS_TOP_LEVEL})
-
-if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT AND PROJECT_IS_TOP_LEVEL)
-  set_property(CACHE CMAKE_INSTALL_PREFIX PROPERTY VALUE "${PROJECT_BINARY_DIR}/local")
-endif()
 
 set_property(DIRECTORY PROPERTY EP_UPDATE_DISCONNECTED true)
 

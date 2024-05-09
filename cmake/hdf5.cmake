@@ -57,12 +57,10 @@ set(hdf5_cmake_args
 -DHDF5_BUILD_CPP_LIB:BOOL=false
 -DBUILD_TESTING:BOOL=false
 -DHDF5_BUILD_EXAMPLES:BOOL=false
--DHDF5_BUILD_TOOLS:BOOL=$<NOT:$<BOOL:${hdf5_parallel}>>
+-DHDF5_BUILD_TOOLS:BOOL=true
 -DHDF5_ENABLE_PARALLEL:BOOL=$<BOOL:${hdf5_parallel}>
--DHDF5_BUILD_PARALLEL_TOOLS:BOOL=false
+-DHDF5_BUILD_PARALLEL_TOOLS:BOOL=$<BOOL:${hdf5_parallel}>
 )
-# https://github.com/HDFGroup/hdf5/issues/818  for broken ph5diff in HDF5_BUILD_TOOLS
-# avoid building tools as some HDF5 versions have build failures or broken tools
 
 #-DHDF5_USE_GNU_DIRS:BOOL=ON  # not yet, new for 1.14
 
