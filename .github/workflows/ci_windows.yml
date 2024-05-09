@@ -4,8 +4,6 @@ env:
   CTEST_NO_TESTS_ACTION: error
   CTEST_PARALLEL_LEVEL: 0
   CMAKE_BUILD_PARALLEL_LEVEL: 4
-  CMAKE_INSTALL_PREFIX: ~/libs
-  CMAKE_PREFIX_PATH: ~/libs
 
 on:
   push:
@@ -26,6 +24,11 @@ jobs:
   msys2:
     timeout-minutes: 30
     runs-on: windows-latest
+
+    # Windows needs these defined within the job. $HOME doesn't work nor does ~.
+    env:
+      CMAKE_INSTALL_PREFIX: libs
+      CMAKE_PREFIX_PATH: libs
 
     steps:
     - uses: msys2/setup-msys2@v2
