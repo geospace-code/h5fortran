@@ -2,8 +2,10 @@ name: ci_windows
 
 env:
   CTEST_NO_TESTS_ACTION: error
-  CTEST_PARALLEL_LEVEL: 4
+  CTEST_PARALLEL_LEVEL: 0
   CMAKE_BUILD_PARALLEL_LEVEL: 4
+  CMAKE_INSTALL_PREFIX: ~/libs
+  CMAKE_PREFIX_PATH: ~/libs
 
 on:
   push:
@@ -39,7 +41,7 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: config
-      run: cmake --preset default -G "MinGW Makefiles" --install-prefix ${{ runner.temp }}
+      run: cmake --preset default -G "MinGW Makefiles"
       env:
         HDF5_ROOT: ${{ runner.temp }}/msys64/mingw64/
 
@@ -57,7 +59,7 @@ jobs:
       run: cmake --install build
 
     - name: example workflow
-      run: cmake -S example -B example/build -G "MinGW Makefiles" -DCMAKE_PREFIX_PATH=${{ runner.temp }}
+      run: cmake -S example -B example/build -G "MinGW Makefiles"
       env:
         HDF5_ROOT: ${{ runner.temp }}/msys64/mingw64/
 

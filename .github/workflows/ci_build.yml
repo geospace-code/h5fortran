@@ -4,8 +4,10 @@ env:
   HOMEBREW_NO_INSTALL_CLEANUP: 1
   CTEST_NO_TESTS_ACTION: error
   FC: gfortran-13
-  CTEST_PARALLEL_LEVEL: 4
+  CTEST_PARALLEL_LEVEL: 0
   CMAKE_BUILD_PARALLEL_LEVEL: 4
+  CMAKE_INSTALL_PREFIX: ~/libs
+  CMAKE_PREFIX_PATH: ~/libs
 
 
 on:
@@ -46,9 +48,7 @@ jobs:
     - name: configure h5fortran
       run: >-
         cmake --preset default
-        --install-prefix ${{ runner.temp }}
         -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
-        -DCMAKE_PREFIX_PATH=${{ runner.temp }}
 
     - name: build / test h5fortran
       run: cmake --workflow --preset default
@@ -57,7 +57,7 @@ jobs:
       run: cmake --install build
 
     - name: example workflow
-      run: cmake -S example -B example/build -DCMAKE_PREFIX_PATH=${{ runner.temp }}
+      run: cmake -S example -B example/build
 
     - run: cmake --build example/build
 
