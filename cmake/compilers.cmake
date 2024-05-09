@@ -60,7 +60,7 @@ if(${PROJECT_NAME}_COVERAGE)
 endif()
 
 # --- clang-tidy
-if(tidy AND PROJECT_IS_TOP_LEVEL)
+if(tidy AND ${PROJECT_NAME}_IS_TOP_LEVEL)
   find_program(CLANG_TIDY_EXE NAMES "clang-tidy" REQUIRED)
   set(CMAKE_C_CLANG_TIDY ${CLANG_TIDY_EXE})
   set(CMAKE_CXX_CLANG_TIDY ${CLANG_TIDY_EXE})

@@ -6,7 +6,7 @@ include(GNUInstallDirs)
 if(CMAKE_VERSION VERSION_LESS 3.21)
   get_property(not_top DIRECTORY PROPERTY PARENT_DIRECTORY)
   if(NOT not_top)
-    set(PROJECT_IS_TOP_LEVEL true)
+    set(${PROJECT_NAME}_IS_TOP_LEVEL true)
  endif()
 endif()
 
@@ -20,7 +20,7 @@ option(concepts "conceptual testing, for devs only" off)
 
 option(CMAKE_TLS_VERIFY "Verify TLS certificates" on)
 
-option(h5fortran_BUILD_TESTING "build tests" ${PROJECT_IS_TOP_LEVEL})
+option(${PROJECT_NAME}_BUILD_TESTING "build tests" ${${PROJECT_NAME}_IS_TOP_LEVEL})
 
 set_property(DIRECTORY PROPERTY EP_UPDATE_DISCONNECTED true)
 
