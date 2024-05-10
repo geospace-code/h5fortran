@@ -3,7 +3,6 @@ name: build
 env:
   HOMEBREW_NO_INSTALL_CLEANUP: 1
   CTEST_NO_TESTS_ACTION: error
-  FC: gfortran-13
   CTEST_PARALLEL_LEVEL: 0
   CMAKE_BUILD_PARALLEL_LEVEL: 4
   CMAKE_INSTALL_PREFIX: ~/libs
@@ -30,6 +29,9 @@ jobs:
         - os: macos-latest
           shared: false
 
+    env:
+      FC: gfortran-13
+
     runs-on: ${{ matrix.os}}
 
     steps:
@@ -39,7 +41,6 @@ jobs:
       run: >-
         cmake
         -S scripts -B scripts/build
-        --install-prefix ${{ runner.temp }}
         -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
 
     - name: Build/install HDF5

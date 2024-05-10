@@ -5,6 +5,8 @@ env:
   CTEST_NO_TESTS_ACTION: error
   CTEST_PARALLEL_LEVEL: 4
   CMAKE_BUILD_PARALLEL_LEVEL: 4
+  CMAKE_INSTALL_PREFIX: ~/libs
+  CMAKE_PREFIX_PATH: ~/libs
 
 on:
   push:
@@ -70,7 +72,6 @@ jobs:
     - name: Configure
       run: >-
         cmake --preset multi
-        --install-prefix ${{ runner.temp }}
         -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
 
     - name: Build / test Debug
@@ -83,7 +84,7 @@ jobs:
       run: cmake --install build
 
     - name: example workflow
-      run: cmake -S example -B example/build -DCMAKE_PREFIX_PATH=${{ runner.temp }}
+      run: cmake -S example -B example/build
 
     - run: cmake --build example/build
 
