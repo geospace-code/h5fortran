@@ -1,0 +1,57 @@
+name: "build-test-install-example"
+
+runs:
+
+  using: "composite"
+
+  steps:
+
+  - uses: actions/setup-python@v5
+    with:
+      python-version: '3.12'
+
+  - name: Python pkgs
+    shell: bash
+    run: pip install numpy h5py
+
+  - name: install HDF5 (Linux)
+    shell: bash
+    if: runner.os == 'Linux'
+    run: |
+      sudo apt update
+      sudo apt install --no-install-recommends ninja-build libhdf5-dev
+
+  - name: Install HDF5 (MacOS)
+    shell: bash
+    if: runner.os == 'macOS'
+    run: brew install hdf5 ninja
+
+  - name: Configure
+    shell: bash
+    run: >-
+      cmake --preset multi
+      -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+
+  - name: Build / test Debug
+    shell: bash
+    run: cmake --workflow --preset debug
+
+  - name: Build Release
+    shell: bash
+    run: cmake --workflow --preset release
+
+  - name: install package
+    shell: bash
+    run: cmake --install build
+
+  - name: example workflow
+    shell: bash
+    run: cmake -S example -B example/build
+
+  - name: Build examples
+    shell: bash
+    run: cmake --build example/build
+
+  - name: Test examples
+    shell: bash
+    run: ctest --test-dir example/build -V

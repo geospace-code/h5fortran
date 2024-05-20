@@ -24,18 +24,18 @@ on:
 
 jobs:
 
-  core:
+  core-gcc:
     timeout-minutes: 15
 
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-24.04]
         shared: [false]
-        gcc: [9, 10, 11, 12, 13]
+        gcc: [12, 13, 14]
         include:
-        - os: ubuntu-latest
+        - os: ubuntu-24.04
           shared: true
-          gcc: 13
+          gcc: 14
         - os: macos-latest
           shared: true
           gcc: 13
@@ -49,51 +49,31 @@ jobs:
       FC: gfortran-${{ matrix.gcc }}
 
     steps:
-
-    - uses: actions/setup-python@v4
-      with:
-        python-version: '3.12'
-
-    - name: Python pkgs
-      run: pip install numpy h5py
-
-    - name: install HDF5 (Linux)
-      if: runner.os == 'Linux'
-      run: |
-        sudo apt update
-        sudo apt install --no-install-recommends ninja-build libhdf5-dev
-
-    - name: Install HDF5 (MacOS)
-      if: runner.os == 'macOS'
-      run: brew install hdf5 ninja
-
     - uses: actions/checkout@v4
+    - uses: ./.github/workflows/composite-unix
 
-    - name: Configure
-      run: >-
-        cmake --preset multi
-        -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
 
-    - name: Build / test Debug
-      run: cmake --workflow --preset debug
+  gcc-old:
+    timeout-minutes: 15
 
-    - name: Build Release
-      run: cmake --workflow --preset release
+    strategy:
+      matrix:
+        shared: [false]
+        gcc: [9, 10, 11]
 
-    - name: install package
-      run: cmake --install build
+    runs-on: ubuntu-22.04
+    env:
+      CC: gcc-${{ matrix.gcc }}
+      FC: gfortran-${{ matrix.gcc }}
 
-    - name: example workflow
-      run: cmake -S example -B example/build
-
-    - run: cmake --build example/build
-
-    - run: ctest --test-dir example/build -V
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ./.github/workflows/composite-unix
 
 
   valgrind-memory:
     runs-on: ubuntu-latest
-    needs: core
+    needs: core-gcc
     timeout-minutes: 10
 
     steps:
@@ -111,13 +91,13 @@ jobs:
 # issue with python loading writer.inc
   linux-coverage:
     if: false
-    needs: core
+    needs: core-gcc
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
     steps:
     - uses: actions/checkout@v4
-    - uses: actions/setup-python@v4
+    - uses: actions/setup-python@v5
       with:
         python-version: '3.x'
 
