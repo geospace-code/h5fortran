@@ -176,3 +176,7 @@ We didn't use `type(c_ptr)` and `c_loc()` internally for datasets as we observed
 The current h5fortran impementation (Fortran `select type` for H5Dwrite/H5Dread) does work with sliced actual arguments.
 
 HDF5 Fortran 2003 [features](https://docs.hdfgroup.org/archive/support/HDF5/doc/fortran/NewFeatures_F2003.pdf)
+
+## Acknowledgements
+
+h5fortran was funded in part by NASA NNH19ZDA001N-HDEE grant 80NSSC20K0176.
