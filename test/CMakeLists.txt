@@ -113,7 +113,7 @@ set_property(TEST string_read PROPERTY REQUIRED_FILES ${string_file})
 # --- attributes
 
 add_test(NAME PythonAttributes
-COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test_attributes.py ${attr_file}
+COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/generate_attributes.py ${attr_file}
 )
 
 set_property(TEST PythonAttributes PROPERTY FIXTURES_SETUP h5attr)
@@ -124,7 +124,7 @@ set_property(TEST attributes_read PROPERTY REQUIRED_FILES ${attr_file})
 # --- shape
 
 add_test(NAME PythonShape
-COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test_shape.py ${shape_file}
+COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/check_shape.py ${shape_file}
 )
 
 set_property(TEST PythonShape PROPERTY REQUIRED_FILES ${shape_file})
@@ -132,7 +132,7 @@ set_property(TEST PythonShape PROPERTY FIXTURES_REQUIRED h5shape)
 
 # --- String
 add_test(NAME PythonString
-COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/test_string.py ${string_file}
+COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/generate_string_data.py ${string_file}
 )
 
 set_property(TEST PythonString PROPERTY FIXTURES_SETUP h5str)
