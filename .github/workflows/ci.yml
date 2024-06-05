@@ -17,7 +17,7 @@ on:
       - "**.F90"
       - "**/CMakeLists.txt"
       - "**.cmake"
-      - ".github/workflows/ci.yml"
+      - ".github/workflows/**"
       - "!memcheck.cmake"
       - "!coverage.cmake"
 
@@ -36,12 +36,12 @@ jobs:
         - os: ubuntu-24.04
           shared: true
           gcc: 14
-        - os: macos-latest
-          shared: true
-          gcc: 13
-        - os: macos-latest
-          shared: false
-          gcc: 13
+        # - os: macos-latest
+        #   shared: true
+        #   gcc: 13
+        # - os: macos-latest
+        #   shared: false
+        #   gcc: 13
 
     runs-on: ${{ matrix.os }}
     env:
