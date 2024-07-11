@@ -50,7 +50,7 @@ endif()
 
 set(HDF5_VERSION ${HDF5_VERSION} CACHE STRING "HDF5 version")
 
-if(hdf5_parallel OR HDF5_HAVE_PARALLEL)
+if(h5fortran_IS_TOP_LEVEL AND (hdf5_parallel OR HDF5_HAVE_PARALLEL))
   target_link_libraries(HDF5::HDF5 INTERFACE MPI::MPI_Fortran)
 endif()
 
