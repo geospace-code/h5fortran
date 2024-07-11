@@ -38,13 +38,13 @@ include(options.cmake)
 include(cmake/compilers.cmake)
 include(cmake/CheckHDF5.cmake)
 
-if(find OR CRAY)
+if(NOT TARGET HDF5::HDF5 AND (find OR CRAY))
   find_package(HDF5 COMPONENTS Fortran)
 endif()
 
-if(HDF5_FOUND)
+if(h5fortran_IS_TOP_LEVEL AND HDF5_FOUND)
   check_hdf5()
-else()
+elseif(NOT TARGET HDF5::HDF5)
   include(cmake/hdf5.cmake)
 endif()
 
