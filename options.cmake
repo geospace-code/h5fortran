@@ -2,7 +2,7 @@ message(STATUS "${PROJECT_NAME} ${PROJECT_VERSION} CMake ${CMAKE_VERSION} Toolch
 
 include(GNUInstallDirs)
 
-option(find "try to find libraries" on)
+option(h5fortran_find "try to find libraries" on)
 
 option(h5fortran_COVERAGE "Code coverage tests")
 option(tidy "Run clang-tidy on the code")

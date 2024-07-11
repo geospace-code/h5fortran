@@ -38,7 +38,7 @@ include(options.cmake)
 include(cmake/compilers.cmake)
 include(cmake/CheckHDF5.cmake)
 
-if(NOT TARGET HDF5::HDF5 AND (find OR CRAY))
+if(NOT TARGET HDF5::HDF5 AND (h5fortran_find OR CRAY))
   find_package(HDF5 COMPONENTS Fortran)
 endif()
 
@@ -82,11 +82,11 @@ file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/h5fortran.mod DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
-install(TARGETS h5fortran EXPORT ${PROJECT_NAME}-targets)
+install(TARGETS h5fortran EXPORT h5fortran-targets)
 
 add_subdirectory(src)
 
-if(${PROJECT_NAME}_BUILD_TESTING)
+if(h5fortran_BUILD_TESTING)
   add_subdirectory(test)
 endif()
 

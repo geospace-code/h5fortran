@@ -79,7 +79,7 @@ set_property(TEST deflate_write PROPERTY FIXTURES_SETUP deflate_files)
 set_property(TEST deflate_props deflate_read PROPERTY FIXTURES_REQUIRED deflate_files)
 set_property(TEST deflate_props deflate_read PROPERTY REQUIRED_FILES ${CMAKE_CURRENT_BINARY_DIR}/deflate1.h5)
 
-if(${PROJECT_NAME}_COVERAGE)
+if(h5fortran_COVERAGE)
 setup_target_for_coverage_gcovr_html(
 NAME coverage
 EXECUTABLE ${CMAKE_CTEST_COMMAND}
