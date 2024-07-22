@@ -5,6 +5,7 @@ version = "4.10.1"
 
 [build]
 auto-tests = false
+auto-examples = false
 external-modules = ["hdf5", "h5lt"]
 
 # HDF5 >= 1.10.6
