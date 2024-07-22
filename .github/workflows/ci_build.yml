@@ -29,13 +29,14 @@ jobs:
         - os: macos-latest
           shared: false
 
-    env:
-      FC: gfortran-13
-
     runs-on: ${{ matrix.os}}
 
     steps:
     - uses: actions/checkout@v4
+
+    - name: GCC 14 (macOS)
+      if: runner.os == 'macOS'
+      run: echo "FC=gfortran-14" >> $GITHUB_ENV
 
     - name: Configure HDF5 library
       run: >-

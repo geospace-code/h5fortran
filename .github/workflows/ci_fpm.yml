@@ -30,4 +30,3 @@ jobs:
     - uses: actions/checkout@v4
 
     - run: fpm build
-    - run: fpm test

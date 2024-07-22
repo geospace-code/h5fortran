@@ -36,20 +36,25 @@ jobs:
         - os: ubuntu-24.04
           shared: true
           gcc: 14
-        # - os: macos-latest
-        #   shared: true
-        #   gcc: 13
-        # - os: macos-latest
-        #   shared: false
-        #   gcc: 13
+        - os: macos-latest
+          shared: true
+          gcc: 14
+        - os: macos-latest
+          shared: false
+          gcc: 14
 
     runs-on: ${{ matrix.os }}
+
     env:
-      CC: gcc-${{ matrix.gcc }}
       FC: gfortran-${{ matrix.gcc }}
 
     steps:
     - uses: actions/checkout@v4
+
+    - name: GCC (Linux)
+      if: runner.os == 'Linux'
+      run: echo "CC=gcc-${{ matrix.gcc }}" >> $GITHUB_ENV
+
     - uses: ./.github/workflows/composite-unix
 
 
