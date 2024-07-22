@@ -18,7 +18,7 @@ foreach(_name IN ITEMS hdf5_hl_fortran hdf5_hl_f90cstub hdf5_fortran hdf5_f90cst
   # need ${CMAKE_INSTALL_PREFIX}/lib as HDF5 doesn't use GNUInstallDirs
   if(BUILD_SHARED_LIBS)
     if(WIN32)
-      list(APPEND HDF5_LIBRARIES ${CMAKE_INSTALL_PREFIX}/lib/lib${_name}${CMAKE_SHARED_LIBRARY_SUFFIX})
+      list(APPEND HDF5_LIBRARIES ${CMAKE_INSTALL_FULL_BINDIR}/lib${_name}${CMAKE_SHARED_LIBRARY_SUFFIX})
     else()
       list(APPEND HDF5_LIBRARIES ${CMAKE_INSTALL_PREFIX}/lib/lib${_name}${CMAKE_SHARED_LIBRARY_SUFFIX})
     endif()
