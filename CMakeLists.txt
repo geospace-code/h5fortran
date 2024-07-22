@@ -12,7 +12,7 @@ endif()
 
 project(h5fortran
 LANGUAGES C Fortran
-VERSION 4.10.5
+VERSION 4.10.6
 )
 
 include(CTest)
