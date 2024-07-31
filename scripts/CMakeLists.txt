@@ -7,7 +7,6 @@ LANGUAGES C Fortran
 
 option(hdf5_parallel "build HDF5 parallel MPI")
 option(zlib_legacy "use legacy zlib 1.x")
-option(CMAKE_TLS_VERIFY "verify TLS cert" on)
 
 # --- system checks
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)

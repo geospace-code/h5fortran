@@ -10,8 +10,6 @@ option(tidy "Run clang-tidy on the code")
 option(matlab "check HDF5 file writes with Matlab")
 option(concepts "conceptual testing, for devs only" off)
 
-option(CMAKE_TLS_VERIFY "Verify TLS certificates" on)
-
 option(h5fortran_BUILD_TESTING "build tests" ${h5fortran_IS_TOP_LEVEL})
 
 set_property(DIRECTORY PROPERTY EP_UPDATE_DISCONNECTED true)
