@@ -238,7 +238,7 @@ set(_hl_stub_names hdf5_hl_f90cstub)
 set(_stub_names hdf5_f90cstub)
 
 # distro names (Ubuntu)
-if(parallel IN_LIST HDF5_FIND_COMPONENTS)
+if(HDF5_parallel_FOUND)
   list(APPEND _names hdf5_openmpi_fortran hdf5_mpich_fortran)
   list(APPEND _hl_names hdf5_openmpihl_fortran hdf5_mpichhl_fortran)
 else()
@@ -304,7 +304,7 @@ if(HDF5_ROOT)
   DOC "HDF5 Fortran module path"
   )
 else()
-  if(parallel IN_LIST HDF5_FIND_COMPONENTS)
+  if(HDF5_parallel_FOUND)
     # HDF5-MPI system library presents a unique challenge, as when non-MPI HDF5 is
     # also installed, which is typically necessary for other system libraries, the
     # HDF5-MPI compiler wrapper often includes that wrong non-MPI include dir first.
@@ -363,6 +363,11 @@ endfunction(find_hdf5_fortran)
 
 function(find_hdf5_cxx)
 
+if(parallel IN_LIST HDF5_FIND_COMPONENTS AND NOT HDF5_parallel_FOUND)
+  # avoid expensive C++ find when MPI isn't linked properly
+  return()
+endif()
+
 hdf5_cxx_wrap(hdf5_lib_dirs hdf5_inc_dirs)
 
 # "PATH" Env var is useful on HPC for finding HDF5 libraries
@@ -375,7 +380,7 @@ set(_names hdf5_cpp)
 set(_hl_names hdf5_hl_cpp)
 
 # distro names (Ubuntu)
-if(parallel IN_LIST HDF5_FIND_COMPONENTS)
+if(HDF5_parallel_FOUND)
   list(APPEND _names hdf5_openmpi_cpp hdf5_mpich_cpp)
   list(APPEND _hl_names hdf5_openmpi_hl_cpp hdf5_mpich_hl_cpp)
 else()
@@ -495,7 +500,7 @@ function(hdf5_fortran_wrap lib_var inc_var)
 set(lib_dirs)
 set(inc_dirs)
 
-if(parallel IN_LIST HDF5_FIND_COMPONENTS)
+if(HDF5_parallel_FOUND)
   set(wrapper_names h5pfc h5pfc.openmpi h5pfc.mpich)
 else()
   set(wrapper_names h5fc)
@@ -552,7 +557,7 @@ function(hdf5_cxx_wrap lib_var inc_var)
 set(lib_dirs)
 set(inc_dirs)
 
-if(parallel IN_LIST HDF5_FIND_COMPONENTS)
+if(HDF5_parallel_FOUND)
  set(wrapper_names h5c++.openmpi h5c++.mpich)
 else()
   set(wrapper_names h5c++)
