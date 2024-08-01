@@ -164,6 +164,10 @@ For detailed [examples](./example/) see [Examples.md](./Examples.md).
 * The first character of the filename should be a character, NOT whitespace to avoid file open/creation errors.
 * Polymorphic array rank is implemented.
 
+### HPC
+
+On HPC, we suggest using the HDF5 library provided by the HPC system for best performance and to avoid compiler ABI issues.
+
 ### h5fortran: missing HDF5 features
 
 * arrays of rank > 7: prototyped in reader_nd.f90, writer_nd.f90. Fortran 2008 arrays are up to rank 15, but only recent compilers support.
@@ -175,7 +179,8 @@ For detailed [examples](./example/) see [Examples.md](./Examples.md).
 We didn't use `type(c_ptr)` and `c_loc()` internally for datasets as we observed problems when the actual argument is sliced on read/write.
 The current h5fortran impementation (Fortran `select type` for H5Dwrite/H5Dread) does work with sliced actual arguments.
 
-HDF5 Fortran 2003 [features](https://docs.hdfgroup.org/archive/support/HDF5/doc/fortran/NewFeatures_F2003.pdf)
+HDF5 Fortran 2003
+[features](https://docs.hdfgroup.org/archive/support/HDF5/doc/fortran/NewFeatures_F2003.pdf)
 
 ## Acknowledgements
 

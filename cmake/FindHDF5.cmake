@@ -157,7 +157,7 @@ message(DEBUG "HDF5 version match 0, 1: ${CMAKE_MATCH_0}   ${CMAKE_MATCH_1}")
 
 # avoid picking up incompatible zlib over the desired zlib
 if(NOT ZLIB_ROOT)
-  get_filename_component(ZLIB_ROOT ${HDF5_C_INCLUDE_DIR} DIRECTORY)
+  cmake_path(GET HDF5_C_INCLUDE_DIR PARENT_PATH ZLIB_ROOT)
   list(APPEND ZLIB_ROOT ${HDF5_ROOT})
 endif()
 
@@ -226,6 +226,8 @@ endif()
 
 hdf5_fortran_wrap(hdf5_lib_dirs hdf5_inc_dirs)
 
+# "PATH" Env var is useful on HPC for finding HDF5 libraries
+
 if(MSVC)
   set(CMAKE_FIND_LIBRARY_PREFIXES lib)
 endif()
@@ -265,28 +267,27 @@ NAMES_PER_DIR
 DOC "HDF5 Fortran API"
 )
 
+cmake_path(GET HDF5_Fortran_LIBRARY PARENT_PATH hdf5_libdir)
+
 find_library(HDF5_Fortran_HL_LIBRARY
 NAMES ${_hl_names}
-HINTS ${HDF5_ROOT} ${hdf5_lib_dirs}
-PATH_SUFFIXES ${hdf5_lsuf}
-NAMES_PER_DIR
+HINTS ${hdf5_libdir}
+NO_DEFAULT_PATH
 DOC "HDF5 Fortran HL high-level API"
 )
 
 # not all platforms have this stub
 find_library(HDF5_Fortran_HL_stub
 NAMES ${_hl_stub_names}
-HINTS ${HDF5_ROOT} ${hdf5_lib_dirs}
-PATH_SUFFIXES ${hdf5_lsuf}
-NAMES_PER_DIR
+HINTS ${hdf5_libdir}
+NO_DEFAULT_PATH
 DOC "Fortran C HL interface, not all HDF5 implementations have/need this"
 )
 
 find_library(HDF5_Fortran_stub
 NAMES ${_stub_names}
-HINTS ${HDF5_ROOT} ${hdf5_lib_dirs}
-PATH_SUFFIXES ${hdf5_lsuf}
-NAMES_PER_DIR
+HINTS ${hdf5_libdir}
+NO_DEFAULT_PATH
 DOC "Fortran C interface, not all HDF5 implementations have/need this"
 )
 
@@ -364,6 +365,8 @@ function(find_hdf5_cxx)
 
 hdf5_cxx_wrap(hdf5_lib_dirs hdf5_inc_dirs)
 
+# "PATH" Env var is useful on HPC for finding HDF5 libraries
+
 if(MSVC)
   set(CMAKE_FIND_LIBRARY_PREFIXES lib)
 endif()
@@ -397,11 +400,12 @@ NAMES_PER_DIR
 DOC "HDF5 C++ API"
 )
 
+cmake_path(GET HDF5_CXX_LIBRARY PARENT_PATH hdf5_libdir)
+
 find_library(HDF5_CXX_HL_LIBRARY
 NAMES ${_hl_names}
-HINTS ${HDF5_ROOT} ${hdf5_lib_dirs}
-PATH_SUFFIXES ${hdf5_lsuf}
-NAMES_PER_DIR
+HINTS ${hdf5_libdir}
+NO_DEFAULT_PATH
 DOC "HDF5 C++ high-level API"
 )
 
@@ -424,6 +428,8 @@ endfunction(find_hdf5_cxx)
 function(find_hdf5_c)
 
 hdf5_c_wrap(hdf5_lib_dirs hdf5_inc_dirs)
+
+# "PATH" Env var is useful on HPC for finding HDF5 libraries
 
 if(MSVC)
   set(CMAKE_FIND_LIBRARY_PREFIXES lib)
@@ -459,11 +465,12 @@ NAMES_PER_DIR
 DOC "HDF5 C library (necessary for all languages)"
 )
 
+cmake_path(GET HDF5_C_LIBRARY PARENT_PATH hdf5_libdir)
+
 find_library(HDF5_C_HL_LIBRARY
 NAMES ${_hl_names}
-HINTS ${HDF5_ROOT} ${hdf5_lib_dirs}
-PATH_SUFFIXES ${hdf5_lsuf}
-NAMES_PER_DIR
+HINTS ${hdf5_libdir}
+NO_DEFAULT_PATH
 DOC "HDF5 C high level interface"
 )
 
