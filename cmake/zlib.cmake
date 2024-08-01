@@ -5,10 +5,8 @@ include(ExternalProject)
 
 if(zlib_legacy)
   string(JSON zlib_url GET ${json} zlib1 url)
-  string(JSON zlib_sha256 GET ${json} zlib1 sha256)
 else()
   string(JSON zlib_url GET ${json} zlib2 url)
-  string(JSON zlib_tag GET ${json} zlib2 tag)
 endif()
 
 set(ZLIB_INCLUDE_DIRS ${CMAKE_INSTALL_FULL_INCLUDEDIR})
@@ -40,21 +38,8 @@ set(zlib_cmake_args
 )
 # NetCDF 4.9/4.6 needs fPIC
 
-if(zlib_legacy)
-set(zlib_download
-URL ${zlib_url}
-URL_HASH SHA256=${zlib_sha256}
-)
-else()
-set(zlib_download
-GIT_REPOSITORY ${zlib_url}
-GIT_TAG ${zlib_tag}
-GIT_SHALLOW true
-)
-endif()
-
 ExternalProject_Add(ZLIB
-${zlib_download}
+URL ${zlib_url}
 CMAKE_ARGS ${zlib_cmake_args}
 BUILD_BYPRODUCTS ${ZLIB_LIBRARIES}
 CONFIGURE_HANDLED_BY_BUILD ON
