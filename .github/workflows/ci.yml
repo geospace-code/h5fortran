@@ -125,3 +125,36 @@ jobs:
       with:
         name: coverage-report-html
         path: build-coverage/coverage/
+
+
+  cmake-older:
+    timeout-minutes: 30
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        cmake_version: ["3.20.6"]
+
+    steps:
+
+    - uses: actions/checkout@v4
+
+    - name: prereqs
+      run: |
+        sudo apt-get update
+        sudo apt install --no-install-recommends libhdf5-dev
+
+    - uses: ./.github/workflows/composite-cmake
+
+    - name: configure
+      run: $CMAKE -Bbuild -DCMAKE_INSTALL_PREFIX:PATH=$(pwd)/build/local
+
+    - name: build
+      run: $CMAKE --build build
+
+    - name: test
+      run: $CTEST --test-dir build
+
+    - name: install package
+      run: $CMAKE --install build
