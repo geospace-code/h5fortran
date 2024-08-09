@@ -3,10 +3,12 @@
 include(GNUInstallDirs)
 include(ExternalProject)
 
+if(NOT zlib_url)
 if(zlib_legacy)
   string(JSON zlib_url GET ${json} zlib1 url)
 else()
   string(JSON zlib_url GET ${json} zlib2 url)
+endif()
 endif()
 
 set(ZLIB_INCLUDE_DIRS ${CMAKE_INSTALL_FULL_INCLUDEDIR})

@@ -111,29 +111,11 @@ fpm test
 fpm install
 ```
 
-## Build HDF5
+## Build HDF5 standalone
 
-To build the HDF5 and ZLIB libraries:
-
-```sh
-cmake -S scripts -B scripts/build -DCMAKE_INSTALL_PREFIX=~/mylibs
-
-cmake --build scripts/build
+To build the HDF5 and ZLIB libraries, use the [scripts](./scripts/) folder.
 ```
 
-Then build h5fortran:
-
-```sh
-cmake -B build -DCMAKE_PREFIX_PATH=~/mylibs
-
-cmake --build build
-```
-
-Request a specific [HDF5 Git tag](https://github.com/HDFGroup/hdf5/tags) or commit hash like:
-
-```sh
-cmake -B build -Dhdf5_tag=hdf5-1_12_2
-```
 
 ## Usage
 
