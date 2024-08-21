@@ -1,5 +1,7 @@
 program test_attributes
 
+!! GCC 7 segfaults if -O3 is on. Fine with -O0
+
 use, intrinsic:: iso_fortran_env, only: int32, real32, real64, stderr=>error_unit
 use, intrinsic:: iso_c_binding, only: C_NULL_CHAR
 
@@ -77,6 +79,8 @@ call h%writeattr('/x', 'char', 'overwrite attrs')
 call h%delete_attr('/x', 'hello')
 call h%close()
 
+print '(a)', 'PASSED: HDF5 write attributes: file handle'
+
 end subroutine test_write_attributes
 
 
@@ -106,8 +110,8 @@ call h%readattr('/x', 'char', attr_str)
 if (attr_str /= 'overwrite attrs') error stop 'overwrite attrs failed: ' // attr_str
 
 call h%readattr("/x", "empty_char", attr_str)
-print *, trim(attr_str) == c_null_char
 if (len_trim(attr_str) /= 0) then
+    write(stderr, '(a,L1)') 'hanging null char: ', trim(attr_str) == c_null_char
     write(stderr, '(a,i0)') "empty char attribute: expected 0 length, got length: ", len_trim(attr_str)
     error stop "empty char attribute failed"
 endif
@@ -151,6 +155,8 @@ if(c1d(2) /= 'two') error stop "attr:char:1d: index=2 " // c1d(2)
 if(c1d(3) /= 'three') error stop "attr:char:1d: index=3 " // c1d(3)
 
 call h%close()
+
+print '(a)', 'PASSED: HDF5 read attributes: file handle'
 
 end subroutine test_read_attributes
 
