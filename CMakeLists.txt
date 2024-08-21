@@ -5,11 +5,6 @@ if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
   cmake -Bbuild")
 endif()
 
-get_property(is_multi_config GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
-if(NOT is_multi_config AND NOT (CMAKE_BUILD_TYPE OR DEFINED ENV{CMAKE_BUILD_TYPE}))
-  set(CMAKE_BUILD_TYPE Release CACHE STRING "Release default")
-endif()
-
 project(h5fortran
 LANGUAGES C Fortran
 VERSION 4.10.6
@@ -85,6 +80,14 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/h5fortran.mod DESTINATION ${CM
 install(TARGETS h5fortran EXPORT h5fortran-targets)
 
 add_subdirectory(src)
+
+get_property(_h5f_defs TARGET h5fortran PROPERTY COMPILE_DEFINITIONS)
+message(VERBOSE "h5fortran COMPILE_DEFINITIONS: ${_h5f_defs}")
+get_property(_h5f_flags TARGET h5fortran PROPERTY COMPILE_OPTIONS)
+message(VERBOSE "h5fortran COMPILE_OPTIONS: ${_h5f_flags}")
+get_property(_h5f_libs TARGET h5fortran PROPERTY LINK_LIBRARIES)
+message(VERBOSE "h5fortran LINK_LIBRARIES: ${_h5f_libs}")
+
 
 if(h5fortran_BUILD_TESTING)
   add_subdirectory(test)
