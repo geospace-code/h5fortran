@@ -15,8 +15,9 @@ cmake -B build -DCMAKE_INSTALL_PREFIX=~/local -Dhdf5_parallel=on
 cmake --build build
 ```
 
-Optionally, request a specific [HDF5 release URL source archive](https://github.com/HDFGroup/hdf5/releases)
-and or ZLIB URL source archive URL:
+Optionally, request a specific
+[HDF5 release URL source archive](https://github.com/HDFGroup/hdf5/releases)
+and/or ZLIB URL source archive URL:
 
 ```sh
 cmake -B build \
