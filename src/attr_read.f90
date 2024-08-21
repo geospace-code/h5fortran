@@ -1,11 +1,6 @@
 submodule (h5fortran:attr_smod) attr_read
 
-use, intrinsic :: iso_c_binding, only : C_CHAR, C_NULL_CHAR, C_F_POINTER
-
-use hdf5, only : H5Aread_f, H5Aget_type_f, &
-H5Tget_class_f, H5Tget_native_type_f, H5Tget_size_f, H5Tget_strpad_f, &
-H5T_DIR_ASCEND_F, &
-H5S_ALL_F
+use hdf5, only : H5Aread_f
 
 implicit none
 
