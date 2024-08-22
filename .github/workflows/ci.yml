@@ -25,7 +25,7 @@ on:
 
 jobs:
 
-  core-gcc:
+  gcc-12-13-14:
     timeout-minutes: 15
 
     strategy:
@@ -59,7 +59,7 @@ jobs:
     - uses: ./.github/workflows/composite-unix
 
 
-  gcc-old:
+  gcc-9-10-11:
     timeout-minutes: 15
 
     strategy:

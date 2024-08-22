@@ -93,7 +93,14 @@ cmake -B build
 cmake --build build
 ```
 
-for more details see [Install.md](./Install.md).
+By default, h5fortran CMake doesn't specify optimization flags to help working with old compilers like GCC 7.
+To enable optimization, set:
+
+```sh
+cmake -Bbuild -DCMAKE_BUILD_TYPE=Release
+```
+
+For more details see [Install.md](./Install.md).
 
 For general use with non-CMake build systems, "h5fortran.pc" pkg-config file is also generated / installed.
 
