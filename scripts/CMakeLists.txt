@@ -9,9 +9,14 @@ option(hdf5_parallel "build HDF5 parallel MPI")
 option(zlib_legacy "use legacy zlib 1.x")
 
 # --- system checks
-if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-  message(FATAL_ERROR "please specify where to install HDF5 under, like
-  cmake -B build -DCMAKE_INSTALL_PREFIX=~/hdf5")
+message(STATUS "CMAKE_INSTALL_PREFIX: ${CMAKE_INSTALL_PREFIX}")
+file(MAKE_DIRECTORY ${CMAKE_INSTALL_PREFIX})
+if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.29)
+  if(NOT IS_WRITABLE ${CMAKE_INSTALL_PREFIX})
+    message(FATAL_ERROR "CMAKE_INSTALL_PREFIX is not writable: ${CMAKE_INSTALL_PREFIX}")
+  endif()
+else()
+  file(TOUCH ${CMAKE_INSTALL_PREFIX}/.cmake_writable "")
 endif()
 
 if(hdf5_parallel)
