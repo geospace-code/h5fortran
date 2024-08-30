@@ -191,7 +191,8 @@ if(hdf5_have_zlib)
     DOC "SZIP header"
     )
 
-    if(NOT SZIP_LIBRARY AND SZIP_INCLUDE_DIR)
+    if(NOT (SZIP_LIBRARY AND SZIP_INCLUDE_DIR))
+      message(VERBOSE "FindHDF5: SZIP not found, but HDF5 indicates it was built with SZIP. This may cause build errors.")
       return()
     endif()
 
@@ -909,17 +910,29 @@ if(HDF5_FOUND)
     set_property(TARGET HDF5::HDF5 PROPERTY INTERFACE_LINK_LIBRARIES "${HDF5_LIBRARIES}")
     set_property(TARGET HDF5::HDF5 PROPERTY INTERFACE_INCLUDE_DIRECTORIES "${HDF5_INCLUDE_DIRS}")
 
-    target_include_directories(HDF5::HDF5 INTERFACE
-    $<$<BOOL:${hdf5_have_szip}>:${SZIP_INCLUDE_DIR}>
-    )
+    if(hdf5_have_szip)
+      if(IS_DIRECTORY "${SZIP_INCLUDE_DIR}")
+        target_include_directories(HDF5::HDF5 INTERFACE ${SZIP_INCLUDE_DIR})
+      else()
+        message(STATUS "FindHDF5: SZIP_INCLUDE_DIR ${SZIP_INCLUDE_DIR} is not a directory.")
+      endif()
+    endif()
+
+    target_link_libraries(HDF5::HDF5 INTERFACE $<$<BOOL:${hdf5_have_zlib}>:ZLIB::ZLIB>)
+
+    if(hdf5_have_szip)
+      if(EXISTS "${SZIP_LIBRARY}")
+        target_link_libraries(HDF5::HDF5 INTERFACE ${SZIP_LIBRARY})
+      else()
+        message(STATUS "FindHDF5: SZIP_LIBRARY ${SZIP_LIBRARY} is not a file.")
+      endif()
+    endif()
+
     target_link_libraries(HDF5::HDF5 INTERFACE
-    $<$<BOOL:${hdf5_have_zlib}>:ZLIB::ZLIB>
-    $<$<BOOL:${hdf5_have_szip}>:${SZIP_LIBRARY}>
     ${CMAKE_THREAD_LIBS_INIT}
     ${CMAKE_DL_LIBS}
     $<$<BOOL:${UNIX}>:m>
     )
-
   endif()
 endif(HDF5_FOUND)
 
