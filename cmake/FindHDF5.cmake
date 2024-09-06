@@ -182,12 +182,14 @@ if(hdf5_have_zlib)
     NAMES szip sz
     NAMES_PER_DIR
     HINTS ${SZIP_ROOT} ${ZLIB_ROOT}
+    PATH_SUFFIXES lib lib64
     DOC "SZIP API"
     )
 
     find_path(SZIP_INCLUDE_DIR
     NAMES szlib.h
     HINTS ${SZIP_ROOT} ${ZLIB_ROOT}
+    PATH_SUFFIXES include
     DOC "SZIP header"
     )
 
