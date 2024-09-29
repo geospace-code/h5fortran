@@ -67,8 +67,8 @@ Compilers known to work (tested on CI) include:
 
 Compilers not currently working:
 
-* NVidia HPC SDK 23.11: missing "rank()" intrinsic and trouble with "select type()" in submodule
-* AOCC (same problems as NVHPC 23.11)
+* NVidia HPC SDK 24.9: missing "rank()" intrinsic
+* AOCC missing "rank()" intrinsic and trouble with "select type()" in submodule
 
 ---
 
