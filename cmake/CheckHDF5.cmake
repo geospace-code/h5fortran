@@ -17,104 +17,88 @@ endif()
 endmacro()
 
 
+function(hdf5_run_err_diag stderr)
+
+if(DEFINED ENV{CONDA_PREFIX})
+  message(WARNING "suggest running 'conda deactivate' and re-running cmake as Conda may be interfering with HDF5 library.")
+elseif(WIN32 AND stderr MATCHES "0xc0000135")
+  message(STATUS "test run error may be due to missing HDF5 DLLs in PATH
+    ${stderr}")
+elseif(WIN32 AND stderr MATCHES "0xc0000139")
+  message(STATUS "test run error may be due to Windows security policy
+    ${stderr}")
+else()
+  message(WARNING "HDF5 C types failed check")
+endif()
+endfunction()
+
+
 function(check_hdf5_c)
+
+if(DEFINED hdf5_c_types_run)
+  return()
+endif()
 
 set(CMAKE_REQUIRED_LIBRARIES HDF5::HDF5)
 
 windows_oneapi_hdf5_workaround()
 
-set(_src
-[=[
-// no newline characters because that trips up CMake check_source_runs() string expansion
-#include "hdf5.h"
-#include <stdio.h>
-#include <stdlib.h>
+message(CHECK_START "Checking HDF5 C types")
 
-int main(void){
+try_run(hdf5_c_types_run hdf5_c_types_build
+SOURCES ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/check_hdf5.c
+LINK_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES}
+RUN_OUTPUT_STDERR_VARIABLE _stderr
+)
 
-if(H5open() != 0){
-  fprintf(stderr, "H5open() failed");
-  return EXIT_FAILURE;
-}
-
-if(H5F_ACC_RDONLY == H5F_ACC_TRUNC || H5F_ACC_RDONLY == H5F_ACC_RDWR){
-  fprintf(stderr, "H5F_ACC_RDONLY, H5F_ACC_TRUNC, H5F_ACC_RDWR are not all distinct");
-  return EXIT_FAILURE;
-}
-
-if(H5close() != 0){
-  fprintf(stderr, "H5close() failed");
-  return EXIT_FAILURE;
-}
-printf("OK: HDF5 C type check");
-return EXIT_SUCCESS;
-}
-]=])
-
-check_source_runs(C "${_src}" hdf5_c_types)
-
-if(NOT hdf5_c_types)
-  if(DEFINED ENV{CONDA_PREFIX})
-    message(WARNING "suggest running 'conda deactivate' and re-running cmake as Conda may be interfering with HDF5 library.")
-  endif()
-  message(WARNING "HDF5 C types failed check")
+if(hdf5_c_types_build AND hdf5_c_types_run EQUAL 0)
+  message(CHECK_PASS "passed")
+  return()
 endif()
+
+message(CHECK_FAIL "failed")
+
+hdf5_run_err_diag(${_stderr})
 
 endfunction(check_hdf5_c)
 
 
 function(check_hdf5_fortran)
 
+if(DEFINED hdf5_fortran_types_run)
+  return()
+endif()
+
 set(CMAKE_REQUIRED_LIBRARIES HDF5::HDF5)
 
 windows_oneapi_hdf5_workaround()
 
-set(_src [=[
-program main
+message(CHECK_START "Checking HDF5 Fortran types")
 
-use hdf5
-
-implicit none
-
-integer :: i
-integer(HID_T) :: fid
-
-call H5open_f(i)
-if(i /= 0) error stop "H5open_f failed [0]"
-
-call H5open_f(i)
-if(i /= 0) error stop "H5open_f failed [1]"
-
-print '(a,i0)', "H5F_ACC_RDONLY_F = ", H5F_ACC_RDONLY_F
-print '(a,i0)', "H5F_ACC_TRUNC_F = ", H5F_ACC_TRUNC_F
-print '(a,i0)', "H5F_ACC_RDWR_F = ", H5F_ACC_RDWR_F
-
-if(H5F_ACC_RDONLY_F == H5F_ACC_TRUNC_F .or. H5F_ACC_RDONLY_F == H5F_ACC_RDWR_F) then
-  error stop "H5F_ACC_RDONLY, H5F_ACC_TRUNC, H5F_ACC_RDWR are not all distinct"
-endif
-
-call H5close_f(i)
-if (i /= 0) error stop "H5close() failed"
-
-print '(a)', "OK: HDF5 C type check"
-
-end program
-]=]
+try_run(hdf5_fortran_types_run hdf5_fortran_types_build
+SOURCES ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/check_hdf5.f90
+LINK_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES}
+RUN_OUTPUT_STDERR_VARIABLE _stderr
 )
 
-check_source_runs(Fortran "${_src}" hdf5_fortran_types)
-
-if(NOT hdf5_fortran_types)
-  if(DEFINED ENV{CONDA_PREFIX})
-    message(WARNING "suggest running 'conda deactivate' and re-running cmake as Conda may be interfering with HDF5 library.")
-  endif()
-  message(WARNING "HDF5 Fortran types failed check")
+if(hdf5_fortran_types_build AND hdf5_fortran_types_run EQUAL 0)
+  message(CHECK_PASS "passed")
+  return()
 endif()
+
+message(CHECK_FAIL "failed")
+
+hdf5_run_err_diag(${_stderr})
 
 endfunction(check_hdf5_fortran)
 
 
 function(check_hdf5)
+
+if(CMAKE_VERSION VERSION_LESS 3.25)
+  message(STATUS "HDF5: skipping check for C and Fortran types due to CMake version < 3.25")
+  return()
+endif()
 
 check_hdf5_c()
 check_hdf5_fortran()
