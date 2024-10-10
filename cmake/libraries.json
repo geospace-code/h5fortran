@@ -6,6 +6,6 @@
     "url" : "https://github.com/zlib-ng/zlib-ng/archive/refs/tags/2.2.2.tar.gz"
   },
   "hdf5": {
-    "url": "https://github.com/HDFGroup/hdf5/archive/refs/tags/hdf5_1.14.5.tar.gz"
+    "url": "https://github.com/HDFGroup/hdf5/archive/refs/tags/hdf5-1_10_11.tar.gz"
   }
 }

@@ -32,10 +32,15 @@ set(HDF5_INCLUDE_DIRS ${CMAKE_INSTALL_FULL_INCLUDEDIR})
 file(READ ${CMAKE_CURRENT_LIST_DIR}/libraries.json json)
 
 # --- Zlib
+if(build_zlib)
+  set(zlib_dep DEPENDS ZLIB)
 if(TARGET ZLIB::ZLIB)
   add_custom_target(ZLIB)
 else()
   include(${CMAKE_CURRENT_LIST_DIR}/zlib.cmake)
+endif()
+else()
+  set(zlib_dep)
 endif()
 
 # --- HDF5
@@ -76,6 +81,10 @@ endif()
 
 if(hdf5_url MATCHES "hdf5_([0-9]+\.[0-9]+\.[0-9]+)\.")
   set(HDF5_VERSION "${CMAKE_MATCH_1}")
+elseif(hdf5_url MATCHES "hdf5-([0-9]+\_[0-9]+\_[0-9]+)")
+  string(REPLACE "_" "." HDF5_VERSION "${CMAKE_MATCH_1}")
+else()
+  message(FATAL_ERROR "Could not determine HDF5 version from URL: ${hdf5_url}")
 endif()
 
 message(STATUS "Building HDF5 version ${HDF5_VERSION}")
@@ -84,7 +93,7 @@ ExternalProject_Add(HDF5
 URL ${hdf5_url}
 CMAKE_ARGS ${hdf5_cmake_args}
 BUILD_BYPRODUCTS ${HDF5_LIBRARIES}
-DEPENDS ZLIB
+${zlib_dep}
 CONFIGURE_HANDLED_BY_BUILD ON
 USES_TERMINAL_DOWNLOAD true
 USES_TERMINAL_UPDATE true
