@@ -74,10 +74,11 @@ endif()
 
 # Get HDF5 version from underscore-separated version in URL
 
-string(REGEX MATCH "[0-9]+_[0-9]+_[0-9]+" HDF5_VERSION "${hdf5_url}")
-string(REPLACE "_" "." HDF5_VERSION "${HDF5_VERSION}")
+if(hdf5_url MATCHES "hdf5_([0-9]+\.[0-9]+\.[0-9]+)\.")
+  set(HDF5_VERSION "${CMAKE_MATCH_1}")
+endif()
 
-message(STATUS "Building HDF5 ${HDF5_VERSION}")
+message(STATUS "Building HDF5 version ${HDF5_VERSION}")
 
 ExternalProject_Add(HDF5
 URL ${hdf5_url}

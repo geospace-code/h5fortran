@@ -49,11 +49,11 @@ if(h5fortran_IS_TOP_LEVEL AND (hdf5_parallel OR HDF5_HAVE_PARALLEL))
   target_link_libraries(HDF5::HDF5 INTERFACE MPI::MPI_Fortran)
 endif()
 
-# HDF5 bug #3663 for HDF5 1.14.2..4, ...?
+# HDF5 bug #3663 for HDF5 1.14.2..5, ...?
 # https://github.com/HDFGroup/hdf5/issues/3663
 if(WIN32 AND CMAKE_Fortran_COMPILER_ID MATCHES "^Intel")
-if(HDF5_VERSION MATCHES "1.14.[2-4]")
-  message(VERBOSE "HDF5: applying workaround for HDF5 bug #3663 with Intel oneAPI on Windows")
+if(HDF5_VERSION MATCHES "1.14.[2-5]")
+  message(STATUS "HDF5: applying workaround for HDF5 bug #3663 with Intel oneAPI on Windows")
   target_link_libraries(HDF5::HDF5 INTERFACE shlwapi)
 endif()
 endif()
