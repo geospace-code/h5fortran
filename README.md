@@ -20,9 +20,10 @@ call h5write('my.h5', '/x', x)
 call h5read('my.h5', '/y', y)
 ```
 
-For NetCDF4 see [nc4fortran](https://github.com/geospace-code/nc4fortran/).
+For NetCDF4 see
+[nc4fortran](https://github.com/geospace-code/nc4fortran/).
 h5fortran is designed for "serial" HDF5 read/write.
-We don't yet implement the interface for "parallel" HDF5.
+[h5fortran-mpi](https://github.com/geospace-code/h5fortran-mpi) is a Fortran interface for "parallel" HDF5.
 
 h5fortran is designed for easy use using static or shared linking from your project via:
 
@@ -36,7 +37,9 @@ Uses Fortran `submodule` for clean template structure.
 This easy-to-use, thin object-oriented modern Fortran library abstracts away the messy parts of HDF5 so that you can read / write various types/ranks of data with a single command.
 In distinction from other high-level HDF5 interfaces, h5fortran works to deduplicate code, using polymorphism wherever feasible and extensive test suite.
 
-Polymorphic [API](./API.md) with read / write **dataset** types int32, int64, real32, real64, character (string) with rank scalar (0-D) through 7-D.
+Polymorphic
+[API](./API.md)
+with read / write **dataset** types int32, int64, real32, real64, character (string) with rank scalar (0-D) through 7-D.
 Variable-length datasets "H5S_UNLIMITED" can also be read.
 
 HDF5 **attributes** are also supported for read/write types int32, int64, real32, real64, character (string) with rank scalar (0-D) through 7-D.
@@ -51,7 +54,7 @@ UTF8 characters are passed through on read and write using the Fortran default c
 * Zlib (deflate) compression / decompression -- h5fortran will work without Zlib, but will save/load uncompressed data only.
 * create HDF5 soft link variables--arbitrarily many soft-linked variable names can point to an actual variable, which need not yet exist.
 
-Tested on systems with HDF5 1.8, 1.10 and 1.12 including:
+Tested on systems with HDF5 1.8, 1.10, 1.12, and 1.14 including:
 
 * MacOS (homebrew)
 * Linux (Ubuntu, CentOS)
@@ -121,8 +124,6 @@ fpm install
 ## Build HDF5 standalone
 
 To build the HDF5 and ZLIB libraries, use the [scripts](./scripts/) folder.
-```
-
 
 ## Usage
 
@@ -170,6 +171,11 @@ The current h5fortran impementation (Fortran `select type` for H5Dwrite/H5Dread)
 
 HDF5 Fortran 2003
 [features](https://docs.hdfgroup.org/archive/support/HDF5/doc/fortran/NewFeatures_F2003.pdf)
+
+## Alternatives
+
+* [h5pp](https://github.com/DavidAce/h5pp) C++ HDF5 interface
+* [HighFive](https://github.com/BlueBrain/HighFive) C++ header-only HDF5 interface
 
 ## Acknowledgements
 
