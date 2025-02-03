@@ -6,7 +6,6 @@ LANGUAGES C Fortran
 )
 
 option(hdf5_parallel "build HDF5 parallel MPI")
-option(zlib_legacy "use legacy zlib 1.x")
 option(build_zlib "build zlib")
 
 # --- system checks

@@ -4,6 +4,10 @@
 include(GNUInstallDirs)
 include(ExternalProject)
 
+if(NOT DEFINED hdf5_key)
+  set(hdf5_key hdf5-1.10)
+endif()
+
 if(hdf5_parallel)
   find_package(MPI REQUIRED COMPONENTS C)
 endif()
@@ -74,7 +78,7 @@ if(MPI_ROOT)
 endif()
 
 if(NOT hdf5_url)
-  string(JSON hdf5_url GET ${json} hdf5 url)
+  string(JSON hdf5_url GET ${json} ${hdf5_key})
 endif()
 
 # Get HDF5 version from underscore-separated version in URL
