@@ -82,7 +82,7 @@ if(self%exist(dname)) then
 
   if (present(istart)) then
     if(any(istart < 1)) error stop 'ERROR:h5fortran:create: istart must be >= 1'
-    if(any(iend <= istart)) error stop 'ERROR:h5fortran:create: iend must be > istart'
+    if(any(iend < istart)) error stop 'ERROR:h5fortran:create: iend must be >= istart'
 
     call H5Sget_simple_extent_ndims_f(filespace_id, drank, ier)
     call estop(ier, "create:H5Sget_simple_extent_ndims", self%filename, dname)
@@ -92,7 +92,7 @@ if(self%exist(dname)) then
     call H5Sget_simple_extent_dims_f(filespace_id, ddims, maxdims, ier)
     if (ier /= drank) error stop 'ERROR:h5fortran:create: H5Sget_simple_extent_dims: ' // dname // ' in ' // self%filename
 
-    if(any(iend > ddims)) error stop 'ERROR:h5fortran:create: iend > dset_dims'  // dname // ' in ' // self%filename
+    if(any(iend - istart > ddims)) error stop 'ERROR:h5fortran:create: iend - istart > dset_dims'  // dname // ' in ' // self%filename
   else
     if (size(mem_dims) == 0) then
       !! scalar
