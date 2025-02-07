@@ -77,3 +77,6 @@ main = "test_string.f90"
 [[test]]
 name = "version"
 main = "test_version.f90"
+
+[dependencies]
+hdf5 = '*'
