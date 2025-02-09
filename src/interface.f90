@@ -56,6 +56,8 @@ procedure, public :: softlink => create_softlink
 procedure, public :: is_open
 procedure, public :: delete_attr => attr_delete
 procedure, public :: exist_attr => attr_exist
+procedure, public :: iterate => hdf_iterate
+procedure, public :: visit => hdf_visit
 !! procedures without mapping
 
 !> below are procedure that need generic mapping (type or rank agnostic)
@@ -637,6 +639,60 @@ module logical function attr_exist(self, obj_name, attr_name)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: obj_name, attr_name
 end function
+
+module subroutine hdf_iterate(self, group_name, callback)
+ !! Opens the HDF5 file and the specified group, then iterates over
+ !! all members of the group. For each member the user‐provided
+ !! callback is invoked with:
+ !!
+ !!   self - the HDF5 file object
+ !!   group_name - name of the group
+ !!   object_name - name of the member object
+ !!   object_type - a short string indicating type ("group", "dataset",
+ !!                 "datatype", or "other")
+ class(hdf5_file), intent(in) :: self
+ character(len=*), intent(in) :: group_name
+  interface
+    subroutine user_callback_interface(group_name, object_name, object_type)
+      character(len=*), intent(in) :: group_name
+        !! The name of the group being traversed.
+      character(len=*), intent(in) :: object_name
+        !! The name of the object encountered.
+      character(len=*), intent(in) :: object_type
+        !!A short description such as "group", "dataset",
+        !!                            "datatype", or "other"
+    end subroutine
+  end interface
+
+ procedure(user_callback_interface) :: callback
+end subroutine
+
+module subroutine hdf_visit(self, group_name, callback)
+ !! Opens the HDF5 file and the specified group, then visits recursively
+ !! all members of the group. For each member the user‐provided
+ !! callback is invoked with:
+ !!
+ !!   self - the HDF5 file object
+ !!   group_name - name of the group
+ !!   object_name - name of the member object
+ !!   object_type - a short string indicating type ("group", "dataset",
+ !!                 "datatype", or "other")
+ class(hdf5_file), intent(in) :: self
+ character(len=*), intent(in) :: group_name
+  interface
+    subroutine user_callback_interface(group_name, object_name, object_type)
+      character(len=*), intent(in) :: group_name
+        !! The name of the group being traversed.
+      character(len=*), intent(in) :: object_name
+        !! The name of the object encountered.
+      character(len=*), intent(in) :: object_type
+        !!A short description such as "group", "dataset",
+        !!                            "datatype", or "other"
+    end subroutine
+  end interface
+
+ procedure(user_callback_interface) :: callback
+end subroutine
 
 end interface
 

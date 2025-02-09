@@ -265,6 +265,32 @@ class(*), intent(out) :: attrval(:)  !< character, real, integer
 call h%delete_attr(dname, attr)
 ```
 
+## Iterate over all datasets in a group
+
+```fortran
+call h%iterate(group, callback)
+
+character(*), intent(in) :: group
+subroutine callback(group_name, object_name, object_type)
+  character(len=*), intent(in) :: group_name
+  character(len=*), intent(in) :: object_name
+  character(len=*), intent(in) :: object_type
+end subroutine
+```
+
+## Visit recursively all datasets starting from a group
+
+```fortran
+call h%visit(group, callback)
+
+character(*), intent(in) :: group
+subroutine callback(group_name, object_name, object_type)
+  character(len=*), intent(in) :: group_name
+  character(len=*), intent(in) :: object_name
+  character(len=*), intent(in) :: object_type
+end subroutine
+```
+
 ## high level operations
 
 These are single-call operations that are slower than the object-oriented methods above.
