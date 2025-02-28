@@ -20,6 +20,12 @@ on:
       - ".github/workflows/**"
       - "!memcheck.cmake"
       - "!coverage.cmake"
+  workflow_dispatch:
+
+# avoid wasted runs
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 
 jobs:
@@ -85,8 +91,6 @@ jobs:
     strategy:
       matrix:
         llvm-version: [20]
-        cpp: [true, false]
-        shared: [false]
 
     env:
       CC: clang-${{ matrix.llvm-version }}
@@ -102,10 +106,18 @@ jobs:
           sudo apt-get update
 
     - name: install Flang
-      run: sudo apt install --no-install-recommends clang-${{ matrix.llvm-version }} flang-${{ matrix.llvm-version }}
+      run: sudo apt install --no-install-recommends ninja-build clang-${{ matrix.llvm-version }} flang-${{ matrix.llvm-version }}
 
     - uses: actions/checkout@v4
-    - uses: ./.github/workflows/composite-unix
+
+    - name: configure Cmake
+      run: cmake --preset multi -Dbuild_zlib:BOOL=true
+
+    - name: Build / test Debug
+      run: cmake --workflow --preset debug
+
+    - name: Build / test Release
+      run: cmake --workflow --preset release
 
 
 
