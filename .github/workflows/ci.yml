@@ -106,18 +106,12 @@ jobs:
           sudo apt-get update
 
     - name: install Flang
-      run: sudo apt install --no-install-recommends ninja-build clang-${{ matrix.llvm-version }} flang-${{ matrix.llvm-version }}
+      run: sudo apt install --no-install-recommends clang-${{ matrix.llvm-version }} flang-${{ matrix.llvm-version }}
 
     - uses: actions/checkout@v4
 
-    - name: configure Cmake
-      run: cmake --preset multi -Dbuild_zlib:BOOL=true
-
-    - name: Build / test Debug
-      run: cmake --workflow --preset debug
-
-    - name: Build / test Release
-      run: cmake --workflow --preset release
+    - name: CMake build & test
+      run: cmake --workflow nofind
 
 
 
