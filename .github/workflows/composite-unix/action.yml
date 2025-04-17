@@ -14,11 +14,11 @@ runs:
 
   - name: Build / test Debug
     shell: bash
-    run: cmake --workflow --preset debug
+    run: cmake --workflow debug
 
   - name: Build Release
     shell: bash
-    run: cmake --workflow --preset release
+    run: cmake --workflow release
 
   - name: install package
     shell: bash

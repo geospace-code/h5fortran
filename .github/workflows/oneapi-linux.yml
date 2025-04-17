@@ -71,7 +71,7 @@ jobs:
       run: cat build/CMakeFiles/CMakeConfigureLog.yaml
 
     - name: Release workflow
-      run: cmake --workflow --preset default
+      run: cmake --workflow default
 
     - name: install package
       run: cmake --install build
