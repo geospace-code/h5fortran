@@ -5,7 +5,11 @@ include(GNUInstallDirs)
 include(ExternalProject)
 
 if(NOT DEFINED hdf5_key)
-  set(hdf5_key hdf5-1.10)
+  if(LINUX)
+    set(hdf5_key hdf5-1.10)
+  else()
+    set(hdf5_key hdf5-1.14)
+  endif()
 endif()
 
 if(hdf5_parallel)

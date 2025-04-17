@@ -18,6 +18,10 @@ if(NOT DEFINED CRAY AND DEFINED ENV{PE_ENV})
   set(CRAY true)
 endif()
 
+if(CMAKE_VERSION VERSION_LESS 3.25 AND CMAKE_SYSTEM_NAME STREQUAL "Linux")
+  set(LINUX true)
+endif()
+
 # --- avoid Anaconda libraries
 find_package(Python COMPONENTS Interpreter)
 
