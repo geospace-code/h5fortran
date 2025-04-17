@@ -1,6 +1,7 @@
 integer :: ier, attr_class
+integer, parameter :: rA = rank(A)
 integer(HID_T) :: attr_id, space_id
-integer(HSIZE_T) :: attr_dims(rank(A))
+integer(HSIZE_T) :: attr_dims(rA)
 logical :: is_scalar
 
 attr_dims = shape(A, HSIZE_T)
@@ -11,8 +12,8 @@ call estop(ier, "attr_read:H5Aopen_by_name", self%filename, obj_name, attr_name)
 call H5Aget_space_f(attr_id, space_id, ier)
 call estop(ier, "attr_read:H5Aget_space", self%filename, obj_name, attr_name)
 
-if(rank(A) == 0) then
-  call hdf_rank_check(self, obj_name // ":" // attr_name, space_id, rank(A), is_scalar)
+if(rA == 0) then
+  call hdf_rank_check(self, obj_name // ":" // attr_name, space_id, rA, is_scalar)
 else
   call hdf_shape_check(self, obj_name // ":" // attr_name, space_id, attr_dims)
 endif
