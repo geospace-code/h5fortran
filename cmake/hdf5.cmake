@@ -44,9 +44,11 @@ endif()
 
 if(TARGET ZLIB::ZLIB)
   add_custom_target(ZLIB)
-elseif(h5fortran_find)
+elseif(h5fortran_find AND NOT build_zlib)
   find_package(ZLIB)
-else()
+endif()
+
+if(NOT TARGET ZLIB::ZLIB)
   include(${CMAKE_CURRENT_LIST_DIR}/zlib.cmake)
 endif()
 
