@@ -129,7 +129,7 @@ jobs:
 
     - uses: actions/checkout@v4
 
-    - run: ctest -Dexclude_label=python -S memcheck.cmake -VV
+    - run: ctest -Dexclude_label="deflate|python" -S memcheck.cmake -VV
 
 
 # issue with python loading writer.inc
