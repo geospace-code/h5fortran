@@ -6,16 +6,6 @@ runs:
 
   steps:
 
-  - name: install Ninja (Linux)
-    shell: bash
-    if: runner.os == 'Linux'
-    run: sudo apt install --no-install-recommends ninja-build
-
-  - name: Install Ninja (MacOS)
-    shell: bash
-    if: runner.os == 'macOS'
-    run: brew install ninja
-
   - name: Configure
     shell: bash
     run: >-
