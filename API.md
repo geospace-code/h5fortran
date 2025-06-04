@@ -231,7 +231,7 @@ For example, if the data in memory is real64, but it's desired to write real32 t
 
 ```fortran
 real(real64) :: darr(3,4,5)
-type(h5fortran) :: h
+type(hdf5_file) :: h
 
 call h % open("myfile.h5", action="w")
 
