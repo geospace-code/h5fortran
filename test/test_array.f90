@@ -52,6 +52,9 @@ r2 = i2
 call h%open(filename, action='w', comp_lvl=1)
 
 call h%write('/int32-1d', i1)
+call h % write('/i32-1d', [1,2,3], istart=[1], iend=[3])
+call h % write('/i32-1d', [4], istart=[2], iend=[2])
+
 call h%write('/test/group2/int32-2d', i2)
 call h%write('/real32-2d', r2)
 !> write from subarray
