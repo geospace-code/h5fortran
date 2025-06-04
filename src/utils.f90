@@ -311,7 +311,7 @@ elseif(any(c_mem_dims /= mem_dims)) then
   write(stderr,*) "ERROR:h5fortran:get_slice: memory size /= dataset size: check variable slice (index). " // &
     " Dset_dims:", ddims, "C Mem_dims:", c_mem_dims, "mem_dims:", mem_dims, "rank(mem_dims):", rank(mem_dims)
   error stop "ERROR:h5fortran:get_slice " // dset_name
-elseif(any(iend-1 > ddims)) then
+elseif(any(iend-istart+1 > ddims)) then
   write(stderr,*) "ERROR:h5fortran:get_slice: iend: ", iend, ' > dset_dims: ', ddims
   error stop "ERROR:h5fortran:get_slice " // dset_name
 endif
