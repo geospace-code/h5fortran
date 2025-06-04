@@ -37,8 +37,8 @@ call h%write('/scalar_real64', 42._real64)
 call h%write('/1d_real32', [1._real32, 32._real32])
 call h%write('/1d_int32', [2_int32, 4_int32])
 call h%write('/char', "hello")
-call h%write('/cast/r64tor32', real(darr, real32))
-call h%write('/cast/i64toi32', int(42_int64, int32))
+call h%write('/cast/r64tor32', darr, datatype=H5T_NATIVE_REAL)
+call h%write('/cast/i64toi32', 42_int64, datatype=H5T_NATIVE_INTEGER)
 
 call h%close()
 
