@@ -346,7 +346,7 @@ CHUNK_MIN = 8000, &      !< lower limit: 8 kbyte
 CHUNK_MAX = 1000000, &   !< upper limit: 1 Mbyte
 TYPESIZE = 8             !< bytes, assume real64 for simplicity
 
-integer(hsize_t) :: dset_size, target_size, chunk_bytes, i, j, ndims
+integer(HSIZE_T) :: dset_size, target_size, chunk_bytes, i, j, ndims
 
 
 chunk_size = 0

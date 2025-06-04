@@ -167,7 +167,7 @@ On HPC, we suggest using the HDF5 library provided by the HPC system for best pe
 * variable length dataset writing
 
 We didn't use `type(c_ptr)` and `c_loc()` internally for datasets as we observed problems when the actual argument is sliced on read/write.
-The current h5fortran impementation (Fortran `select type` for H5Dwrite/H5Dread) does work with sliced actual arguments.
+The current h5fortran implementation (Fortran `select type` for H5Dwrite/H5Dread) does work with sliced actual arguments.
 
 HDF5 Fortran 2003
 [features](https://docs.hdfgroup.org/archive/support/HDF5/doc/fortran/NewFeatures_F2003.pdf)
