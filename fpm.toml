@@ -8,11 +8,8 @@ auto-tests = false
 auto-examples = false
 external-modules = ["hdf5", "h5lt"]
 
-# HDF5 >= 1.10.6
-# link = ["hdf5_hl_fortran", "hdf5_fortran", "hdf5_hl", "hdf5"]
-
-# HDF5 < 1.10.6, and distros that rename the old way such as Ubuntu 22.04
-link = ["hdf5hl_fortran", "hdf5_fortran", "hdf5_hl", "hdf5"]
+[dependencies]
+hdf5 = "*"
 
 [install]
 library = true
