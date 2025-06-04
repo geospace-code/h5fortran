@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20...3.30)
+cmake_minimum_required(VERSION 3.20...4.0)
 
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
   message(FATAL_ERROR "Please do out of source build like
@@ -7,7 +7,7 @@ endif()
 
 project(h5fortran
 LANGUAGES C Fortran
-VERSION 4.10.6
+VERSION 4.11.0
 )
 
 include(CTest)

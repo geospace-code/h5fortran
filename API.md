@@ -63,7 +63,7 @@ type(hdf5_file) :: h1, h2, h3
 ```
 
 ```fortran
-call h%open(filename, action, comp_lvl)
+call h % open(filename, action, comp_lvl)
 !! Opens hdf5 file
 
 character(*), intent(in) :: filename
@@ -215,14 +215,49 @@ character(*), intent(in) :: target, &  !< target path to link dataset
 ## file write operations
 
 ```fortran
-call h%write(dname, A, chunk_size, istart, iend, stride, compact)
+call h % write(dname, A, chunk_size, istart, iend, stride, compact, datatype)
 !! write 0d..7d dataset
 character(*), intent(in) :: dname
 class(*), intent(in) :: A(:)  !< array to write
 integer, intent(in), optional :: chunk_size(rank(A))
 integer, intent(in), optional, dimension(:) :: istart, iend, stride  !< array slicing
 logical, intent(in), optional :: compact  !< faster I/O for sub-64 kB datasets
+integer, intent(in), optional :: datatype  !< HDF5 datatype
 ```
+
+The "datatype" parameter is optional and defaults to the native type of the input array A.
+Rather than implicitly cast with array temporaries in end-user code, which can be slow and trigger memory issues or compiler bugs (like GCC 9.5.0), instead use the "datatype" parameter to specify the HDF5 datatype explicitly.
+For example, if the data in memory is real64, but it's desired to write real32 to disk to save disk space, do like:
+
+```fortran
+real(real64) :: darr(3,4,5)
+type(h5fortran) :: h
+
+call h % open("myfile.h5", action="w")
+
+call h % write("/my_3d_data", darr, datatype=H5T_NATIVE_REAL)
+```
+
+The HDF5
+[Fortran datatypes](https://support.hdfgroup.org/documentation/hdf5/latest/group___f_h5_t.html)
+include the
+[following](https://docs.hdfgroup.org/archive/support/HDF5/doc/RM/PredefDTypes.html#F90):
+
+* H5T_NATIVE_REAL: Fortran single-precision real (typically 32-bit float unless using non-default compiler settings)
+* H5T_NATIVE_DOUBLE: Fortran double-precision real (typically 64-bit float unless using non-default compiler settings)
+* H5T_NATIVE_INTEGER: Fortran integer (typically 32-bit unless using non-default compiler settings)
+
+To be explicit about the datatype, one can use the following HDF5 datatypes:
+
+* H5T_STD_F32LE: real floating (32-bit, little-endian)
+* H5T_STD_F64LE: real floating (64-bit, little-endian)
+* H5T_STD_I32LE: integer (32-bit, little-endian)
+* H5T_STD_I64LE: integer (64-bit, little-endian)
+
+Of course, part of the beauty of HDF5 is the computer reading the HDF5 will automatically coerce the data to the native type of the host machine, so the end-user does not need to worry about this in most cases.
+
+---
+
 
 Write dataset attribute (e.g. units or instrument)
 

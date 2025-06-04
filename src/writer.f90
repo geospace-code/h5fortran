@@ -1,6 +1,6 @@
 submodule (h5fortran:write) writer
 
-use hdf5, only: h5dwrite_f
+use hdf5, only: H5Dwrite_f
 
 implicit none
 
