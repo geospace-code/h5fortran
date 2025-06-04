@@ -26,6 +26,8 @@ character(*), intent(in) :: fn
 
 type(hdf5_file) :: h
 
+real(real64) :: darr(2) = 12._real64
+
 call h%open(fn, action='w')
 
 !> test values
@@ -36,6 +38,7 @@ call h%write('/scalar_real64', 42._real64)
 call h%write('/1d_real32', [1._real32, 32._real32])
 call h%write('/1d_int32', [2_int32, 4_int32])
 call h%write('/char', "hello")
+call h%write('/cast/r64tor32', real(darr))
 
 call h%close()
 
@@ -61,6 +64,7 @@ if (h%class("/scalar_int64") /= H5T_INTEGER_F) error stop "int64 not integer"
 if (h%class("/scalar_real32") /= H5T_FLOAT_F) error stop "real32 not float"
 if (h%class("/scalar_real64") /= H5T_FLOAT_F) error stop "real64 not float"
 if (h%class("/char") /= H5T_STRING_F) error stop "char not string"
+if (h%class('/cast/r64tor32') /= H5T_FLOAT_F) error stop "cast not float"
 print *, "OK: class method"
 
 !> %dtype method
@@ -69,6 +73,7 @@ if (h%dtype("/scalar_int64") /= H5T_STD_I64LE) error stop "int64 type"
 if (h%dtype("/scalar_real32") /= H5T_NATIVE_REAL) error stop "real32 type"
 if (h%dtype("/scalar_real64") /= H5T_NATIVE_DOUBLE) error stop "real64 type"
 if (h%dtype("/char") /= H5T_NATIVE_CHARACTER) error stop "char type"
+if (h%dtype('/cast/r64tor32') /= H5T_NATIVE_REAL) error stop "cast type"
 print *, "OK: dtype method"
 
 !> read casting -- real32 to real64 and int32 to int64
