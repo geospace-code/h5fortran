@@ -59,7 +59,7 @@ endfunction(setup_test)
 
 set(test_names array attributes attributes_read
 cast deflate_write deflate_read deflate_props destructor exist
-groups layout lt scalar shape string string_read version write
+groups iterate layout lt scalar shape string string_read version visit write
 fail_read_size_mismatch fail_read_rank_mismatch fail_nonexist_variable)
 if(HAVE_IEEE_ARITH)
   list(APPEND test_names fill)
