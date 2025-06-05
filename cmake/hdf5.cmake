@@ -5,7 +5,11 @@ include(GNUInstallDirs)
 include(ExternalProject)
 
 if(NOT DEFINED hdf5_key)
-  set(hdf5_key hdf5-1.10)
+  if(LINUX)
+    set(hdf5_key hdf5-1.10)
+  else()
+    set(hdf5_key hdf5-1.14)
+  endif()
 endif()
 
 if(hdf5_parallel)
@@ -38,13 +42,18 @@ file(READ ${CMAKE_CURRENT_LIST_DIR}/libraries.json json)
 # --- Zlib
 if(build_zlib)
   set(zlib_dep DEPENDS ZLIB)
-if(TARGET ZLIB::ZLIB)
-  add_custom_target(ZLIB)
-else()
-  include(${CMAKE_CURRENT_LIST_DIR}/zlib.cmake)
-endif()
 else()
   set(zlib_dep)
+endif()
+
+if(TARGET ZLIB::ZLIB)
+  add_custom_target(ZLIB)
+elseif(h5fortran_find AND NOT build_zlib)
+  find_package(ZLIB)
+endif()
+
+if(NOT TARGET ZLIB::ZLIB)
+  include(${CMAKE_CURRENT_LIST_DIR}/zlib.cmake)
 endif()
 
 # --- HDF5

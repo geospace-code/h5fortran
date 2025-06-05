@@ -17,7 +17,12 @@ on:
       - ".github/workflows/ci_windows.yml"
       - "!memcheck.cmake"
       - "!coverage.cmake"
+  workflow_dispatch:
 
+# avoid wasted runs
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
 
@@ -32,21 +37,22 @@ jobs:
 
     steps:
     - uses: msys2/setup-msys2@v2
+      id: msys2
       with:
         update: true
         install: >-
-          mingw-w64-x86_64-gcc-fortran
-          mingw-w64-x86_64-hdf5
+          mingw-w64-ucrt-x86_64-gcc-fortran
+          mingw-w64-ucrt-x86_64-hdf5
 
     - name: Put MSYS2_MinGW64 on PATH
-      run: echo "${{ runner.temp }}/msys64/mingw64/bin/" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+      run: echo "${{ steps.msys2.outputs.msys2-location }}/ucrt64/bin/" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
     - uses: actions/checkout@v4
 
     - name: config
       run: cmake --preset default -G "MinGW Makefiles"
       env:
-        HDF5_ROOT: ${{ runner.temp }}/msys64/mingw64/
+        HDF5_ROOT: ${{ steps.msys2.outputs.msys2-location }}/ucrt64/
 
     - name: print config log
       if: ${{ failure() }}
@@ -64,7 +70,7 @@ jobs:
     - name: example workflow
       run: cmake -S example -B example/build -G "MinGW Makefiles"
       env:
-        HDF5_ROOT: ${{ runner.temp }}/msys64/mingw64/
+        HDF5_ROOT: ${{ steps.msys2.outputs.msys2-location }}/ucrt64/
 
     - run: cmake --build example/build
 

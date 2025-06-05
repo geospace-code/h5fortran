@@ -22,7 +22,7 @@ call estop(ier, "read_scalar:H5Dopen", self%filename, dname)
 call H5Dget_space_f(dset_id, file_space_id, ier)
 call estop(ier, "read_scalar:H5Dget_space", self%filename, dname)
 
-call hdf_rank_check(self, dname, file_space_id, rank(A), is_scalar)
+call hdf_rank_check(self, dname, file_space_id, 0, is_scalar)
 
 if (is_scalar) then
   call hdf_get_slice(dims, dset_id, file_space_id, mem_space_id, [1], [1])

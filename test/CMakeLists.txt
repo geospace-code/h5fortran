@@ -74,10 +74,16 @@ set_property(TEST shape PROPERTY FIXTURES_SETUP h5shape)
 set_property(TEST layout PROPERTY FIXTURES_REQUIRED test_files)
 set_property(TEST layout PROPERTY REQUIRED_FILES ${CMAKE_CURRENT_BINARY_DIR}/test_write.h5)
 
-set_property(TEST deflate_write PROPERTY FIXTURES_SETUP deflate_files)
+set_tests_properties(deflate_write PROPERTIES
+FIXTURES_SETUP deflate_files
+LABELS deflate
+)
 
-set_property(TEST deflate_props deflate_read PROPERTY FIXTURES_REQUIRED deflate_files)
-set_property(TEST deflate_props deflate_read PROPERTY REQUIRED_FILES ${CMAKE_CURRENT_BINARY_DIR}/deflate1.h5)
+set_tests_properties(deflate_props deflate_read PROPERTIES
+FIXTURES_REQUIRED deflate_files
+REQUIRED_FILES ${CMAKE_CURRENT_BINARY_DIR}/deflate1.h5
+LABELS deflate
+)
 
 if(h5fortran_COVERAGE)
 setup_target_for_coverage_gcovr_html(

@@ -14,7 +14,8 @@ HAVE_IEEE_ARITH
 if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU|^Intel")
   add_compile_options(
   "$<$<AND:$<COMPILE_LANGUAGE:C>,$<CONFIG:Debug>>:-Wextra>"
-  "$<$<COMPILE_LANGUAGE:C>:-Wall;-Werror=implicit-function-declaration>"
+  "$<$<AND:$<COMPILE_LANGUAGE:C>,$<CONFIG:Debug,RelWithDebInfo>>:-Wall>"
+  "$<$<COMPILE_LANGUAGE:C>:-Werror=implicit-function-declaration>"
   )
 elseif(CMAKE_C_COMPILER_ID MATCHES "MSVC")
   add_compile_options("$<$<COMPILE_LANGUAGE:C>:/W3>")
@@ -32,7 +33,7 @@ endif()
 if(CMAKE_Fortran_COMPILER_ID MATCHES "^Intel")
 
 add_compile_options(
-"$<$<COMPILE_LANGUAGE:Fortran>:-warn>"
+"$<$<AND:$<COMPILE_LANGUAGE:Fortran>,$<CONFIG:Debug,RelWithDebInfo>>:-warn>"
 "$<$<AND:$<COMPILE_LANGUAGE:Fortran>,$<CONFIG:Debug>>:-traceback;-check;-debug>"
 )
 
@@ -45,7 +46,8 @@ endif()
 elseif(CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
 
 add_compile_options(
-"$<$<COMPILE_LANGUAGE:Fortran>:-Wall;-fimplicit-none;-Wno-maybe-uninitialized>"
+"$<$<AND:$<COMPILE_LANGUAGE:Fortran>,$<CONFIG:Debug,RelWithDebInfo>>:-Wall>"
+"$<$<COMPILE_LANGUAGE:Fortran>:-fimplicit-none;-Wno-maybe-uninitialized>"
 "$<$<AND:$<COMPILE_LANGUAGE:Fortran>,$<CONFIG:Debug>>:-Wextra;-fcheck=all;-Werror=array-bounds>"
 "$<$<AND:$<COMPILE_LANGUAGE:Fortran>,$<CONFIG:Release>>:-fno-backtrace>"
 )

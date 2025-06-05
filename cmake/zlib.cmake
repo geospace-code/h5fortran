@@ -3,6 +3,10 @@
 include(GNUInstallDirs)
 include(ExternalProject)
 
+if(NOT DEFINED zlib_key)
+  set(zlib_key zlib2)
+endif()
+
 if(NOT zlib_url)
 string(JSON zlib_url GET ${json} ${zlib_key})
 endif()

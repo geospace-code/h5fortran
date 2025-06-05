@@ -1,10 +1,9 @@
 program test_cast
 !! test HDF5 built-in casting
 
-use h5fortran, only : hdf5_file, &
- H5T_INTEGER_F, H5T_FLOAT_F, H5T_STRING_F, &
- H5T_NATIVE_REAL, H5T_NATIVE_DOUBLE, H5T_NATIVE_INTEGER, H5T_NATIVE_CHARACTER, H5T_STD_I64LE
-use, intrinsic :: iso_fortran_env, only : real32, real64, int32, int64
+use h5fortran, only : hdf5_file
+use hdf5
+use, intrinsic :: iso_fortran_env, only : real32, real64, int32, int64, stderr=>error_unit
 
 implicit none
 
@@ -25,6 +24,7 @@ subroutine test_cast_write(fn)
 character(*), intent(in) :: fn
 
 type(hdf5_file) :: h
+real(real64) :: darr(2) = 12._real64
 
 call h%open(fn, action='w')
 
@@ -36,6 +36,8 @@ call h%write('/scalar_real64', 42._real64)
 call h%write('/1d_real32', [1._real32, 32._real32])
 call h%write('/1d_int32', [2_int32, 4_int32])
 call h%write('/char', "hello")
+call h%write('/cast/r64tor32', darr, datatype=H5T_NATIVE_REAL)
+call h%write('/cast/i64toi32', 42_int64, datatype=H5T_NATIVE_INTEGER)
 
 call h%close()
 
@@ -56,11 +58,29 @@ integer(int64) :: i64, i1_64(2)
 call h%open(fn, action='r')
 
 !> %class method
+print '(a)', 'HDF5 H5T class and dtype values:'
+print '(a, i0)', 'H5T_INTEGER_F = ', H5T_INTEGER_F
+print '(a, i0)', 'H5T_FLOAT_F = ', H5T_FLOAT_F
+print '(a, i0)', 'H5T_STRING_F = ', H5T_STRING_F
+print '(a, i0)', 'H5T_NATIVE_REAL = ', H5T_NATIVE_REAL
+print '(a, i0)', 'H5T_NATIVE_DOUBLE = ', H5T_NATIVE_DOUBLE
+print '(a, i0)', 'H5T_NATIVE_INTEGER = ', H5T_NATIVE_INTEGER
+print '(a, i0)', 'H5T_NATIVE_CHARACTER = ', H5T_NATIVE_CHARACTER
+print '(a, i0)', 'H5T_STD_I64LE = ', H5T_STD_I64LE
 if (h%class("/scalar_int32") /= H5T_INTEGER_F) error stop "int32 not integer"
 if (h%class("/scalar_int64") /= H5T_INTEGER_F) error stop "int64 not integer"
+if (h%class("/1d_real32") /= H5T_FLOAT_F) error stop "1d_real32 not float"
 if (h%class("/scalar_real32") /= H5T_FLOAT_F) error stop "real32 not float"
 if (h%class("/scalar_real64") /= H5T_FLOAT_F) error stop "real64 not float"
 if (h%class("/char") /= H5T_STRING_F) error stop "char not string"
+if (h%class("/cast/i64toi32") /= H5T_INTEGER_F) then
+  write(stderr,*) "expected cast i64toi32 ", H5T_INTEGER_F, " but got ", h%class('/cast/i64toi32')
+  error stop "cast not integer"
+endif
+if (h%class('/cast/r64tor32') /= H5T_FLOAT_F) then
+  write(stderr,*) "expected cast r64tor32 ", H5T_FLOAT_F, " but got ", h%class('/cast/r64tor32')
+  error stop "cast not float"
+endif
 print *, "OK: class method"
 
 !> %dtype method
@@ -69,6 +89,8 @@ if (h%dtype("/scalar_int64") /= H5T_STD_I64LE) error stop "int64 type"
 if (h%dtype("/scalar_real32") /= H5T_NATIVE_REAL) error stop "real32 type"
 if (h%dtype("/scalar_real64") /= H5T_NATIVE_DOUBLE) error stop "real64 type"
 if (h%dtype("/char") /= H5T_NATIVE_CHARACTER) error stop "char type"
+if (h%dtype('/cast/i64toi32') /= H5T_NATIVE_INTEGER) error stop "cast type"
+if (h%dtype('/cast/r64tor32') /= H5T_NATIVE_REAL) error stop "cast type"
 print *, "OK: dtype method"
 
 !> read casting -- real32 to real64 and int32 to int64

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20...3.30)
+cmake_minimum_required(VERSION 3.20...4.0)
 
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
   message(FATAL_ERROR "Please do out of source build like
@@ -7,7 +7,7 @@ endif()
 
 project(h5fortran
 LANGUAGES C Fortran
-VERSION 4.10.6
+VERSION 4.11.0
 )
 
 include(CTest)
@@ -16,6 +16,10 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 if(NOT DEFINED CRAY AND DEFINED ENV{PE_ENV})
   set(CRAY true)
+endif()
+
+if(CMAKE_VERSION VERSION_LESS 3.25 AND CMAKE_SYSTEM_NAME STREQUAL "Linux")
+  set(LINUX true)
 endif()
 
 # --- avoid Anaconda libraries
@@ -52,7 +56,7 @@ endif()
 # HDF5 bug #3663 for HDF5 1.14.2..5, ...?
 # https://github.com/HDFGroup/hdf5/issues/3663
 if(WIN32 AND CMAKE_Fortran_COMPILER_ID MATCHES "^Intel")
-if(HDF5_VERSION MATCHES "1.14.[2-5]")
+if(HDF5_VERSION MATCHES "1.14.[2-6]")
   message(STATUS "HDF5: applying workaround for HDF5 bug #3663 with Intel oneAPI on Windows")
   target_link_libraries(HDF5::HDF5 INTERFACE shlwapi)
 endif()

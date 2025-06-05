@@ -54,7 +54,7 @@ jobs:
         -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
 
     - name: build / test h5fortran
-      run: cmake --workflow --preset default
+      run: cmake --workflow default
 
     - name: install h5fortran
       run: cmake --install build

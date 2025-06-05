@@ -52,11 +52,17 @@ r2 = i2
 call h%open(filename, action='w', comp_lvl=1)
 
 call h%write('/int32-1d', i1)
+call h % write('/i32-1d', [1,2,3], istart=[1], iend=[3])
+call h % write('/i32-1d', [4], istart=[2], iend=[2])
+
 call h%write('/test/group2/int32-2d', i2)
 call h%write('/real32-2d', r2)
 !> write from subarray
 call h%write('/sub-int32-2d', i2_8(3:6, 4:7))
 print '(4i3)', i2_8(3:6, 4:7)
+
+call h % write('/endstart', i2t)
+call h % write('/endstart', reshape([5], [1, 1]), istart=[3,2], iend=[3,2])
 
 call h%close()
 
@@ -94,6 +100,12 @@ if (.not.all(r2 == rr2)) error stop 'real 2-D: read does not match write'
 ! check read into a variable slice
 call h%read('real32-2d', B(2:5,3:6))
 if(.not.all(B(2:5,3:6) == r2)) error stop 'real 2D: reading into variable slice'
+
+call h % read('/endstart', i2t(1:1,1:1), istart=[3,2], iend=[3,2])
+if (i2t(1,1) /= 5) then
+  write(stderr, '(a,i3)') 'read endstart does not match write: expected 5 but got ', i2t(1,1)
+  error stop 'ERROR: read endstart fail'
+endif
 
 call h%close()
 
