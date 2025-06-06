@@ -77,6 +77,10 @@ contains
       character(len=256) :: name_string
       character(:), allocatable :: object_type
 
+      ! FIXME - This is a workaround for the Fortran unused variable warning/error.
+      if (info % type == info % type) continue
+      if (c_associated(op_data)) continue
+
       ! Build a Fortran string from the character array.
       do i = 0, 255
         len = i
