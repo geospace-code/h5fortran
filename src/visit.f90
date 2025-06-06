@@ -64,7 +64,7 @@ contains
       !!  It extracts the object name from the provided character array,
       !!  calls H5Oget_info_by_name_f to determine the object type, and then
       !!  calls the user's callback with the high-level parameters.
-      use ISO_C_BINDING, only: c_int, c_ptr, c_null_char
+      use ISO_C_BINDING, only: c_int, c_long, c_ptr, c_null_char
       implicit none
       integer(c_long), value        :: grp_id
       character(kind=c_char, len=1) :: name(0:255)
