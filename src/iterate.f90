@@ -1,5 +1,4 @@
 submodule (h5fortran) iterate_smod
-  use h5fortran
   use hdf5
   implicit none
 
