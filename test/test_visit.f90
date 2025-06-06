@@ -8,6 +8,8 @@ program test_visit
   character(*), parameter :: filename='test_visit.h5'
   integer :: i
 
+  i = 0
+
   ! Create a sample HDF5 file
   call h%open(filename, "w")
 
