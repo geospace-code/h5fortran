@@ -653,7 +653,6 @@ module subroutine hdf_iterate(self, group_name, callback)
  !! all members of the group. For each member the user‐provided
  !! callback is invoked with:
  !!
- !!   self - the HDF5 file object
  !!   group_name - name of the group
  !!   object_name - name of the member object
  !!   object_type - a short string indicating type ("group", "dataset",
@@ -680,7 +679,6 @@ module subroutine hdf_visit(self, group_name, callback)
  !! all members of the group. For each member the user‐provided
  !! callback is invoked with:
  !!
- !!   self - the HDF5 file object
  !!   group_name - name of the group
  !!   object_name - name of the member object
  !!   object_type - a short string indicating type ("group", "dataset",
