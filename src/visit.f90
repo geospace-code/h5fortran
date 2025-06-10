@@ -14,10 +14,6 @@ submodule (h5fortran) visit_smod
     end subroutine
   end interface
 
-  type :: visit_data_t
-     procedure(user_callback_interface), nopass, pointer :: callback => null()
-  end type visit_data_t
-
 contains
 
   module procedure hdf_visit
@@ -29,11 +25,10 @@ contains
     type(c_funptr) :: funptr
     type(c_ptr) :: op_data_ptr
     integer(c_int) :: return_value
-
-    type(visit_data_t) :: data
+    procedure(user_callback_interface), pointer :: user_callback => null()
 
     ! Fill the iteration data with the user’s group name and callback.
-    data % callback => callback
+    user_callback => callback
 
     ! Open the group.
     call H5Gopen_f(self%file_id, trim(group_name), group_id, status)
@@ -105,7 +100,7 @@ contains
       endif
 
       ! Call the user’s callback procedure.
-      call data % callback(group_name, name_string(1:len), object_type)
+      call user_callback(group_name, name_string(1:len), object_type)
 
       internal_visit_callback = 0  ! Indicate success.
     end function internal_visit_callback
