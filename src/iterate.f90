@@ -67,6 +67,7 @@ contains
       type(c_ptr)                   :: op_data
 
       integer :: status, i, len
+      integer(hid_t) :: loc_id
       type(H5O_info_t) :: infobuf
       character(len=256) :: name_string
       character(:), allocatable :: object_type
@@ -83,7 +84,8 @@ contains
       end do
 
       ! Retrieve object info using the object name.
-      call H5Oget_info_by_name_f(grp_id, name_string(1:len), infobuf, status)
+      loc_id = int(grp_id, kind=hid_t)
+      call H5Oget_info_by_name_f(loc_id, name_string(1:len), infobuf, status)
       if (status /= 0) then
         internal_iterate_callback = status
         return
