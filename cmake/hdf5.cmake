@@ -40,11 +40,7 @@ set(HDF5_INCLUDE_DIRS ${CMAKE_INSTALL_FULL_INCLUDEDIR})
 file(READ ${CMAKE_CURRENT_LIST_DIR}/libraries.json json)
 
 # --- Zlib
-if(build_zlib)
-  set(zlib_dep DEPENDS ZLIB)
-else()
-  set(zlib_dep)
-endif()
+set(zlib_dep)
 
 if(TARGET ZLIB::ZLIB)
   add_custom_target(ZLIB)
@@ -53,6 +49,7 @@ elseif(h5fortran_find AND NOT build_zlib)
 endif()
 
 if(NOT TARGET ZLIB::ZLIB)
+  set(zlib_dep DEPENDS ZLIB)
   include(${CMAKE_CURRENT_LIST_DIR}/zlib.cmake)
 endif()
 
