@@ -19,7 +19,7 @@ endmacro()
 
 function(hdf5_run_err_diag stderr)
 
-if(DEFINED ENV{CONDA_PREFIX})
+if(DEFINED ENV{CONDA_PREFIX} AND h5fortran_IGNORE_CONDA_LIBRARIES)
   message(WARNING "suggest running 'conda deactivate' and re-running cmake as Conda may be interfering with HDF5 library.")
 elseif(WIN32 AND stderr MATCHES "0xc0000135")
   message(STATUS "test run error may be due to missing HDF5 DLLs in PATH

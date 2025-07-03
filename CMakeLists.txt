@@ -25,7 +25,7 @@ endif()
 # --- avoid Anaconda libraries
 find_package(Python COMPONENTS Interpreter)
 
-if(DEFINED ENV{CONDA_PREFIX})
+if(DEFINED ENV{CONDA_PREFIX} AND h5fortran_IGNORE_CONDA_LIBRARIES)
   list(APPEND CMAKE_IGNORE_PREFIX_PATH $ENV{CONDA_PREFIX})
   list(APPEND CMAKE_IGNORE_PATH $ENV{CONDA_PREFIX}/bin)
   # need CMAKE_IGNORE_PATH for CMake < 3.23

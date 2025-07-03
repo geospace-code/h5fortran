@@ -6,7 +6,10 @@
   "name": "default",
   "binaryDir": "${sourceDir}/build",
   "cacheVariables": {
-    "CMAKE_COMPILE_WARNING_AS_ERROR": true
+    "CMAKE_COMPILE_WARNING_AS_ERROR": true,
+    "h5fortran_BUILD_TESTING": true,
+    "h5fortran_find": true,
+    "h5fortran_python": true
   }
 },
 {
@@ -29,7 +32,7 @@
   "description": "Build with code coverage enabled.",
   "cacheVariables": {
     "CMAKE_BUILD_TYPE": "Debug",
-    "h5fortran_COVERAGE": true
+    "h5fortran_coverage": true
   }
 }
 ],
