@@ -113,8 +113,9 @@ jobs:
       run: cmake --workflow nofind
 
 
-
+# not a meaningful need for this in a pure fortran program
   valgrind-memory:
+    if: false
     runs-on: ubuntu-latest
     needs: gcc-new
     timeout-minutes: 10

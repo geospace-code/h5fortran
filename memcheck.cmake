@@ -8,7 +8,7 @@
 
 cmake_minimum_required(VERSION 3.19)
 
-list(APPEND opts -DCMAKE_BUILD_TYPE=Debug)
+list(APPEND opts -DCMAKE_BUILD_TYPE=Debug -Dh5fortran_BUILD_TESTING=ON)
 
 if(NOT DEFINED CTEST_MEMORYCHECK_TYPE)
   set(CTEST_MEMORYCHECK_TYPE "Valgrind")
