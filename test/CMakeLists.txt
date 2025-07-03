@@ -16,7 +16,7 @@ set(shape_file ${CMAKE_CURRENT_BINARY_DIR}/test_shape.h5)
 set(string_file ${CMAKE_CURRENT_BINARY_DIR}/test_string_py.h5)
 
 # --- Python h5py
-if(NOT DEFINED h5py_ok AND Python_EXECUTABLE)
+if(NOT DEFINED h5py_ok AND Python_INTERPRETER_FOUND AND h5fortran_python)
   execute_process(COMMAND ${Python_EXECUTABLE} -c "import h5py"
   RESULT_VARIABLE ret
   ERROR_VARIABLE err

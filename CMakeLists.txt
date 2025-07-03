@@ -23,7 +23,9 @@ if(CMAKE_VERSION VERSION_LESS 3.25 AND CMAKE_SYSTEM_NAME STREQUAL "Linux")
 endif()
 
 # --- avoid Anaconda libraries
-find_package(Python COMPONENTS Interpreter)
+if(h5fortran_python)
+  find_package(Python COMPONENTS Interpreter)
+endif()
 
 if(DEFINED ENV{CONDA_PREFIX} AND h5fortran_IGNORE_CONDA_LIBRARIES)
   list(APPEND CMAKE_IGNORE_PREFIX_PATH $ENV{CONDA_PREFIX})
