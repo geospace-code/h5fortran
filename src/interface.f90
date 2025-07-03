@@ -657,7 +657,7 @@ integer(HID_T), intent(in) :: id
 character(:), allocatable :: id2name
 end function
 
-module subroutine h5open(self, filename, action, comp_lvl, shuffle, fletcher32, debug)
+module subroutine h5open(self, filename, action, comp_lvl, shuffle, fletcher32, debug, ok)
 !! open/create file
 !!
 !! PARAMETERS:
@@ -673,6 +673,8 @@ integer, intent(in), optional :: comp_lvl
 logical, intent(in), optional :: shuffle
 logical, intent(in), optional :: fletcher32
 logical, intent(in), optional :: debug
+logical, intent(out), optional :: ok
+
 end subroutine
 
 module subroutine h5close(self, close_hdf5_interface)
@@ -768,10 +770,11 @@ module integer(HSIZE_T) function hdf_filesize(self)
 class(hdf5_file), intent(in) :: self
 end function
 
-module pure subroutine estop(ier, id, filename, obj_name, attr_name)
+module pure subroutine estop(ier, id, filename, obj_name, attr_name, ok)
 integer, intent(in) :: ier
 character(*), intent(in) :: id, filename
 character(*), intent(in), optional :: obj_name, attr_name
+logical, intent(inout), optional :: ok
 end subroutine
 
 end interface

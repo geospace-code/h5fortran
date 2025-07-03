@@ -40,8 +40,10 @@ integer :: ier
 integer(HID_T) :: fapl !< file access property list
 integer :: file_mode
 
+if(present(ok)) ok = .true.
+
 if(self%is_open()) then
-  write(stderr,*) 'h5fortran:open: file handle already open: '//self%filename
+  write(stderr, '(a)') 'NOTICE:h5fortran:open: file handle already open: '//self%filename
   return
 endif
 
@@ -76,7 +78,10 @@ endif
 if (.not. hdf5_is_initialized()) then
   if(self%debug) print '(a)', 'TRACE:h5fortran:h5open: initializing HDF5 library'
   call H5open_f(ier)
-  call estop(ier, 'h5open:H5open HDF5 library initialize', filename)
+  call estop(ier, 'h5open:H5open HDF5 library initialize', filename, ok=ok)
+  if (present(ok)) then
+    if (.not. ok) return
+  endif
 endif
 
 if(self%debug) then
@@ -84,7 +89,10 @@ if(self%debug) then
 else
   call H5Eset_auto_f(0, ier)
 endif
-call estop(ier, 'h5open:H5Eset_auto: HDF5 library set traceback', filename)
+call estop(ier, 'h5open:H5Eset_auto: HDF5 library set traceback', filename, ok=ok)
+if (present(ok)) then
+  if(.not. ok) return
+endif
 
 select case(laction)
 case('r')
@@ -100,7 +108,11 @@ case('rw', 'a')
 case ('w')
   file_mode = H5F_ACC_TRUNC_F
 case default
-  error stop 'ERROR:h5fortran:open Unsupported action ' // laction // ' for ' // filename
+  call estop(ier, 'ERROR:h5fortran:open Unsupported action ' // laction, filename, ok=ok)
+  if (present(ok)) then
+    if(.not. ok) return
+  endif
+
 end select
 
 fapl = H5P_DEFAULT_F
@@ -117,10 +129,16 @@ if (file_mode == H5F_ACC_RDONLY_F .or. file_mode == H5F_ACC_RDWR_F) then
     error stop "ERROR:h5fortran:open: action=" // laction // "  not an HDF5 file: " // filename
   endif
   call H5Fopen_f(filename, file_mode, self%file_id, ier, access_prp=fapl)
-  call estop(ier, "h5open:H5Fopen", filename)
+  call estop(ier, "h5open:H5Fopen", filename, ok=ok)
+  if (present(ok)) then
+    if(.not. ok) return
+  endif
 elseif(file_mode == H5F_ACC_TRUNC_F) then
   call H5Fcreate_f(filename, file_mode, self%file_id, ier, access_prp=fapl)
-  call estop(ier, "h5open:H5Fcreate", filename)
+  call estop(ier, "h5open:H5Fcreate", filename, ok=ok)
+  if (present(ok)) then
+    if(.not. ok) return
+  endif
 else
   error stop "ERROR:h5fortran:open: Unsupported file mode: " // filename
 endif
@@ -408,7 +426,11 @@ if(present(attr_name)) buf = trim(buf) // trim(attr_name) // ":"
 write(bufi, "(i0)") ier
 buf = trim(buf) // trim(filename) // " code=" // trim(bufi)
 
-error stop trim(buf)
+if(present(ok)) then
+  ok = .false.
+else
+  error stop trim(buf)
+endif
 
 end procedure estop
 
