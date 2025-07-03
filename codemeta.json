@@ -1,9 +1,8 @@
 {
-    "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+    "@context": "https://doi.org/10.5063/schema/codemeta-3.0",
     "@type": "SoftwareSourceCode",
     "codeRepository": "https://github.com/geospace-code/h5fortran",
-    "contIntegration": "https://github.com/geospace-code/h5fortran/actions",
-    "dateModified": "2022-07-20",
+    "continuousIntegration": "https://github.com/geospace-code/h5fortran/actions",
     "downloadUrl": "https://github.com/geospace-code/h5fortran/releases",
     "issueTracker": "https://github.com/geospace-code/h5fortran/issues",
     "name": "h5fortran",
@@ -24,10 +23,8 @@
     ],
     "author": [
         {
-            "@type": "Person",
-            "@id": "https://orcid.org/0000-0002-1637-6526",
-            "givenName": "Michael",
-            "familyName": "Hirsch"
+            "@type": "Organization",
+            "name": "SciVision"
         }
     ]
 }
