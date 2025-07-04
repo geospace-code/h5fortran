@@ -40,6 +40,7 @@ procedure, public :: create_group
 procedure, public :: create => hdf_create_user
 procedure, public :: flush => hdf_flush
 procedure, public :: filesize => hdf_filesize
+procedure, public :: intent => hdf_get_intent
 procedure, public :: ndim => hdf_get_ndim
 procedure, public :: ndims => hdf_get_ndim !< legacy
 procedure, public :: shape => hdf_get_shape
@@ -690,6 +691,11 @@ module subroutine h5close(self, close_hdf5_interface)
 class(hdf5_file), intent(inout) :: self
 logical, intent(in), optional :: close_hdf5_interface
 end subroutine
+
+module integer function hdf_get_intent(self)
+!! get the intent of an object (read, write, readwrite)
+class(hdf5_file), intent(in) :: self
+end function
 
 module logical function is_open(self)
 !! check if file handle is open

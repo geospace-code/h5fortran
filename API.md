@@ -187,6 +187,13 @@ tf = is_hdf5('myfile.txt')  !< probably false
 tf = is_hdf5('myfile.h5')  !< true if a valid HDF5 file
 ```
 
+Get the read/write or read-only intent of the HDF5 file.
+
+```fortran
+h % intent(filename)
+!! returns the read/write or read-only intent of the file, e.g. H5F_ACC_RDWR_F, H5F_ACC_RDONLY_F
+```
+
 These are more advanced inquiries into the memory layout of the dataset, for advanced users:
 
 ```fortran
