@@ -12,10 +12,9 @@ H5Lcreate_soft_f, &
 h5tcopy_f, h5tclose_f, h5tset_size_f, &
 H5S_SCALAR_F, &
 H5D_COMPACT_F, &
-H5F_SCOPE_GLOBAL_F
+H5F_SCOPE_GLOBAL_F, &
+H5F_ACC_RDWR_F, H5F_ACC_TRUNC_F, H5F_ACC_EXCL_F
 
-
-use h5lt, only: h5ltpath_valid_f
 
 implicit none
 
@@ -59,6 +58,17 @@ integer :: ier, drank, i
 integer(HID_T) :: dcpl
 integer(HSIZE_T), dimension(:), allocatable :: ddims, maxdims
 character(:), allocatable :: emsg
+
+if(.not. self%is_open()) error stop "ERROR:h5fortran:create: file is not open: " // self%filename
+
+if(self%file_mode == -1) error stop "ERROR:h5fortran:create: file mode is not set, call h5f % open() first"
+
+
+if(all(self%file_mode /= [H5F_ACC_RDWR_F, H5F_ACC_TRUNC_F, H5F_ACC_EXCL_F])) then
+  write(stderr, '(3a,i0,2a)') "ERROR:h5fortran:create(", dname, "): file mode is not writable: ", &
+    self%file_mode, " in file: ", self%filename
+  error stop
+endif
 
 
 call H5Tcopy_f(dtype, dtype_id, ier)
@@ -176,11 +186,23 @@ if(present(fill_value)) then
 endif
 
 !> create dataset
-call h5dcreate_f(self%file_id, dname, type_id=dtype_id, space_id=filespace_id, dset_id=dset_id, hdferr=ier, dcpl_id=dcpl)
-call estop(ier, "create:H5Dcreate", self%filename, dname)
+!! https://portal.hdfgroup.org/documentation/hdf5/latest/_l_b_dset_create.html
+!! https://support.hdfgroup.org/documentation/hdf5/latest/group___f_h5_d.html#ga5422721017b75f11b6b018a09fa24797
+call H5Dcreate_f(self%file_id, dname, type_id=dtype_id, space_id=filespace_id, dset_id=dset_id, hdferr=ier, dcpl_id=dcpl)
+if(ier /= 0) then
+  write(stderr,'(4a)') "ERROR:h5fortran:create: H5Dcreate(", dname, ") in file: ", self%filename
+  write(stderr,'(a,i0,a,i0,a,i0,a,i0)') "H5Dcreate error code: ", ier, " dtype_id: ", dtype_id, " space_id: ", &
+        filespace_id, " dset_id: ", dset_id
+  if (dcpl /= H5P_DEFAULT_F) write(stderr,'(a,i0)') "H5Dcreate dcpl_id: ", dcpl
+  if (dtype_id == H5T_NATIVE_CHARACTER) write(stderr,'(a,i0)') "H5Dcreate charlen: ", charlen
+
+
+  error stop
+
+endif
 
 !> free resources
-call h5pclose_f(dcpl, ier)
+call H5Pclose_f(dcpl, ier)
 call estop(ier, "create:H5Pclose", self%filename, dname)
 
 end procedure hdf_create

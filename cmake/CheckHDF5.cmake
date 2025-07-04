@@ -58,7 +58,7 @@ endif()
 
 message(CHECK_FAIL "failed")
 
-hdf5_run_err_diag(${_stderr})
+hdf5_run_err_diag("${_stderr}")
 
 endfunction(check_hdf5_c)
 
