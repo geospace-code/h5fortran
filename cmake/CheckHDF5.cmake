@@ -40,6 +40,9 @@ if(DEFINED hdf5_c_types_run)
 endif()
 
 set(CMAKE_REQUIRED_LIBRARIES HDF5::HDF5)
+if(HDF5_HAVE_PARALLEL)
+  list(APPEND CMAKE_REQUIRED_LIBRARIES MPI::MPI_C)
+endif()
 
 windows_oneapi_hdf5_workaround()
 
@@ -70,6 +73,9 @@ if(DEFINED hdf5_fortran_types_run)
 endif()
 
 set(CMAKE_REQUIRED_LIBRARIES HDF5::HDF5)
+if(HDF5_HAVE_PARALLEL)
+  list(APPEND CMAKE_REQUIRED_LIBRARIES MPI::MPI_Fortran)
+endif()
 
 windows_oneapi_hdf5_workaround()
 
@@ -88,7 +94,7 @@ endif()
 
 message(CHECK_FAIL "failed")
 
-hdf5_run_err_diag(${_stderr})
+hdf5_run_err_diag("${_stderr}")
 
 endfunction(check_hdf5_fortran)
 
