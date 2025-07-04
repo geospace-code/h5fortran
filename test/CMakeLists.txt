@@ -72,7 +72,7 @@ endfunction(setup_test)
 # --- setup unit tests
 
 set(test_names array attributes
-cast deflate_write deflate_read deflate_props destructor exist
+cast deflate_write deflate_read deflate_props destructor exist intent
 groups layout lt scalar shape string version write
 fail_read_size_mismatch fail_read_rank_mismatch fail_nonexist_variable)
 if(HAVE_IEEE_ARITH)

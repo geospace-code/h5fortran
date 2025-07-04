@@ -31,6 +31,10 @@ name = "cast"
 main = "test_cast.f90"
 
 [[test]]
+name = "intent"
+main = "test_intent.f90"
+
+[[test]]
 name = "write"
 main = "test_write.f90"
 
