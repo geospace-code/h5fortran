@@ -17,7 +17,7 @@ print '(a,i0)', "H5F_ACC_RDONLY_F = ", H5F_ACC_RDONLY_F
 print '(a,i0)', "H5F_ACC_TRUNC_F = ", H5F_ACC_TRUNC_F
 print '(a,i0)', "H5F_ACC_RDWR_F = ", H5F_ACC_RDWR_F
 
-if(H5F_ACC_RDONLY_F == H5F_ACC_TRUNC_F .or. H5F_ACC_RDONLY_F == H5F_ACC_RDWR_F) then
+if(any(H5F_ACC_RDONLY_F == [H5F_ACC_TRUNC_F, H5F_ACC_RDWR_F])) then
     error stop "H5F_ACC_RDONLY, H5F_ACC_TRUNC, H5F_ACC_RDWR are not all distinct"
 endif
 

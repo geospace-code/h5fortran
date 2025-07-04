@@ -17,8 +17,9 @@ private
 !> main type
 type :: hdf5_file
 
-character(:), allocatable :: filename
+character(:), allocatable :: filename, last_error
 integer(HID_T) :: file_id = 0  !< sentinel value to avoid uninitialized variable lint
+integer :: file_mode = -1
 
 logical :: debug = .false.
 logical :: fletcher32 = .false.
