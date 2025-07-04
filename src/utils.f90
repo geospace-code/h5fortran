@@ -207,7 +207,14 @@ if(Ngroup > 0 .or. Ndset > 0 .or. Ndtype > 0) error stop "ERROR:h5fortran:close:
 call H5Fclose_f(self%file_id, ierr)
 call estop(ierr, "h5close:H5Fclose: HDF5 file close", self%filename)
 
+!> reset defaults
 deallocate(self%filename)
+self%file_mode = -1
+self%comp_lvl = 0
+self%shuffle = .false.
+self%fletcher32 = .false.
+self%file_id = 0
+
 
 if (present(close_hdf5_interface)) then
   if (close_hdf5_interface) then
