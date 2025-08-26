@@ -1,13 +1,12 @@
 name: build
 
 env:
-  CMAKE_TLS_VERIFY: true
   HOMEBREW_NO_INSTALL_CLEANUP: 1
   CTEST_NO_TESTS_ACTION: error
   CTEST_PARALLEL_LEVEL: 0
-  CMAKE_BUILD_PARALLEL_LEVEL: 4
   CMAKE_INSTALL_PREFIX: ~/libs
   CMAKE_PREFIX_PATH: ~/libs
+  CMAKE_GENERATOR: Ninja
 
 
 on:
@@ -33,11 +32,11 @@ jobs:
     runs-on: ${{ matrix.os}}
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
 
-    - name: GCC 14 (macOS)
+    - name: GCC (macOS)
       if: runner.os == 'macOS'
-      run: echo "FC=gfortran-14" >> $GITHUB_ENV
+      run: echo "FC=gfortran-15" >> $GITHUB_ENV
 
     - name: Configure HDF5 library
       run: >-
