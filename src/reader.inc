@@ -25,7 +25,7 @@ call get_obj_class(self, dname, dset_id, dclass)
 
 !> casting is handled by HDF5 library internally
 !! select case doesn't allow H5T_*
-if(dclass == H5T_FLOAT_F .OR. dclass == H5T_INTEGER_F) then
+if(any(dclass == [H5T_FLOAT_F, H5T_INTEGER_F])) then
   select type(A)
   type is (real(real64))
     call h5dread_f(dset_id, H5T_NATIVE_DOUBLE, A, dims, ier, mem_space_id, file_space_id, xfer_id)

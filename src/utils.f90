@@ -8,7 +8,7 @@ H5Fopen_f, h5fcreate_f, h5fclose_f, h5fis_hdf5_f, h5fget_filesize_f, &
 h5fget_obj_count_f, h5fget_obj_ids_f, h5fget_name_f, &
 h5sselect_hyperslab_f, h5screate_simple_f, &
 H5Sget_simple_extent_ndims_f, H5Sget_simple_extent_dims_f, H5Sget_simple_extent_npoints_f, &
-H5F_ACC_RDONLY_F, H5F_ACC_RDWR_F, H5F_ACC_TRUNC_F, &
+H5F_ACC_RDONLY_F, H5F_ACC_RDWR_F, H5F_ACC_TRUNC_F, H5F_ACC_EXCL_F, &
 H5F_OBJ_FILE_F, H5F_OBJ_GROUP_F, H5F_OBJ_DATASET_F, H5F_OBJ_DATATYPE_F, H5F_OBJ_ALL_F, &
 H5D_CONTIGUOUS_F, H5D_CHUNKED_F, H5D_COMPACT_F, &
 H5I_FILE_F, &
@@ -35,25 +35,68 @@ end procedure id2name
 
 module procedure h5open
 
-character(2) :: laction
 integer :: ier
 integer(HID_T) :: fapl !< file access property list
-integer :: file_mode
 
-if(self%is_open()) then
-  write(stderr,*) 'h5fortran:open: file handle already open: '//self%filename
-  return
-endif
-
-laction = 'r'
-if (present(action)) laction = action
-
-self%filename = filename
+if(present(ok)) ok = .true.
 
 if(present(debug)) self%debug = debug
 
+self%filename = filename
+
+if(self%is_open()) then
+  write(stderr, '(a)') 'NOTICE:h5fortran:open: file handle already open: '//filename
+  return
+endif
+
+!> Initialize FORTRAN interface
+!! HDF5 1.14.0 introduced bug that if H5open_f is called more than once,
+!! it will error.
+if (.not. hdf5_is_initialized()) then
+  if(self%debug) print '(a)', 'TRACE:h5fortran:h5open: initializing HDF5 library'
+  call H5open_f(ier)
+  call estop(ier, 'h5open:H5open HDF5 library initialize', filename, ok=ok)
+  if (present(ok)) then
+    if (.not. ok) return
+  endif
+endif
+
+!! these enums will all be 0 if h5open_f isn't called first
+! print *, "TRACE: H5F_ACC_RDONLY_F = ", H5F_ACC_RDONLY_F
+! print *, "TRACE: H5F_ACC_RDWR_F = ", H5F_ACC_RDWR_F
+! print *, "TRACE: H5F_ACC_TRUNC_F = ", H5F_ACC_TRUNC_F
+
+if (present(action)) then
+  select case(action)
+    case('r')
+      self%file_mode = H5F_ACC_RDONLY_F
+    case('r+')
+      self%file_mode = H5F_ACC_RDWR_F
+    case('rw', 'a')
+      if(is_hdf5(filename)) then
+        self%file_mode = H5F_ACC_RDWR_F
+      else
+        self%file_mode = H5F_ACC_TRUNC_F
+      endif
+    case ('w')
+      self%file_mode = H5F_ACC_TRUNC_F
+    case default
+      call estop(ier, 'ERROR:h5fortran:open Unsupported action=' // action, filename, ok=ok)
+      if (present(ok)) then
+        if(.not. ok) return
+      endif
+  end select
+else
+  if (self%debug) print '(a)', 'TRACE:h5fortran:open: opening file: '//filename // &
+    ' read only as no file mode is specified'
+  self%file_mode = H5F_ACC_RDONLY_F
+endif
+!! don't try to reused old file_mode based on filename as it's not reliable on many compilers.
+
+
 !> compression parameter
-if(present(comp_lvl) .and. laction /= "r") self%comp_lvl = comp_lvl
+if(present(comp_lvl) .and. self%file_mode /= H5F_ACC_RDONLY_F) self%comp_lvl = comp_lvl
+
 if(self%comp_lvl > 0) then
   self%shuffle = .true.
   self%fletcher32 = .true.
@@ -70,59 +113,41 @@ elseif(self%comp_lvl > 9) then
   self%comp_lvl = 9
 endif
 
-!> Initialize FORTRAN interface
-!! HDF5 1.14.0 introduced bug that if H5open_f is called more than once,
-!! it will error.
-if (.not. hdf5_is_initialized()) then
-  if(self%debug) print '(a)', 'TRACE:h5fortran:h5open: initializing HDF5 library'
-  call H5open_f(ier)
-  call estop(ier, 'h5open:H5open HDF5 library initialize', filename)
-endif
-
 if(self%debug) then
   call H5Eset_auto_f(1, ier)
 else
   call H5Eset_auto_f(0, ier)
 endif
-call estop(ier, 'h5open:H5Eset_auto: HDF5 library set traceback', filename)
-
-select case(laction)
-case('r')
-  file_mode = H5F_ACC_RDONLY_F
-case('r+')
-  file_mode = H5F_ACC_RDWR_F
-case('rw', 'a')
-  if(is_hdf5(filename)) then
-    file_mode = H5F_ACC_RDWR_F
-  else
-    file_mode = H5F_ACC_TRUNC_F
-  endif
-case ('w')
-  file_mode = H5F_ACC_TRUNC_F
-case default
-  error stop 'ERROR:h5fortran:open Unsupported action ' // laction // ' for ' // filename
-end select
+call estop(ier, 'h5open:H5Eset_auto: HDF5 library set traceback', self%filename, ok=ok)
+if (present(ok)) then
+  if(.not. ok) return
+endif
 
 fapl = H5P_DEFAULT_F
 
-!! these enums will all be 0 if h5open_f isn't called first
-! print *, "TRACE: file_mode = ", file_mode, " filename = ", filename
-! print *, "TRACE: H5F_ACC_RDONLY_F = ", H5F_ACC_RDONLY_F
-! print *, "TRACE: H5F_ACC_RDWR_F = ", H5F_ACC_RDWR_F
-! print *, "TRACE: H5F_ACC_TRUNC_F = ", H5F_ACC_TRUNC_F
-
-
-if (file_mode == H5F_ACC_RDONLY_F .or. file_mode == H5F_ACC_RDWR_F) then
+if (any(self%file_mode == [H5F_ACC_RDONLY_F, H5F_ACC_RDWR_F])) then
   if(.not. is_hdf5(filename)) then
-    error stop "ERROR:h5fortran:open: action=" // laction // "  not an HDF5 file: " // filename
+    write(stderr, '(a,i0)') "ERROR:h5fortran:open: is not an HDF5 file: " // self%filename // " file mode ", self%file_mode
+    if (present(ok)) then
+      ok = .false.
+      return
+    else
+      error stop
+    endif
   endif
-  call H5Fopen_f(filename, file_mode, self%file_id, ier, access_prp=fapl)
-  call estop(ier, "h5open:H5Fopen", filename)
-elseif(file_mode == H5F_ACC_TRUNC_F) then
-  call H5Fcreate_f(filename, file_mode, self%file_id, ier, access_prp=fapl)
-  call estop(ier, "h5open:H5Fcreate", filename)
+  call H5Fopen_f(self%filename, self%file_mode, self%file_id, ier, access_prp=fapl)
+  call estop(ier, "h5open:H5Fopen", self%filename, ok=ok)
+  if (present(ok)) then
+    if(.not. ok) return
+  endif
+elseif(self%file_mode == H5F_ACC_TRUNC_F) then
+  call H5Fcreate_f(self%filename, self%file_mode, self%file_id, ier, access_prp=fapl)
+  call estop(ier, "h5open:H5Fcreate", self%filename, ok=ok)
+  if (present(ok)) then
+    if(.not. ok) return
+  endif
 else
-  error stop "ERROR:h5fortran:open: Unsupported file mode: " // filename
+  error stop "ERROR:h5fortran:open: Unsupported file mode: " // self%filename
 endif
 
 end procedure h5open
@@ -182,7 +207,14 @@ if(Ngroup > 0 .or. Ndset > 0 .or. Ndtype > 0) error stop "ERROR:h5fortran:close:
 call H5Fclose_f(self%file_id, ierr)
 call estop(ierr, "h5close:H5Fclose: HDF5 file close", self%filename)
 
+!> reset defaults
 deallocate(self%filename)
+self%file_mode = -1
+self%comp_lvl = 0
+self%shuffle = .false.
+self%fletcher32 = .false.
+self%file_id = 0
+
 
 if (present(close_hdf5_interface)) then
   if (close_hdf5_interface) then
@@ -408,7 +440,11 @@ if(present(attr_name)) buf = trim(buf) // trim(attr_name) // ":"
 write(bufi, "(i0)") ier
 buf = trim(buf) // trim(filename) // " code=" // trim(bufi)
 
-error stop trim(buf)
+if(present(ok)) then
+  ok = .false.
+else
+  error stop trim(buf)
+endif
 
 end procedure estop
 

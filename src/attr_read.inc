@@ -22,7 +22,7 @@ call get_obj_class(self, obj_name // ":" // attr_name, attr_id, attr_class)
 
 !> cast the dataset read from disk to the variable type presented by user h5f%read("/my_dataset", x, "y")
 !! select case doesn't allow H5T_*
-if(attr_class == H5T_FLOAT_F .OR. attr_class == H5T_INTEGER_F) then
+if(any(attr_class == [H5T_FLOAT_F, H5T_INTEGER_F])) then
   select type(A)
   type is (real(real64))
     call H5Aread_f(attr_id, H5T_NATIVE_DOUBLE, A, attr_dims, ier)

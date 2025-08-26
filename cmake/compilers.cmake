@@ -55,14 +55,14 @@ add_compile_options(
 endif()
 
 # --- code coverage
-if(h5fortran_COVERAGE)
+if(h5fortran_coverage)
   include(${CMAKE_CURRENT_LIST_DIR}/Modules/CodeCoverage.cmake)
   append_coverage_compiler_flags()
   set(COVERAGE_EXCLUDES ${PROJECT_SOURCE_DIR}/test)
 endif()
 
 # --- clang-tidy
-if(tidy AND h5fortran_IS_TOP_LEVEL)
+if(h5fortran_tidy AND h5fortran_IS_TOP_LEVEL)
   find_program(CLANG_TIDY_EXE NAMES "clang-tidy" REQUIRED)
   set(CMAKE_C_CLANG_TIDY ${CLANG_TIDY_EXE})
   set(CMAKE_CXX_CLANG_TIDY ${CLANG_TIDY_EXE})

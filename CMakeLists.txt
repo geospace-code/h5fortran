@@ -7,7 +7,7 @@ endif()
 
 project(h5fortran
 LANGUAGES C Fortran
-VERSION 4.11.0
+VERSION 4.11.1
 )
 
 include(CTest)
@@ -23,9 +23,11 @@ if(CMAKE_VERSION VERSION_LESS 3.25 AND CMAKE_SYSTEM_NAME STREQUAL "Linux")
 endif()
 
 # --- avoid Anaconda libraries
-find_package(Python COMPONENTS Interpreter)
+if(h5fortran_python)
+  find_package(Python COMPONENTS Interpreter)
+endif()
 
-if(DEFINED ENV{CONDA_PREFIX})
+if(DEFINED ENV{CONDA_PREFIX} AND h5fortran_IGNORE_CONDA_LIBRARIES)
   list(APPEND CMAKE_IGNORE_PREFIX_PATH $ENV{CONDA_PREFIX})
   list(APPEND CMAKE_IGNORE_PATH $ENV{CONDA_PREFIX}/bin)
   # need CMAKE_IGNORE_PATH for CMake < 3.23

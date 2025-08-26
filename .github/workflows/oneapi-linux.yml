@@ -6,21 +6,24 @@ env:
   FC: ifx
 # https://github.com/oneapi-src/oneapi-ci/blob/master/.github/workflows/build_all.yml
   CTEST_NO_TESTS_ACTION: error
-  CTEST_PARALLEL_LEVEL: 4
-  CMAKE_BUILD_PARALLEL_LEVEL: 4
   CMAKE_BUILD_TYPE: Release
+  CMAKE_GENERATOR: Ninja
+# don't need Ninja but it prints the command lines by default which is good for debugging
+
   # debug triggers asan build errors, peculiar to GitHub Actions
 
 on:
   push:
     paths:
       - "**.c"
+      - "**.h"
       - "**.cpp"
       - "**.f90"
       - "**.F90"
       - "**.cmake"
       - "**/CMakeLists.txt"
       - ".github/workflows/oneapi-linux.yml"
+      - ".github/workflows/oneapi*.sh"
       - "!memcheck.cmake"
       - "!coverage.cmake"
       - "!example/*"
@@ -38,12 +41,15 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
+    strategy:
+      matrix:
+        oneapi: [2025.1]
     steps:
     - uses: actions/checkout@v4
 
     - uses: actions/setup-python@v5
       with:
-        python-version: '3.12'
+        python-version: '3.13'
 
     - name: Python pkgs
       run: pip install numpy h5py
@@ -54,14 +60,14 @@ jobs:
       with:
         path: |
           /opt/intel/oneapi
-        key: install-apt
+        key: oneapi-${{ matrix.oneapi }}-apt
 
     - name: non-cache install oneAPI
       if: steps.cache-install.outputs.cache-hit != 'true'
       timeout-minutes: 5
       run: |
         .github/workflows/oneapi_setup_apt_repo_linux.sh
-        sudo apt install intel-oneapi-compiler-dpcpp-cpp intel-oneapi-compiler-fortran
+        sudo apt install --no-install-recommends intel-oneapi-compiler-dpcpp-cpp-${{ matrix.oneapi }} intel-oneapi-compiler-fortran-${{ matrix.oneapi }}
 
     - name: Setup Intel oneAPI environment
       run: |
@@ -72,11 +78,14 @@ jobs:
       run: >-
         cmake --preset default --install-prefix ${{ runner.temp }}
 
-    - name: print config log
-      if: ${{ failure() }}
-      run: cat build/CMakeFiles/CMakeConfigureLog.yaml
+    - name: Upload log failure
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: oneapi-${{ matrix.oneapi }}-${{ runner.os }}-CMakeConfigureLog.yaml
+        path: build/CMakeFiles/CMakeConfigureLog.yaml
 
-    - name: Release workflow
+    - name: Configure, build, test CMake workflow
       run: cmake --workflow default
 
     - name: install package

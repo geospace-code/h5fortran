@@ -15,6 +15,20 @@ set(attr_file ${CMAKE_CURRENT_BINARY_DIR}/test_attr_py.h5)
 set(shape_file ${CMAKE_CURRENT_BINARY_DIR}/test_shape.h5)
 set(string_file ${CMAKE_CURRENT_BINARY_DIR}/test_string_py.h5)
 
+# --- Python h5py
+if(NOT DEFINED h5py_ok AND Python_INTERPRETER_FOUND AND h5fortran_python)
+  execute_process(COMMAND ${Python_EXECUTABLE} -c "import h5py"
+  RESULT_VARIABLE ret
+  ERROR_VARIABLE err
+  )
+  message(VERBOSE "${ret} ${err}")
+  if(ret EQUAL 0)
+    set(h5py_ok true CACHE BOOL "h5py OK")
+  else()
+    set(h5py_ok false CACHE BOOL "h5py not OK")
+  endif()
+endif()
+
 # --- fundamental HDF5 library check
 
 add_executable(test_minimal test_minimal.f90)
@@ -57,12 +71,15 @@ endfunction(setup_test)
 
 # --- setup unit tests
 
-set(test_names array attributes attributes_read
+set(test_names array attributes
 cast deflate_write deflate_read deflate_props destructor exist
-groups layout lt scalar shape string string_read version write
+groups layout lt scalar shape string version write
 fail_read_size_mismatch fail_read_rank_mismatch fail_nonexist_variable iterate visit)
 if(HAVE_IEEE_ARITH)
   list(APPEND test_names fill)
+endif()
+if(h5py_ok)
+  list(APPEND test_names attributes_read string_read)
 endif()
 
 setup_test("${test_names}")
@@ -85,7 +102,7 @@ REQUIRED_FILES ${CMAKE_CURRENT_BINARY_DIR}/deflate1.h5
 LABELS deflate
 )
 
-if(h5fortran_COVERAGE)
+if(h5fortran_coverage)
 setup_target_for_coverage_gcovr_html(
 NAME coverage
 EXECUTABLE ${CMAKE_CTEST_COMMAND}
@@ -99,27 +116,15 @@ if(WIN32 AND CMAKE_VERSION VERSION_GREATER_EQUAL 3.22)
   )
 endif()
 
-# --- Python h5py
-if(NOT DEFINED h5py_ok)
-  execute_process(COMMAND ${Python_EXECUTABLE} -c "import h5py"
-  RESULT_VARIABLE ret
-  ERROR_VARIABLE err
-  )
-  message(VERBOSE "${ret} ${err}")
-  if(ret EQUAL 0)
-    set(h5py_ok true CACHE BOOL "h5py OK")
-  else()
-    set(h5py_ok false CACHE BOOL "h5py not OK")
-  endif()
-endif()
+# --- attributes
+
+if(h5py_ok)
 
 set_property(TEST string_read PROPERTY FIXTURES_REQUIRED h5str)
 set_property(TEST string_read PROPERTY REQUIRED_FILES ${string_file})
 
-# --- attributes
-
 add_test(NAME PythonAttributes
-COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/generate_attributes.py ${attr_file}
+COMMAND Python::Interpreter ${CMAKE_CURRENT_SOURCE_DIR}/generate_attributes.py ${attr_file}
 )
 
 set_property(TEST PythonAttributes PROPERTY FIXTURES_SETUP h5attr)
@@ -130,7 +135,7 @@ set_property(TEST attributes_read PROPERTY REQUIRED_FILES ${attr_file})
 # --- shape
 
 add_test(NAME PythonShape
-COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/check_shape.py ${shape_file}
+COMMAND Python::Interpreter ${CMAKE_CURRENT_SOURCE_DIR}/check_shape.py ${shape_file}
 )
 
 set_property(TEST PythonShape PROPERTY REQUIRED_FILES ${shape_file})
@@ -138,18 +143,18 @@ set_property(TEST PythonShape PROPERTY FIXTURES_REQUIRED h5shape)
 
 # --- String
 add_test(NAME PythonString
-COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/generate_string_data.py ${string_file}
+COMMAND Python::Interpreter ${CMAKE_CURRENT_SOURCE_DIR}/generate_string_data.py ${string_file}
 )
 
 set_property(TEST PythonString PROPERTY FIXTURES_SETUP h5str)
 
-set_property(TEST string_read PythonAttributes PythonShape PythonString attributes_read PROPERTY DISABLED $<NOT:$<BOOL:${h5py_ok}>>)
-
 set_property(TEST PythonAttributes PythonShape PythonString PROPERTY LABELS python)
+
+endif()
 
 # --- Matlab HDF5
 
-if(matlab)
+if(h5fortran_matlab)
 find_package(Matlab COMPONENTS MAIN_PROGRAM REQUIRED)
 
 set(matlab_cmd "i=h5info('${shape_file}', '/d7').Dataspace.Size; assert(all(i == [2, 1, 3, 4, 7, 6, 5]))")
@@ -163,7 +168,7 @@ REQUIRED_FILES ${shape_file}
 FIXTURES_REQUIRED h5shape
 )
 
-endif(matlab)
+endif()
 
 # --- h5ls
 

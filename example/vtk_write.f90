@@ -26,7 +26,7 @@ type(hdf5_file) :: h
 real, allocatable :: Iterations(:,:,:), IterationsGradient(:,:,:,:)
 
 call get_command_argument(1, filename, status=ierr)
-if(ierr /= 0) error stop "please give filename to write"
+if(ierr /= 0) filename = "vtk_hdf_example.h5"
 
 call h % open(filename, 'w')
 

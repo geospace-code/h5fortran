@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.22...3.27)
+cmake_minimum_required(VERSION 3.22...4.1)
 
 project(h5fortranExample
 LANGUAGES C CXX Fortran)
@@ -11,21 +11,13 @@ find_package(h5fortran CONFIG REQUIRED)
 add_library(fortran_interface fortran_interface.f90)
 target_link_libraries(fortran_interface PRIVATE h5fortran::h5fortran)
 
-add_executable(ex_fcn ex_fcn.f90)
-target_link_libraries(ex_fcn PRIVATE h5fortran::h5fortran)
-add_test(NAME Fortran_fcn COMMAND ex_fcn)
+foreach(t IN ITEMS ex_fcn ex_oo ex_oo3d char_repeat_read vtk_write)
 
-add_executable(ex_oo ex_oo.f90)
-target_link_libraries(ex_oo PRIVATE h5fortran::h5fortran)
-add_test(NAME Fortran_oo COMMAND ex_oo)
+add_executable(${t} ${t}.f90)
+target_link_libraries(${t} PRIVATE h5fortran::h5fortran)
+add_test(NAME Fortran_${t} COMMAND ${t})
 
-add_executable(repeat_char_read char_repeat_read.f90)
-target_link_libraries(repeat_char_read PRIVATE h5fortran::h5fortran)
-
-## VTK HDF5 write example
-add_executable(vtk_write vtk_write.f90)
-target_link_libraries(vtk_write PRIVATE h5fortran::h5fortran)
-add_test(NAME VTK COMMAND vtk_write ${CMAKE_CURRENT_BINARY_DIR}/vtk.hdf)
+endforeach()
 
 ## C, C++ examples
 
@@ -45,11 +37,15 @@ add_test(NAME CPP_fcn COMMAND cpp_fcn)
 get_property(test_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY TESTS)
 set_property(TEST ${test_names} PROPERTY WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
+if(NOT DEFINED LINUX AND CMAKE_SYSTEM_NAME STREQUAL "Linux")
+  set(LINUX true)
+endif()
+
 if(WIN32)
 set_property(TEST ${test_names} PROPERTY
   ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:${ZLIB_INCLUDE_DIRS}/../bin;PATH=path_list_prepend:${h5fortran_DIR}/../bin"
   )
-elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+elseif(LINUX)
 set_property(TEST ${test_names} PROPERTY
   ENVIRONMENT_MODIFICATION "LD_LIBRARY_PATH=path_list_prepend:${ZLIB_INCLUDE_DIRS}/../lib;LD_LIBRARY_PATH=path_list_prepend:${h5fortran_DIR}/../lib"
   )
