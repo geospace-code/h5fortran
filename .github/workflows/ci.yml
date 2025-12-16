@@ -56,7 +56,7 @@ jobs:
 
     steps:
     - &checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
 
     - name: GCC (Linux)
       if: runner.os == 'Linux'
@@ -83,6 +83,13 @@ jobs:
 
     steps:
     - *checkout
+
+    - name: GCC APT
+      if: matrix.gcc < 11
+      run: |
+        sudo apt update -y
+        sudo apt install -y --no-install-recommends gcc-${{ matrix.gcc }} g++-${{ matrix.gcc }} gfortran-${{ matrix.gcc }}
+
     - *pkg
     - *unix
 
@@ -93,7 +100,7 @@ jobs:
 
     strategy:
       matrix:
-        llvm-version: [20]
+        llvm-version: [21]
 
     env:
       CC: clang-${{ matrix.llvm-version }}
@@ -145,7 +152,7 @@ jobs:
 
     steps:
     - *checkout
-    - uses: actions/setup-python@v5
+    - uses: actions/setup-python@v6
       with:
         python-version: '3.x'
 
@@ -163,7 +170,7 @@ jobs:
     - name: Code coverage
       run: cmake --build --parallel --preset run-coverage
 
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v6
       with:
         name: coverage-report-html
         path: build-coverage/coverage/

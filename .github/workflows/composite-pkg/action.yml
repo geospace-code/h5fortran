@@ -6,9 +6,9 @@ runs:
 
   steps:
 
-  - uses: actions/setup-python@v5
+  - uses: actions/setup-python@v6
     with:
-      python-version: '3.13'
+      python-version: '3.14'
 
   - name: Python pkgs
     shell: bash

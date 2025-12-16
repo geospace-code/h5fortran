@@ -41,33 +41,30 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
-    strategy:
-      matrix:
-        oneapi: [2025.2]
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
 
-    - uses: actions/setup-python@v5
+    - uses: actions/setup-python@v6
       with:
-        python-version: '3.13'
+        python-version: '3.14'
 
     - name: Python pkgs
       run: pip install numpy h5py
 
     - name: cache install oneAPI
       id: cache-install
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: |
           /opt/intel/oneapi
-        key: oneapi-${{ matrix.oneapi }}-apt
+        key: oneapi-apt
 
     - name: non-cache install oneAPI
       if: steps.cache-install.outputs.cache-hit != 'true'
       timeout-minutes: 5
       run: |
         .github/workflows/oneapi_setup_apt_repo_linux.sh
-        sudo apt install --no-install-recommends intel-oneapi-compiler-dpcpp-cpp-${{ matrix.oneapi }} intel-oneapi-compiler-fortran-${{ matrix.oneapi }}
+        sudo apt install --no-install-recommends intel-oneapi-compiler-dpcpp-cpp intel-oneapi-compiler-fortran
 
     - name: Setup Intel oneAPI environment
       run: |
@@ -80,9 +77,9 @@ jobs:
 
     - name: Upload log failure
       if: failure()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
-        name: oneapi-${{ matrix.oneapi }}-${{ runner.os }}-CMakeConfigureLog.yaml
+        name: oneapi-${{ runner.os }}-CMakeConfigureLog.yaml
         path: build/CMakeFiles/CMakeConfigureLog.yaml
 
     - name: Configure, build, test CMake workflow
