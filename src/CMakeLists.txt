@@ -9,4 +9,6 @@ ${s}/interface.f90
 ${s}/attr.f90
 ${s}/attr_read.f90
 ${s}/attr_write.f90
+${s}/iterate.f90
+${s}/visit.f90
 )
