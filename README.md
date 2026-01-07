@@ -73,10 +73,6 @@ Compilers not currently working:
 * NVidia HPC SDK 24.9: missing "rank()" intrinsic
 * AOCC missing "rank()" intrinsic and trouble with "select type()" in submodule
 
----
-
-We welcome [contributions](https://github.com/geospace-code/.github/blob/main/CONTRIBUTING.md).
-
 ## Build
 
 h5fortran can be built with CMake or [fpm](https://fpm.fortran-lang.org/).

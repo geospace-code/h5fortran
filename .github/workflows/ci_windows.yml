@@ -3,7 +3,7 @@ name: ci_windows
 env:
   CTEST_NO_TESTS_ACTION: error
   CTEST_PARALLEL_LEVEL: 0
-  CMAKE_BUILD_PARALLEL_LEVEL: 4
+  CMAKE_GENERATOR: Ninja
 
 on:
   push:
@@ -47,10 +47,10 @@ jobs:
     - name: Put MSYS2_MinGW64 on PATH
       run: echo "${{ steps.msys2.outputs.msys2-location }}/ucrt64/bin/" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
     - name: config
-      run: cmake --preset default -G "MinGW Makefiles"
+      run: cmake --preset default
       env:
         HDF5_ROOT: ${{ steps.msys2.outputs.msys2-location }}/ucrt64/
 
@@ -68,7 +68,7 @@ jobs:
       run: cmake --install build
 
     - name: example workflow
-      run: cmake -S example -B example/build -G "MinGW Makefiles"
+      run: cmake -S example -B example/build -G Ninja
       env:
         HDF5_ROOT: ${{ steps.msys2.outputs.msys2-location }}/ucrt64/
 

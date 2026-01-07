@@ -6,6 +6,7 @@ env:
   CTEST_PARALLEL_LEVEL: 0
   CMAKE_INSTALL_PREFIX: ~/libs
   CMAKE_PREFIX_PATH: ~/libs
+  CMAKE_GENERATOR: Ninja
 
 on:
   push:
@@ -43,10 +44,10 @@ jobs:
           gcc: 14
         - os: macos-latest
           shared: true
-          gcc: 14
+          gcc: 15
         - os: macos-latest
           shared: false
-          gcc: 14
+          gcc: 15
 
     runs-on: ${{ matrix.os }}
 
@@ -54,14 +55,17 @@ jobs:
       FC: gfortran-${{ matrix.gcc }}
 
     steps:
-    - uses: actions/checkout@v4
+    - &checkout
+      uses: actions/checkout@v6
 
     - name: GCC (Linux)
       if: runner.os == 'Linux'
       run: echo "CC=gcc-${{ matrix.gcc }}" >> $GITHUB_ENV
 
-    - uses: ./.github/workflows/composite-pkg
-    - uses: ./.github/workflows/composite-unix
+    - &pkg
+      uses: ./.github/workflows/composite-pkg
+    - &unix
+      uses: ./.github/workflows/composite-unix
 
 
   gcc-old:
@@ -78,9 +82,16 @@ jobs:
       FC: gfortran-${{ matrix.gcc }}
 
     steps:
-    - uses: actions/checkout@v4
-    - uses: ./.github/workflows/composite-pkg
-    - uses: ./.github/workflows/composite-unix
+    - *checkout
+
+    - name: GCC APT
+      if: matrix.gcc < 11
+      run: |
+        sudo apt update -y
+        sudo apt install -y --no-install-recommends gcc-${{ matrix.gcc }} g++-${{ matrix.gcc }} gfortran-${{ matrix.gcc }}
+
+    - *pkg
+    - *unix
 
 
   linux-flang:
@@ -89,7 +100,7 @@ jobs:
 
     strategy:
       matrix:
-        llvm-version: [20]
+        llvm-version: [21]
 
     env:
       CC: clang-${{ matrix.llvm-version }}
@@ -107,7 +118,7 @@ jobs:
     - name: install Flang
       run: sudo apt install --no-install-recommends clang-${{ matrix.llvm-version }} flang-${{ matrix.llvm-version }}
 
-    - uses: actions/checkout@v4
+    - *checkout
 
     - name: CMake build & test
       run: cmake --workflow nofind
@@ -127,7 +138,7 @@ jobs:
         sudo apt update
         sudo apt install --no-install-recommends valgrind libhdf5-dev
 
-    - uses: actions/checkout@v4
+    - *checkout
 
     - run: ctest -Dexclude_label="deflate|python" -S memcheck.cmake -VV
 
@@ -140,8 +151,8 @@ jobs:
     timeout-minutes: 10
 
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-python@v5
+    - *checkout
+    - uses: actions/setup-python@v6
       with:
         python-version: '3.x'
 
@@ -159,7 +170,7 @@ jobs:
     - name: Code coverage
       run: cmake --build --parallel --preset run-coverage
 
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v6
       with:
         name: coverage-report-html
         path: build-coverage/coverage/
@@ -176,7 +187,7 @@ jobs:
 
     steps:
 
-    - uses: actions/checkout@v4
+    - *checkout
 
     - name: prereqs
       run: |
