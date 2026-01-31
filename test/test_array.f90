@@ -29,6 +29,7 @@ type(hdf5_file) :: h
 integer(HSIZE_T), allocatable :: dims(:)
 
 integer(int32), dimension(4) :: i1, i1t
+integer(int32), dimension(8) :: i1_8
 integer(int32), dimension(4,4) :: i2, i2t
 real(real32), allocatable :: rr2(:,:)
 real(real32)  ::  r1(4), r2(4,4), B(6,6)
@@ -39,11 +40,16 @@ do i = 1,size(i1)
   i1(i) = i
 enddo
 
+do i = 1,size(i1_8)
+  i1_8(i) = i
+enddo
+
 i2(1,:) = i1
 do i = 1,size(i2,2)
   i2(i,:) = i2(1,:) * i
 enddo
 
+i2_8 = -9
 i2_8(3:6, 4:7) = i2
 
 r1 = i1
@@ -52,6 +58,7 @@ r2 = i2
 call h%open(filename, action='w', comp_lvl=1)
 
 call h%write('/int32-1d', i1)
+call h%write('/int32-1d-8', i1_8)
 call h % write('/i32-1d', [1,2,3], istart=[1], iend=[3])
 call h % write('/i32-1d', [4], istart=[2], iend=[2])
 
@@ -60,6 +67,8 @@ call h%write('/real32-2d', r2)
 !> write from subarray
 call h%write('/sub-int32-2d', i2_8(3:6, 4:7))
 print '(4i3)', i2_8(3:6, 4:7)
+
+call h%write('/test/group2/int32-2d-8', i2_8)
 
 call h % write('/endstart', i2t)
 call h % write('/endstart', reshape([5], [1, 1]), istart=[3,2], iend=[3,2])
@@ -119,10 +128,16 @@ character(*), intent(in) :: filename
 type(hdf5_file) :: h
 integer :: i
 integer(int32), dimension(4) :: i1, i1t
+integer(int32), dimension(8) :: i1_8, i1_8t
 integer(int32), dimension(4,4) :: i2, i2t
+integer(int32) :: i2_8(8,8), i2_8t(8,8)
 
 do i = 1,size(i1)
   i1(i) = i
+enddo
+
+do i = 1,size(i1_8)
+  i1_8(i) = i
 enddo
 
 i2(1,:) = i1
@@ -130,12 +145,36 @@ do i = 1,size(i2,2)
   i2(i,:) = i2(1,:) * i
 enddo
 
+i2_8 = -9
+i2_8(3:6, 4:7) = i2
+
 call h%open(filename, action='r')
 
 i1t = 0
 call h%read('/int32-1d', i1t(:2), istart=[2], iend=[3], stride=[1])
 if (any(i1t(:2) /= [2,3])) then
   write(stderr, *) 'read 1D slice does not match. expected [2,3] but got ',i1t(:2)
+  error stop
+endif
+
+i1_8t = 0
+call h%read('/int32-1d-8', i1_8t(1:2), istart=[2], iend=[4], stride=[2])
+if (any(i1_8t(1:2) /= [2,4])) then
+  write(stderr, *) 'read 1D slice does not match. expected [2,4] but got ',i1_8t(:2)
+  error stop
+endif
+
+i1_8t = 0
+call h%read('/int32-1d-8', i1_8t(1:3), istart=[1], iend=[8], stride=[3])
+if (any(i1_8t(1:3) /= [1,4,7])) then
+  write(stderr, *) 'read 1D slice does not match. expected [1,4,7] but got ',i1_8t(1:3)
+  error stop
+endif
+
+i1_8t = 0
+call h%read('/int32-1d-8', i1_8t(2:8:3), istart=[2], iend=[8], stride=[3])
+if (any(i1_8t(2:8:3) /= [2,5,8])) then
+  write(stderr, *) 'read 1D slice does not match. expected [2,5,8] but got ',i1_8t(2:8:3)
   error stop
 endif
 
@@ -150,6 +189,34 @@ i2t = 0
 call h%read('/test/group2/int32-2d', i2t(:2,:3), istart=[2,1], iend=[3,3], stride=[1,1])
 if (any(i2t(:2,:3) /= i2(2:3,1:3))) then
   write(stderr, *) 'read 2D slice does not match. expected:',i2(2:3,1:3),' but got ',i2t(:2,:3)
+  error stop
+endif
+
+i2t = 0
+call h%read('/test/group2/int32-2d', i2t(:2,:2), istart=[1,1], iend=[4,4], stride=[2,3])
+if (any(i2t(:2,:2) /= i2(1:4:2,1:4:3))) then
+  write(stderr, *) 'read 2D slice does not match. expected:',i2(1:4:2,1:4:3),' but got ',i2t(:2,:2)
+  error stop
+endif
+
+i2t = 0
+call h%read('/test/group2/int32-2d', i2t(:1,:2), istart=[2,1], iend=[3,4], stride=[2,3])
+if (any(i2t(:1,:2) /= i2(2:3:2,1:4:3))) then
+  write(stderr, *) 'read 2D slice does not match. expected:',i2(2:3:2,1:4:3),' but got ',i2t(:1,:2)
+  error stop
+endif
+
+i2_8t = 0
+call h%read('/test/group2/int32-2d-8', i2_8t(1:4,1:3), istart=[1,1], iend=[7,8], stride=[2,3])
+if (any(i2_8t(1:4,1:3) /= i2_8(1:7:2,1:8:3))) then
+  write(stderr, *) 'read 2D slice does not match. expected:',i2_8(1:7:2,1:8:3),' but got ',i2_8t(1:4,1:3)
+  error stop
+endif
+
+i2_8t = 0
+call h%read('/test/group2/int32-2d-8', i2_8t(2:8:2,1:8:3), istart=[2,1], iend=[8,8], stride=[2,3])
+if (any(i2_8t(2:8:2,1:8:3) /= i2_8(2:8:2,1:8:3))) then
+  write(stderr, *) 'read 2D slice does not match. expected:',i2_8(2:8:2,1:8:3),' but got ',i2_8t(2:8:2,1:8:3)
   error stop
 endif
 

@@ -336,6 +336,8 @@ if(present(stride)) istride = int(stride, HSIZE_T)
 i0 = istart - 1
 c_mem_dims = iend - i0
 
+if (any(istride > 1)) c_mem_dims = merge(c_mem_dims/istride, c_mem_dims/istride + 1, mod(c_mem_dims, istride)==0)
+
 if(size(mem_dims) == 0) then
   !! rank(dims(0)) == 1, but size(dims(0)) == 0
   if (sum(c_mem_dims) /= 1) error stop "ERROR:h5fortran:hdf_get_slice: scalar index of array failed " // dset_name
