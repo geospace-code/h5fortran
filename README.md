@@ -98,6 +98,12 @@ To enable optimization, set:
 cmake -Bbuild -DCMAKE_BUILD_TYPE=Release
 ```
 
+To not try to find HDF5, instead building HDF5 from source, set:
+
+```sh
+cmake -B build -Dh5fortran_find=false
+```
+
 For more details see [Install.md](./Install.md).
 
 For general use with non-CMake build systems, "h5fortran.pc" pkg-config file is also generated / installed.

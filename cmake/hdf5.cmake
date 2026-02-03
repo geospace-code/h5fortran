@@ -3,6 +3,7 @@
 # across Intel Fortran on Windows (MSVC-like) vs. Gfortran on Windows vs. Linux.
 include(GNUInstallDirs)
 include(ExternalProject)
+include(FetchContent)
 
 if(NOT DEFINED hdf5_key)
   if(LINUX)
@@ -87,15 +88,31 @@ if(NOT hdf5_url)
   string(JSON hdf5_url GET ${json} ${hdf5_key})
 endif()
 
-# Get HDF5 version from underscore-separated version in URL
+function(hdf5_get_version _out)
 
-if(hdf5_url MATCHES "hdf5_([0-9]+\.[0-9]+\.[0-9]+)\.")
-  set(HDF5_VERSION "${CMAKE_MATCH_1}")
-elseif(hdf5_url MATCHES "hdf5-([0-9]+\_[0-9]+\_[0-9]+)")
-  string(REPLACE "_" "." HDF5_VERSION "${CMAKE_MATCH_1}")
-else()
-  message(FATAL_ERROR "Could not determine HDF5 version from URL: ${hdf5_url}")
-endif()
+set(FETCHCONTENT_UPDATES_DISCONNECTED true)
+set(FETCHCONTENT_QUIET false)
+
+# to know what version of HDF5 we are building, extract from archive, not URL
+FetchContent_Populate(hdf5_version_archive URL ${hdf5_url})
+message(TRACE "HDF5: extracting version from archive ${hdf5_version_archive_SOURCE_DIR}")
+
+# taken from HDF5 2.0 CMakeLists.txt
+file (READ ${hdf5_version_archive_SOURCE_DIR}/src/H5public.h _h5public_h_contents)
+string (REGEX REPLACE ".*#define[ \t]+H5_VERS_MAJOR[ \t]+([0-9]*).*$"
+    "\\1" H5_VERS_MAJOR ${_h5public_h_contents})
+string (REGEX REPLACE ".*#define[ \t]+H5_VERS_MINOR[ \t]+([0-9]*).*$"
+    "\\1" H5_VERS_MINOR ${_h5public_h_contents})
+string (REGEX REPLACE ".*#define[ \t]+H5_VERS_RELEASE[ \t]+([0-9]*).*$"
+    "\\1" H5_VERS_RELEASE ${_h5public_h_contents})
+string (REGEX REPLACE ".*#define[ \t]+H5_VERS_SUBRELEASE[ \t]+\"([0-9A-Za-z._-]*)\".*$"
+    "\\1" H5_VERS_SUBRELEASE ${_h5public_h_contents})
+set(HDF5_VERSION "${H5_VERS_MAJOR}.${H5_VERS_MINOR}.${H5_VERS_RELEASE}")
+
+set(${_out} ${HDF5_VERSION} PARENT_SCOPE)
+endfunction()
+
+hdf5_get_version(HDF5_VERSION)
 
 message(STATUS "Building HDF5 version ${HDF5_VERSION}")
 
