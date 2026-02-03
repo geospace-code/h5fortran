@@ -13,7 +13,7 @@ option(h5fortran_python "check HDF5 file writes with Python")
 option(h5fortran_IGNORE_CONDA_LIBRARIES "If ON, CMake will not search for the
 hdf5 libraries in a Conda environment." ON)
 
-option(h5fortran_BUILD_TESTING "build tests")
+option(h5fortran_BUILD_TESTING "build tests" ${h5fortran_IS_TOP_LEVEL})
 
 set_property(DIRECTORY PROPERTY EP_UPDATE_DISCONNECTED true)
 
