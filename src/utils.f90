@@ -332,9 +332,11 @@ endif
 istride = 1
 if(present(stride)) istride = int(stride, HSIZE_T)
 
-!! NOTE: 0-based hyperslab vs. 1-based Fortran
+!! NOTE: indices of 0-based hyperslab vs. 1-based Fortran indices
 i0 = istart - 1
 c_mem_dims = iend - i0
+
+if (any(istride > 1)) c_mem_dims = merge(c_mem_dims/istride, c_mem_dims/istride + 1, mod(c_mem_dims, istride)==0)
 
 if(size(mem_dims) == 0) then
   !! rank(dims(0)) == 1, but size(dims(0)) == 0

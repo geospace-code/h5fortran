@@ -10,7 +10,7 @@ call test_basic_array('test_array.h5')
 print *, 'PASSED: array write'
 
 call test_read_slice('test_array.h5')
-print *, 'PASSED: slice read'
+print *, 'PASSED: slice read with or without stride'
 
 call test_write_slice('test_array.h5')
 print *, 'PASSED: slice write'
