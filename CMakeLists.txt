@@ -40,7 +40,7 @@ include(cmake/compilers.cmake)
 include(cmake/CheckHDF5.cmake)
 
 if(NOT TARGET HDF5::HDF5 AND (h5fortran_find OR CRAY))
-  find_package(HDF5 COMPONENTS Fortran)
+  find_package(HDF5 COMPONENTS HL Fortran)
 endif()
 
 if(h5fortran_IS_TOP_LEVEL AND HDF5_FOUND)
