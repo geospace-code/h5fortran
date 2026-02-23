@@ -8,8 +8,10 @@ include(FetchContent)
 if(NOT DEFINED hdf5_req)
   if(LINUX)
     set(hdf5_req 1.10)
-  else()
+  elseif(CMAKE_VERSION VERSION_GREATER_EQUAL 3.26)
     set(hdf5_req 2.0)
+  else()
+    set(hdf5_req 1.14)
   endif()
 endif()
 
@@ -67,6 +69,7 @@ endif()
 
 set(hdf5_cmake_args
 -DHDF5_ENABLE_Z_LIB_SUPPORT:BOOL=ON
+-DHDF5_ENABLE_ZLIB_SUPPORT:BOOL=ON
 -DZLIB_USE_EXTERNAL:BOOL=OFF
 -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
 -DCMAKE_MODULE_PATH:PATH=${CMAKE_MODULE_PATH}
@@ -92,7 +95,8 @@ set(hdf5_cmake_args
 # -DHDF5_ENABLE_NONSTANDARD_FEATURE_FLOAT16:BOOL=OFF avoids error with GCC or Clang
 #  src/H5Tconv_integer.c:1746:75: error: 'FLT16_MAX' undeclared (first use in this function); did you mean 'INT16_MAX'?
 #
-#-DHDF5_USE_GNU_DIRS:BOOL=ON  # new for 1.14
+# -DHDF5_USE_GNU_DIRS:BOOL=ON  # new for 1.14
+# -DHDF5_ENABLE_ZLIB_SUPPORT:BOOL=ON switched from -DHDF5_ENABLE_Z_LIB_SUPPORT:BOOL=ON for HDF5 2.0
 
 if(MPI_ROOT)
   list(APPEND hdf5_cmake_args -DMPI_ROOT:PATH=${MPI_ROOT})
