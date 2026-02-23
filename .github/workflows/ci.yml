@@ -30,6 +30,41 @@ concurrency:
 
 jobs:
 
+  build-unix:
+    timeout-minutes: 15
+
+    strategy:
+      matrix:
+        os: [ubuntu-24.04, macos-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - &checkout
+      uses: actions/checkout@v6
+
+    - name: GCC (Linux)
+      if: runner.os == 'macos'
+      run: |
+        echo "CC=gcc-15" >> $GITHUB_ENV
+        echo "FC=gfortran-15" >> $GITHUB_ENV
+
+    - name: Configure
+      run: cmake --workflow default
+
+    - name: install package
+      run: cmake --install build
+
+    - name: example workflow
+      run: cmake -S example -B example/build
+
+    - name: Build examples
+      run: cmake --build example/build
+
+    - name: Test examples
+      run: ctest --test-dir example/build -V
+
+
   gcc-new:
     timeout-minutes: 15
 
@@ -64,6 +99,7 @@ jobs:
 
     - &pkg
       uses: ./.github/workflows/composite-pkg
+
     - &unix
       uses: ./.github/workflows/composite-unix
 
