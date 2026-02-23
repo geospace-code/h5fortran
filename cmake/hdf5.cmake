@@ -83,9 +83,14 @@ set(hdf5_cmake_args
 -DHDF5_BUILD_TOOLS:BOOL=true
 -DHDF5_ENABLE_PARALLEL:BOOL=$<BOOL:${hdf5_parallel}>
 -DHDF5_BUILD_PARALLEL_TOOLS:BOOL=$<BOOL:${hdf5_parallel}>
+-DHDF5_ENABLE_NONSTANDARD_FEATURE_FLOAT16:BOOL=OFF
+-DHDF5_USE_GNU_DIRS:BOOL=ON
 )
 
-#-DHDF5_USE_GNU_DIRS:BOOL=ON  # not yet, new for 1.14
+# -DHDF5_ENABLE_NONSTANDARD_FEATURE_FLOAT16:BOOL=OFF avoids error with GCC or Clang
+#  src/H5Tconv_integer.c:1746:75: error: 'FLT16_MAX' undeclared (first use in this function); did you mean 'INT16_MAX'?
+#
+#-DHDF5_USE_GNU_DIRS:BOOL=ON  # new for 1.14
 
 if(MPI_ROOT)
   list(APPEND hdf5_cmake_args -DMPI_ROOT:PATH=${MPI_ROOT})
@@ -95,17 +100,10 @@ if(NOT hdf5_url)
   string(JSON hdf5_url GET ${json} ${hdf5_key})
 endif()
 
-function(hdf5_get_version _out)
+FetchContent_Populate(hdf5_upstream URL ${hdf5_url})
 
-set(FETCHCONTENT_UPDATES_DISCONNECTED true)
-set(FETCHCONTENT_QUIET false)
-
-# to know what version of HDF5 we are building, extract from archive, not URL
-FetchContent_Populate(hdf5_version_archive URL ${hdf5_url})
-message(TRACE "HDF5: extracting version from archive ${hdf5_version_archive_SOURCE_DIR}")
-
-# taken from HDF5 2.0 CMakeLists.txt
-file (READ ${hdf5_version_archive_SOURCE_DIR}/src/H5public.h _h5public_h_contents)
+# version extraction from HDF5 2.0 CMakeLists.txt
+file (READ ${hdf5_upstream_SOURCE_DIR}/src/H5public.h _h5public_h_contents)
 string (REGEX REPLACE ".*#define[ \t]+H5_VERS_MAJOR[ \t]+([0-9]*).*$"
     "\\1" H5_VERS_MAJOR ${_h5public_h_contents})
 string (REGEX REPLACE ".*#define[ \t]+H5_VERS_MINOR[ \t]+([0-9]*).*$"
@@ -116,27 +114,18 @@ string (REGEX REPLACE ".*#define[ \t]+H5_VERS_SUBRELEASE[ \t]+\"([0-9A-Za-z._-]*
     "\\1" H5_VERS_SUBRELEASE ${_h5public_h_contents})
 set(HDF5_VERSION "${H5_VERS_MAJOR}.${H5_VERS_MINOR}.${H5_VERS_RELEASE}")
 
-set(${_out} ${HDF5_VERSION} PARENT_SCOPE)
-endfunction()
-
-hdf5_get_version(HDF5_VERSION)
-
 message(STATUS "Building HDF5 version ${HDF5_VERSION}")
 
 ExternalProject_Add(HDF5
-URL ${hdf5_url}
+SOURCE_DIR ${hdf5_upstream_SOURCE_DIR}
 CMAKE_ARGS ${hdf5_cmake_args}
 BUILD_BYPRODUCTS ${HDF5_LIBRARIES}
 TEST_COMMAND ""
 ${zlib_dep}
 CONFIGURE_HANDLED_BY_BUILD ON
-USES_TERMINAL_DOWNLOAD true
-USES_TERMINAL_UPDATE true
-USES_TERMINAL_PATCH true
 USES_TERMINAL_CONFIGURE true
 USES_TERMINAL_BUILD true
 USES_TERMINAL_INSTALL true
-USES_TERMINAL_TEST true
 )
 
 # --- imported target
