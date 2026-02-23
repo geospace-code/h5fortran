@@ -43,13 +43,13 @@ jobs:
     - &checkout
       uses: actions/checkout@v6
 
-    - name: GCC (Linux)
+    - name: GCC (macOS)
       if: runner.os == 'macos'
       run: |
         echo "CC=gcc-15" >> $GITHUB_ENV
         echo "FC=gfortran-15" >> $GITHUB_ENV
 
-    - name: Configure
+    - name: Build HDF5, h5fortran and test h5fortran
       run: cmake --workflow default
 
     - name: install package
@@ -220,6 +220,7 @@ jobs:
     strategy:
       matrix:
         cmake_version: ["3.20.6"]
+        find: [true, false]
 
     steps:
 
@@ -233,7 +234,7 @@ jobs:
     - uses: ./.github/workflows/composite-cmake
 
     - name: configure
-      run: $CMAKE -Bbuild -DCMAKE_INSTALL_PREFIX:PATH=$(pwd)/build/local
+      run: $CMAKE -Bbuild -DCMAKE_INSTALL_PREFIX:PATH=${{ github.workspace }}/build/local -Dh5fortran_find:BOOL=${{ matrix.find }}
 
     - name: build
       run: $CMAKE --build build
@@ -243,3 +244,12 @@ jobs:
 
     - name: install package
       run: $CMAKE --install build
+
+    - name: example workflow
+      run: cmake -S example -B example/build -DCMAKE_PREFIX_PATH=${{ github.workspace }}/build/local
+
+    - name: Build examples
+      run: cmake --build example/build
+
+    - name: Test examples
+      run: ctest --test-dir example/build -V
