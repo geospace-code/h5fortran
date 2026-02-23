@@ -14,6 +14,8 @@ on:
     paths:
       - "scripts/CMakeLists.txt"
       - "cmake/libraries.json"
+      - "cmake/hdf5.cmake"
+      - "cmake/zlib.cmake"
       - ".github/workflows/ci_build.yml"
 
 jobs:
