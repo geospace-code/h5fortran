@@ -91,6 +91,11 @@ get_property(_h5f_defs TARGET h5fortran PROPERTY COMPILE_DEFINITIONS)
 message(VERBOSE "h5fortran COMPILE_DEFINITIONS: ${_h5f_defs}")
 get_property(_h5f_flags TARGET h5fortran PROPERTY COMPILE_OPTIONS)
 message(VERBOSE "h5fortran COMPILE_OPTIONS: ${_h5f_flags}")
+
+message(VERBOSE "HDF5_INCLUDE_DIRS: ${HDF5_INCLUDE_DIRS}")
+get_property(_h5f_libs TARGET h5fortran PROPERTY INCLUDE_DIRECTORIES)
+message(VERBOSE "h5fortran INCLUDE_DIRECTORIES: ${_h5f_libs}")
+
 get_property(_h5f_libs TARGET h5fortran PROPERTY LINK_LIBRARIES)
 message(VERBOSE "h5fortran LINK_LIBRARIES: ${_h5f_libs}")
 
