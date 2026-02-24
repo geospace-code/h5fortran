@@ -87,10 +87,12 @@ set(hdf5_cmake_args
 -DHDF5_BUILD_EXAMPLES:BOOL=false
 -DHDF5_BUILD_TOOLS:BOOL=true
 -DHDF5_ENABLE_PARALLEL:BOOL=$<BOOL:${hdf5_parallel}>
--DHDF5_BUILD_PARALLEL_TOOLS:BOOL=$<BOOL:${hdf5_parallel}>
+-DHDF5_BUILD_PARALLEL_TOOLS:BOOL=false
 -DHDF5_ENABLE_NONSTANDARD_FEATURE_FLOAT16:BOOL=OFF
 -DHDF5_USE_GNU_DIRS:BOOL=ON
 )
+
+# -DHDF5_BUILD_PARALLEL_TOOLS:BOOL=false avoids error with HDF5 2.0 needing libMFU mpiFileUtils
 
 # -DHDF5_ENABLE_NONSTANDARD_FEATURE_FLOAT16:BOOL=OFF avoids error with GCC or Clang
 #  src/H5Tconv_integer.c:1746:75: error: 'FLT16_MAX' undeclared (first use in this function); did you mean 'INT16_MAX'?
