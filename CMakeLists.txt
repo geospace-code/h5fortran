@@ -81,7 +81,7 @@ target_link_libraries(h5fortran::h5fortran INTERFACE h5fortran)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include)
 # avoid race condition when used by parent projects
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/h5fortran.mod DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/h5fortran.mod TYPE INCLUDE)
 
 install(TARGETS h5fortran EXPORT h5fortran-targets)
 

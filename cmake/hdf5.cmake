@@ -156,7 +156,7 @@ if(hdf5_parallel)
     message(STATUS "Building HDF5-MPI: MPI-3 NOT available => HDF5 parallel compression disabled")
     set(hdf5_parallel_compression ".false." CACHE STRING "configure variable for HDF5 parallel compression: MPI < 3")
   endif()
-endif(hdf5_parallel)
+endif()
 
 # --- external deps
 find_package(Threads)
@@ -167,4 +167,3 @@ ${CMAKE_THREAD_LIBS_INIT}
 ${CMAKE_DL_LIBS}
 $<$<BOOL:${UNIX}>:m>
 )
-# libdl and libm are needed on some systems

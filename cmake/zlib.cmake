@@ -8,7 +8,7 @@ if(NOT DEFINED zlib_key)
 endif()
 
 if(NOT zlib_url)
-string(JSON zlib_url GET ${json} ${zlib_key})
+  string(JSON zlib_url GET ${json} ${zlib_key})
 endif()
 
 set(ZLIB_INCLUDE_DIRS ${CMAKE_INSTALL_FULL_INCLUDEDIR})
