@@ -7,6 +7,7 @@
   "binaryDir": "${sourceDir}/build",
   "cacheVariables": {
     "CMAKE_COMPILE_WARNING_AS_ERROR": true,
+    "CMAKE_LINK_WARNING_AS_ERROR": true,
     "h5fortran_BUILD_TESTING": true,
     "h5fortran_find": true,
     "h5fortran_python": true
