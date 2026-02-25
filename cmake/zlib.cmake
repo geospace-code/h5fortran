@@ -58,8 +58,7 @@ USES_TERMINAL_TEST true
 file(MAKE_DIRECTORY ${ZLIB_INCLUDE_DIRS})
 # avoid race condition
 
-# for visibility in parent projects
-add_library(ZLIB::ZLIB INTERFACE IMPORTED GLOBAL)
+add_library(ZLIB::ZLIB INTERFACE IMPORTED)
 add_dependencies(ZLIB::ZLIB ZLIB)  # to avoid include directory race condition
 target_link_libraries(ZLIB::ZLIB INTERFACE ${ZLIB_LIBRARIES})
 target_include_directories(ZLIB::ZLIB INTERFACE ${ZLIB_INCLUDE_DIRS})

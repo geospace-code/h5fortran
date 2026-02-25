@@ -145,8 +145,7 @@ USES_TERMINAL_INSTALL true
 file(MAKE_DIRECTORY ${HDF5_INCLUDE_DIRS})
 # avoid race condition
 
-# this GLOBAL is required to be visible to parent projects
-add_library(HDF5::HDF5 INTERFACE IMPORTED GLOBAL)
+add_library(HDF5::HDF5 INTERFACE IMPORTED)
 target_include_directories(HDF5::HDF5 INTERFACE "${HDF5_INCLUDE_DIRS}")
 target_link_libraries(HDF5::HDF5 INTERFACE "${HDF5_LIBRARIES}")
 

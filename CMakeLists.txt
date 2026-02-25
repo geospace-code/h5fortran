@@ -75,8 +75,7 @@ target_link_libraries(h5fortran PUBLIC HDF5::HDF5)
 set_property(TARGET h5fortran PROPERTY Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include)
 set_property(TARGET h5fortran PROPERTY VERSION ${PROJECT_VERSION})
 
-# GLOBAL needed for use by parent projects
-add_library(h5fortran::h5fortran INTERFACE IMPORTED GLOBAL)
+add_library(h5fortran::h5fortran INTERFACE IMPORTED)
 target_link_libraries(h5fortran::h5fortran INTERFACE h5fortran)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include)
 # avoid race condition when used by parent projects

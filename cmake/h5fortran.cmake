@@ -35,7 +35,7 @@ DEPENDS HDF5::HDF5
 
 file(MAKE_DIRECTORY ${h5fortran_INCLUDE_DIRS})
 
-add_library(h5fortran::h5fortran INTERFACE IMPORTED GLOBAL)
+add_library(h5fortran::h5fortran INTERFACE IMPORTED)
 target_include_directories(h5fortran::h5fortran INTERFACE ${h5fortran_INCLUDE_DIRS})
 target_link_libraries(h5fortran::h5fortran INTERFACE ${h5fortran_LIBRARIES} HDF5::HDF5)
 
