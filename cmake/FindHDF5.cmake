@@ -792,11 +792,12 @@ endfunction(check_fortran_links)
 
 function(check_hdf5_link)
 
-# HDF5 bug #3663 for HDF5 1.14.2,  ...?
+# HDF5 bug #3663 for HDF5 1.14.2..2.0.0 at least
 # https://github.com/HDFGroup/hdf5/issues/3663
+# we have it here too so that the link test works without the *targets.cmake files
 if(WIN32 AND CMAKE_Fortran_COMPILER_ID MATCHES "^Intel")
-if(HDF5_VERSION MATCHES "1.14.[2-4]")
-  message(VERBOSE "FindHDF5: applying workaround for HDF5 bug #3663 with Intel oneAPI on Windows")
+if(HDF5_VERSION VERSION_GREATER_EQUAL 1.14.2)
+  message(DEBUG "HDF5: applying workaround for HDFGroup/HDF5 bug #3663 with Intel oneAPI on Windows")
   list(APPEND CMAKE_REQUIRED_LIBRARIES shlwapi)
 endif()
 endif()
