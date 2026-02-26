@@ -1,4 +1,8 @@
-cmake_minimum_required(VERSION 3.20...4.2)
+# CMake >= 3.24 for dependency FetchContent
+# this greatly reduces problems with large projects and subproject trees
+# https://cmake.org/cmake/help/latest/guide/using-dependencies/index.html#fetchcontent-and-find-package-integration
+
+cmake_minimum_required(VERSION 3.24...4.2)
 
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
   message(FATAL_ERROR "Please do out of source build like
@@ -7,7 +11,7 @@ endif()
 
 project(h5fortran
 LANGUAGES C Fortran
-VERSION 4.11.1
+VERSION 4.12.0
 )
 
 include(CTest)

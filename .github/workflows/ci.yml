@@ -49,8 +49,14 @@ jobs:
         echo "CC=gcc-15" >> $GITHUB_ENV
         echo "FC=gfortran-15" >> $GITHUB_ENV
 
-    - name: Build HDF5, h5fortran and test h5fortran
-      run: cmake --workflow default
+    - name: Configure h5fortran
+      run: cmake -Bbuild -Dh5fortran_find:BOOL=false
+
+    - name: Build Zlib, HDF5, and h5fortran
+      run: cmake --build build
+
+    - name: Test h5fortran
+      run: ctest --test-dir build -V
 
     - name: install package
       run: cmake --install build

@@ -1,12 +1,10 @@
-cmake_minimum_required(VERSION 3.20...3.29)
-# use max version to avoid deprecation warnings
+cmake_minimum_required(VERSION 3.24...4.3)
 
 project(HDF5_build
 LANGUAGES C Fortran
 )
 
 option(hdf5_parallel "build HDF5 parallel MPI")
-option(build_zlib "build zlib")
 
 # --- system checks
 message(STATUS "CMAKE_INSTALL_PREFIX: ${CMAKE_INSTALL_PREFIX}")

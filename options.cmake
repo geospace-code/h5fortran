@@ -2,7 +2,11 @@ message(STATUS "${PROJECT_NAME} ${PROJECT_VERSION} CMake ${CMAKE_VERSION} Toolch
 
 include(GNUInstallDirs)
 
-option(h5fortran_find "try to find HDF5 and ZLIB libraries" ON)
+option(h5fortran_find "try to find HDF5 library" ON)
+
+if(NOT h5fortran_find)
+  set(FETCHCONTENT_TRY_FIND_PACKAGE_MODE NEVER)
+endif()
 
 option(h5fortran_coverage "Code coverage tests")
 option(h5fortran_tidy "Run clang-tidy on the code")
