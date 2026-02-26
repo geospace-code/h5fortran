@@ -172,3 +172,13 @@ ${CMAKE_THREAD_LIBS_INIT}
 ${CMAKE_DL_LIBS}
 $<$<BOOL:${UNIX}>:m>
 )
+
+# HDF5 bug #3663 for HDF5 1.14.2..2.0.0 at least
+# https://github.com/HDFGroup/hdf5/issues/3663
+# we have it here too so that built HDF5 library will link correctly with other project for scripts/ build
+if(WIN32 AND CMAKE_Fortran_COMPILER_ID MATCHES "^Intel")
+if(HDF5_VERSION VERSION_GREATER_EQUAL 1.14.2)
+  message(STATUS "HDF5: applying workaround for HDFGroup/HDF5 bug #3663 with Intel oneAPI on Windows")
+  target_link_libraries(HDF5::HDF5 INTERFACE shlwapi)
+endif()
+endif()
