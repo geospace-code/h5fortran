@@ -58,7 +58,7 @@ USES_TERMINAL_INSTALL true
 file(MAKE_DIRECTORY ${ZLIB_INCLUDE_DIRS})
 # avoid race condition
 
-add_library(ZLIB::ZLIB INTERFACE IMPORTED)
-add_dependencies(ZLIB::ZLIB ZLIB)  # to avoid include directory race condition
-target_link_libraries(ZLIB::ZLIB INTERFACE ${ZLIB_LIBRARIES})
-target_include_directories(ZLIB::ZLIB INTERFACE ${ZLIB_INCLUDE_DIRS})
+add_library(h5fortranZLIB::ZLIB INTERFACE IMPORTED)
+add_dependencies(h5fortranZLIB::ZLIB ZLIB)  # to avoid include directory race condition
+target_link_libraries(h5fortranZLIB::ZLIB INTERFACE ${ZLIB_LIBRARIES})
+target_include_directories(h5fortranZLIB::ZLIB INTERFACE ${ZLIB_INCLUDE_DIRS})

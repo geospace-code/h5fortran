@@ -68,6 +68,11 @@ if(NOT TARGET ZLIB::ZLIB)
   include(${CMAKE_CURRENT_LIST_DIR}/zlib.cmake)
 endif()
 
+# by now, Zlib certainly exists as a target
+if(NOT TARGET h5fortranZLIB::ZLIB)
+  add_library(h5fortranZLIB::ZLIB ALIAS ZLIB::ZLIB)
+endif()
+
 # --- HDF5
 # https://forum.hdfgroup.org/t/issues-when-using-hdf5-as-a-git-submodule-and-using-cmake-with-add-subdirectory/7189/2
 
@@ -167,7 +172,7 @@ endif()
 find_package(Threads)
 
 target_link_libraries(HDF5::HDF5 INTERFACE
-ZLIB::ZLIB
+h5fortranZLIB::ZLIB
 ${CMAKE_THREAD_LIBS_INIT}
 ${CMAKE_DL_LIBS}
 $<$<BOOL:${UNIX}>:m>
