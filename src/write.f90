@@ -116,7 +116,8 @@ if(self%exist(dname)) then
     allocate(ddims(drank), maxdims(drank))
 
     call H5Sget_simple_extent_dims_f(filespace_id, ddims, maxdims, ier)
-    if (ier /= drank) error stop 'ERROR:h5fortran:create: H5Sget_simple_extent_dims: ' // dname // ' in ' // self%filename
+    if (ier /= drank) &
+      error stop 'ERROR:h5fortran:create: H5Sget_simple_extent_dims: ' // dname // ' in ' // self%filename
 
     do i = 1, drank
       if (iend(i) - istart(i) > ddims(i)) emsg = 'ERROR:h5fortran:create: iend - istart > dset_dims'

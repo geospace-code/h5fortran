@@ -8,9 +8,6 @@ auto-tests = false
 auto-examples = false
 external-modules = ["hdf5", "h5lt"]
 
-[dependencies]
-hdf5 = "*"
-
 [install]
 library = true
 
@@ -75,5 +72,16 @@ name = "string"
 main = "test_string.f90"
 
 [[test]]
+name = "visit"
+main = "test_visit.f90"
+
+[[test]]
+name = "iterate"
+main = "test_iterate.f90"
+
+[[test]]
 name = "version"
 main = "test_version.f90"
+
+[dependencies]
+hdf5 = '*'
