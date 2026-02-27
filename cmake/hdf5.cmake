@@ -1,114 +1,52 @@
 # builds HDF5 library from scratch
 # note: the use of "lib" vs. CMAKE_*_LIBRARY_PREFIX is deliberate based on HDF5
 # across Intel Fortran on Windows (MSVC-like) vs. Gfortran on Windows vs. Linux.
-include(GNUInstallDirs)
-include(ExternalProject)
 include(FetchContent)
 
 if(NOT DEFINED hdf5_req)
-  if(LINUX)
-    set(hdf5_req 1.10)
-  elseif(CMAKE_VERSION VERSION_GREATER_EQUAL 3.26)
-    set(hdf5_req 2.0)
-  else()
-    set(hdf5_req 1.14)
-  endif()
-endif()
-
-if(hdf5_parallel)
-  find_package(MPI REQUIRED COMPONENTS C)
-endif()
-
-# pass MPI hints to HDF5
-if(NOT MPI_ROOT AND DEFINED ENV{MPI_ROOT})
-  set(MPI_ROOT $ENV{MPI_ROOT})
-endif()
-
-set(HDF5_LIBRARIES)
-foreach(_name IN ITEMS hdf5_hl_fortran hdf5_hl_f90cstub hdf5_fortran hdf5_f90cstub hdf5_hl hdf5)
-  if(BUILD_SHARED_LIBS)
-    if(WIN32)
-      list(APPEND HDF5_LIBRARIES ${CMAKE_INSTALL_FULL_BINDIR}/lib${_name}${CMAKE_SHARED_LIBRARY_SUFFIX})
-    else()
-      list(APPEND HDF5_LIBRARIES ${CMAKE_INSTALL_FULL_LIBDIR}/${CMAKE_SHARED_LIBRARY_PREFIX}${_name}${CMAKE_SHARED_LIBRARY_SUFFIX})
-    endif()
-  elseif(hdf5_req VERSION_GREATER_EQUAL 1.14)
-    if(WIN32)
-      list(APPEND HDF5_LIBRARIES ${CMAKE_INSTALL_FULL_LIBDIR}/lib${_name}${CMAKE_STATIC_LIBRARY_SUFFIX})
-    else()
-      list(APPEND HDF5_LIBRARIES ${CMAKE_INSTALL_FULL_LIBDIR}/${CMAKE_STATIC_LIBRARY_PREFIX}${_name}${CMAKE_STATIC_LIBRARY_SUFFIX})
-    endif()
-  else()
-    # need ${CMAKE_INSTALL_PREFIX}/lib as HDF5 didn't use GNUInstallDirs until HDF5 1.14
-    list(APPEND HDF5_LIBRARIES ${CMAKE_INSTALL_PREFIX}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}${_name}${CMAKE_STATIC_LIBRARY_SUFFIX})
-  endif()
-endforeach()
-
-set(HDF5_INCLUDE_DIRS ${CMAKE_INSTALL_FULL_INCLUDEDIR})
-
-if(BUILD_SHARED_LIBS)
-  list(APPEND HDF5_INCLUDE_DIRS ${CMAKE_INSTALL_FULL_INCLUDEDIR}/mod/shared)
-else()
-  list(APPEND HDF5_INCLUDE_DIRS ${CMAKE_INSTALL_FULL_INCLUDEDIR}/mod/static)
+  set(hdf5_req 2.0)
 endif()
 
 file(READ ${CMAKE_CURRENT_LIST_DIR}/libraries.json json)
 
 # --- Zlib
-if(NOT zlib_url)
-  string(JSON zlib_url GET ${json} "zlib")
-endif()
+# if(NOT zlib_url)
+#   string(JSON zlib_url GET ${json} "zlib")
+# endif()
 
-set(ZLIB_COMPAT on)
-set(BUILD_TESTING off)
-# set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-# NetCDF 4.9/4.6 needs fPIC
+# set(ZLIB_COMPAT on)
+# set(BUILD_TESTING off)
+# # set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+# # NetCDF 4.9/4.6 needs fPIC
 
-FetchContent_Declare(ZLIBdep
-  URL ${zlib_url}
-  FIND_PACKAGE_ARGS NAMES ZLIB
-)
+# FetchContent_Declare(ZLIBdep
+#   URL ${zlib_url}
+#   FIND_PACKAGE_ARGS NAMES ZLIB
+# )
 
-FetchContent_MakeAvailable(ZLIBdep)
-
-if(TARGET zlib-ng)
-  set(zlib_hdf5_args -DZLIB_USE_EXTERNAL:BOOL=OFF -DZLIB_ROOT:PATH=${zlib_BINARY_DIR})
-  add_custom_target(_zlib_dummy DEPENDS zlib-ng)
-else()
-  set(zlib_hdf5_args)
-  add_custom_target(_zlib_dummy)
-endif()
-# foreach(p IN ITEMS INTERFACE_LINK_LIBRARIES LINK_LIBRARIES INTERFACE_INCLUDE_DIRECTORIES INCLUDE_DIRECTORIES)
-#   get_target_property(_zlib_${p} zlib-ng ${p})
-#   message(STATUS "ZLIB ${p}: ${_zlib_${p}}")
-# endforeach()
+# if(TARGET zlib-ng)
+#   set(ZLIB_USE_EXTERNAL OFF)
+#   set(ZLIB_ROOT ${zlib_BINARY_DIR})
+# endif()
 
 # --- HDF5
 # https://forum.hdfgroup.org/t/issues-when-using-hdf5-as-a-git-submodule-and-using-cmake-with-add-subdirectory/7189/2
 
-set(hdf5_cmake_args
--DHDF5_ENABLE_Z_LIB_SUPPORT:BOOL=ON
--DHDF5_ENABLE_ZLIB_SUPPORT:BOOL=ON
--DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
--DCMAKE_MODULE_PATH:PATH=${CMAKE_MODULE_PATH}
--DHDF5_GENERATE_HEADERS:BOOL=false
--DHDF5_DISABLE_COMPILER_WARNINGS:BOOL=true
--DBUILD_STATIC_LIBS:BOOL=$<NOT:$<BOOL:${BUILD_SHARED_LIBS}>>
--DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS}
--DCMAKE_BUILD_TYPE=Release
--DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
--DCMAKE_Fortran_COMPILER=${CMAKE_Fortran_COMPILER}
--DHDF5_BUILD_HL_LIB:BOOL=true
--DHDF5_BUILD_FORTRAN:BOOL=true
--DHDF5_BUILD_CPP_LIB:BOOL=false
--DBUILD_TESTING:BOOL=false
--DHDF5_BUILD_EXAMPLES:BOOL=false
--DHDF5_BUILD_TOOLS:BOOL=true
--DHDF5_ENABLE_PARALLEL:BOOL=$<BOOL:${hdf5_parallel}>
--DHDF5_BUILD_PARALLEL_TOOLS:BOOL=false
--DHDF5_ENABLE_NONSTANDARD_FEATURE_FLOAT16:BOOL=OFF
--DHDF5_USE_GNU_DIRS:BOOL=ON
-)
+set(HDF5_ENABLE_Z_LIB_SUPPORT ON)
+set(HDF5_ENABLE_ZLIB_SUPPORT ON)
+set(HDF5_ALLOW_EXTERNAL_SUPPORT "TGZ")
+set(HDF5_GENERATE_HEADERS false)
+set(HDF5_DISABLE_COMPILER_WARNINGS true)
+set(HDF5_BUILD_HL_LIB true)
+set(HDF5_BUILD_FORTRAN true)
+set(HDF5_BUILD_CPP_LIB false)
+set(BUILD_TESTING false)
+set(HDF5_BUILD_EXAMPLES false)
+set(HDF5_BUILD_TOOLS true)
+set(HDF5_ENABLE_PARALLEL ${hdf5_parallel})
+set(HDF5_BUILD_PARALLEL_TOOLS false)
+set(HDF5_ENABLE_NONSTANDARD_FEATURE_FLOAT16 OFF)
+set(HDF5_USE_GNU_DIRS ON)
 
 # -DHDF5_BUILD_PARALLEL_TOOLS:BOOL=false avoids error with HDF5 2.0 needing libMFU mpiFileUtils
 
@@ -118,18 +56,30 @@ set(hdf5_cmake_args
 # -DHDF5_USE_GNU_DIRS:BOOL=ON  # new for 1.14
 # -DHDF5_ENABLE_ZLIB_SUPPORT:BOOL=ON switched from -DHDF5_ENABLE_Z_LIB_SUPPORT:BOOL=ON for HDF5 2.0
 
-if(MPI_ROOT)
-  list(APPEND hdf5_cmake_args -DMPI_ROOT:PATH=${MPI_ROOT})
-endif()
-
 if(NOT hdf5_url)
   string(JSON hdf5_url GET ${json} "hdf5" "${hdf5_req}")
 endif()
 
-FetchContent_Populate(hdf5_upstream URL ${hdf5_url})
+FetchContent_Declare(HDF5
+  URL ${hdf5_url}
+  FIND_PACKAGE_ARGS
+    NAMES HDF5
+    COMPONENTS HL Fortran
+)
+
+FetchContent_MakeAvailable(HDF5)# ZLIBdep)
+
+if(EXISTS "${hdf5_SOURCE_DIR}/src/H5public.h")
+  set(_h5public_h "${hdf5_SOURCE_DIR}/src/H5public.h")
+elseif(EXISTS "${HDF5_C_INCLUDE_DIR}/H5public.h")
+  set(_h5public_h "${HDF5_C_INCLUDE_DIR}/H5public.h")
+else()
+  message(FATAL_ERROR "Cannot find H5public.h for HDF5 version extraction
+  ${HDF5_C_INCLUDE_DIR}")
+endif()
 
 # version extraction from HDF5 2.0 CMakeLists.txt
-file (READ ${hdf5_upstream_SOURCE_DIR}/src/H5public.h _h5public_h_contents)
+file (READ ${_h5public_h} _h5public_h_contents)
 string (REGEX REPLACE ".*#define[ \t]+H5_VERS_MAJOR[ \t]+([0-9]*).*$"
     "\\1" H5_VERS_MAJOR ${_h5public_h_contents})
 string (REGEX REPLACE ".*#define[ \t]+H5_VERS_MINOR[ \t]+([0-9]*).*$"
@@ -142,28 +92,45 @@ set(HDF5_VERSION "${H5_VERS_MAJOR}.${H5_VERS_MINOR}.${H5_VERS_RELEASE}")
 
 message(STATUS "Building HDF5 version ${HDF5_VERSION}")
 
-ExternalProject_Add(HDF5dep
-SOURCE_DIR ${hdf5_upstream_SOURCE_DIR}
-CMAKE_ARGS ${hdf5_cmake_args}
-BUILD_BYPRODUCTS ${HDF5_LIBRARIES}
-TEST_COMMAND ""
-DEPENDS _zlib_dummy
-CONFIGURE_HANDLED_BY_BUILD ON
-USES_TERMINAL_CONFIGURE true
-USES_TERMINAL_BUILD true
-USES_TERMINAL_INSTALL true
-)
-
 # --- imported target
+if(NOT TARGET HDF5::HDF5)
 
-file(MAKE_DIRECTORY ${HDF5_INCLUDE_DIRS})
-# avoid race condition
+function(print_targets dir)
+    get_property(subdirs DIRECTORY "${dir}" PROPERTY SUBDIRECTORIES)
+    foreach(sub IN LISTS subdirs)
+        print_targets("${sub}")
+    endforeach()
+
+    get_directory_property(targets DIRECTORY "${dir}" BUILDSYSTEM_TARGETS)
+    if(targets)
+        message("Targets in ${dir}:")
+        foreach(t IN LISTS targets)
+            message("  • ${t}")
+        endforeach()
+    endif()
+endfunction()
+
+# print all targets from HDF5 for debugging
+print_targets(${hdf5_SOURCE_DIR})
+
+if(BUILD_SHARED_LIBS)
+  set(_hdf5_lib_type "shared")
+else()
+  set(_hdf5_lib_type "static")
+endif()
+
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/${_hdf5_lib_type})
 
 add_library(HDF5::HDF5 INTERFACE IMPORTED)
-target_include_directories(HDF5::HDF5 INTERFACE "${HDF5_INCLUDE_DIRS}")
-target_link_libraries(HDF5::HDF5 INTERFACE "${HDF5_LIBRARIES}")
+target_link_libraries(HDF5::HDF5 INTERFACE
+hdf5_hl_fortran-${_hdf5_lib_type}
+hdf5_fortran-${_hdf5_lib_type}
+hdf5_hl-${_hdf5_lib_type}
+hdf5-${_hdf5_lib_type}
+)
+target_include_directories(HDF5::HDF5 INTERFACE ${h5fortran_BINARY_DIR}/include/${_hdf5_lib_type})
 
-add_dependencies(HDF5::HDF5 HDF5dep)
+endif()
 
 # --- HDF5 parallel compression support
 # this could be improved by making it an ExternalProject post-build step instead of assumptions made here
@@ -178,13 +145,6 @@ if(hdf5_parallel)
 endif()
 
 # --- external deps
-find_package(Threads)
-
-target_link_libraries(HDF5::HDF5 INTERFACE
-${CMAKE_THREAD_LIBS_INIT}
-${CMAKE_DL_LIBS}
-$<$<BOOL:${UNIX}>:m>
-)
 
 # HDF5 bug #3663 for HDF5 1.14.2..2.0.0 at least
 # https://github.com/HDFGroup/hdf5/issues/3663

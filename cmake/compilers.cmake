@@ -58,7 +58,7 @@ endif()
 if(h5fortran_coverage)
   include(${CMAKE_CURRENT_LIST_DIR}/Modules/CodeCoverage.cmake)
   append_coverage_compiler_flags()
-  set(COVERAGE_EXCLUDES ${PROJECT_SOURCE_DIR}/test)
+  set(COVERAGE_EXCLUDES ${h5fortran_SOURCE_DIR}/test)
 endif()
 
 # --- clang-tidy

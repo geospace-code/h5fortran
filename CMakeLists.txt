@@ -43,15 +43,10 @@ include(options.cmake)
 include(cmake/compilers.cmake)
 include(cmake/CheckHDF5.cmake)
 
-if(NOT TARGET HDF5::HDF5 AND (h5fortran_find OR CRAY))
-  find_package(HDF5 COMPONENTS HL Fortran)
-endif()
+set(CMAKE_Fortran_MODULE_DIRECTORY ${h5fortran_BINARY_DIR}/${CMAKE_INSTALL_INCLUDEDIR})
+# HDF5 fetchcontent needs this at least for HDF5 2.0.0
 
-if(h5fortran_IS_TOP_LEVEL AND HDF5_FOUND)
-  check_hdf5()
-elseif(NOT TARGET HDF5::HDF5)
-  include(cmake/hdf5.cmake)
-endif()
+include(cmake/hdf5.cmake)
 
 set(HDF5_VERSION ${HDF5_VERSION} CACHE STRING "HDF5 version")
 
@@ -72,21 +67,20 @@ endif()
 
 add_library(h5fortran)
 target_include_directories(h5fortran PUBLIC
-$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
-$<INSTALL_INTERFACE:include>
+$<BUILD_INTERFACE:${CMAKE_Fortran_MODULE_DIRECTORY}>
+$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 target_link_libraries(h5fortran PUBLIC HDF5::HDF5)
 
-set_property(TARGET h5fortran PROPERTY Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include)
-file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include)
+file(MAKE_DIRECTORY ${CMAKE_Fortran_MODULE_DIRECTORY})
 # avoid race condition when used by parent projects
 
-set_property(TARGET h5fortran PROPERTY VERSION ${PROJECT_VERSION})
+set_property(TARGET h5fortran PROPERTY VERSION ${h5fortran_VERSION})
 
 add_library(h5fortran::h5fortran ALIAS h5fortran)
 
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/h5fortran.mod TYPE INCLUDE)
+install(FILES ${CMAKE_Fortran_MODULE_DIRECTORY}/h5fortran.mod TYPE INCLUDE)
 
 install(TARGETS h5fortran EXPORT h5fortran-targets)
 
