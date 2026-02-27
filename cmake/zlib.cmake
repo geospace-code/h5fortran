@@ -1,64 +1,22 @@
-# build Zlib to ensure compatibility.
-# We use Zlib 2.x for speed and robustness.
-include(GNUInstallDirs)
-include(ExternalProject)
-
-if(NOT DEFINED zlib_key)
-  set(zlib_key zlib2)
-endif()
-
 if(NOT zlib_url)
-  string(JSON zlib_url GET ${json} ${zlib_key})
+  string(JSON zlib_url GET ${json} "zlib")
 endif()
 
-set(ZLIB_INCLUDE_DIRS ${CMAKE_INSTALL_FULL_INCLUDEDIR})
-
-if(BUILD_SHARED_LIBS)
-  if(WIN32)
-    set(ZLIB_LIBRARIES ${CMAKE_INSTALL_FULL_BINDIR}/${CMAKE_SHARED_LIBRARY_PREFIX}zlib1${CMAKE_SHARED_LIBRARY_SUFFIX})
-  else()
-    set(ZLIB_LIBRARIES ${CMAKE_INSTALL_FULL_LIBDIR}/${CMAKE_SHARED_LIBRARY_PREFIX}z${CMAKE_SHARED_LIBRARY_SUFFIX})
-  endif()
-else()
-  if(MSVC OR (WIN32 AND zlib_key STREQUAL "zlib1"))
-    set(ZLIB_LIBRARIES ${CMAKE_INSTALL_FULL_LIBDIR}/${CMAKE_STATIC_LIBRARY_PREFIX}zlibstatic${CMAKE_STATIC_LIBRARY_SUFFIX})
-  else()
-    set(ZLIB_LIBRARIES ${CMAKE_INSTALL_FULL_LIBDIR}/${CMAKE_STATIC_LIBRARY_PREFIX}z${CMAKE_STATIC_LIBRARY_SUFFIX})
-  endif()
-endif()
-
-
-set(zlib_cmake_args
--DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_INSTALL_PREFIX}
--DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS}
--DCMAKE_BUILD_TYPE=Release
--DZLIB_COMPAT:BOOL=on
--DBUILD_TESTING:BOOL=off
--DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
--DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
-)
+set(ZLIB_COMPAT on)
+set(BUILD_TESTING off)
+# set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 # NetCDF 4.9/4.6 needs fPIC
 
-ExternalProject_Add(ZLIB
-URL ${zlib_url}
-CMAKE_ARGS ${zlib_cmake_args}
-BUILD_BYPRODUCTS ${ZLIB_LIBRARIES}
-TEST_COMMAND ""
-CONFIGURE_HANDLED_BY_BUILD ON
-USES_TERMINAL_DOWNLOAD true
-USES_TERMINAL_UPDATE true
-USES_TERMINAL_PATCH true
-USES_TERMINAL_CONFIGURE true
-USES_TERMINAL_BUILD true
-USES_TERMINAL_INSTALL true
+FetchContent_Declare(ZLIB
+  URL ${zlib_url}
+  FIND_PACKAGE_ARGS NAMES ZLIB
 )
 
-# --- imported target
+FetchContent_MakeAvailable(ZLIB)
 
-file(MAKE_DIRECTORY ${ZLIB_INCLUDE_DIRS})
-# avoid race condition
-
-add_library(h5fortranZLIB::ZLIB INTERFACE IMPORTED)
-add_dependencies(h5fortranZLIB::ZLIB ZLIB)  # to avoid include directory race condition
-target_link_libraries(h5fortranZLIB::ZLIB INTERFACE ${ZLIB_LIBRARIES})
-target_include_directories(h5fortranZLIB::ZLIB INTERFACE ${ZLIB_INCLUDE_DIRS})
+if(NOT TARGET h5fortranZLIB::ZLIB)
+  add_library(h5fortranZLIB::ZLIB ALIAS zlib-ng)
+  set(zlib_dep DEPENDS h5fortranZLIB::ZLIB)
+else()
+  set(zlib_dep)
+endif()
