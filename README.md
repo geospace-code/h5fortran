@@ -71,8 +71,7 @@ Compilers known to work (tested on CI) include:
 
 Compilers not currently working:
 
-* NVidia HPC SDK 24.9: missing "rank()" intrinsic
-* AOCC missing "rank()" intrinsic and trouble with "select type()" in submodule
+* NVidia HPC SDK 26.1: trouble with `select type` in `submodule` since still not on flang-new
 
 ## Build
 
