@@ -54,7 +54,7 @@ UTF8 characters are passed through on read and write using the Fortran default c
 * Zlib (deflate) compression / decompression -- h5fortran will work without Zlib, but will save/load uncompressed data only.
 * create HDF5 soft link variables--arbitrarily many soft-linked variable names can point to an actual variable, which need not yet exist.
 
-Tested on systems with HDF5 1.8, 1.10, 1.12, and 1.14 including:
+Tested on systems with HDF5 1.10, 1.12, 1.14, and 2.0 including:
 
 * MacOS (homebrew)
 * Linux (Ubuntu, CentOS)
@@ -65,7 +65,8 @@ Tested on systems with HDF5 1.8, 1.10, 1.12, and 1.14 including:
 
 Compilers known to work (tested on CI) include:
 
-* GCC (gfortran) &ge; 8
+* GCC (gfortran) &ge; 9
+* LLVM (flang) &ge; 18
 * Intel oneAPI &ge; 2021
 
 Compilers not currently working:
