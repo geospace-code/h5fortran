@@ -229,7 +229,7 @@ jobs:
 
     strategy:
       matrix:
-        cmake_version: ["3.21.7"]
+        cmake_version: ["3.21.7", "3.24.4"]
 
     steps:
 
@@ -243,7 +243,8 @@ jobs:
     - uses: ./.github/workflows/composite-cmake
 
     - name: configure
-      run: $CMAKE -Bbuild -DCMAKE_INSTALL_PREFIX:PATH=${{ github.workspace }}/build/local
+      run: $CMAKE -Bbuild --install-prefix ${{ env.CMAKE_INSTALL_PREFIX }}
+    # CMake env var CMAKE_INSTALL prefix is for CMake >= 3.29
 
     - name: build
       run: $CMAKE --build build
@@ -255,7 +256,7 @@ jobs:
       run: $CMAKE --install build
 
     - name: example workflow
-      run: cmake -S example -B example/build -DCMAKE_PREFIX_PATH=${{ github.workspace }}/build/local
+      run: cmake -S example -B example/build
 
     - name: Build examples
       run: cmake --build example/build
