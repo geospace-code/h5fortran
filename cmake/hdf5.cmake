@@ -15,11 +15,6 @@ if(hdf5_parallel)
   find_package(MPI REQUIRED COMPONENTS C)
 endif()
 
-# pass MPI hints to HDF5
-# if(NOT MPI_ROOT AND DEFINED ENV{MPI_ROOT})
-#   set(MPI_ROOT $ENV{MPI_ROOT})
-# endif()
-
 file(READ ${CMAKE_CURRENT_LIST_DIR}/libraries.json json)
 
 # --- HDF5
@@ -105,15 +100,3 @@ target_include_directories(HDF5::HDF5 INTERFACE
 ${hdf5_zlib_BINARY_DIR}/mod/static
 ${h5fortran_BINARY_DIR}/include/static
 )
-
-# --- HDF5 parallel compression support
-# this could be improved by making it an ExternalProject post-build step instead of assumptions made here
-if(hdf5_parallel)
-  if(MPI_VERSION VERSION_GREATER_EQUAL 3)
-    message(STATUS "Building HDF5-MPI: MPI-3 available, assuming HDF5 parallel compression enabled")
-    set(hdf5_parallel_compression ".true." CACHE STRING "configure variable for HDF5 parallel compression")
-  else()
-    message(STATUS "Building HDF5-MPI: MPI-3 NOT available => HDF5 parallel compression disabled")
-    set(hdf5_parallel_compression ".false." CACHE STRING "configure variable for HDF5 parallel compression: MPI < 3")
-  endif()
-endif()
