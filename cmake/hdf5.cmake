@@ -4,11 +4,11 @@
 include(GNUInstallDirs)
 include(FetchContent)
 
-if(NOT DEFINED hdf5_req)
-  set(hdf5_req dev)
+if(NOT DEFINED h5fortran_hdf5_req)
+  set(h5fortran_hdf5_req dev)
 endif()
 # HDF5 1.10.x can't build Zlib for itself.
-# HDF5 2.0 and 2.1 require CMake >= 3.26, but the benefits are so great this is worthwhile
+# HDF5 2.0 and 2.1 require CMake >= 3.26, but the benefits are so great that this is worthwhile
 
 if(hdf5_parallel)
   find_package(MPI REQUIRED COMPONENTS C)
@@ -54,7 +54,7 @@ endif()
 # -DHDF5_ENABLE_ZLIB_SUPPORT:BOOL=ON switched from -DHDF5_ENABLE_Z_LIB_SUPPORT:BOOL=ON for HDF5 2.0
 
 if(NOT hdf5_url)
-  string(JSON hdf5_url GET ${json} "hdf5" "${hdf5_req}")
+  string(JSON hdf5_url GET ${json} "hdf5" "${h5fortran_hdf5_req}")
 endif()
 
 
