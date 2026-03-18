@@ -91,7 +91,7 @@ if(NOT DEFINED hdf5_zlib_BINARY_DIR)
   message(FATAL_ERROR)
 endif()
 
-file(MAKE_DIRECTORY ${hdf5_zlib_BINARY_DIR}/mod/static ${h5fortran_BINARY_DIR}/include/static)
+file(MAKE_DIRECTORY ${hdf5_zlib_BINARY_DIR}/mod/static ${PROJECT_BINARY_DIR}/include/static)
 # avoid race condition "Imported target "HDF5::HDF5" includes non-existent path"
 
 add_library(HDF5::HDF5 INTERFACE IMPORTED)
