@@ -3,6 +3,7 @@
     "1.10": "https://github.com/HDFGroup/hdf5/archive/refs/tags/hdf5-1_10_11.tar.gz",
     "1.14": "https://github.com/HDFGroup/hdf5/archive/refs/tags/hdf5_1.14.6.tar.gz",
     "2.0": "https://github.com/HDFGroup/hdf5/archive/refs/tags/2.0.0.tar.gz",
-    "2.1": "https://github.com/HDFGroup/hdf5/archive/refs/tags/2.1.0.tar.gz"
+    "2.1": "https://github.com/HDFGroup/hdf5/archive/refs/tags/2.1.0.tar.gz",
+    "dev": "https://github.com/scivision/hdf5/archive/refs/heads/develop.zip"
   }
 }

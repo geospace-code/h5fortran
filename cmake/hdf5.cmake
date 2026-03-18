@@ -6,7 +6,7 @@ include(ExternalProject)
 include(FetchContent)
 
 if(NOT DEFINED hdf5_req)
-  set(hdf5_req 2.1)
+  set(hdf5_req dev)
 endif()
 # HDF5 1.10.x can't build Zlib for itself.
 # HDF5 2.0 and 2.1 require CMake >= 3.26, but the benefits are so great this is worthwhile
@@ -46,6 +46,8 @@ set(HDF5_ENABLE_PARALLEL false)
 set(HDF5_BUILD_PARALLEL_TOOLS false)
 set(HDF5_ENABLE_NONSTANDARD_FEATURE_FLOAT16 OFF)
 set(HDF5_USE_GNU_DIRS ON)
+
+set(CMAKE_Fortran_MODULE_DIRECTORY ${h5fortran_BINARY_DIR}/include)
 
 # -DHDF5_BUILD_PARALLEL_TOOLS:BOOL=false avoids error with HDF5 2.0 needing libMFU mpiFileUtils
 
@@ -89,10 +91,8 @@ if(NOT DEFINED hdf5_zlib_BINARY_DIR)
   message(FATAL_ERROR)
 endif()
 
-file(MAKE_DIRECTORY ${hdf5_zlib_BINARY_DIR}/mod/static)
+file(MAKE_DIRECTORY ${hdf5_zlib_BINARY_DIR}/mod/static ${h5fortran_BINARY_DIR}/include/static)
 # avoid race condition "Imported target "HDF5::HDF5" includes non-existent path"
-
-
 
 add_library(HDF5::HDF5 INTERFACE IMPORTED)
 target_link_libraries(HDF5::HDF5 INTERFACE
@@ -101,7 +101,10 @@ hdf5_fortran-static
 hdf5_hl-static
 hdf5-static
 )
-target_include_directories(HDF5::HDF5 INTERFACE ${hdf5_zlib_BINARY_DIR}/mod/static)
+target_include_directories(HDF5::HDF5 INTERFACE
+${hdf5_zlib_BINARY_DIR}/mod/static
+${h5fortran_BINARY_DIR}/include/static
+)
 
 # --- HDF5 parallel compression support
 # this could be improved by making it an ExternalProject post-build step instead of assumptions made here
