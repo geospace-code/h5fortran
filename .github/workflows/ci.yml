@@ -230,7 +230,6 @@ jobs:
     strategy:
       matrix:
         cmake_version: ["3.21.7"]
-        find: [true, false]
 
     steps:
 
@@ -244,7 +243,7 @@ jobs:
     - uses: ./.github/workflows/composite-cmake
 
     - name: configure
-      run: $CMAKE -Bbuild -DCMAKE_INSTALL_PREFIX:PATH=${{ github.workspace }}/build/local -Dh5fortran_find:BOOL=${{ matrix.find }}
+      run: $CMAKE -Bbuild -DCMAKE_INSTALL_PREFIX:PATH=${{ github.workspace }}/build/local
 
     - name: build
       run: $CMAKE --build build
