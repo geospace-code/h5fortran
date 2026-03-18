@@ -82,14 +82,17 @@ message(STATUS "Building HDF5 version ${HDF5_VERSION}")
 
 # --- imported target
 
-# file(MAKE_DIRECTORY ${HDF5_INCLUDE_DIRS})
-# avoid race condition
 
 FetchContent_GetProperties(hdf5_zlib)
 
 if(NOT DEFINED hdf5_zlib_BINARY_DIR)
   message(FATAL_ERROR)
 endif()
+
+file(MAKE_DIRECTORY ${hdf5_zlib_BINARY_DIR}/mod/static)
+# avoid race condition "Imported target "HDF5::HDF5" includes non-existent path"
+
+
 
 add_library(HDF5::HDF5 INTERFACE IMPORTED)
 target_link_libraries(HDF5::HDF5 INTERFACE
