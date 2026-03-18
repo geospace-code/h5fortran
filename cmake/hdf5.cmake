@@ -19,26 +19,41 @@ file(READ ${CMAKE_CURRENT_LIST_DIR}/libraries.json json)
 # https://forum.hdfgroup.org/t/issues-when-using-hdf5-as-a-git-submodule-and-using-cmake-with-add-subdirectory/7189/2
 
 set(HDF5_ENABLE_ZLIB_SUPPORT ON)
-set(HDF5_PACKAGE_EXTLIBS ON)
 set(HDF5_USE_ZLIB_NG OFF)
-set(ZLIB_USE_EXTERNAL ON)
 set(ZLIBNG_USE_EXTERNAL OFF)
-set(HDF5_ALLOW_EXTERNAL_SUPPORT TGZ)
+
 set(ZLIB_USE_LOCALCONTENT OFF)
-set(HDF5_GENERATE_HEADERS false)
-set(HDF5_DISABLE_COMPILER_WARNINGS true)
+
+# this is intentional for HDF5 1.10 ZLIB, which fails to build Zlib despite trying
+# users need their own Zlib if using HDF5 1.10. For HDF5 >= 1.14, HDF5 can build its own Zlib.
+set(ZLIB_USE_EXTERNAL ON)
+
+set(HDF5_ALLOW_EXTERNAL_SUPPORT TGZ)
 set(BUILD_STATIC_LIBS ON)
 set(CMAKE_BUILD_TYPE Release)
-set(HDF5_BUILD_HL_LIB true)
-set(HDF5_BUILD_FORTRAN true)
-set(HDF5_BUILD_CPP_LIB false)
+
+# --- HDF5 1.10 needs this due to CMP0077
+set(HDF5_GENERATE_HEADERS OFF CACHE BOOL "Generate HDF5 headers" FORCE)
+set(HDF5_PACKAGE_EXTLIBS ON CACHE BOOL "HDF5 package external dependencies" FORCE)
+set(HDF5_DISABLE_COMPILER_WARNINGS ON CACHE BOOL "Disable compiler warnings in HDF5 build" FORCE)
+
+set(HDF5_ENABLE_Z_LIB_SUPPORT ON CACHE BOOL "Enable ZLib support" FORCE)
+
+set(HDF5_BUILD_FORTRAN ON CACHE BOOL "Build Fortran bindings" FORCE)
+set(HDF5_BUILD_TOOLS ON CACHE BOOL "Build HDF5 tools" FORCE)
+set(HDF5_BUILD_EXAMPLES OFF CACHE BOOL "Build HDF5 examples" FORCE)
+set(HDF5_BUILD_HL_LIB ON CACHE BOOL "Build HDF5 High-Level library" FORCE)
+set(HDF5_USE_GNU_DIRS ON CACHE BOOL "Use GNU install directories" FORCE)
+set(HDF5_BUILD_CPP_LIB OFF CACHE BOOL "Build HDF5 C++ library" FORCE)
+
+set(ZLIB_USE_LOCALCONTENT OFF CACHE BOOL "Use local file for ZLIB FetchContent" FORCE)
+set(ZLIB_USE_LOCALCONTENT OFF)
+# ---
+
 set(BUILD_TESTING false)
-set(HDF5_BUILD_EXAMPLES false)
-set(HDF5_BUILD_TOOLS true)
 set(HDF5_ENABLE_PARALLEL ${hdf5_parallel})
 set(HDF5_BUILD_PARALLEL_TOOLS false)
 set(HDF5_ENABLE_NONSTANDARD_FEATURE_FLOAT16 OFF)
-set(HDF5_USE_GNU_DIRS ON)
 
 if(NOT DEFINED CMAKE_Fortran_MODULE_DIRECTORY)
   set(CMAKE_Fortran_MODULE_DIRECTORY ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_INCLUDEDIR})
@@ -127,8 +142,9 @@ if(NOT TARGET HDF5::HDF5)
 
 add_library(HDF5::HDF5 INTERFACE IMPORTED)
 
-if(NOT HDF5_VERSION OR HDF5_VERSION VERSION_GREATER_EQUAL 1.14)
-# look under ${h5fortran_BINARY_DIR}/_deps/hdf5-build/hdf5-targets.cmake
+# look under
+# HDF5 2.x: ${h5fortran_BINARY_DIR}/_deps/hdf5-build/hdf5-targets.cmake
+# HDF5 1.14: ${h5fortran_BINARY_DIR}/_deps/hdf5-build/hdf5-config.cmake look for hdf5_comp variable like hdf5_hl_fortran
 
 target_link_libraries(HDF5::HDF5 INTERFACE
 hdf5_hl_fortran-${_hdf5_lib_type}
@@ -136,7 +152,6 @@ hdf5_fortran-${_hdf5_lib_type}
 hdf5_hl-${_hdf5_lib_type}
 hdf5-${_hdf5_lib_type}
 )
-endif()
 
 endif()
 
@@ -146,6 +161,11 @@ if(NOT HDF5_FOUND)
 file(MAKE_DIRECTORY ${CMAKE_Fortran_MODULE_DIRECTORY}/${_hdf5_lib_type})
 # avoid race condition "Imported target "HDF5::HDF5" includes non-existent path"
 target_include_directories(HDF5::HDF5 INTERFACE ${CMAKE_Fortran_MODULE_DIRECTORY}/${_hdf5_lib_type})
+
+if(h5fortran_hdf5_req STREQUAL "1.10")
+  file(MAKE_DIRECTORY ${hdf5_BINARY_DIR}/mod/${_hdf5_lib_type})
+  target_include_directories(HDF5::HDF5 INTERFACE ${hdf5_BINARY_DIR}/mod/${_hdf5_lib_type})
+endif()
 
 endif()
 

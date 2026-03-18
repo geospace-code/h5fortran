@@ -54,7 +54,9 @@ UTF8 characters are passed through on read and write using the Fortran default c
 * Zlib (deflate) compression / decompression -- h5fortran will work without Zlib, but will save/load uncompressed data only.
 * create HDF5 soft link variables--arbitrarily many soft-linked variable names can point to an actual variable, which need not yet exist.
 
-Tested on systems with HDF5 1.10, 1.12, 1.14, and 2.x including:
+Tested on systems with
+[HDF5](https://www.hdfgroup.org/2022/06/20/2022-hdf5-release-schedule/)
+1.10, 1.12, 1.14, and 2.x including:
 
 * MacOS (homebrew)
 * Linux (Ubuntu, CentOS)
