@@ -119,6 +119,10 @@ else()
   set(_hdf5_lib_type "static")
 endif()
 
+
+if(NOT TARGET HDF5::HDF5)
+# this is defined by our cmake/FindHDF5.cmake find_package(HDF5)
+
 add_library(HDF5::HDF5 INTERFACE IMPORTED)
 target_link_libraries(HDF5::HDF5 INTERFACE
 hdf5_hl_fortran-${_hdf5_lib_type}
@@ -126,6 +130,9 @@ hdf5_fortran-${_hdf5_lib_type}
 hdf5_hl-${_hdf5_lib_type}
 hdf5-${_hdf5_lib_type}
 )
+
+endif()
+
 
 if(NOT HDF5_FOUND)
 

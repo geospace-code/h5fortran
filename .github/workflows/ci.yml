@@ -243,7 +243,7 @@ jobs:
     - uses: ./.github/workflows/composite-cmake
 
     - name: configure
-      run: $CMAKE -Bbuild --install-prefix ${{ env.CMAKE_INSTALL_PREFIX }}
+      run: $CMAKE -Bbuild --install-prefix ${{ env.CMAKE_INSTALL_PREFIX }} --debug-find-pkg=HDF5
     # CMake env var CMAKE_INSTALL prefix is for CMake >= 3.29
 
     - name: build
