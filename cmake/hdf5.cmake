@@ -7,7 +7,6 @@ include(FetchContent)
 if(NOT DEFINED h5fortran_hdf5_req)
   set(h5fortran_hdf5_req dev)
 endif()
-# HDF5 1.10.x can't build Zlib for itself.
 # HDF5 2.0 and 2.1 require CMake >= 3.26, but the benefits are so great that this is worthwhile
 
 if(hdf5_parallel)
@@ -127,25 +126,22 @@ if(NOT TARGET HDF5::HDF5)
 # this is defined by our cmake/FindHDF5.cmake find_package(HDF5)
 
 add_library(HDF5::HDF5 INTERFACE IMPORTED)
+
+if(NOT HDF5_VERSION OR HDF5_VERSION VERSION_GREATER_EQUAL 1.14)
+# look under ${h5fortran_BINARY_DIR}/_deps/hdf5-build/hdf5-targets.cmake
+
 target_link_libraries(HDF5::HDF5 INTERFACE
 hdf5_hl_fortran-${_hdf5_lib_type}
 hdf5_fortran-${_hdf5_lib_type}
 hdf5_hl-${_hdf5_lib_type}
 hdf5-${_hdf5_lib_type}
 )
+endif()
 
 endif()
 
 
 if(NOT HDF5_FOUND)
-
-FetchContent_GetProperties(hdf5_zlib)
-# FetchContent project hdf5_zlib is within HDFGroup/HDF5 project
-
-if(IS_DIRECTORY hdf5_zlib_BINARY_DIR)
-  file(MAKE_DIRECTORY ${hdf5_zlib_BINARY_DIR}/mod/${_hdf5_lib_type})
-  target_include_directories(HDF5::HDF5 INTERFACE ${hdf5_zlib_BINARY_DIR}/mod/${_hdf5_lib_type})
-endif()
 
 file(MAKE_DIRECTORY ${CMAKE_Fortran_MODULE_DIRECTORY}/${_hdf5_lib_type})
 # avoid race condition "Imported target "HDF5::HDF5" includes non-existent path"
