@@ -73,21 +73,20 @@ ${_hdf5_fc_args}
 
 FetchContent_MakeAvailable(HDF5)
 
-if(h5fortran_IS_TOP_LEVEL AND HDF5_FOUND)
-  check_hdf5()
-endif()
-
-
 if(NOT TARGET HDF5::HDF5)
 
-if(EXISTS "${hdf5_SOURCE_DIR}/src/H5public.h")
-  set(_h5public_h "${hdf5_SOURCE_DIR}/src/H5public.h")
-elseif(EXISTS "${HDF5_C_INCLUDE_DIR}/H5public.h")
-  set(_h5public_h "${HDF5_C_INCLUDE_DIR}/H5public.h")
-else()
-  message(FATAL_ERROR "Cannot find H5public.h for HDF5 version extraction
-  ${HDF5_C_INCLUDE_DIR}")
-endif()
+if(NOT DEFINED HDF5_VERSION)
+
+set(_h5public_h)
+foreach(_hi IN ITEMS "${hdf5_SOURCE_DIR}/src/H5public.h" "${HDF5_DIR}/../../../include/H5public.h" "${HDF5_C_INCLUDE_DIR}/H5public.h")
+  if(EXISTS "${_hi}")
+    set(_h5public_h "${_hi}")
+    message(DEBUG "Found H5public.h at ${_h5public_h}")
+    break()
+  endif()
+endforeach()
+
+if(_h5public_h)
 
 # version extraction from HDF5 2.0 CMakeLists.txt
 file (READ ${_h5public_h} _h5public_h_contents)
@@ -101,28 +100,21 @@ string (REGEX REPLACE ".*#define[ \t]+H5_VERS_SUBRELEASE[ \t]+\"([0-9A-Za-z._-]*
     "\\1" H5_VERS_SUBRELEASE ${_h5public_h_contents})
 set(HDF5_VERSION "${H5_VERS_MAJOR}.${H5_VERS_MINOR}.${H5_VERS_RELEASE}")
 
-message(STATUS "Building HDF5 version ${HDF5_VERSION}")
+message(STATUS "HDF5 version ${HDF5_VERSION}")
+
+else()
+  message(WARNING "Could not find H5public.h to determine HDF5 version")
+endif()
+
+endif()
 
 # --- imported target
-
-FetchContent_GetProperties(hdf5_zlib)
-# FetchContent project hdf5_zlib is within HDFGroup/HDF5 project
-
-if(NOT DEFINED hdf5_zlib_BINARY_DIR)
-  message(FATAL_ERROR)
-endif()
 
 if(BUILD_SHARED_LIBS)
   set(_hdf5_lib_type "shared")
 else()
   set(_hdf5_lib_type "static")
 endif()
-
-file(MAKE_DIRECTORY
-  ${hdf5_zlib_BINARY_DIR}/mod/${_hdf5_lib_type}
-  ${CMAKE_Fortran_MODULE_DIRECTORY}/${_hdf5_lib_type}
-)
-# avoid race condition "Imported target "HDF5::HDF5" includes non-existent path"
 
 add_library(HDF5::HDF5 INTERFACE IMPORTED)
 target_link_libraries(HDF5::HDF5 INTERFACE
@@ -131,9 +123,31 @@ hdf5_fortran-${_hdf5_lib_type}
 hdf5_hl-${_hdf5_lib_type}
 hdf5-${_hdf5_lib_type}
 )
+
+if(NOT HDF5_FOUND)
+
+FetchContent_GetProperties(hdf5_zlib)
+# FetchContent project hdf5_zlib is within HDFGroup/HDF5 project
+
+if(NOT DEFINED hdf5_zlib_BINARY_DIR)
+  message(FATAL_ERROR)
+endif()
+
+file(MAKE_DIRECTORY
+  ${hdf5_zlib_BINARY_DIR}/mod/${_hdf5_lib_type}
+  ${CMAKE_Fortran_MODULE_DIRECTORY}/${_hdf5_lib_type}
+)
+# avoid race condition "Imported target "HDF5::HDF5" includes non-existent path"
+
 target_include_directories(HDF5::HDF5 INTERFACE
 ${hdf5_zlib_BINARY_DIR}/mod/${_hdf5_lib_type}
 ${CMAKE_Fortran_MODULE_DIRECTORY}/${_hdf5_lib_type}
 )
 
+endif()
+
+endif()
+
+if(h5fortran_IS_TOP_LEVEL AND HDF5_FOUND)
+  check_hdf5()
 endif()
