@@ -65,7 +65,10 @@ if(h5fortran_find OR CRAY)
       find_package(HDF5 COMPONENTS HL Fortran)
     endif()
   else()
-    set(_hdf5_fc_args FIND_PACKAGE_ARGS NAMES HDF5 COMPONENTS HL Fortran)
+    set(_hdf5_fc_args FIND_PACKAGE_ARGS COMPONENTS HL Fortran)
+    # don't specify any "full" find_package() signature parameters
+    # e.g. NAMES, as that disables the desirable MODULE search mode necessary
+    # for most Linux distros including HPC.
   endif()
 endif()
 
