@@ -17,6 +17,7 @@ on:
       - "**.F90"
       - "**/CMakeLists.txt"
       - "**.cmake"
+      - "CMakePresets.json"
       - ".github/workflows/**"
       - "!memcheck.cmake"
       - "!coverage.cmake"
