@@ -4,21 +4,31 @@
   "configurePresets": [
 {
   "name": "default",
-  "binaryDir": "${sourceDir}/build",
+  "binaryDir": "build",
   "cacheVariables": {
     "h5fortran_warning_as_error": true,
     "h5fortran_BUILD_TESTING": true,
     "h5fortran_find": true,
-    "h5fortran_python": true
+    "h5fortran_python": true,
+    "CMAKE_BUILD_TYPE": "Release"
+  }
+},
+{ "name": "debug", "inherits": "default",
+  "binaryDir": "build-debug",
+  "cacheVariables": {
+    "CMAKE_BUILD_TYPE": "Debug"
   }
 },
 {
-  "name": "multi", "inherits": "default",
-  "displayName": "Ninja Multi-Config",
-  "generator": "Ninja Multi-Config"
+  "name": "reldebug", "inherits": "default",
+  "binaryDir": "build-reldebug",
+  "displayName": "release with debug info",
+  "cacheVariables": {
+    "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+  }
 },
-{ "name": "shared", "inherits": "default",
-  "binaryDir": "${sourceDir}/build-shared",
+{ "name": "shared", "inherits": "reldebug",
+  "binaryDir": "build-shared",
   "displayName": "build shared libraries",
   "cacheVariables": {
     "BUILD_SHARED_LIBS": true,
@@ -27,8 +37,8 @@
   }
 },
 {
-  "name": "nofind", "inherits": "default",
-  "binaryDir": "${sourceDir}/build-nofind",
+  "name": "nofind", "inherits": "reldebug",
+  "binaryDir": "build-nofind",
   "displayName": "don't find HDF5 or Zlib",
   "cacheVariables": {
     "h5fortran_find": false
@@ -36,7 +46,7 @@
 },
 {
   "name": "coverage",
-  "binaryDir": "${sourceDir}/build-coverage",
+  "binaryDir": "build-coverage",
   "displayName": "Code Coverage",
   "description": "Build with code coverage enabled.",
   "cacheVariables": {
@@ -64,26 +74,14 @@
     "configurePreset": "default",
     "nativeToolOptions": ["-d", "stats"]
   },
-  {
-    "name": "release",
-    "configurePreset": "multi",
-    "configuration": "Release"
-  },
+  { "name": "release","configurePreset": "default" },
   {
     "name": "reldebug",
-    "configurePreset": "multi",
-    "configuration": "RelWithDebInfo",
+    "configurePreset": "reldebug",
     "displayName": "Release with Debug Info"
   },
-  {
-    "name": "debug",
-    "configurePreset": "multi",
-    "configuration": "Debug"
-  },
-  {
-    "name": "coverage",
-    "configurePreset": "coverage"
-  },
+  { "name": "debug", "configurePreset": "debug" },
+  { "name": "coverage", "configurePreset": "coverage" },
   {
     "name": "run-coverage",
     "configurePreset": "coverage",
@@ -108,22 +106,13 @@
 },
 { "name": "nofind", "configurePreset": "nofind", "inherits": "default" },
 { "name": "shared", "configurePreset": "shared", "inherits": "default" },
-{
-  "name": "release", "inherits": "default",
-  "configurePreset": "multi",
-  "configuration": "Release"
-},
+{ "name": "release", "inherits": "default" },
 {
   "name": "reldebug", "inherits": "default",
-  "configurePreset": "multi",
-  "configuration": "RelWithDebInfo",
+  "configurePreset": "reldebug",
   "displayName": "Release with Debug Info"
 },
-{
-  "name": "debug", "inherits": "default",
-  "configurePreset": "multi",
-  "configuration": "Debug"
-}
+{ "name": "debug", "inherits": "default", "configurePreset": "debug" }
 ],
 "workflowPresets": [
   {
@@ -137,7 +126,7 @@
   {
     "name": "debug",
     "steps": [
-      { "type": "configure", "name": "multi" },
+      { "type": "configure", "name": "debug" },
       { "type": "build", "name": "debug" },
       { "type": "test", "name": "debug" }
     ]
@@ -145,7 +134,7 @@
   {
     "name": "release",
     "steps": [
-      { "type": "configure", "name": "multi" },
+      { "type": "configure", "name": "default" },
       { "type": "build", "name": "release" },
       { "type": "test", "name": "release" }
     ]
