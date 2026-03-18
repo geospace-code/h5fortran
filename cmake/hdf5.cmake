@@ -2,7 +2,6 @@
 # note: the use of "lib" vs. CMAKE_*_LIBRARY_PREFIX is deliberate based on HDF5
 # across Intel Fortran on Windows (MSVC-like) vs. Gfortran on Windows vs. Linux.
 include(GNUInstallDirs)
-include(ExternalProject)
 include(FetchContent)
 
 if(NOT DEFINED hdf5_req)
@@ -37,7 +36,7 @@ set(HDF5_BUILD_CPP_LIB false)
 set(BUILD_TESTING false)
 set(HDF5_BUILD_EXAMPLES false)
 set(HDF5_BUILD_TOOLS true)
-set(HDF5_ENABLE_PARALLEL false)
+set(HDF5_ENABLE_PARALLEL ${hdf5_parallel})
 set(HDF5_BUILD_PARALLEL_TOOLS false)
 set(HDF5_ENABLE_NONSTANDARD_FEATURE_FLOAT16 OFF)
 set(HDF5_USE_GNU_DIRS ON)
@@ -54,19 +53,28 @@ endif()
 # -DHDF5_USE_GNU_DIRS:BOOL=ON  # new for 1.14
 # -DHDF5_ENABLE_ZLIB_SUPPORT:BOOL=ON switched from -DHDF5_ENABLE_Z_LIB_SUPPORT:BOOL=ON for HDF5 2.0
 
-# if(MPI_ROOT)
-#   list(APPEND hdf5_cmake_args -DMPI_ROOT:PATH=${MPI_ROOT})
-# endif()
-
 if(NOT hdf5_url)
   string(JSON hdf5_url GET ${json} "hdf5" "${hdf5_req}")
 endif()
 
-FetchContent_Declare(hdf5_upstream URL ${hdf5_url})
-FetchContent_MakeAvailable(hdf5_upstream)
+FetchContent_Declare(HDF5 URL ${hdf5_url})
+
+FetchContent_MakeAvailable(HDF5)
+
+
+if(NOT TARGET HDF5::HDF5)
+
+if(EXISTS "${hdf5_SOURCE_DIR}/src/H5public.h")
+  set(_h5public_h "${hdf5_SOURCE_DIR}/src/H5public.h")
+elseif(EXISTS "${HDF5_C_INCLUDE_DIR}/H5public.h")
+  set(_h5public_h "${HDF5_C_INCLUDE_DIR}/H5public.h")
+else()
+  message(FATAL_ERROR "Cannot find H5public.h for HDF5 version extraction
+  ${HDF5_C_INCLUDE_DIR}")
+endif()
 
 # version extraction from HDF5 2.0 CMakeLists.txt
-file (READ ${hdf5_upstream_SOURCE_DIR}/src/H5public.h _h5public_h_contents)
+file (READ ${_h5public_h} _h5public_h_contents)
 string (REGEX REPLACE ".*#define[ \t]+H5_VERS_MAJOR[ \t]+([0-9]*).*$"
     "\\1" H5_VERS_MAJOR ${_h5public_h_contents})
 string (REGEX REPLACE ".*#define[ \t]+H5_VERS_MINOR[ \t]+([0-9]*).*$"
@@ -81,24 +89,34 @@ message(STATUS "Building HDF5 version ${HDF5_VERSION}")
 
 # --- imported target
 
-
 FetchContent_GetProperties(hdf5_zlib)
 
 if(NOT DEFINED hdf5_zlib_BINARY_DIR)
   message(FATAL_ERROR)
 endif()
 
-file(MAKE_DIRECTORY ${hdf5_zlib_BINARY_DIR}/mod/static ${PROJECT_BINARY_DIR}/include/static)
+if(BUILD_SHARED_LIBS)
+  set(_hdf5_lib_type "shared")
+else()
+  set(_hdf5_lib_type "static")
+endif()
+
+file(MAKE_DIRECTORY 
+  ${hdf5_zlib_BINARY_DIR}/mod/${_hdf5_lib_type} 
+  ${CMAKE_Fortran_MODULE_DIRECTORY}/${_hdf5_lib_type}
+)
 # avoid race condition "Imported target "HDF5::HDF5" includes non-existent path"
 
 add_library(HDF5::HDF5 INTERFACE IMPORTED)
 target_link_libraries(HDF5::HDF5 INTERFACE
-hdf5_hl_fortran-static
-hdf5_fortran-static
-hdf5_hl-static
-hdf5-static
+hdf5_hl_fortran-${_hdf5_lib_type}
+hdf5_fortran-${_hdf5_lib_type}
+hdf5_hl-${_hdf5_lib_type}
+hdf5-${_hdf5_lib_type}
 )
 target_include_directories(HDF5::HDF5 INTERFACE
-${hdf5_zlib_BINARY_DIR}/mod/static
-${h5fortran_BINARY_DIR}/include/static
+${hdf5_zlib_BINARY_DIR}/mod/${_hdf5_lib_type}
+${CMAKE_Fortran_MODULE_DIRECTORY}/${_hdf5_lib_type}
 )
+
+endif()
