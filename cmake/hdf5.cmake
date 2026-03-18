@@ -142,20 +142,14 @@ if(NOT HDF5_FOUND)
 FetchContent_GetProperties(hdf5_zlib)
 # FetchContent project hdf5_zlib is within HDFGroup/HDF5 project
 
-if(NOT DEFINED hdf5_zlib_BINARY_DIR)
-  message(FATAL_ERROR)
+if(IS_DIRECTORY hdf5_zlib_BINARY_DIR)
+  file(MAKE_DIRECTORY ${hdf5_zlib_BINARY_DIR}/mod/${_hdf5_lib_type})
+  target_include_directories(HDF5::HDF5 INTERFACE ${hdf5_zlib_BINARY_DIR}/mod/${_hdf5_lib_type})
 endif()
 
-file(MAKE_DIRECTORY
-  ${hdf5_zlib_BINARY_DIR}/mod/${_hdf5_lib_type}
-  ${CMAKE_Fortran_MODULE_DIRECTORY}/${_hdf5_lib_type}
-)
+file(MAKE_DIRECTORY ${CMAKE_Fortran_MODULE_DIRECTORY}/${_hdf5_lib_type})
 # avoid race condition "Imported target "HDF5::HDF5" includes non-existent path"
-
-target_include_directories(HDF5::HDF5 INTERFACE
-${hdf5_zlib_BINARY_DIR}/mod/${_hdf5_lib_type}
-${CMAKE_Fortran_MODULE_DIRECTORY}/${_hdf5_lib_type}
-)
+target_include_directories(HDF5::HDF5 INTERFACE ${CMAKE_Fortran_MODULE_DIRECTORY}/${_hdf5_lib_type})
 
 endif()
 
