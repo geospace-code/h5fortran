@@ -132,7 +132,8 @@ jobs:
     - *checkout
 
     - name: GCC APT
-      if: matrix.gcc < 11
+    # GCC 9 was removed from Ubuntu 22.04 in May 2024
+      if: matrix.gcc < 10
       run: |
         sudo apt update -y
         sudo apt install -y --no-install-recommends gcc-${{ matrix.gcc }} g++-${{ matrix.gcc }} gfortran-${{ matrix.gcc }}
