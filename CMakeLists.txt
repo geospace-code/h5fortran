@@ -71,6 +71,15 @@ file(MAKE_DIRECTORY ${CMAKE_Fortran_MODULE_DIRECTORY})
 
 set_property(TARGET h5fortran PROPERTY VERSION ${h5fortran_VERSION})
 
+if(h5fortran_warning_as_error)
+  if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.24)
+    set_property(TARGET h5fortran PROPERTY COMPILE_WARNING_AS_ERROR true)
+  endif()
+  if(CMAKE_VERSION VERSION_GREATER_EQUAL 4.0)
+    set_property(TARGET h5fortran PROPERTY LINK_WARNING_AS_ERROR true)
+  endif()
+endif()
+
 add_library(h5fortran::h5fortran ALIAS h5fortran)
 
 
