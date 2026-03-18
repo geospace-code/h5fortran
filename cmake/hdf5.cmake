@@ -54,34 +54,15 @@ endif()
 
 file(READ ${CMAKE_CURRENT_LIST_DIR}/libraries.json json)
 
-# --- Zlib
-set(zlib_dep)
-
-if(TARGET ZLIB::ZLIB)
-  add_custom_target(ZLIB)
-elseif(h5fortran_find AND NOT build_zlib)
-  find_package(ZLIB)
-endif()
-
-if(NOT TARGET ZLIB::ZLIB)
-  set(zlib_dep DEPENDS ZLIB)
-  include(${CMAKE_CURRENT_LIST_DIR}/zlib.cmake)
-endif()
-
-# by now, Zlib certainly exists as a target
-if(NOT TARGET h5fortranZLIB::ZLIB)
-  add_library(h5fortranZLIB::ZLIB ALIAS ZLIB::ZLIB)
-endif()
-
 # --- HDF5
 # https://forum.hdfgroup.org/t/issues-when-using-hdf5-as-a-git-submodule-and-using-cmake-with-add-subdirectory/7189/2
 
 set(hdf5_cmake_args
 -DHDF5_ENABLE_Z_LIB_SUPPORT:BOOL=ON
 -DHDF5_ENABLE_ZLIB_SUPPORT:BOOL=ON
--DZLIB_USE_EXTERNAL:BOOL=OFF
+-DZLIB_USE_EXTERNAL:BOOL=ON
+-DHDF5_ALLOW_EXTERNAL_SUPPORT=TGZ
 -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
--DCMAKE_MODULE_PATH:PATH=${CMAKE_MODULE_PATH}
 -DHDF5_GENERATE_HEADERS:BOOL=false
 -DHDF5_DISABLE_COMPILER_WARNINGS:BOOL=true
 -DBUILD_STATIC_LIBS:BOOL=$<NOT:$<BOOL:${BUILD_SHARED_LIBS}>>
@@ -138,7 +119,6 @@ SOURCE_DIR ${hdf5_upstream_SOURCE_DIR}
 CMAKE_ARGS ${hdf5_cmake_args}
 BUILD_BYPRODUCTS ${HDF5_LIBRARIES}
 TEST_COMMAND ""
-${zlib_dep}
 CONFIGURE_HANDLED_BY_BUILD ON
 USES_TERMINAL_CONFIGURE true
 USES_TERMINAL_BUILD true
@@ -172,7 +152,6 @@ endif()
 find_package(Threads)
 
 target_link_libraries(HDF5::HDF5 INTERFACE
-h5fortranZLIB::ZLIB
 ${CMAKE_THREAD_LIBS_INIT}
 ${CMAKE_DL_LIBS}
 $<$<BOOL:${UNIX}>:m>
