@@ -66,14 +66,14 @@ else()
   set(_hdf5_fc_args FIND_PACKAGE_ARGS NAMES HDF5 COMPONENTS HL Fortran)
 endif()
 
+if(NOT TARGET HDF5::HDF5)
+
 FetchContent_Declare(HDF5
 URL ${hdf5_url}
 ${_hdf5_fc_args}
 )
 
 FetchContent_MakeAvailable(HDF5)
-
-if(NOT TARGET HDF5::HDF5)
 
 if(NOT DEFINED HDF5_VERSION)
 
