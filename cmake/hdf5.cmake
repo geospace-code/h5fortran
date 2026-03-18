@@ -6,14 +6,10 @@ include(ExternalProject)
 include(FetchContent)
 
 if(NOT DEFINED hdf5_req)
-  if(LINUX)
-    set(hdf5_req 1.10)
-  elseif(CMAKE_VERSION VERSION_GREATER_EQUAL 3.26)
-    set(hdf5_req 2.1)
-  else()
-    set(hdf5_req 1.14)
-  endif()
+  set(hdf5_req 2.1)
 endif()
+# HDF5 1.10.x can't build Zlib for itself.
+# HDF5 2.0 and 2.1 require CMake >= 3.26, but the benefits are so great this is worthwhile
 
 if(hdf5_parallel)
   find_package(MPI REQUIRED COMPONENTS C)
@@ -32,15 +28,17 @@ foreach(_name IN ITEMS hdf5_hl_fortran hdf5_hl_f90cstub hdf5_fortran hdf5_f90cst
     else()
       list(APPEND HDF5_LIBRARIES ${CMAKE_INSTALL_FULL_LIBDIR}/${CMAKE_SHARED_LIBRARY_PREFIX}${_name}${CMAKE_SHARED_LIBRARY_SUFFIX})
     endif()
-  elseif(hdf5_req VERSION_GREATER_EQUAL 1.14)
-    if(WIN32)
-      list(APPEND HDF5_LIBRARIES ${CMAKE_INSTALL_FULL_LIBDIR}/lib${_name}${CMAKE_STATIC_LIBRARY_SUFFIX})
-    else()
-      list(APPEND HDF5_LIBRARIES ${CMAKE_INSTALL_FULL_LIBDIR}/${CMAKE_STATIC_LIBRARY_PREFIX}${_name}${CMAKE_STATIC_LIBRARY_SUFFIX})
-    endif()
   else()
-    # need ${CMAKE_INSTALL_PREFIX}/lib as HDF5 didn't use GNUInstallDirs until HDF5 1.14
-    list(APPEND HDF5_LIBRARIES ${CMAKE_INSTALL_PREFIX}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}${_name}${CMAKE_STATIC_LIBRARY_SUFFIX})
+    if(hdf5_req VERSION_GREATER_EQUAL 1.14)
+      if(WIN32)
+        list(APPEND HDF5_LIBRARIES ${CMAKE_INSTALL_FULL_LIBDIR}/lib${_name}${CMAKE_STATIC_LIBRARY_SUFFIX})
+      else()
+        list(APPEND HDF5_LIBRARIES ${CMAKE_INSTALL_FULL_LIBDIR}/${CMAKE_STATIC_LIBRARY_PREFIX}${_name}${CMAKE_STATIC_LIBRARY_SUFFIX})
+      endif()
+    else()
+      # need ${CMAKE_INSTALL_PREFIX}/lib as HDF5 didn't use GNUInstallDirs until HDF5 1.14
+      list(APPEND HDF5_LIBRARIES ${CMAKE_INSTALL_PREFIX}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}${_name}${CMAKE_STATIC_LIBRARY_SUFFIX})
+    endif()
   endif()
 endforeach()
 
