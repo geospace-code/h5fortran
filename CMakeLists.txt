@@ -48,15 +48,8 @@ include(cmake/CheckHDF5.cmake)
 set(CMAKE_Fortran_MODULE_DIRECTORY ${h5fortran_BINARY_DIR}/${CMAKE_INSTALL_INCLUDEDIR})
 # HDF5 fetchcontent needs this at least for HDF5 2.0.0, 2.1.0, ...
 
-if(NOT TARGET HDF5::HDF5 AND (h5fortran_find OR CRAY))
-  find_package(HDF5 COMPONENTS HL Fortran)
-endif()
-
-if(h5fortran_IS_TOP_LEVEL AND HDF5_FOUND)
-  check_hdf5()
-elseif(NOT TARGET HDF5::HDF5)
-  include(cmake/hdf5.cmake)
-endif()
+# find or build HDF5
+include(cmake/hdf5.cmake)
 
 set(HDF5_VERSION ${HDF5_VERSION} CACHE STRING "HDF5 version")
 

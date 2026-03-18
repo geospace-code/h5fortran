@@ -42,7 +42,7 @@ set(HDF5_ENABLE_NONSTANDARD_FEATURE_FLOAT16 OFF)
 set(HDF5_USE_GNU_DIRS ON)
 
 if(NOT DEFINED CMAKE_Fortran_MODULE_DIRECTORY)
-  set(CMAKE_Fortran_MODULE_DIRECTORY ${h5fortran_BINARY_DIR}/${CMAKE_INSTALL_INCLUDEDIR})
+  set(CMAKE_Fortran_MODULE_DIRECTORY ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_INCLUDEDIR})
 endif()
 
 # -DHDF5_BUILD_PARALLEL_TOOLS:BOOL=false avoids error with HDF5 2.0 needing libMFU mpiFileUtils
@@ -57,9 +57,25 @@ if(NOT hdf5_url)
   string(JSON hdf5_url GET ${json} "hdf5" "${hdf5_req}")
 endif()
 
-FetchContent_Declare(HDF5 URL ${hdf5_url})
+if(CMAKE_VERSION VERSION_LESS 3.24)
+  if(NOT TARGET HDF5::HDF5 AND (h5fortran_find OR CRAY))
+    find_package(HDF5 COMPONENTS HL Fortran)
+  endif()
+  set(_hdf5_fc_args)
+else()
+  set(_hdf5_fc_args FIND_PACKAGE_ARGS NAMES HDF5 COMPONENTS HL Fortran)
+endif()
+
+FetchContent_Declare(HDF5
+URL ${hdf5_url}
+${_hdf5_fc_args}
+)
 
 FetchContent_MakeAvailable(HDF5)
+
+if(h5fortran_IS_TOP_LEVEL AND HDF5_FOUND)
+  check_hdf5()
+endif()
 
 
 if(NOT TARGET HDF5::HDF5)
@@ -90,6 +106,7 @@ message(STATUS "Building HDF5 version ${HDF5_VERSION}")
 # --- imported target
 
 FetchContent_GetProperties(hdf5_zlib)
+# FetchContent project hdf5_zlib is within HDFGroup/HDF5 project
 
 if(NOT DEFINED hdf5_zlib_BINARY_DIR)
   message(FATAL_ERROR)
@@ -101,8 +118,8 @@ else()
   set(_hdf5_lib_type "static")
 endif()
 
-file(MAKE_DIRECTORY 
-  ${hdf5_zlib_BINARY_DIR}/mod/${_hdf5_lib_type} 
+file(MAKE_DIRECTORY
+  ${hdf5_zlib_BINARY_DIR}/mod/${_hdf5_lib_type}
   ${CMAKE_Fortran_MODULE_DIRECTORY}/${_hdf5_lib_type}
 )
 # avoid race condition "Imported target "HDF5::HDF5" includes non-existent path"
