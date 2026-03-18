@@ -59,7 +59,7 @@ endif()
 
 
 set(_hdf5_fc_args)
-if(h5fortran_find OR CRAY)
+if(h5fortran_find)
   if(CMAKE_VERSION VERSION_LESS 3.24)
     if(NOT TARGET HDF5::HDF5)
       find_package(HDF5 COMPONENTS HL Fortran)
