@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20...4.2)
+cmake_minimum_required(VERSION 3.21...4.3)
 
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
   message(FATAL_ERROR "Please do out of source build like
@@ -27,15 +27,21 @@ if(h5fortran_python)
   find_package(Python COMPONENTS Interpreter)
 endif()
 
+include(options.cmake)
+
 if(DEFINED ENV{CONDA_PREFIX} AND h5fortran_IGNORE_CONDA_LIBRARIES)
   list(APPEND CMAKE_IGNORE_PREFIX_PATH $ENV{CONDA_PREFIX})
-  list(APPEND CMAKE_IGNORE_PATH $ENV{CONDA_PREFIX}/bin)
-  # need CMAKE_IGNORE_PATH for CMake < 3.23
-  # and to ensure system env var PATH doesn't interfere
+  list(APPEND CMAKE_IGNORE_PATH $ENV{CONDA_PREFIX}/bin $ENV{CONDA_PREFIX}/lib $ENV{CONDA_PREFIX}/include)
+  # need CMAKE_IGNORE_PATH to ensure env var PATH doesn't interfere
   # despite CMAKE_IGNORE_PREFIX_PATH
 endif()
 
-include(options.cmake)
+# --- RPATH handling for transitive dependencies
+if(h5fortran_ENABLE_RPATH AND NOT WIN32)
+  set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_FULL_LIBDIR}")
+  set(CMAKE_BUILD_RPATH "${CMAKE_INSTALL_FULL_LIBDIR}")
+endif()
+
 include(cmake/compilers.cmake)
 include(cmake/CheckHDF5.cmake)
 

@@ -56,13 +56,8 @@ jobs:
       run: cmake --install build
 
     - name: example workflow
-      run: cmake -S example -B example/build
-
-    - name: Build examples
-      run: cmake --build example/build
-
-    - name: Test examples
-      run: ctest --test-dir example/build -V
+      working-directory: example
+      run: cmake --workflow default
 
 
   gcc-new:
@@ -71,17 +66,9 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-24.04]
-        shared: [false]
         gcc: [12, 13, 14]
         include:
-        - os: ubuntu-24.04
-          shared: true
-          gcc: 14
         - os: macos-latest
-          shared: true
-          gcc: 15
-        - os: macos-latest
-          shared: false
           gcc: 15
 
     runs-on: ${{ matrix.os }}
@@ -103,13 +90,36 @@ jobs:
     - &unix
       uses: ./.github/workflows/composite-unix
 
+  shared:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+
+    env:
+      CC: gcc-14
+      FC: gfortran-14
+
+    steps:
+    - *checkout
+
+    - name: Build shared library
+      run: cmake --workflow shared
+
+    - name: install package
+      run: cmake --install build-shared
+
+    - name: example workflow
+      working-directory: example
+      run: cmake --workflow default
+
 
   gcc-old:
     timeout-minutes: 15
 
     strategy:
       matrix:
-        shared: [false]
         gcc: [9, 10, 11]
 
     runs-on: ubuntu-22.04
@@ -219,7 +229,7 @@ jobs:
 
     strategy:
       matrix:
-        cmake_version: ["3.20.6"]
+        cmake_version: ["3.21.7"]
         find: [true, false]
 
     steps:

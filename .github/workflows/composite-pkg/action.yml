@@ -1,4 +1,5 @@
-name: "pkgs"
+name: prereqs
+description: Install prerequisites for testing and coverage
 
 runs:
 

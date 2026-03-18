@@ -18,6 +18,15 @@
   "displayName": "Ninja Multi-Config",
   "generator": "Ninja Multi-Config"
 },
+{ "name": "shared", "inherits": "default",
+  "binaryDir": "${sourceDir}/build-shared",
+  "displayName": "build shared libraries",
+  "cacheVariables": {
+    "BUILD_SHARED_LIBS": true,
+    "h5fortran_ENABLE_RPATH": true,
+    "h5fortran_find": false
+  }
+},
 {
   "name": "nofind", "inherits": "default",
   "binaryDir": "${sourceDir}/build-nofind",
@@ -38,8 +47,9 @@
 }
 ],
 "buildPresets": [
-  { "name": "default", "configurePreset": "default" },
-  { "name": "nofind",  "configurePreset": "nofind" },
+  { "name": "default", "configurePreset": "default", "jobs": 0 },
+  { "name": "nofind",  "configurePreset": "nofind", "inherits": "default" },
+  { "name": "shared",  "configurePreset": "shared", "inherits": "default" },
   {
     "name": "explain",
     "configurePreset": "default",
@@ -93,10 +103,12 @@
     "noTestsAction": "error",
     "scheduleRandom": true,
     "stopOnFailure": false,
+    "jobs": 0,
     "timeout": 60
   }
 },
 { "name": "nofind", "configurePreset": "nofind", "inherits": "default" },
+{ "name": "shared", "configurePreset": "shared", "inherits": "default" },
 {
   "name": "release", "inherits": "default",
   "configurePreset": "multi",
@@ -137,6 +149,14 @@
       { "type": "configure", "name": "multi" },
       { "type": "build", "name": "release" },
       { "type": "test", "name": "release" }
+    ]
+  },
+  {
+    "name": "shared",
+    "steps": [
+      { "type": "configure", "name": "shared" },
+      { "type": "build", "name": "shared" },
+      { "type": "test", "name": "shared" }
     ]
   },
   {

@@ -1,16 +1,11 @@
-name: "build-test-install-example"
+name: build-example
+description: Build and test examples
 
 runs:
 
-  using: "composite"
+  using: composite
 
   steps:
-
-  - name: Configure
-    shell: bash
-    run: >-
-      cmake --preset multi
-      -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
 
   - name: Build / test Debug
     shell: bash

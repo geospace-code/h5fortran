@@ -109,11 +109,21 @@ EXECUTABLE ${CMAKE_CTEST_COMMAND}
 )
 endif()
 
-# --- Windows shared DLLs
-if(WIN32 AND CMAKE_VERSION VERSION_GREATER_EQUAL 3.22)
+# CMake >= 3.22
+if(BUILD_SHARED_LIBS)
+if(WIN32)
   set_property(TEST ${test_names} PROPERTY
-  ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:${ZLIB_INCLUDE_DIRS}/../bin;PATH=path_list_prepend:${ZLIB_INCLUDE_DIR}/../bin"
+  ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:${CMAKE_INSTALL_FULL_BINDIR};PATH=path_list_prepend:${CMAKE_PREFIX_PATH}/bin;PATH=path_list_prepend:${PROJECT_BINARY_DIR}"
   )
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+  set_property(TEST ${test_names} PROPERTY
+  ENVIRONMENT_MODIFICATION "LIBRARY_PATH=path_list_prepend:${CMAKE_INSTALL_FULL_LIBDIR};LIBRARY_PATH=path_list_prepend:${PROJECT_BINARY_DIR}"
+  )
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+  set_property(TEST ${test_names} PROPERTY
+  ENVIRONMENT_MODIFICATION "LD_LIBRARY_PATH=path_list_prepend:${CMAKE_INSTALL_FULL_LIBDIR};LD_LIBRARY_PATH=path_list_prepend:${PROJECT_BINARY_DIR}"
+  )
+endif()
 endif()
 
 # --- attributes
