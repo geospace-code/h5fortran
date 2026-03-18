@@ -24,10 +24,6 @@ set(ZLIBNG_USE_EXTERNAL OFF)
 
 set(ZLIB_USE_LOCALCONTENT OFF)
 
-# this is intentional for HDF5 1.10 ZLIB, which fails to build Zlib despite trying
-# users need their own Zlib if using HDF5 1.10. For HDF5 >= 1.14, HDF5 can build its own Zlib.
-set(ZLIB_USE_EXTERNAL ON)
-
 set(HDF5_ALLOW_EXTERNAL_SUPPORT TGZ)
 set(BUILD_STATIC_LIBS ON)
 set(CMAKE_BUILD_TYPE Release)
@@ -37,6 +33,16 @@ set(HDF5_GENERATE_HEADERS OFF CACHE BOOL "Generate HDF5 headers" FORCE)
 set(HDF5_PACKAGE_EXTLIBS ON CACHE BOOL "HDF5 package external dependencies" FORCE)
 set(HDF5_DISABLE_COMPILER_WARNINGS ON CACHE BOOL "Disable compiler warnings in HDF5 build" FORCE)
 
+if(h5fortran_hdf5_req STREQUAL "dev" OR h5fortran_hdf5_req VERSION_GREATER_EQUAL "2.0")
+  set(ZLIB_USE_EXTERNAL ON)
+# HDF5 1.10 ZLIB fails to build Zlib despite trying
+# HDF5 1.14 ZLIB refuses to try to build, so we get silent failure of compression support
+# users need their own Zlib if using HDF5 < 2.x
+endif()
+
+
+# HDF5 1.10 and 1.14 use HDF5_ENABLE_Z_LIB_SUPPORT
+# HDF5 2.x uses HDF5_ENABLE_ZLIB_SUPPORT
 set(HDF5_ENABLE_Z_LIB_SUPPORT ON CACHE BOOL "Enable ZLib support" FORCE)
 
 set(HDF5_BUILD_FORTRAN ON CACHE BOOL "Build Fortran bindings" FORCE)
