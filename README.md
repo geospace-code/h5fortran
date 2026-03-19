@@ -23,7 +23,8 @@ call h5read('my.h5', '/y', y)
 For NetCDF4 see
 [nc4fortran](https://github.com/geospace-code/nc4fortran/).
 h5fortran is designed for "serial" HDF5 read/write.
-[h5fortran-mpi](https://github.com/geospace-code/h5fortran-mpi) is a Fortran interface for "parallel" HDF5.
+[h5fortran-mpi](https://github.com/geospace-code/h5fortran-mpi)
+is a Fortran interface for "parallel" HDF5.
 
 h5fortran is designed for easy use using static or shared linking from your project via:
 
@@ -32,6 +33,8 @@ h5fortran is designed for easy use using static or shared linking from your proj
 * CMake [FetchContent (example)](https://gist.github.com/scivision/671633df71c5aaef7866d0c3a1504116)
 * CMake + Git submodule
 * Fortran Package Manager (fpm)
+
+If using CMake, h5fortran will automatically build the HDF5 library (and Zlib if HDF5 2.x) from source if a compiler-compatible HDF5 is not found on the system.
 
 Uses Fortran `submodule` for clean template structure.
 This easy-to-use, thin object-oriented modern Fortran library abstracts away the messy parts of HDF5 so that you can read / write various types/ranks of data with a single command.
