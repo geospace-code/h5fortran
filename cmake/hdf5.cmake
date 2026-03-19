@@ -28,16 +28,20 @@ set(HDF5_ALLOW_EXTERNAL_SUPPORT TGZ)
 set(BUILD_STATIC_LIBS ON)
 set(CMAKE_BUILD_TYPE Release)
 
-# --- HDF5 1.10 needs this due to CMP0077
-set(HDF5_GENERATE_HEADERS OFF CACHE BOOL "Generate HDF5 headers" FORCE)
-set(HDF5_PACKAGE_EXTLIBS ON CACHE BOOL "HDF5 package external dependencies" FORCE)
-set(HDF5_DISABLE_COMPILER_WARNINGS ON CACHE BOOL "Disable compiler warnings in HDF5 build" FORCE)
+set(HDF5_GENERATE_HEADERS OFF)
+set(HDF5_PACKAGE_EXTLIBS ON)
+set(HDF5_DISABLE_COMPILER_WARNINGS ON)
 
 if(h5fortran_hdf5_req STREQUAL "dev" OR h5fortran_hdf5_req VERSION_GREATER_EQUAL "2.0")
   set(ZLIB_USE_EXTERNAL ON)
-# HDF5 1.10 ZLIB fails to build Zlib despite trying
-# HDF5 1.14 ZLIB refuses to try to build, so we get silent failure of compression support
+
 # users need their own Zlib if using HDF5 < 2.x
+elseif(h5fortran_hdf5_req MATCHES "^1\.(10|14)$")
+  # HDF5 1.10 and 1.14 ZLIB fails to build Zlib despite trying
+  # Error copying directory from "/" to "<build_dir>_deps/hdf5_zlib-src": Permission denied
+  # set(ZLIB_USE_EXTERNAL ON CACHE BOOL "Use External Library Building for ZLIB else search" FORCE)
+  # 1.14 also needs:
+  # set(HDF5_ALLOW_EXTERNAL_SUPPORT "TGZ" CACHE STRING "Allow External Support for TGZ" FORCE)
 endif()
 
 
