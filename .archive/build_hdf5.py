@@ -78,7 +78,7 @@ def cli():
         raise FileExistsError(
             f"""
 HDF5 library already installed under:
-{dirs['prefix']}
+{dirs["prefix"]}
 Please pick a new install location or completely remove the old HDF5 install directory.
 Otherwise, HDF5 will fail to link correctly with prior version and this version mixed."""
         )
@@ -206,7 +206,7 @@ def hdf5(
             f"-DZLIB_INCLUDE_DIR:PATH={dirs['zlib']}/include",
             "-DHDF5_ENABLE_Z_LIB_SUPPORT:BOOL=true",
             "-DZLIB_USE_EXTERNAL:BOOL=false",
-            "-DUSE_LIBAEC:bool=true"
+            "-DUSE_LIBAEC:bool=true",
             # the options below didn't work for building with HDF5 1.10.7
             # "-DZLIB_USE_EXTERNAL:BOOL=true"
             # "-DHDF5_ENABLE_Z_LIB_SUPPORT:BOOL=true",
@@ -285,7 +285,10 @@ def git_download(path: Path, repo: str, tag: str):
 
 
 def url_retrieve(
-    url: str, outfile: Path, filehash: tuple[str, str] = None, overwrite: bool = False
+    url: str,
+    outfile: Path,
+    filehash: tuple[str, str] | None = None,
+    overwrite: bool = False,
 ):
     """
     Parameters

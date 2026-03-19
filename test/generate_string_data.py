@@ -15,7 +15,6 @@ P = p.parse_args()
 fn = Path(P.file).expanduser()
 
 with h5py.File(fn, "w") as f:
-
     """H5T_STR_NULLTERM"""
     v = f.create_dataset("/variable", data="Hello World!")
     v.attrs["smiley"] = "😀"

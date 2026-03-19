@@ -56,7 +56,7 @@ UTF8 characters are passed through on read and write using the Fortran default c
 
 Tested on systems with
 [HDF5](https://www.hdfgroup.org/2022/06/20/2022-hdf5-release-schedule/)
-1.10, 1.12, 1.14, and 2.x including:
+1.10, 1.14, 2.1, 2.2, ... including:
 
 * MacOS (homebrew)
 * Linux (Ubuntu, CentOS)
@@ -67,7 +67,7 @@ Tested on systems with
 
 Compilers known to work (tested on CI) include:
 
-* GCC (gfortran) &ge; 9
+* GCC (gfortran) &ge; 8
 * LLVM (flang) &ge; 18
 * Intel oneAPI &ge; 2021
 
