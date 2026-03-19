@@ -105,7 +105,7 @@ procedure read_char0, read_char1, read_char2, read_char3, read_char4, read_char5
 end interface
 
 public :: hdf5_is_initialized
-public :: hdf5_file, hdf5_close, h5write, h5read, h5exist, is_hdf5, h5write_attr, h5read_attr, hdf5version
+public :: hdf5_file, hdf5_close, h5write, h5read, h5exist, is_hdf5, h5write_attr, h5read_attr, hdf5version, hdf5has_deflate
 !! for users
 public :: hdf_shape_check, hdf_rank_check, hdf_get_slice, id2name, get_obj_class, estop
 !! for submodules only
@@ -374,6 +374,7 @@ character(*), intent(in) :: dset_name
 end function
 
 module logical function get_deflate(self, dname)
+!! does this dataset use deflate (zlib) compression filter
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: dname
 end function
@@ -708,6 +709,10 @@ end subroutine
 module integer function hdf5version() result(v)
 !! tell HDF5 library version (major, minor, release)
 dimension :: v(3)
+end function
+
+module logical function hdf5has_deflate()
+!! check if HDF5 library has deflate (zlib) compression filter available
 end function
 
 module subroutine hdf5_close()

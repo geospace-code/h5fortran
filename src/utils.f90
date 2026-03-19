@@ -12,7 +12,8 @@ H5F_ACC_RDONLY_F, H5F_ACC_RDWR_F, H5F_ACC_TRUNC_F, H5F_ACC_EXCL_F, &
 H5F_OBJ_FILE_F, H5F_OBJ_GROUP_F, H5F_OBJ_DATASET_F, H5F_OBJ_DATATYPE_F, H5F_OBJ_ALL_F, &
 H5D_CONTIGUOUS_F, H5D_CHUNKED_F, H5D_COMPACT_F, &
 H5I_FILE_F, &
-H5S_SELECT_SET_F
+H5S_SELECT_SET_F, &
+H5Zfilter_avail_f, H5Z_FILTER_DEFLATE_F
 
 implicit none
 
@@ -250,24 +251,28 @@ end procedure
 
 
 module procedure destructor
-
 if (.not. self%is_open()) return
 
 print '(a)', "auto-closing " // self%filename
 call self%close()
-
-end procedure destructor
+end procedure
 
 
 module procedure hdf5version
-
 integer :: ierr
 
 !> get library version
 call h5get_libversion_f(v(1), v(2), v(3), ierr)
 if (ierr/=0) error stop 'ERROR:h5fortran: HDF5 library get version'
+end procedure
 
-end procedure hdf5version
+
+module procedure hdf5has_deflate
+integer :: ierr
+
+call H5Zfilter_avail_f(H5Z_FILTER_DEFLATE_F, hdf5has_deflate, ierr)
+if (ierr/=0) error stop 'ERROR:h5fortran: HDF5 library get filter available: deflate'
+end procedure
 
 
 module procedure hdf5_close

@@ -6,7 +6,7 @@ program test_deflate
 
 use, intrinsic:: iso_fortran_env, only: int32, int64, real32, real64, stderr=>error_unit
 
-use h5fortran, only: hdf5_file
+use h5fortran, only: hdf5_file, hdf5has_deflate
 
 implicit none
 
@@ -14,6 +14,7 @@ character(*), parameter :: fn1='deflate1.h5', fn2='deflate2.h5', fn3='deflate3.h
 integer, parameter :: N(2) = [50, 1000], &
 MIN_COMP = 2  !< lots of CPUs, smaller arrays => poorer compression
 
+if (.not. hdf5has_deflate()) error stop "ERROR:h5fortran: deflate filter not available in HDF5 library"
 
 call test_write_deflate(fn1, N)
 print *,'OK: HDF5 write deflate'

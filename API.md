@@ -20,6 +20,13 @@ use h5fortran, only : hdf5version
 print *, hdf5version()
 ```
 
+Does HDF5 library have deflate filter for compression?
+
+```fortran
+use h5fortran, only : hdf5has_deflate
+if (hdf5has_deflate()) print *, "HDF5 library has Zlib deflate filter for compression"
+```
+
 ## Character variables
 
 Character variables are also supported for datasets and attributes.
