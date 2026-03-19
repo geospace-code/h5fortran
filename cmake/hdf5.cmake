@@ -18,13 +18,12 @@ file(READ ${CMAKE_CURRENT_LIST_DIR}/libraries.json json)
 # --- HDF5
 # https://forum.hdfgroup.org/t/issues-when-using-hdf5-as-a-git-submodule-and-using-cmake-with-add-subdirectory/7189/2
 
-set(HDF5_ENABLE_ZLIB_SUPPORT ON)
-set(HDF5_USE_ZLIB_NG OFF)
-set(ZLIBNG_USE_EXTERNAL OFF)
+if(h5fortran_hdf5_zlib)
+  set(HDF5_ENABLE_ZLIB_SUPPORT ON)
+endif()
 
 set(ZLIB_USE_LOCALCONTENT OFF)
 
-set(HDF5_ALLOW_EXTERNAL_SUPPORT TGZ)
 set(BUILD_STATIC_LIBS ON)
 set(CMAKE_BUILD_TYPE Release)
 
@@ -34,6 +33,9 @@ set(HDF5_DISABLE_COMPILER_WARNINGS ON)
 
 if(h5fortran_hdf5_req STREQUAL "dev" OR h5fortran_hdf5_req VERSION_GREATER_EQUAL "2.0")
   set(ZLIB_USE_EXTERNAL ON)
+  set(HDF5_USE_ZLIB_NG ON)
+  set(ZLIBNG_USE_EXTERNAL ON)
+  set(HDF5_ALLOW_EXTERNAL_SUPPORT TGZ)
 
 # users need their own Zlib if using HDF5 < 2.x
 elseif(h5fortran_hdf5_req MATCHES "^1\.(10|14)$")

@@ -8,7 +8,7 @@ type(hdf5_file) :: h5f
 ```
 
 GZip compression may be applied for rank &ge; 2 arrays by setting `comp_lvl` to a value between 1 and 9.
-Shuffle filter is automatically applied for better compression
+Shuffle filter is automatically applied for better compression.
 `h5f%open(..., 'comp_lvl=1')` option enables GZIP compression., where comp_lvl is from 1 to 9.
 Bigger comp_lvl gives more compression but is slower to write.
 
