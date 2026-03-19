@@ -792,7 +792,7 @@ endfunction(check_fortran_links)
 
 function(check_hdf5_link)
 
-# HDF5 bug #3663 for HDF5 1.14.2..2.0.0 at least
+# HDF5 bug #3663 for HDF5 1.14.2..2.1
 # https://github.com/HDFGroup/hdf5/issues/3663
 # we have it here too so that the link test works without the *targets.cmake files
 if(WIN32 AND CMAKE_Fortran_COMPILER_ID MATCHES "^Intel")
