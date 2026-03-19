@@ -14,21 +14,21 @@ p = 42
 !! check that repeated calls to h5open_f() do not cause problems as per docs
 !! not calling h5open_f() at all makes failures as library isn't initialized
 !! unlike C HDF5, Fortran HDF5 does not auto-initialize.
-call h5open_f(i)
-if(i /= 0) error stop "test_minimal: h5open_f failed [0]"
+call H5open_f(i)
+if(i /= 0) error stop "test_minimal: H5open_f failed [0]"
 
-call h5open_f(i)
-if(i /= 0) error stop "test_minimal: h5open_f failed [1]"
+call H5open_f(i)
+if(i /= 0) error stop "test_minimal: H5open_f failed [1]"
 
-call h5fcreate_f(filename, H5F_ACC_TRUNC_F, lid, i)
+call H5Fcreate_f(filename, H5F_ACC_TRUNC_F, lid, i)
 if (i/=0) error stop 'minimal: could not create file'
 print *, 'minimal: created '//filename
 
-call h5ltmake_dataset_f(lid, "A", 0, shape(p, kind=HSIZE_T), h5kind_to_type(kind(p),H5_INTEGER_KIND), p, i)
+call H5LTmake_dataset_f(lid, "A", 0, shape(p, kind=HSIZE_T), h5kind_to_type(kind(p),H5_INTEGER_KIND), p, i)
 if (i/=0) error stop 'minimal: could not create dataset A'
 print *, 'minimal: created variable'
 
-call h5fclose_f(lid, i)
+call H5Fclose_f(lid, i)
 if (i/=0) error stop 'minimal: could not close file'
 print *, 'minimal: closed '//filename
 

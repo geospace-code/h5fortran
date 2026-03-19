@@ -13,7 +13,7 @@ H5F_OBJ_FILE_F, H5F_OBJ_GROUP_F, H5F_OBJ_DATASET_F, H5F_OBJ_DATATYPE_F, H5F_OBJ_
 H5D_CONTIGUOUS_F, H5D_CHUNKED_F, H5D_COMPACT_F, &
 H5I_FILE_F, &
 H5S_SELECT_SET_F, &
-H5Zfilter_avail_f, H5Z_FILTER_DEFLATE_F
+H5Zfilter_avail_f, H5Z_FILTER_DEFLATE_F, H5Z_FILTER_SHUFFLE_F, H5Z_FILTER_FLETCHER32_F
 
 implicit none
 
@@ -272,6 +272,22 @@ integer :: ierr
 
 call H5Zfilter_avail_f(H5Z_FILTER_DEFLATE_F, hdf5has_deflate, ierr)
 if (ierr/=0) error stop 'ERROR:h5fortran: HDF5 library get filter available: deflate'
+end procedure
+
+
+module procedure hdf5has_shuffle
+integer :: ierr
+
+call H5Zfilter_avail_f(H5Z_FILTER_SHUFFLE_F, hdf5has_shuffle, ierr)
+if (ierr/=0) error stop 'ERROR:h5fortran: HDF5 library get filter available: shuffle'
+end procedure
+
+
+module procedure hdf5has_fletcher32
+integer :: ierr
+
+call H5Zfilter_avail_f(H5Z_FILTER_FLETCHER32_F, hdf5has_fletcher32, ierr)
+if (ierr/=0) error stop 'ERROR:h5fortran: HDF5 library get filter available: fletcher32'
 end procedure
 
 

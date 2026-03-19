@@ -27,6 +27,21 @@ use h5fortran, only : hdf5has_deflate
 if (hdf5has_deflate()) print *, "HDF5 library has Zlib deflate filter for compression"
 ```
 
+Does HDF5 library have Shuffle preprocessor to aid in compression?
+
+```fortran
+use h5fortran, only : hdf5has_shuffle
+if (hdf5has_shuffle()) print *, "HDF5 library has Shuffle preprocessor to aid in compression"
+```
+
+Does HDF5 library have Fletcher32 checksum filter for data integrity?
+
+```fortran
+use h5fortran, only : hdf5has_fletcher32
+if (hdf5has_fletcher32()) print *, "HDF5 library has Fletcher32 checksum filter for data integrity"
+```
+
+
 ## Character variables
 
 Character variables are also supported for datasets and attributes.

@@ -105,7 +105,8 @@ procedure read_char0, read_char1, read_char2, read_char3, read_char4, read_char5
 end interface
 
 public :: hdf5_is_initialized
-public :: hdf5_file, hdf5_close, h5write, h5read, h5exist, is_hdf5, h5write_attr, h5read_attr, hdf5version, hdf5has_deflate
+public :: hdf5_file, hdf5_close, h5write, h5read, h5exist, is_hdf5, h5write_attr, h5read_attr, hdf5version
+public :: hdf5has_deflate, hdf5has_shuffle, hdf5has_fletcher32
 !! for users
 public :: hdf_shape_check, hdf_rank_check, hdf_get_slice, id2name, get_obj_class, estop
 !! for submodules only
@@ -713,6 +714,17 @@ end function
 
 module logical function hdf5has_deflate()
 !! check if HDF5 library has deflate (zlib) compression filter available
+!! program must have called H5open_f first, or it's always false
+end function
+
+module logical function hdf5has_shuffle()
+!! check if HDF5 library has shuffle filter available
+!! program must have called H5open_f first, or it's always false
+end function
+
+module logical function hdf5has_fletcher32()
+!! check if HDF5 library has fletcher32 filter available
+!! program must have called H5open_f first, or it's always false
 end function
 
 module subroutine hdf5_close()

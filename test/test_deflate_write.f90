@@ -6,15 +6,24 @@ program test_deflate
 
 use, intrinsic:: iso_fortran_env, only: int32, int64, real32, real64, stderr=>error_unit
 
-use h5fortran, only: hdf5_file, hdf5has_deflate
+use h5fortran, only: hdf5_file, hdf5has_deflate, hdf5has_shuffle, hdf5has_fletcher32
+
+use hdf5, only: H5open_f, H5close_f
 
 implicit none
 
 character(*), parameter :: fn1='deflate1.h5', fn2='deflate2.h5', fn3='deflate3.h5'
-integer, parameter :: N(2) = [50, 1000], &
-MIN_COMP = 2  !< lots of CPUs, smaller arrays => poorer compression
+integer, parameter :: N(2) = [50, 1000]
+integer, parameter :: MIN_COMP = 2  !< lots of CPUs, smaller arrays => poorer compression
+integer :: ierr
 
-if (.not. hdf5has_deflate()) error stop "ERROR:h5fortran: deflate filter not available in HDF5 library"
+! ---- unlike C HDF5, Fortran HDF5 does not auto-initialize, so the has* calls would be falsely .false. without this call
+call H5open_f(ierr)
+if(ierr /= 0) error stop "test_deflate_write: H5open_f failed"
+
+if (.not. hdf5has_shuffle())    error stop "shuffle filter not available in HDF5 library"
+if (.not. hdf5has_fletcher32()) error stop "fletcher32 filter not available in HDF5 library"
+if (.not. hdf5has_deflate())    error stop "ERROR:h5fortran: deflate filter not available in HDF5 library"
 
 call test_write_deflate(fn1, N)
 print *,'OK: HDF5 write deflate'
@@ -24,6 +33,7 @@ print *,'OK: HDF5 compress whole'
 
 call test_deflate_slice(fn3, N)
 print *,'OK: HDF5 compress slice'
+
 
 contains
 
