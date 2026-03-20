@@ -53,12 +53,28 @@ jobs:
     - name: Build HDF5, h5fortran and test h5fortran
       run: cmake --workflow default
 
+    - name: Upload log failure
+      if: failure()
+      uses: actions/upload-artifact@v7
+      with:
+        archive: false
+        name: main-${{ runner.os }}-CMakeConfigureLog.yaml
+        path: build/CMakeFiles/CMakeConfigureLog.yaml
+
     - name: install package
       run: cmake --install build
 
     - name: example workflow
       working-directory: example
       run: cmake --workflow default
+
+    - name: Upload log failure
+      if: failure()
+      uses: actions/upload-artifact@v7
+      with:
+        archive: false
+        name: example-${{ runner.os }}-CMakeConfigureLog.yaml
+        path: example/build/CMakeFiles/CMakeConfigureLog.yaml
 
 
   gcc-new:
@@ -169,7 +185,7 @@ jobs:
     - *checkout
 
     - name: CMake build & test
-      run: cmake --workflow nofind
+      run: cmake --workflow default
 
 
 # not a meaningful need for this in a pure fortran program
@@ -218,7 +234,7 @@ jobs:
     - name: Code coverage
       run: cmake --build --parallel --preset run-coverage
 
-    - uses: actions/upload-artifact@v6
+    - uses: actions/upload-artifact@v7
       with:
         name: coverage-report-html
         path: build-coverage/coverage/
