@@ -9,6 +9,7 @@ project(h5fortran
 LANGUAGES C Fortran
 VERSION 4.12.0
 )
+# C language is only needed for FindHDF5 algorithms, not for the h5fortran project itself
 
 include(CTest)
 
@@ -61,6 +62,7 @@ $<BUILD_INTERFACE:${CMAKE_Fortran_MODULE_DIRECTORY}>
 $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 target_link_libraries(h5fortran PUBLIC HDF5::HDF5)
+target_compile_options(h5fortran PRIVATE ${h5fortran_fflags})
 
 file(MAKE_DIRECTORY ${CMAKE_Fortran_MODULE_DIRECTORY})
 # avoid race condition when used by parent projects

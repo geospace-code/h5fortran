@@ -10,42 +10,25 @@ end program"
 HAVE_IEEE_ARITH
 )
 
-# --- C compile flags
-if(CMAKE_C_COMPILER_ID MATCHES "Clang|GNU|^Intel")
-  add_compile_options(
-  "$<$<AND:$<COMPILE_LANGUAGE:C>,$<CONFIG:Debug>>:-Wextra>"
-  "$<$<AND:$<COMPILE_LANGUAGE:C>,$<CONFIG:Debug,RelWithDebInfo>>:-Wall>"
-  "$<$<COMPILE_LANGUAGE:C>:-Werror=implicit-function-declaration>"
-  )
-elseif(CMAKE_C_COMPILER_ID MATCHES "MSVC")
-  add_compile_options("$<$<COMPILE_LANGUAGE:C>:/W3>")
-endif()
-
-if(WIN32)
-  if(CMAKE_C_COMPILER_ID MATCHES "^Intel|MSVC")
-    add_compile_options($<$<AND:$<COMPILE_LANGUAGE:C>,$<CONFIG:Debug>>:/Od>)
-  endif()
-elseif(CMAKE_C_COMPILER_ID MATCHES "^Intel")
-  add_compile_options($<$<AND:$<COMPILE_LANGUAGE:C>,$<CONFIG:Debug>>:-O0>)
-endif()
+set(h5fortran_fflags)
 
 # --- Fortran compile flags
 if(CMAKE_Fortran_COMPILER_ID MATCHES "^Intel")
 
-add_compile_options(
+list(APPEND h5fortran_fflags
 "$<$<AND:$<COMPILE_LANGUAGE:Fortran>,$<CONFIG:Debug,RelWithDebInfo>>:-warn>"
 "$<$<AND:$<COMPILE_LANGUAGE:Fortran>,$<CONFIG:Debug>>:-traceback;-check;-debug>"
 )
 
 if(WIN32)
-  add_compile_options($<$<AND:$<COMPILE_LANGUAGE:Fortran>,$<CONFIG:Debug>>:/Od>)
+  list(APPEND h5fortran_fflags "$<$<AND:$<COMPILE_LANGUAGE:Fortran>,$<CONFIG:Debug>>:/Od>")
 else()
-  add_compile_options($<$<AND:$<COMPILE_LANGUAGE:Fortran>,$<CONFIG:Debug>>:-O0>)
+  list(APPEND h5fortran_fflags "$<$<AND:$<COMPILE_LANGUAGE:Fortran>,$<CONFIG:Debug>>:-O0>")
 endif()
 
 elseif(CMAKE_Fortran_COMPILER_ID STREQUAL "GNU")
 
-add_compile_options(
+list(APPEND h5fortran_fflags
 "$<$<AND:$<COMPILE_LANGUAGE:Fortran>,$<CONFIG:Debug,RelWithDebInfo>>:-Wall>"
 "$<$<COMPILE_LANGUAGE:Fortran>:-fimplicit-none;-Wno-maybe-uninitialized>"
 "$<$<AND:$<COMPILE_LANGUAGE:Fortran>,$<CONFIG:Debug>>:-Wextra;-fcheck=all;-Werror=array-bounds>"
