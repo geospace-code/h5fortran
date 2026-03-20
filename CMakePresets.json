@@ -21,7 +21,7 @@
 },
 {
   "name": "reldebug", "inherits": "default",
-  "binaryDir": "build-reldebug",
+  "binaryDir": "build",
   "displayName": "release with debug info",
   "cacheVariables": {
     "CMAKE_BUILD_TYPE": "RelWithDebInfo"
@@ -129,6 +129,14 @@
       { "type": "configure", "name": "debug" },
       { "type": "build", "name": "debug" },
       { "type": "test", "name": "debug" }
+    ]
+  },
+  {
+    "name": "reldebug",
+    "steps": [
+      { "type": "configure", "name": "reldebug" },
+      { "type": "build", "name": "reldebug" },
+      { "type": "test", "name": "reldebug" }
     ]
   },
   {

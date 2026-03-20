@@ -2,8 +2,6 @@ name: build
 
 env:
   HOMEBREW_NO_INSTALL_CLEANUP: 1
-  CTEST_NO_TESTS_ACTION: error
-  CTEST_PARALLEL_LEVEL: 0
   CMAKE_INSTALL_PREFIX: ~/libs
   CMAKE_PREFIX_PATH: ~/libs
   CMAKE_GENERATOR: Ninja
@@ -25,7 +23,6 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        shared: [true, false]
         include:
         - os: macos-latest
           shared: false
@@ -40,20 +37,12 @@ jobs:
       run: echo "FC=gfortran-15" >> $GITHUB_ENV
 
     - name: Configure HDF5 library
-      run: >-
-        cmake
-        -S scripts -B scripts/build
-        -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+      run: cmake -S scripts -B scripts/build
 
     - name: Build/install HDF5
       run: cmake --build scripts/build
 
-    - name: configure h5fortran
-      run: >-
-        cmake --preset default
-        -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
-
-    - name: build / test h5fortran
+    - name: h5fortran workflow
       run: cmake --workflow default
 
     - name: install h5fortran

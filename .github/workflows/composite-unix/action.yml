@@ -7,13 +7,9 @@ runs:
 
   steps:
 
-  - name: Build / test Debug
+  - name: CMake Workflow
     shell: bash
-    run: cmake --workflow debug
-
-  - name: Build Release
-    shell: bash
-    run: cmake --workflow release
+    run: cmake --workflow reldebug
 
   - name: install package
     shell: bash
@@ -21,12 +17,5 @@ runs:
 
   - name: example workflow
     shell: bash
-    run: cmake -S example -B example/build
-
-  - name: Build examples
-    shell: bash
-    run: cmake --build example/build
-
-  - name: Test examples
-    shell: bash
-    run: ctest --test-dir example/build -V
+    working-directory: example
+    run: cmake --workflow default

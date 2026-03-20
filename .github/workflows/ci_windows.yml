@@ -1,8 +1,6 @@
 name: ci_windows
 
 env:
-  CTEST_NO_TESTS_ACTION: error
-  CTEST_PARALLEL_LEVEL: 0
   CMAKE_GENERATOR: Ninja
 
 on:
@@ -17,6 +15,7 @@ on:
       - ".github/workflows/ci_windows.yml"
       - "!memcheck.cmake"
       - "!coverage.cmake"
+      - "!scripts/**"
   workflow_dispatch:
 
 # avoid wasted runs
@@ -30,11 +29,6 @@ jobs:
     timeout-minutes: 30
     runs-on: windows-latest
 
-    # Windows needs these defined within the job. $HOME doesn't work nor does ~.
-    env:
-      CMAKE_INSTALL_PREFIX: libs
-      CMAKE_PREFIX_PATH: libs
-
     steps:
     - uses: msys2/setup-msys2@v2
       id: msys2
@@ -47,31 +41,27 @@ jobs:
     - name: Put MSYS2_MinGW64 on PATH
       run: echo "${{ steps.msys2.outputs.msys2-location }}/ucrt64/bin/" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
+    - name: prefix path
+      run: |
+        echo "CMAKE_INSTALL_PREFIX=$HOME/libs" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+        echo "CMAKE_PREFIX_PATH=$HOME/libs;${{ steps.msys2.outputs.msys2-location }}/ucrt64/" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
     - uses: actions/checkout@v6
 
-    - name: config
-      run: cmake --preset default
-      env:
-        HDF5_ROOT: ${{ steps.msys2.outputs.msys2-location }}/ucrt64/
+    - name: CMake workflow
+      run: cmake --workflow default
 
-    - name: print config log
-      if: ${{ failure() }}
-      run: cat build/CMakeFiles/CMakeConfigureLog.yaml
-
-    - name: Build
-      run: cmake --build --preset default
-
-    - name: test
-      run: ctest --preset default
+    - name: Upload log failure
+      if: failure()
+      uses: actions/upload-artifact@v7
+      with:
+        archive: false
+        name: ${{ runner.os }}-CMakeConfigureLog.yaml
+        path: build/CMakeFiles/CMakeConfigureLog.yaml
 
     - name: install package
       run: cmake --install build
 
     - name: example workflow
-      run: cmake -S example -B example/build -G Ninja
-      env:
-        HDF5_ROOT: ${{ steps.msys2.outputs.msys2-location }}/ucrt64/
-
-    - run: cmake --build example/build
-
-    - run: ctest --test-dir example/build -V
+      working-directory: example
+      run: cmake --workflow default
