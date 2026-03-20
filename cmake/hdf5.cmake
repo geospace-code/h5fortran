@@ -33,10 +33,9 @@ if(h5fortran_hdf5_req STREQUAL "dev" OR h5fortran_hdf5_req VERSION_GREATER_EQUAL
     set(HDF5_ENABLE_ZLIB_SUPPORT ON)
   endif()
 
-  if(NOT MINGW)
-    set(HDF5_USE_ZLIB_NG ON)
-    set(ZLIBNG_USE_EXTERNAL ON)
-  endif()
+  # ZLIB_NG with HDF5 2.2 still has issues at build or link time with symbols.
+  set(HDF5_USE_ZLIB_NG OFF)
+  set(ZLIBNG_USE_EXTERNAL OFF)
 
 # users need their own Zlib if using HDF5 < 2.x
 elseif(h5fortran_hdf5_req MATCHES "^1\.(10|14)$")
