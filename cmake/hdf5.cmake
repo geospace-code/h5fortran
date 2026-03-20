@@ -18,14 +18,9 @@ file(READ ${CMAKE_CURRENT_LIST_DIR}/libraries.json json)
 # --- HDF5
 # https://forum.hdfgroup.org/t/issues-when-using-hdf5-as-a-git-submodule-and-using-cmake-with-add-subdirectory/7189/2
 
-if(h5fortran_hdf5_zlib)
-  set(HDF5_ENABLE_ZLIB_SUPPORT ON)
-endif()
-
 set(ZLIB_USE_LOCALCONTENT OFF)
 
 set(BUILD_STATIC_LIBS ON)
-set(CMAKE_BUILD_TYPE Release)
 
 set(HDF5_GENERATE_HEADERS OFF)
 set(HDF5_PACKAGE_EXTLIBS ON)
@@ -33,12 +28,21 @@ set(HDF5_DISABLE_COMPILER_WARNINGS ON)
 
 if(h5fortran_hdf5_req STREQUAL "dev" OR h5fortran_hdf5_req VERSION_GREATER_EQUAL "2.0")
   set(ZLIB_USE_EXTERNAL ON)
-  set(HDF5_USE_ZLIB_NG ON)
-  set(ZLIBNG_USE_EXTERNAL ON)
   set(HDF5_ALLOW_EXTERNAL_SUPPORT TGZ)
+  if(h5fortran_hdf5_zlib)
+    set(HDF5_ENABLE_ZLIB_SUPPORT ON)
+  endif()
+
+  if(NOT MINGW)
+    set(HDF5_USE_ZLIB_NG ON)
+    set(ZLIBNG_USE_EXTERNAL ON)
+  endif()
 
 # users need their own Zlib if using HDF5 < 2.x
 elseif(h5fortran_hdf5_req MATCHES "^1\.(10|14)$")
+  # HDF5 1.10 and 1.14 use HDF5_ENABLE_Z_LIB_SUPPORT
+  # HDF5 2.x uses HDF5_ENABLE_ZLIB_SUPPORT
+  set(HDF5_ENABLE_Z_LIB_SUPPORT ON CACHE BOOL "Enable ZLib support" FORCE)
   # HDF5 1.10 and 1.14 ZLIB fails to build Zlib despite trying
   # Error copying directory from "/" to "<build_dir>_deps/hdf5_zlib-src": Permission denied
   # set(ZLIB_USE_EXTERNAL ON CACHE BOOL "Use External Library Building for ZLIB else search" FORCE)
@@ -46,10 +50,6 @@ elseif(h5fortran_hdf5_req MATCHES "^1\.(10|14)$")
   # set(HDF5_ALLOW_EXTERNAL_SUPPORT "TGZ" CACHE STRING "Allow External Support for TGZ" FORCE)
 endif()
 
-
-# HDF5 1.10 and 1.14 use HDF5_ENABLE_Z_LIB_SUPPORT
-# HDF5 2.x uses HDF5_ENABLE_ZLIB_SUPPORT
-set(HDF5_ENABLE_Z_LIB_SUPPORT ON CACHE BOOL "Enable ZLib support" FORCE)
 
 set(HDF5_BUILD_FORTRAN ON CACHE BOOL "Build Fortran bindings" FORCE)
 set(HDF5_BUILD_TOOLS ON CACHE BOOL "Build HDF5 tools" FORCE)
