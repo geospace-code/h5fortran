@@ -6,7 +6,7 @@
 FindHDF5
 ---------
 
-by Michael Hirsch www.scivision.dev
+by SciVision www.scivision.dev
 
 Finds HDF5 library for C, CXX, Fortran. Serial or parallel HDF5.
 

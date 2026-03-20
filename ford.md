@@ -4,7 +4,7 @@ project: Object-oriented Fortran HDF5 interface
 project_github: https://github.com/geospace-code/h5fortran
 project_website: https://geospace-code.github.io/h5fortran
 summary: Object-oriented Fortran HDF5 interface
-author: Michael Hirsch, Ph.D.
+author: SciVision
 github: https://github.com/geospace-code
 license: by
 exclude: CMakeFortranCompilerId.F
