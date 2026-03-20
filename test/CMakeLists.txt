@@ -109,23 +109,6 @@ EXECUTABLE ${CMAKE_CTEST_COMMAND}
 )
 endif()
 
-# CMake >= 3.22
-if(BUILD_SHARED_LIBS)
-if(WIN32)
-  set_property(TEST ${test_names} PROPERTY
-  ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:${CMAKE_INSTALL_FULL_BINDIR};PATH=path_list_prepend:${CMAKE_PREFIX_PATH}/bin;PATH=path_list_prepend:${PROJECT_BINARY_DIR}"
-  )
-elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-  set_property(TEST ${test_names} PROPERTY
-  ENVIRONMENT_MODIFICATION "LIBRARY_PATH=path_list_prepend:${CMAKE_INSTALL_FULL_LIBDIR};LIBRARY_PATH=path_list_prepend:${PROJECT_BINARY_DIR}"
-  )
-elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-  set_property(TEST ${test_names} PROPERTY
-  ENVIRONMENT_MODIFICATION "LD_LIBRARY_PATH=path_list_prepend:${CMAKE_INSTALL_FULL_LIBDIR};LD_LIBRARY_PATH=path_list_prepend:${PROJECT_BINARY_DIR}"
-  )
-endif()
-endif()
-
 # --- attributes
 
 if(h5py_ok)
@@ -206,3 +189,28 @@ foreach(n IN LISTS test_names)
   get_property(f TEST ${n} PROPERTY FIXTURES_REQUIRED)
   set_property(TEST ${n} PROPERTY FIXTURES_REQUIRED "minimal;${f}")
 endforeach()
+
+# CMake >= 3.22
+if(WIN32)
+  set(_h5fortran_dll_mdir "PATH=path_list_prepend:${CMAKE_INSTALL_FULL_BINDIR};PATH=path_list_prepend:${PROJECT_BINARY_DIR}")
+  FetchContent_GetProperties(hdf5_zlib)
+  if(IS_DIRECTORY "${hdf5_zlib_BINARY_DIR}")
+    string(APPEND _h5fortran_dll_mdir ";PATH=path_list_prepend:${hdf5_zlib_BINARY_DIR}")
+  endif()
+  if(IS_DIRECTORY "${CMAKE_PREFIX_PATH}/bin")
+    string(APPEND _h5fortran_dll_mdir ";PATH=path_list_prepend:${CMAKE_PREFIX_PATH}/bin")
+  endif()
+  set_property(TEST ${test_names} PROPERTY ENVIRONMENT_MODIFICATION "${_h5fortran_dll_mdir}")
+endif()
+
+if(BUILD_SHARED_LIBS)
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+  set_property(TEST ${test_names} PROPERTY
+  ENVIRONMENT_MODIFICATION "LIBRARY_PATH=path_list_prepend:${CMAKE_INSTALL_FULL_LIBDIR};LIBRARY_PATH=path_list_prepend:${PROJECT_BINARY_DIR}"
+  )
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+  set_property(TEST ${test_names} PROPERTY
+  ENVIRONMENT_MODIFICATION "LD_LIBRARY_PATH=path_list_prepend:${CMAKE_INSTALL_FULL_LIBDIR};LD_LIBRARY_PATH=path_list_prepend:${PROJECT_BINARY_DIR}"
+  )
+endif()
+endif()
