@@ -91,7 +91,9 @@ if(self%exist(dname)) then
   call estop(ier, "create:H5Dget_space", self%filename, dname)
 
 
-  if (present(istart) .and. present(iend)) then
+  if (present(istart)) then
+    if(any(istart < 1)) error stop 'ERROR:h5fortran:create: istart must be >= 1'
+    if(any(iend < istart)) error stop 'ERROR:h5fortran:create: iend must be >= istart'
     call H5Sget_simple_extent_ndims_f(filespace_id, drank, ier)
     call estop(ier, "create:H5Sget_simple_extent_ndims", self%filename, dname)
 
@@ -116,17 +118,14 @@ if(self%exist(dname)) then
     allocate(ddims(drank), maxdims(drank))
 
     call H5Sget_simple_extent_dims_f(filespace_id, ddims, maxdims, ier)
-    if (ier /= drank) error stop 'ERROR:h5fortran:create: H5Sget_simple_extent_dims: ' // dname // ' in ' // self%filename
+    if (ier /= drank) &
+      error stop 'ERROR:h5fortran:create: H5Sget_simple_extent_dims: ' // dname // ' in ' // self%filename
 
-    do i = 1, drank
-      if (iend(i) - istart(i) > ddims(i)) emsg = 'ERROR:h5fortran:create: iend - istart > dset_dims'
-    enddo
-    if (allocated(emsg)) then
-      write(stderr,*) emsg // " dataset: " // dname // " file: " // self%filename // " istart: ", &
-        istart, " iend: ", iend, " ddims: ", ddims, " maxdims: ", maxdims
+    if(any(iend - istart > ddims)) then
+      write(stderr,*) 'ERROR:h5fortran:create: iend - istart > dset_dims dataset: ', dname, &
+        ' file: ', self%filename, ' istart: ', istart, ' iend: ', iend, ' ddims: ', ddims
       error stop
     endif
-
   else
     if (size(mem_dims) == 0) then
       !! scalar
