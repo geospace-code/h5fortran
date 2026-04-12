@@ -74,7 +74,7 @@ endfunction(setup_test)
 set(test_names array attributes
 cast deflate_write deflate_read deflate_props destructor exist
 groups layout lt scalar shape string version write
-fail_read_size_mismatch fail_read_rank_mismatch fail_nonexist_variable)
+fail_read_size_mismatch fail_read_rank_mismatch fail_nonexist_variable iterate visit)
 if(HAVE_IEEE_ARITH)
   list(APPEND test_names fill)
 endif()
@@ -112,9 +112,6 @@ endif()
 # --- attributes
 
 if(h5py_ok)
-
-set_property(TEST string_read PROPERTY FIXTURES_REQUIRED h5str)
-set_property(TEST string_read PROPERTY REQUIRED_FILES ${string_file})
 
 add_test(NAME PythonAttributes
 COMMAND Python::Interpreter ${CMAKE_CURRENT_SOURCE_DIR}/generate_attributes.py ${attr_file}
