@@ -57,6 +57,7 @@ endif()
 # --- h5fortran library
 
 add_library(h5fortran)
+
 target_include_directories(h5fortran PUBLIC
 $<BUILD_INTERFACE:${CMAKE_Fortran_MODULE_DIRECTORY}>
 $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
