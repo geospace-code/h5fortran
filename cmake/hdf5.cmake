@@ -5,9 +5,9 @@ include(GNUInstallDirs)
 include(FetchContent)
 
 if(NOT DEFINED h5fortran_hdf5_req)
-  set(h5fortran_hdf5_req dev)
+  set(h5fortran_hdf5_req 2.1patch)
 endif()
-# HDF5 2.0 and 2.1 require CMake >= 3.26, but the benefits are so great that this is worthwhile
+# HDF5 2.x require CMake >= 3.26, but the benefits are so great that this is worthwhile
 
 if(hdf5_parallel)
   set(HDF5_PREFER_PARALLEL ON)
@@ -26,7 +26,7 @@ set(HDF5_GENERATE_HEADERS OFF)
 set(HDF5_PACKAGE_EXTLIBS ON)
 set(HDF5_DISABLE_COMPILER_WARNINGS ON)
 
-if(h5fortran_hdf5_req STREQUAL "dev" OR h5fortran_hdf5_req VERSION_GREATER_EQUAL "2.0")
+if(h5fortran_hdf5_req STREQUAL "2.1patch" OR h5fortran_hdf5_req VERSION_GREATER_EQUAL "2.0")
   set(ZLIB_USE_EXTERNAL ON)
   set(HDF5_ALLOW_EXTERNAL_SUPPORT TGZ)
   if(h5fortran_hdf5_zlib)

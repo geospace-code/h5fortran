@@ -3,7 +3,8 @@
     "1.10": "https://github.com/HDFGroup/hdf5/archive/refs/tags/hdf5-1_10_11.tar.gz",
     "1.14": "https://github.com/HDFGroup/hdf5/archive/refs/tags/hdf5_1.14.6.tar.gz",
     "2.0": "https://github.com/HDFGroup/hdf5/archive/refs/tags/2.0.0.tar.gz",
-    "2.1": "https://github.com/HDFGroup/hdf5/archive/refs/tags/2.1.0.tar.gz",
-    "dev": "https://github.com/HDFGroup/hdf5/archive/353da6cce4228f0520585dc12b9b77ed7032d59d.tar.gz"
+    "2.1": "https://github.com/HDFGroup/hdf5/archive/refs/tags/2.1.1.tar.gz",
+    "2.1patch": "https://github.com/HDFGroup/hdf5/archive/353da6cce4228f0520585dc12b9b77ed7032d59d.tar.gz",
+    "$comment": "vital commit for dev is 7f79a4e3c79b6ea2b6a5dee81e9f624cceb51bdd on March 18, 2026, which isn't in tag 2.1.1"
   }
 }

@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.25...4.3)
+# CMake >= 3.26 required if building HDF5
 
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
   message(FATAL_ERROR "Please do out of source build like

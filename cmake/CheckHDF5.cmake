@@ -28,7 +28,7 @@ elseif(WIN32 AND stderr MATCHES "0xc0000139")
   message(STATUS "test run error may be due to Windows security policy
     ${stderr}")
 else()
-  message(WARNING "HDF5 C types failed check")
+  message(WARNING "HDF5 failed compiler check. ${stderr}")
 endif()
 endfunction()
 
