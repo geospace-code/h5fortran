@@ -13,6 +13,12 @@
     "CMAKE_BUILD_TYPE": "Release"
   }
 },
+{ "name": "build", "inherits": "default",
+  "cacheVariables": {
+    "h5fortran_BUILD_TESTING": false,
+    "h5fortran_find": false
+  }
+},
 { "name": "debug", "inherits": "default",
   "binaryDir": "build-debug",
   "cacheVariables": {
@@ -57,6 +63,7 @@
 ],
 "buildPresets": [
   { "name": "default", "configurePreset": "default", "jobs": 0 },
+  { "name": "build", "configurePreset": "build", "inherits": "default" },
   { "name": "nofind",  "configurePreset": "nofind", "inherits": "default" },
   { "name": "shared",  "configurePreset": "shared", "inherits": "default" },
   {
@@ -121,6 +128,13 @@
       { "type": "configure", "name": "default" },
       { "type": "build", "name": "default" },
       { "type": "test", "name": "default" }
+    ]
+  },
+  {
+    "name": "build",
+    "steps": [
+      { "type": "configure", "name": "build" },
+      { "type": "build", "name": "build" }
     ]
   },
   {

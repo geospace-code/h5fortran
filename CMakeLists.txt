@@ -14,7 +14,7 @@ VERSION 4.12.0
 include(CTest)
 
 # --- avoid Anaconda libraries
-if(h5fortran_python)
+if(h5fortran_python AND h5fortran_BUILD_TESTING)
   find_package(Python COMPONENTS Interpreter)
 endif()
 

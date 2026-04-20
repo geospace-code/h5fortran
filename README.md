@@ -106,13 +106,13 @@ cmake -Bbuild -DCMAKE_BUILD_TYPE=Release
 To not try to find HDF5, instead building HDF5 from source, set:
 
 ```sh
-cmake -B build -Dh5fortran_find=false
+cmake --workflow build
 ```
 
-Optionally, set the version of HDF5 to build with h5fortran_hdf5_req, for example:
+Optionally, set the version of HDF5 to build with h5fortran_hdf5_req (see cmake/libraries.json), for example:
 
 ```sh
-cmake -B build -Dh5fortran_find=false-Dh5fortran_hdf5_req=1.14
+cmake -B build -Dh5fortran_find=false -Dh5fortran_hdf5_req=2.1
 ```
 
 see [cmake/libraries.json](./cmake/libraries.json) for supported HDF5 versions.
