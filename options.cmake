@@ -5,6 +5,13 @@ include(GNUInstallDirs)
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 option(h5fortran_find "try to find HDF5 and ZLIB libraries" ON)
 
+set(FETCHCONTENT_QUIET OFF)
+if(h5fortran_find AND NOT DEFINED FETCHCONTENT_TRY_FIND_PACKAGE_MODE)
+  set(FETCHCONTENT_TRY_FIND_PACKAGE_MODE OPT_IN)
+else()
+  set(FETCHCONTENT_TRY_FIND_PACKAGE_MODE NEVER)
+endif()
+
 option(h5fortran_hdf5_zlib "use Zlib when building HDF5" ON)
 
 option(h5fortran_warning_as_error "treat warnings as errors" OFF)

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.21...3.29)
+cmake_minimum_required(VERSION 3.25...3.29)
 # use max version to avoid deprecation warnings
 
 project(HDF5_build

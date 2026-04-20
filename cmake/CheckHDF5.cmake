@@ -101,11 +101,6 @@ endfunction(check_hdf5_fortran)
 
 function(check_hdf5)
 
-if(CMAKE_VERSION VERSION_LESS 3.25)
-  message(STATUS "HDF5: skipping check for C and Fortran types due to CMake version < 3.25")
-  return()
-endif()
-
 check_hdf5_c()
 check_hdf5_fortran()
 

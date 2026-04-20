@@ -83,26 +83,15 @@ if(NOT hdf5_url)
 endif()
 
 
-set(_hdf5_fc_args)
-if(h5fortran_find)
-  if(CMAKE_VERSION VERSION_LESS 3.24)
-    if(NOT TARGET HDF5::HDF5)
-      find_package(HDF5 COMPONENTS HL Fortran)
-    endif()
-  else()
-    set(_hdf5_fc_args FIND_PACKAGE_ARGS COMPONENTS HL Fortran)
-    # don't specify any "full" find_package() signature parameters
-    # e.g. NAMES, as that disables the desirable MODULE search mode necessary
-    # for most Linux distros including HPC.
-  endif()
-endif()
-
 if(NOT TARGET HDF5::HDF5)
 
 FetchContent_Declare(HDF5
 URL ${hdf5_url}
-${_hdf5_fc_args}
+FIND_PACKAGE_ARGS COMPONENTS HL Fortran
 )
+# don't specify any "full" find_package() signature parameters
+# e.g. NAMES, as that disables the desirable MODULE search mode necessary
+# for most Linux distros including HPC.
 
 FetchContent_MakeAvailable(HDF5)
 

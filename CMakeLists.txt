@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.21...4.3)
+cmake_minimum_required(VERSION 3.25...4.3)
 
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
   message(FATAL_ERROR "Please do out of source build like
@@ -12,12 +12,6 @@ VERSION 4.12.0
 # C language is only needed for FindHDF5 algorithms, not for the h5fortran project itself
 
 include(CTest)
-
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-
-if(CMAKE_VERSION VERSION_LESS 3.25 AND CMAKE_SYSTEM_NAME STREQUAL "Linux")
-  set(LINUX true)
-endif()
 
 # --- avoid Anaconda libraries
 if(h5fortran_python)
@@ -70,9 +64,7 @@ file(MAKE_DIRECTORY ${CMAKE_Fortran_MODULE_DIRECTORY})
 set_property(TARGET h5fortran PROPERTY VERSION ${h5fortran_VERSION})
 
 if(h5fortran_warning_as_error)
-  if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.24)
-    set_property(TARGET h5fortran PROPERTY COMPILE_WARNING_AS_ERROR true)
-  endif()
+  set_property(TARGET h5fortran PROPERTY COMPILE_WARNING_AS_ERROR true)
   if(CMAKE_VERSION VERSION_GREATER_EQUAL 4.0)
     set_property(TARGET h5fortran PROPERTY LINK_WARNING_AS_ERROR true)
   endif()
