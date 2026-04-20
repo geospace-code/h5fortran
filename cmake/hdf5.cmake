@@ -10,7 +10,7 @@ endif()
 # HDF5 2.0 and 2.1 require CMake >= 3.26, but the benefits are so great that this is worthwhile
 
 if(hdf5_parallel)
-  find_package(MPI REQUIRED COMPONENTS C)
+  set(HDF5_PREFER_PARALLEL ON)
 endif()
 
 file(READ ${CMAKE_CURRENT_LIST_DIR}/libraries.json json)
@@ -138,7 +138,7 @@ endif()
 
 
 if(NOT TARGET HDF5::HDF5)
-# this is defined by our cmake/FindHDF5.cmake find_package(HDF5)
+# this is defined by FindHDF5.cmake find_package(HDF5)
 
 add_library(HDF5::HDF5 INTERFACE IMPORTED)
 
@@ -171,6 +171,6 @@ endif()
 
 endif()
 
-if(h5fortran_IS_TOP_LEVEL AND HDF5_FOUND)
+if(HDF5_FOUND)
   check_hdf5()
 endif()

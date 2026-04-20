@@ -57,7 +57,6 @@ jobs:
       if: failure()
       uses: actions/upload-artifact@v7
       with:
-        archive: false
         name: main-${{ runner.os }}-CMakeConfigureLog.yaml
         path: build/CMakeFiles/CMakeConfigureLog.yaml
 
@@ -72,7 +71,6 @@ jobs:
       if: failure()
       uses: actions/upload-artifact@v7
       with:
-        archive: false
         name: example-${{ runner.os }}-CMakeConfigureLog.yaml
         path: example/build/CMakeFiles/CMakeConfigureLog.yaml
 
