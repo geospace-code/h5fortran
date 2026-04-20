@@ -5,6 +5,7 @@
 {
   "name": "default",
   "binaryDir": "build",
+  "installDir": "${fileDir}/build/local",
   "cacheVariables": {
     "h5fortran_warning_as_error": true,
     "h5fortran_BUILD_TESTING": true,

@@ -2,11 +2,6 @@ name: ci
 
 env:
   HOMEBREW_NO_INSTALL_CLEANUP: 1
-  CTEST_NO_TESTS_ACTION: error
-  CTEST_PARALLEL_LEVEL: 0
-  CMAKE_INSTALL_PREFIX: ~/libs
-  CMAKE_PREFIX_PATH: ~/libs
-  CMAKE_GENERATOR: Ninja
 
 on:
   push:
@@ -258,14 +253,8 @@ jobs:
 
     - uses: ./.github/workflows/composite-cmake
 
-    - name: configure (CMake >= 3.23)
-      if: matrix.cmake_version >= '3.23'
-      run: $CMAKE -Bbuild --install-prefix ${{ env.CMAKE_INSTALL_PREFIX }} --debug-find-pkg=HDF5
-    # CMake env var CMAKE_INSTALL prefix is for CMake >= 3.29
-
-    - name: configure (CMake < 3.23)
-      if: matrix.cmake_version < '3.23'
-      run: $CMAKE -Bbuild --install-prefix ${{ env.CMAKE_INSTALL_PREFIX }} --debug-find
+    - name: configure
+      run: $CMAKE -Bbuild --install-prefix=${{ github.workspace }}/build/local --debug-find-pkg=HDF5
 
     - name: build
       run: $CMAKE --build build
@@ -277,7 +266,7 @@ jobs:
       run: $CMAKE --install build
 
     - name: example workflow
-      run: cmake -S example -B example/build
+      run: cmake -S example -B example/build -DCMAKE_PREFIX_PATH=${{ github.workspace }}/build/local
 
     - name: Build examples
       run: cmake --build example/build
