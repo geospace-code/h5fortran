@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.25...4.3)
+cmake_minimum_required(VERSION 3.24...4.3)
 # CMake >= 3.26 required if building HDF5
 
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
@@ -35,7 +35,6 @@ if(h5fortran_ENABLE_RPATH AND NOT WIN32)
 endif()
 
 include(cmake/compilers.cmake)
-include(cmake/CheckHDF5.cmake)
 
 set(CMAKE_Fortran_MODULE_DIRECTORY ${h5fortran_BINARY_DIR}/${CMAKE_INSTALL_INCLUDEDIR})
 # HDF5 fetchcontent needs this at least for HDF5 2.0.0, 2.1.0, ...
@@ -45,7 +44,7 @@ include(cmake/hdf5.cmake)
 
 set(HDF5_VERSION ${HDF5_VERSION} CACHE STRING "HDF5 version")
 
-if(h5fortran_IS_TOP_LEVEL AND (hdf5_parallel OR HDF5_HAVE_PARALLEL))
+if(h5fortran_IS_TOP_LEVEL AND (hdf5_parallel OR HDF5_IS_PARALLEL))
   target_link_libraries(HDF5::HDF5 INTERFACE MPI::MPI_Fortran)
 endif()
 

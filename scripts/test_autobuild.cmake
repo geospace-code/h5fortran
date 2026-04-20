@@ -7,7 +7,7 @@ foreach(v IN LISTS hdf5_versions)
   message(STATUS "Testing auto-build of HDF5 version ${v}")
 
   execute_process(COMMAND ${CMAKE_COMMAND} -B /tmp/build_hdf5_${v} -S ${CMAKE_CURRENT_LIST_DIR}/..
-    -Dh5fortran_hdf5_req=${v} -Dh5fortran_find=no
+    -Dh5fortran_hdf5_req=${v} -DFETCHCONTENT_TRY_FIND_PACKAGE_MODE=NEVER
     COMMAND_ERROR_IS_FATAL ANY
   )
 

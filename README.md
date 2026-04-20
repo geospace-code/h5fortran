@@ -112,7 +112,7 @@ cmake --workflow build
 Optionally, set the version of HDF5 to build with h5fortran_hdf5_req (see cmake/libraries.json), for example:
 
 ```sh
-cmake -B build -Dh5fortran_find=false -Dh5fortran_hdf5_req=2.1
+cmake -B build -DFETCHCONTENT_TRY_FIND_PACKAGE_MODE=NEVER -Dh5fortran_hdf5_req=2.1
 ```
 
 see [cmake/libraries.json](./cmake/libraries.json) for supported HDF5 versions.

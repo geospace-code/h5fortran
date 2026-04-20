@@ -29,7 +29,7 @@ Result Variables
 ``HDF5_<lang>_COMPILER_EXECUTABLE``
   wrapper compiler for HDF5
 
-``HDF5_HAVE_PARALLEL``
+``HDF5_IS_PARALLEL``
   HDF5 links the MPI library (thus user program must link MPI as well)
 
 Components
@@ -130,11 +130,11 @@ check_symbol_exists(H5_HAVE_FILTER_SZIP ${h5_conf} hdf5_have_szip)
 check_symbol_exists(H5_HAVE_FILTER_DEFLATE ${h5_conf} hdf5_have_zlib)
 
 # Always check for HDF5 MPI support because HDF5 link fails if MPI is linked into HDF5.
-check_symbol_exists(H5_HAVE_PARALLEL ${h5_conf} HDF5_HAVE_PARALLEL)
+check_symbol_exists(H5_HAVE_PARALLEL ${h5_conf} HDF5_IS_PARALLEL)
 
 set(HDF5_parallel_FOUND false)
 
-if(HDF5_HAVE_PARALLEL)
+if(HDF5_IS_PARALLEL)
   find_mpi()
   if(NOT MPI_FOUND)
     return()
