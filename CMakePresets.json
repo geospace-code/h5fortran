@@ -55,8 +55,7 @@
 }
 ],
 "buildPresets": [
-  { "name": "default", "configurePreset": "default",
-    "$comment": "don't do jobs: 0 because it fork-overloads some CI machines, especially when building HDF5 from source" },
+  { "name": "default", "configurePreset": "default" },
   { "name": "build", "configurePreset": "build", "inherits": "default" },
   { "name": "shared",  "configurePreset": "shared", "inherits": "default" },
   {

@@ -8,7 +8,7 @@ endif()
 
 project(h5fortran
 LANGUAGES C Fortran
-VERSION 4.12.0
+VERSION 4.13.0
 )
 # C language is only needed for FindHDF5 algorithms, not for the h5fortran project itself
 

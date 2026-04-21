@@ -189,12 +189,75 @@ windows_oneapi_hdf5_workaround()
 set(file "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/check_hdf5")
 
 if(lang STREQUAL "C")
-  string(APPEND file ".c")
+
+set(_src [=[
+#include "hdf5.h"
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(void){
+
+if(H5open() != 0){
+  fprintf(stderr, "H5open() failed");
+  return EXIT_FAILURE;
+}
+
+if(H5F_ACC_RDONLY == H5F_ACC_TRUNC || H5F_ACC_RDONLY == H5F_ACC_RDWR){
+  fprintf(stderr, "H5F_ACC_RDONLY, H5F_ACC_TRUNC, H5F_ACC_RDWR are not all distinct");
+  return EXIT_FAILURE;
+}
+
+if(H5close() != 0){
+  fprintf(stderr, "H5close() failed");
+  return EXIT_FAILURE;
+}
+printf("OK: HDF5 C type check");
+return EXIT_SUCCESS;
+}]=])
+
 elseif(lang STREQUAL "Fortran")
-  string(APPEND file ".f90")
+
+set(_src [=[
+program test_minimal
+
+use hdf5
+use h5lt
+
+implicit none
+
+integer :: i, p
+integer(HID_T) :: lid
+character(*), parameter :: filename='test_minimal.h5'
+
+p = 42
+
+call H5open_f(i)
+if(i /= 0) error stop "test_minimal: H5open_f failed [0]"
+
+call H5open_f(i)
+if(i /= 0) error stop "test_minimal: H5open_f failed [1]"
+
+call H5Fcreate_f(filename, H5F_ACC_TRUNC_F, lid, i)
+if (i/=0) error stop 'minimal: could not create file'
+
+call H5LTmake_dataset_f(lid, "A", 0, shape(p, kind=HSIZE_T), h5kind_to_type(kind(p),H5_INTEGER_KIND), p, i)
+if (i/=0) error stop 'minimal: could not create dataset A'
+
+call H5Fclose_f(lid, i)
+if (i/=0) error stop 'minimal: could not close file'
+
+call H5close_f(i)
+if (i /= 0) error stop 'could not close hdf5 library [0]'
+
+open(newunit=i, file=filename)
+close(i, status='delete')
+
+end program
+]=])
+
 endif()
 
-file(READ "${file}" _src)
+
 check_source_compiles(${lang} "${_src}" HDF5_${lang}_links)
 
 endfunction()
