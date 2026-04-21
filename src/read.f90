@@ -28,14 +28,16 @@ module procedure get_strpad
 integer :: class
 integer(HID_T) :: dset_id
 integer :: ier
+logical :: ok
 
 call H5Dopen_f(self%file_id, dset_name, dset_id, ier)
 call estop(ier, "get_strpad:H5Dopen", self%filename, dset_name)
 
-call get_obj_class(self, dset_name, dset_id, class, pad_type=get_strpad)
+ok = get_obj_class(self, dset_name, dset_id, class, pad_type=get_strpad)
 
 call H5Dclose_f(dset_id, ier)
-call estop(ier, "get_strpad:H5Dclose", self%filename, dset_name)
+call estop(ier, "get_strpad:H5Dclose", self%filename, dset_name, ok=ok)
+if (.not.ok) error stop "ERROR:h5fortran:get_strpad: failed to get string padding type"
 
 end procedure get_strpad
 

@@ -4,13 +4,16 @@ use h5fortran, only : h5write, h5read, is_hdf5
 
 implicit none
 
-integer :: L, L1(8), L2(2,1), L3(1,1,1), L4(1,1,1,1), L5(1,1,1,1,1), L6(1,1,1,1,1,1), L7(1,1,1,1,1,1,1)
+integer :: ierr, L, L1(8), L2(2,1), L3(1,1,1), L4(1,1,1,1), L5(1,1,1,1,1), L6(1,1,1,1,1,1), L7(1,1,1,1,1,1,1)
 
-character(*), parameter :: f1 = "LT_test_file.h5"
+character(*), parameter :: f1 = "LT_test_file.h5", bad="not_a_file_lt.h5"
 logical :: fexists
 
 L = 121242
 L2 = L; L3=L; L4=L; L5=L; L6=L; L7=L
+
+call h5read(bad, '/int32_0d', L, ierr=ierr)
+if(ierr == 0) error stop 'ERROR: h5read() did not detect missing file'
 
 inquire(file=f1, exist=fexists)
 

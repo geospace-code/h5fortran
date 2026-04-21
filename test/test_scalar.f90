@@ -27,7 +27,7 @@ real(real32) :: r1(4)
 integer(int32) :: i1(4)
 integer(int64) :: i1_64(4)
 
-integer :: i
+integer :: i, k
 
 do i = 1,size(i1)
   i1(i) = i
@@ -38,6 +38,11 @@ i1_64 = i1
 
 !> write
 call h%open(fn, action='w')
+
+call h%read('/not-exist', k, ierr=i)
+if (i == 0) error stop 'read non-existing dataset should fail'
+print '(a,i0)', 'OK: read non-existing dataset fails with ierr=', i
+
 !> scalar tests
 call h%write('/scalar_int32', 42_int32)
 call h%write('/scalar_int64', 42_int64)

@@ -58,6 +58,7 @@ integer :: ier, drank, i
 integer(HID_T) :: dcpl
 integer(HSIZE_T), dimension(:), allocatable :: ddims, maxdims
 character(:), allocatable :: emsg
+logical :: ok
 
 if(.not. self%is_open()) error stop "ERROR:h5fortran:create: file is not open: " // self%filename
 
@@ -130,9 +131,13 @@ if(self%exist(dname)) then
   else
     if (size(mem_dims) == 0) then
       !! scalar
-      call hdf_rank_check(self, dname, filespace_id, size(mem_dims))
+      ok = hdf_rank_check(self, dname, filespace_id, size(mem_dims))
     else
-      call hdf_shape_check(self, dname, filespace_id, mem_dims)
+      ok = hdf_shape_check(self, dname, filespace_id, mem_dims)
+    endif
+    if (.not. ok) then
+      write(stderr,*) "ERROR:h5fortran:create: dataset exists with wrong shape: ", dname, " file: ", self%filename
+      error stop
     endif
   endif
 

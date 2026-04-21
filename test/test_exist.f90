@@ -37,6 +37,7 @@ end subroutine test_is_hdf5
 subroutine test_exist(fn)
 
 type(hdf5_file) :: h
+integer :: u
 
 character(*), intent(in) :: fn
 
@@ -66,6 +67,9 @@ print '(a)', "test_exist: check h5exist() on file: " // fn
 if (.not. h5exist(fn, '/x', debug=.true.)) error stop 'x exists'
 if (h5exist(fn, '/A', debug=.true.)) error stop 'A not exist'
 
+open(newunit=u, file=fn)
+close(u, status='delete')
+
 end subroutine test_exist
 
 
@@ -74,17 +78,17 @@ subroutine test_softlink(fn)
 type(hdf5_file) :: h
 character(*), intent(in) :: fn
 
-integer :: y
+integer :: u
 
 call h%open(fn, action='w')
 
 call h%write("/actual", 142)
 call h%softlink("/actual", "/additional")
-call h%read("/additional", y)
+call h%read("/additional", u)
 
 if (.not.h%exist("/additional")) error stop "softlink not present"
 
-if (y /= 142) error stop "did not read softlink correctly"
+if (u /= 142) error stop "did not read softlink correctly"
 
 !> test dangling link
 
@@ -92,10 +96,13 @@ call h%softlink("/not_here", "/not_yet")
 if (h%exist("/not_yet")) error stop "dangling softlink"
 
 call h%write("/not_here", 36)
-call h%read("/not_yet", y)
-if (y /= 36)  error stop "finalizing dangling link failed"
+call h%read("/not_yet", u)
+if (u /= 36)  error stop "finalizing dangling link failed"
 
 call h%close()
+
+open(newunit=u, file=fn)
+close(u, status='delete')
 
 end subroutine test_softlink
 
@@ -103,6 +110,7 @@ end subroutine test_softlink
 subroutine test_multifiles()
 
 type(hdf5_file) :: f,g,h
+integer :: u
 
 call f%open(filename='A.h5', action='w')
 call g%open(filename='B.h5', action='w')
@@ -117,6 +125,13 @@ call g%close()
 call h%close()
 
 call hdf5_close()
+
+open(newunit=u, file='A.h5')
+close(u, status='delete')
+open(newunit=u, file='B.h5')
+close(u, status='delete')
+open(newunit=u, file='C.h5')
+close(u, status='delete')
 
 end subroutine test_multifiles
 

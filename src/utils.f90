@@ -336,18 +336,25 @@ integer(HSIZE_T), dimension(:), allocatable :: ddims, maxdims
 integer :: ier, drank
 character(:), allocatable :: dset_name
 
+ok = .true.
+
 dset_name = id2name(dset_id)
 
 if(present(dset_dims)) then
   ddims = dset_dims
 else
   call H5Sget_simple_extent_ndims_f(file_space_id, drank, ier)
-  if(ier /= 0) error stop "ERROR:h5fortran:get_slice: H5Sget_simple_extent_ndims: " // dset_name
+  call estop(ier, "ERROR:h5fortran:get_slice: H5Sget_simple_extent_ndims: ", "", dset_name, ok=ok)
 
+  if (ok) then
   allocate(ddims(drank), maxdims(drank))
 
   call H5Sget_simple_extent_dims_f(file_space_id, ddims, maxdims, ier)
-  if (ier /= drank) error stop 'ERROR:h5fortran:get_slice:H5Sget_simple_extent_dims: ' // dset_name
+  if (ier /= drank) then
+    write(stderr, '(a)') 'ERROR:h5fortran:get_slice:H5Sget_simple_extent_dims: ' // dset_name
+    ok = .false.
+  endif
+  endif
 endif
 
 istride = 1
@@ -361,32 +368,42 @@ if (any(istride > 1)) c_mem_dims = merge(c_mem_dims/istride, c_mem_dims/istride 
 
 if(size(mem_dims) == 0) then
   !! rank(dims(0)) == 1, but size(dims(0)) == 0
-  if (sum(c_mem_dims) /= 1) error stop "ERROR:h5fortran:hdf_get_slice: scalar index of array failed " // dset_name
+  if (sum(c_mem_dims) /= 1) then
+    write(stderr, '(a)') "ERROR:h5fortran:hdf_get_slice: scalar index of array failed " // dset_name
+    ok = .false.
+  endif
 elseif(any(c_mem_dims /= mem_dims)) then
   write(stderr,*) "ERROR:h5fortran:get_slice: memory size /= dataset size: check variable slice (index). " // &
     " Dset_dims:", ddims, "C Mem_dims:", c_mem_dims, "mem_dims:", mem_dims, "rank(mem_dims):", rank(mem_dims)
-  error stop "ERROR:h5fortran:get_slice " // dset_name
+  ok = .false.
 elseif(any(iend-istart+1 > ddims)) then
   write(stderr,*) "ERROR:h5fortran:get_slice: iend: ", iend, ' > dset_dims: ', ddims
-  error stop "ERROR:h5fortran:get_slice " // dset_name
+  ok = .false.
 endif
 
 ! print *, 'TRACE:hdf_get_slice: ' // dset_name //': istart', i0, 'C mem_dims: ', c_mem_dims, 'mem_dims', mem_dims
 
-if(any(c_mem_dims < 1)) error stop "ERROR:h5fortran:get_slice:non-positive hyperslab: " // dset_name
+if(any(c_mem_dims < 1)) then
+  write(stderr, *) "ERROR:h5fortran:get_slice:non-positive hyperslab: " // dset_name, c_mem_dims
+  ok = .false.
+endif
 
+if(ok) then
 call h5sselect_hyperslab_f(file_space_id, H5S_SELECT_SET_F, &
 start=i0, &
 stride=istride, &
 count=c_mem_dims, &
 hdferr=ier)
 ! block=blk  !< would this help performance?
-if (ier /= 0) error stop "ERROR:h5fortran:get_slice:h5sselect_hyperslab: " // dset_name
+call estop(ier, "ERROR:h5fortran:get_slice:h5sselect_hyperslab: ", "", dset_name, ok=ok)
+endif
 
 !> create memory dataspace
 !! H5Dread needs this for non-scalar
+if(ok) then
 call h5screate_simple_f(rank=size(c_mem_dims), dims=c_mem_dims, space_id=mem_space_id, hdferr=ier)
-if (ier /= 0) error stop "ERROR:h5fortran:get_slice:h5screate_simple: memory space " // dset_name
+call estop(ier, "ERROR:h5fortran:get_slice:h5screate_simple: memory space ", "", dset_name, ok=ok)
+endif
 
 end procedure hdf_get_slice
 
@@ -396,24 +413,34 @@ module procedure hdf_rank_check
 integer(HSIZE_T) :: N
 integer :: ierr, drank
 
+ok = .true.
+
 if(present(is_scalar)) is_scalar = .false.
 
 call H5Sget_simple_extent_ndims_f(file_space_id, drank, ierr)
-if (ierr/=0) error stop 'ERROR:h5fortran:rank_check:H5Sget_simple_extent_ndims: ' // obj_name // ' in ' // self%filename
+if (ierr/=0) then
+  ok = .false.
+  write(stderr, '(a)') 'ERROR:h5fortran:rank_check:H5Sget_simple_extent_ndims: ' // obj_name // ' in ' // self%filename
+  return
+endif
 
 if (drank == mrank) return
 
 if (present(is_scalar)) then
   !! check if single element
   call H5Sget_simple_extent_npoints_f(file_space_id, N, ierr)
-  if (ierr /= 0) error stop 'ERROR:h5fortran:rank_check:H5Sget_simple_extent_npoints: ' // obj_name // ' in ' // self%filename
+  if (ierr /= 0) then
+    ok = .false.
+    write(stderr, '(a)') 'ERROR:h5fortran:rank_check:H5Sget_simple_extent_npoints: ' // obj_name // ' in ' // self%filename
+    return
+  endif
 
   is_scalar = N == 1
   if(is_scalar) return
 endif
 
 write(stderr,'(A,I0,A,I0)') 'ERROR:h5fortran:rank_check: rank mismatch ' // obj_name // ' = ', drank,'  variable rank =', mrank
-error stop
+ok = .false.
 
 end procedure hdf_rank_check
 
@@ -423,14 +450,19 @@ module procedure hdf_shape_check
 integer :: ierr
 integer(HSIZE_T), dimension(size(dims)):: ddims, maxdims
 
-call hdf_rank_check(self, dname, file_space_id, size(dims))
+ok = hdf_rank_check(self, dname, file_space_id, size(dims))
+if (.not. ok) return
 
 call H5Sget_simple_extent_dims_f(file_space_id, ddims, maxdims, ierr)
-if (ierr /= size(dims)) error stop 'ERROR:h5fortran:rank_check:H5Sget_simple_extent_dims: ' // dname // ' in ' // self%filename
+if (ierr /= size(dims)) then
+  ok = .false.
+  write(stderr, '(a)') 'ERROR:h5fortran:rank_check:H5Sget_simple_extent_dims: ' // dname // ' in ' // self%filename
+  return
+endif
 
 if(any(int(dims, int64) /= ddims)) then
   write(stderr,*) 'ERROR:h5fortran:shape_check: shape mismatch ' // dname // ' = ',ddims,'  variable shape =', dims
-  error stop
+  ok = .false.
 endif
 
 end procedure hdf_shape_check

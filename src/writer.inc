@@ -1,6 +1,7 @@
 integer(HID_T) :: file_space_id, mem_space_id, dset_id, xfer_id, dtypew, dtype_id
 integer(HSIZE_T), dimension(rank(A)) :: mem_dims, dims_dset
 integer :: ier, charlen
+logical :: ok
 
 mem_dims = shape(A, HSIZE_T)
 
@@ -43,7 +44,8 @@ call hdf_create(self, dname, dtypew, mem_dims, dims_dset, file_space_id, dset_id
   dtype_id=dtype_id, charlen=charlen)
 
 if(present(istart) .and. present(iend)) then
-  call hdf_get_slice(mem_dims, dset_id, file_space_id, mem_space_id, istart, iend, stride=stride, dset_dims=dims_dset)
+  ok = hdf_get_slice(mem_dims, dset_id, file_space_id, mem_space_id, istart, iend, stride=stride, dset_dims=dims_dset)
+  if (.not. ok) error stop "ERROR:h5fortran:writer:get_slice"
 else
   call H5Dget_space_f(dset_id, mem_space_id, ier)
   call estop(ier, "writer:H5Dget_space", self%filename, dname)

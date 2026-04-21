@@ -4,7 +4,7 @@ categories = "io"
 version = "4.13.0"
 
 [build]
-auto-tests = false
+auto-tests = true
 auto-examples = false
 external-modules = ["hdf5", "h5lt"]
 
