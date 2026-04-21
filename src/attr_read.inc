@@ -5,6 +5,7 @@ integer(HSIZE_T) :: attr_dims(rA)
 logical :: is_scalar, ok
 
 ok = .true.
+attr_class = h5t_no_class_f !< in case not assigned
 
 attr_dims = shape(A, HSIZE_T)
 

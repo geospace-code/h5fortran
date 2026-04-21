@@ -30,10 +30,13 @@ integer(HID_T) :: dset_id
 integer :: ier
 logical :: ok
 
-call H5Dopen_f(self%file_id, dset_name, dset_id, ier)
-call estop(ier, "get_strpad:H5Dopen", self%filename, dset_name)
+ok = .true.
+class = h5t_no_class_f !< in case not assigned
 
-ok = get_obj_class(self, dset_name, dset_id, class, pad_type=get_strpad)
+call H5Dopen_f(self%file_id, dset_name, dset_id, ier)
+call estop(ier, "get_strpad:H5Dopen", self%filename, dset_name, ok=ok)
+
+if(ok) ok = get_obj_class(self, dset_name, dset_id, class, pad_type=get_strpad)
 
 call H5Dclose_f(dset_id, ier)
 call estop(ier, "get_strpad:H5Dclose", self%filename, dset_name, ok=ok)

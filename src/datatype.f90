@@ -12,6 +12,7 @@ integer :: ier
 logical :: ok
 
 ok = .true.
+get_class = h5t_no_class_f !< in case not assigned
 
 call H5Dopen_f(self%file_id, dname, dset_id, ier)
 call estop(ier, "get_class:H5Dopen", self%filename, dname, ok=ok)
@@ -32,6 +33,7 @@ integer :: ier, obj_type
 integer(HID_T) :: obj_dtype, native_dtype
 
 ok = .true.
+class = h5t_no_class_f !< in case not assigned
 
 call H5Iget_type_f(obj_id, obj_type, ier)
 call estop(ier, "get_obj_class:H5Iget_type", self%filename, obj_name, ok=ok)
@@ -91,20 +93,23 @@ integer(size_t) :: size_bytes
 integer(HID_T) :: o_id
 logical :: ok
 
+ok = .true.
+class = h5t_no_class_f !< in case not assigned
+
 if(present(obj_id)) then
   o_id = obj_id
 else
   !! assume dataset
   call H5Dopen_f(self%file_id, dname, o_id, ier)
-  call estop(ier, "get_native_dtype:H5Dopen", self%filename, dname)
+  call estop(ier, "get_native_dtype:H5Dopen", self%filename, dname, ok=ok)
 endif
 
-ok = get_obj_class(self, dname, o_id, class, size_bytes=size_bytes)
+if(ok) ok = get_obj_class(self, dname, o_id, class, size_bytes=size_bytes)
 if (.not. ok) error stop "ERROR:h5fortran:get_native_dtype: failed to get class and size"
 
 if(.not.present(obj_id)) then
   call H5Dclose_f(o_id, ier)
-  call estop(ier, "get_native_dtype:H5Dclose", self%filename, dname)
+  call estop(ier, "get_native_dtype:H5Dclose", self%filename, dname, ok=ok)
 endif
 
 !> endianness and within type casting is handled by HDF5
@@ -136,6 +141,8 @@ elseif(class == H5T_STRING_F) then
 else
   error stop "ERROR:h5fortran:get_native_dtype: non-handled datatype: " // dname // " from " // self%filename
 endif
+
+if(.not.ok) error stop "ERROR:h5fortran:get_native_dtype: failed to get native datatype for " // dname // ' from ' // self%filename
 
 end procedure get_native_dtype
 
