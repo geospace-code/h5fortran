@@ -1,6 +1,5 @@
 submodule (h5fortran) write
 
-use, intrinsic :: iso_c_binding, only : c_ptr, c_loc
 use hdf5, only: &
 h5fflush_f, &
 h5screate_f, h5sclose_f, h5screate_simple_f, H5Sget_simple_extent_ndims_f, H5Sget_simple_extent_dims_f, &
