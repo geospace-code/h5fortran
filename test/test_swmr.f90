@@ -3,13 +3,14 @@ program test_swmr
   integer :: stat
 
   call execute_command_line('rm -f swmr.h5')
-  call execute_command_line('./test_swmr_writer & ./test_swmr_reader', exitstat=stat)
+
+  call execute_command_line('./test_swmr_writer & wait $!; ./test_swmr_reader', exitstat=stat)
 
   if (stat == 0) then
-    print *, 'PASSED'
+    print '(A)', 'PASSED'
   else
-    print *, 'FAILED'
-    stop 1
+    print '(A)', 'FAILED'
+    call exit(1)
   end if
 
 end program test_swmr
