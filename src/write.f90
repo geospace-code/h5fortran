@@ -1,7 +1,11 @@
 submodule (h5fortran) write
 
 use hdf5, only: &
+<<<<<<< HEAD
 h5fflush_f, h5oflush_f, &
+=======
+h5fflush_f, h5dflush_f, &
+>>>>>>> origin/feature/swmr
 h5screate_f, h5sclose_f, h5screate_simple_f, H5Sget_simple_extent_ndims_f, H5Sget_simple_extent_dims_f, &
 h5dcreate_f, h5dopen_f, h5dclose_f, h5dget_space_f, &
 h5dcreate_f, h5dopen_f, h5dclose_f, h5dget_space_f, &
