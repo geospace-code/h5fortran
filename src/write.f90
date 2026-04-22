@@ -1,7 +1,7 @@
 submodule (h5fortran) write
 
 use hdf5, only: &
-h5fflush_f, &
+h5fflush_f, h5dflush_f, &
 h5screate_f, h5sclose_f, h5screate_simple_f, H5Sget_simple_extent_ndims_f, H5Sget_simple_extent_dims_f, &
 h5dcreate_f, h5dopen_f, h5dclose_f, h5dget_space_f, &
 h5pset_chunk_f, h5pset_layout_f, h5pset_deflate_f, h5pset_shuffle_f, h5pset_fletcher32_f, &
@@ -415,6 +415,25 @@ call H5Fflush_f(self%file_id, H5F_SCOPE_GLOBAL_F, ier)
 call estop(ier, "flush:H5Fflush", self%filename, "")
 
 end procedure hdf_flush
+
+
+module procedure hdf_flush_dataset
+
+integer :: ier
+integer(HID_T) :: dset_id
+
+if(.not. self%is_open()) error stop "ERROR:h5fortran:flush: file is not open: " // self%filename
+
+call H5Dopen_f(self%file_id, dname, dset_id, ier)
+call estop(ier, "flush:H5Dopen", self%filename, dname)
+
+call H5Dflush_f(dset_id, ier)
+call estop(ier, "flush:H5Dflush", self%filename, dname)
+
+call H5Dclose_f(dset_id, ier)
+call estop(ier, "flush:H5Dclose", self%filename, dname)
+
+end procedure hdf_flush_dataset
 
 
 end submodule write
