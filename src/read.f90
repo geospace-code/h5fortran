@@ -5,7 +5,7 @@ use, intrinsic:: iso_c_binding, only : c_null_char
 use hdf5, only : &
 H5Aget_space_f, H5Aget_type_f, H5Aopen_by_name_f, H5Aclose_f, H5Aget_storage_size_f, &
 h5pget_layout_f, h5pget_chunk_f, h5pclose_f, h5pget_nfilters_f, h5pget_filter_f, &
-H5Dget_create_plist_f, h5dget_type_f, h5dopen_f, h5dclose_f, H5Dget_space_f, H5Dget_storage_size_f, &
+H5Dget_create_plist_f, h5dget_type_f, h5dopen_f, h5dclose_f, H5Dget_space_f, H5Dget_storage_size_f, h5drefresh_f, &
 H5Iget_type_f, &
 h5lexists_f, &
 H5Sget_simple_extent_ndims_f, H5Sget_simple_extent_dims_f, H5Sget_simple_extent_npoints_f, H5Sclose_f, &
@@ -137,6 +137,25 @@ call h5ltpath_valid_f(self%file_id, obj_name, .true., hdf_check_exist, ier)
 call estop(ier, "check_exist:H5LTpath_valid", self%filename, obj_name)
 
 end procedure hdf_check_exist
+
+
+module procedure hdf_refresh
+
+integer :: ier
+integer(HID_T) :: dset_id
+
+if(.not. self%is_open()) error stop "ERROR:h5fortran:refresh: file is not open: " // self%filename
+
+call H5Dopen_f(self%file_id, dname, dset_id, ier)
+call estop(ier, "refresh:H5Dopen", self%filename, dname)
+
+call H5Drefresh_f(dset_id, ier)
+call estop(ier, "refresh:H5Drefresh", self%filename, dname)
+
+call H5Dclose_f(dset_id, ier)
+call estop(ier, "refresh:H5Dclose", self%filename, dname)
+
+end procedure hdf_refresh
 
 
 end submodule hdf5_read

@@ -24,6 +24,7 @@ integer :: file_mode = -1
 logical :: debug = .false.
 logical :: fletcher32 = .false.
 logical :: shuffle = .false.
+logical :: swmr = .false.
 
 integer :: comp_lvl = 0
 !! compression level (1-9)  0: disable compression
@@ -38,7 +39,10 @@ procedure, public :: close => h5close
 procedure, public :: write_group => create_group !< legacy
 procedure, public :: create_group
 procedure, public :: create => hdf_create_user
-procedure, public :: flush => hdf_flush
+generic, public :: flush => hdf_flush, hdf_flush_dataset
+procedure, private :: hdf_flush
+procedure, private :: hdf_flush_dataset
+procedure, public :: refresh => hdf_refresh
 procedure, public :: filesize => hdf_filesize
 procedure, public :: ndim => hdf_get_ndim
 procedure, public :: ndims => hdf_get_ndim !< legacy
@@ -161,6 +165,12 @@ module subroutine hdf_flush(self)
 !! request operating system flush data to disk.
 !! The operating system can do this when it desires, which might be a while.
 class(hdf5_file), intent(in) :: self
+end subroutine
+
+module subroutine hdf_flush_dataset(self, dname)
+!! request HDF5 to flush dataset to disk.
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: dname
 end subroutine
 
 end interface
@@ -398,6 +408,11 @@ module logical function hdf_check_exist(self, obj_name)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: obj_name
 end function
+
+module subroutine hdf_refresh(self, dname)
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: dname
+end subroutine
 
 end interface
 
@@ -714,7 +729,7 @@ integer(HID_T), intent(in) :: id
 character(:), allocatable :: id2name
 end function
 
-module subroutine h5open(self, filename, action, comp_lvl, shuffle, fletcher32, debug, ok)
+module subroutine h5open(self, filename, action, comp_lvl, shuffle, fletcher32, debug, swmr, ok)
 !! open/create file
 !!
 !! PARAMETERS:
@@ -730,6 +745,7 @@ integer, intent(in), optional :: comp_lvl
 logical, intent(in), optional :: shuffle
 logical, intent(in), optional :: fletcher32
 logical, intent(in), optional :: debug
+logical, intent(in), optional :: swmr
 logical, intent(out), optional :: ok
 
 end subroutine

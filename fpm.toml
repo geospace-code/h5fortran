@@ -85,3 +85,7 @@ main = "test_iterate.f90"
 [[test]]
 name = "version"
 main = "test_version.f90"
+
+[[test]]
+name = "swmr"
+main = "test_swmr.f90"

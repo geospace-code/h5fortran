@@ -6,9 +6,14 @@ h5iis_valid_f, h5iget_name_f, H5Iget_type_f, &
 h5open_f, h5close_f, &
 H5Fopen_f, h5fcreate_f, h5fclose_f, h5fis_hdf5_f, h5fget_filesize_f, &
 h5fget_obj_count_f, h5fget_obj_ids_f, h5fget_name_f, &
+h5fstart_swmr_write_f, &
+h5pcreate_f, h5pclose_f, h5pset_libver_bounds_f, &
 h5sselect_hyperslab_f, h5screate_simple_f, &
 H5Sget_simple_extent_ndims_f, H5Sget_simple_extent_dims_f, H5Sget_simple_extent_npoints_f, &
 H5F_ACC_RDONLY_F, H5F_ACC_RDWR_F, H5F_ACC_TRUNC_F, H5F_ACC_EXCL_F, &
+H5F_ACC_SWMR_WRITE_F, H5F_ACC_SWMR_READ_F, &
+H5F_LIBVER_LATEST_F, H5F_LIBVER_EARLIEST_F, &
+H5P_FILE_ACCESS_F, &
 H5F_OBJ_FILE_F, H5F_OBJ_GROUP_F, H5F_OBJ_DATASET_F, H5F_OBJ_DATATYPE_F, H5F_OBJ_ALL_F, &
 H5D_CONTIGUOUS_F, H5D_CHUNKED_F, H5D_COMPACT_F, &
 H5I_FILE_F, &
@@ -42,6 +47,7 @@ integer(HID_T) :: fapl !< file access property list
 if(present(ok)) ok = .true.
 
 if(present(debug)) self%debug = debug
+if(present(swmr)) self%swmr = swmr
 
 self%filename = filename
 
@@ -126,6 +132,19 @@ endif
 
 fapl = H5P_DEFAULT_F
 
+if (self%swmr) then
+  call H5Pcreate_f(H5P_FILE_ACCESS_F, fapl, ier)
+  call estop(ier, "h5open:H5Pcreate", self%filename, ok=ok)
+  if (present(ok)) then
+    if(.not. ok) return
+  endif
+  call H5Pset_libver_bounds_f(fapl, H5F_LIBVER_LATEST_F, H5F_LIBVER_LATEST_F, ier)
+  call estop(ier, "h5open:H5Pset_libver_bounds", self%filename, ok=ok)
+  if (present(ok)) then
+    if(.not. ok) return
+  endif
+endif
+
 if (any(self%file_mode == [H5F_ACC_RDONLY_F, H5F_ACC_RDWR_F])) then
   if(.not. is_hdf5(filename)) then
     write(stderr, '(a,i0)') "ERROR:h5fortran:open: is not an HDF5 file: " // self%filename // " file mode ", self%file_mode
@@ -136,7 +155,13 @@ if (any(self%file_mode == [H5F_ACC_RDONLY_F, H5F_ACC_RDWR_F])) then
       error stop
     endif
   endif
-  call H5Fopen_f(self%filename, self%file_mode, self%file_id, ier, access_prp=fapl)
+
+  if (self%swmr .and. self%file_mode == H5F_ACC_RDONLY_F) then
+    call H5Fopen_f(self%filename, ior(self%file_mode, H5F_ACC_SWMR_READ_F), self%file_id, ier, access_prp=fapl)
+  else
+    call H5Fopen_f(self%filename, self%file_mode, self%file_id, ier, access_prp=fapl)
+  endif
+
   call estop(ier, "h5open:H5Fopen", self%filename, ok=ok)
   if (present(ok)) then
     if(.not. ok) return
@@ -149,6 +174,16 @@ elseif(self%file_mode == H5F_ACC_TRUNC_F) then
   endif
 else
   error stop "ERROR:h5fortran:open: Unsupported file mode: " // self%filename
+endif
+
+if (self%swmr .and. self%file_mode /= H5F_ACC_RDONLY_F) then
+  call H5Fstart_swmr_write_f(self%file_id, ier)
+  call estop(ier, "h5open:H5Fstart_swmr_write", self%filename, ok=ok)
+endif
+
+if (fapl /= H5P_DEFAULT_F) then
+  call H5Pclose_f(fapl, ier)
+  call estop(ier, "h5open:H5Pclose", self%filename, ok=ok)
 endif
 
 end procedure h5open
