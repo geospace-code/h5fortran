@@ -4,29 +4,31 @@ program test_swmr_reader
 
   character(*), parameter :: fn = 'swmr.h5'
   type(hdf5_file) :: h
-  integer, parameter :: n = 10
+  integer, parameter :: n = 10, niter = 5
   real :: dat(n)
   integer :: k, c1, cr
-  logical :: ok
 
   call system_clock(c1, cr)
 
-  ! Try to open, exit if file not ready
-  call h%open(fn, action='r', swmr=.true., ok=ok)
-  if (.not. ok) then
-    print *, 'READER: file not ready'
-    call exit(1)
-  end if
+  call h%open(fn, action='r', swmr=.true.)
+  call h%close()
+
+  ! Signal writer that reader is ready
+  open(10, file='reader_ready')
+  close(10, status='delete')
 
   k = 0
   do
     k = k + 1
+    call h%open(fn, action='r', swmr=.true.)
     call h%refresh('/data')
     call h%read('/data', dat)
+    call h%close()
     call system_clock(cr)
     print '(A,I0,A,F6.3,A,F5.2)', 'READER:', k, ' t=', real(cr-c1)/1000, ' v=', dat(1)
-    if (k >= 5) exit
+    if (k >= niter) exit
+    call execute_command_line('sleep 0.3')
   end do
-  call h%close()
+  print '(A,F6.3)', 'READER: done'
 
 end program test_swmr_reader
