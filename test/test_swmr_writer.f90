@@ -4,9 +4,11 @@ program test_swmr_writer
 
   character(*), parameter :: fn = 'swmr.h5'
   type(hdf5_file) :: h
-  integer, parameter :: n = 10, niter = 3
+  integer, parameter :: n = 10, niter = 5
   real :: dat(n)
-  integer :: i, k
+  integer :: i, k, c1, cr
+
+  call system_clock(c1, cr)
 
   call h%open(fn, action='w', swmr=.true.)
   do i = 1, n
@@ -15,9 +17,8 @@ program test_swmr_writer
   call h%write('/data', dat)
   call h%flush('/data')
   call h%close()
-  print '(A)', 'WRITER: created'
-
-  call execute_command_line('sleep 1')
+  call system_clock(cr)
+  print '(A,F6.3)', 'WRITER: created t=', real(cr-c1)/1000
 
   call h%open(fn, action='r+', swmr=.true.)
   do k = 1, niter
@@ -26,10 +27,12 @@ program test_swmr_writer
     end do
     call h%write('/data', dat)
     call h%flush('/data')
-    print '(A,I0,A)', 'WRITER:', k, ' wrote'
-    call execute_command_line('sleep 0.5')
+    call system_clock(cr)
+    print '(A,I0,A,F6.3,A,F5.2)', 'WRITER:', k, ' t=', real(cr-c1)/1000, ' v=', dat(1)
+    call execute_command_line('sleep 1')
   end do
   call h%close()
-  print '(A)', 'WRITER: done'
+  call system_clock(cr)
+  print '(A,F6.3)', 'WRITER: done t=', real(cr-c1)/1000
 
 end program test_swmr_writer
