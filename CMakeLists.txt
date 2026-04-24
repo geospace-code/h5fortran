@@ -1,4 +1,5 @@
-cmake_minimum_required(VERSION 3.24...4.3)
+cmake_minimum_required(VERSION 3.25...4.3)
+# CMake 3.25 for find_*(VALIDATE)
 # CMake >= 3.26 required if building HDF5
 
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
@@ -13,6 +14,9 @@ VERSION 4.13.0
 # C language is only needed for FindHDF5 algorithms, not for the h5fortran project itself
 
 include(CTest)
+
+# to use our FindHDF5.cmake
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 # --- avoid Anaconda libraries
 if(h5fortran_python AND h5fortran_BUILD_TESTING)

@@ -6,11 +6,14 @@
   "name": "default",
   "binaryDir": "build",
   "installDir": "${fileDir}/build/local",
+  "generator": "Ninja",
+  "displayName": "Default with Ninja",
   "cacheVariables": {
     "h5fortran_warning_as_error": true,
     "h5fortran_BUILD_TESTING": true,
     "h5fortran_python": true,
-    "CMAKE_BUILD_TYPE": "Release"
+    "CMAKE_BUILD_TYPE": "Release",
+    "CMAKE_PREFIX_PATH": "${fileDir}/build/local"
   }
 },
 { "name": "build", "inherits": "default",

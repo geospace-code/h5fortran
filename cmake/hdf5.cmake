@@ -9,7 +9,7 @@ include(CheckSourceCompiles)
 if(NOT DEFINED h5fortran_hdf5_req)
   set(h5fortran_hdf5_req "2.1patch")
 endif()
-# HDF5 2.x require CMake >= 3.26, but the benefits are so great that this is worthwhile
+# HDF5 2.x requires CMake >= 3.26, but the benefits are so great that this is worthwhile
 
 if(hdf5_parallel)
   set(HDF5_PREFER_PARALLEL ON)
@@ -25,17 +25,32 @@ set(ZLIB_USE_LOCALCONTENT OFF)
 set(BUILD_STATIC_LIBS ON)
 
 set(HDF5_GENERATE_HEADERS OFF)
-set(HDF5_PACKAGE_EXTLIBS ON)
 set(HDF5_DISABLE_COMPILER_WARNINGS ON)
 
-set(ZLIB_VERSION "1.3.2")
-set(ZLIB_GIT_TAG "v${ZLIB_VERSION}")
-set(ZLIB_TGZ_NAME "zlib-${ZLIB_VERSION}.tar.gz")
-set(ZLIB_TGZ_ORIGPATH "https://github.com/madler/zlib/archive/refs/tags/${ZLIB_GIT_TAG}")
+# find_package(ZLIB) may have been called in another module and created the target
+# without leaving ZLIB_FOUND set in this directory scope.
+if(TARGET ZLIB::ZLIB AND NOT ZLIB_FOUND)
+  set(ZLIB_FOUND ON)
+endif()
+
+if(NOT ZLIB_FOUND)
+  set(HDF5_PACKAGE_EXTLIBS ON)
+  set(ZLIB_VERSION "1.3.2")
+  set(ZLIB_GIT_TAG "v${ZLIB_VERSION}")
+  set(ZLIB_TGZ_NAME "zlib-${ZLIB_VERSION}.tar.gz")
+  set(ZLIB_TGZ_ORIGPATH "https://github.com/madler/zlib/archive/refs/tags/${ZLIB_GIT_TAG}")
+endif()
 
 if(h5fortran_hdf5_req STREQUAL "2.1patch" OR h5fortran_hdf5_req VERSION_GREATER_EQUAL "2.0")
-  set(ZLIB_USE_EXTERNAL ON)
-  set(HDF5_ALLOW_EXTERNAL_SUPPORT TGZ)
+  if(ZLIB_FOUND)
+    # Ensure HDF5 uses already discovered zlib and does not try to build vendored zlib.
+    set(ZLIB_USE_EXTERNAL OFF)
+  else()
+    # avoids 'add_library cannot create ALIAS target "ZLIB::ZLIB" because another target with the same name already exists."
+    set(ZLIB_USE_EXTERNAL ON)
+    set(HDF5_ALLOW_EXTERNAL_SUPPORT TGZ)
+  endif()
+
   if(h5fortran_hdf5_zlib)
     set(HDF5_ENABLE_ZLIB_SUPPORT ON)
   endif()
@@ -167,118 +182,6 @@ endif()
 endmacro()
 
 
-macro(windows_oneapi_hdf5_workaround)
-
-# HDF5 bug #3663 for HDF5 1.14.2, 1.14.3, ...?
-# https://github.com/HDFGroup/hdf5/issues/3663
-if(WIN32 AND CMAKE_Fortran_COMPILER_ID MATCHES "^Intel")
-if(HDF5_VERSION VERSION_GREATER_EQUAL 1.14.2 AND HDF5_VERSION VERSION_LESS 2.1.2)
-  message(DEBUG "HDF5: applying workaround for HDFGroup/HDF5 bug #3663 with Intel oneAPI on Windows")
-  list(APPEND CMAKE_REQUIRED_LIBRARIES shlwapi)
-endif()
-endif()
-
-endmacro()
-
-
-function(check_hdf5_compile lang)
-
-set(CMAKE_REQUIRED_LIBRARIES HDF5::HDF5)
-windows_oneapi_hdf5_workaround()
-
-set(file "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/check_hdf5")
-
-if(lang STREQUAL "C")
-
-set(_src [=[
-#include "hdf5.h"
-#include <stdio.h>
-#include <stdlib.h>
-
-int main(void){
-
-if(H5open() != 0){
-  fprintf(stderr, "H5open() failed");
-  return EXIT_FAILURE;
-}
-
-if(H5F_ACC_RDONLY == H5F_ACC_TRUNC || H5F_ACC_RDONLY == H5F_ACC_RDWR){
-  fprintf(stderr, "H5F_ACC_RDONLY, H5F_ACC_TRUNC, H5F_ACC_RDWR are not all distinct");
-  return EXIT_FAILURE;
-}
-
-if(H5close() != 0){
-  fprintf(stderr, "H5close() failed");
-  return EXIT_FAILURE;
-}
-printf("OK: HDF5 C type check");
-return EXIT_SUCCESS;
-}]=])
-
-elseif(lang STREQUAL "Fortran")
-
-set(_src [=[
-program test_minimal
-
-use hdf5
-use h5lt
-
-implicit none
-
-integer :: i, p
-integer(HID_T) :: lid
-character(*), parameter :: filename='test_minimal.h5'
-
-p = 42
-
-call H5open_f(i)
-if(i /= 0) error stop "test_minimal: H5open_f failed [0]"
-
-call H5open_f(i)
-if(i /= 0) error stop "test_minimal: H5open_f failed [1]"
-
-call H5Fcreate_f(filename, H5F_ACC_TRUNC_F, lid, i)
-if (i/=0) error stop 'minimal: could not create file'
-
-call H5LTmake_dataset_f(lid, "A", 0, shape(p, kind=HSIZE_T), h5kind_to_type(kind(p),H5_INTEGER_KIND), p, i)
-if (i/=0) error stop 'minimal: could not create dataset A'
-
-call H5Fclose_f(lid, i)
-if (i/=0) error stop 'minimal: could not close file'
-
-call H5close_f(i)
-if (i /= 0) error stop 'could not close hdf5 library [0]'
-
-open(newunit=i, file=filename)
-close(i, status='delete')
-
-end program
-]=])
-
-endif()
-
-
-check_source_compiles(${lang} "${_src}" HDF5_${lang}_links)
-
-endfunction()
-
-
-function(check_hdf5 result_var)
-
-check_hdf5_compile(C)
-check_hdf5_compile(Fortran)
-
-if(HDF5_C_links AND HDF5_Fortran_links)
-  set(${result_var} true PARENT_SCOPE)
-else()
-  message(STATUS "HDF5 package failed compatibility validation with compiler ${CMAKE_Fortran_COMPILER_ID} ${CMAKE_Fortran_COMPILER_VERSION}")
-  set(${result_var} false PARENT_SCOPE)
-endif()
-
-endfunction()
-
-
-
 if(NOT TARGET HDF5::HDF5)
 
   # we built HDF5, so define HDF5::HDF5 like FindHDF5.cmake find_package(HDF5)
@@ -287,15 +190,6 @@ if(NOT TARGET HDF5::HDF5)
 elseif(HDF5_FOUND)
 
   # the factory HDF5::HDF5 target FindHDF5 is missing HL_Fortran, so let's just define it.
-
-  set_property(TARGET HDF5::HDF5 PROPERTY INTERFACE_LINK_LIBRARIES hdf5::hdf5_hl_fortran hdf5::hdf5_fortran hdf5::hdf5_hl hdf5::hdf5)
-
-  check_hdf5(_hdf5_compatible)
-  if(NOT _hdf5_compatible)
-    message(FATAL_ERROR "HDF5 package found but incompatible with compiler ${CMAKE_Fortran_COMPILER_ID} ${CMAKE_Fortran_COMPILER_VERSION}
-Re-build with CMake option
-  cmake -DFETCHCONTENT_TRY_FIND_PACKAGE_MODE=NEVER ...
-")
-  endif()
+  # set_property(TARGET HDF5::HDF5 PROPERTY INTERFACE_LINK_LIBRARIES hdf5::hdf5_hl_fortran hdf5::hdf5_fortran hdf5::hdf5_hl hdf5::hdf5)
 
 endif()
