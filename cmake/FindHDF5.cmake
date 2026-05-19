@@ -159,7 +159,7 @@ check_symbol_exists(H5_HAVE_PARALLEL ${h5_conf} HDF5_IS_PARALLEL)
 
 set(HDF5_parallel_FOUND false)
 if(HDF5_IS_PARALLEL)
-  find_mpi()
+  hdf5_find_mpi()
   if(NOT MPI_FOUND)
     return()
   endif()
@@ -739,13 +739,13 @@ list(PREPEND CMAKE_REQUIRED_LIBRARIES ${path})
 set(CMAKE_REQUIRED_INCLUDES ${HDF5_C_INCLUDE_DIR})
 
 if(HDF5_parallel_FOUND)
-  find_mpi()
+  hdf5_find_mpi()
 
-  list(APPEND CMAKE_REQUIRED_INCLUDES ${MPI_C_INCLUDE_DIRS})
-  list(APPEND CMAKE_REQUIRED_LIBRARIES ${MPI_C_LIBRARIES})
+  list(APPEND CMAKE_REQUIRED_LIBRARIES MPI::MPI_C)
 
   check_symbol_exists(H5Pset_fapl_mpio hdf5.h HAVE_H5Pset_fapl_mpio)
   if(NOT HAVE_H5Pset_fapl_mpio)
+    set(${_result} false PARENT_SCOPE)
     return()
   endif()
 
@@ -796,10 +796,9 @@ set(CMAKE_REQUIRED_INCLUDES ${ppath} ${HDF5_Fortran_INCLUDE_DIR})
 # and the test program needs to include both hdf5.mod and h5lt.mod
 
 if(HDF5_parallel_FOUND)
-  find_mpi()
+  hdf5_find_mpi()
 
-  list(APPEND CMAKE_REQUIRED_INCLUDES ${MPI_Fortran_INCLUDE_DIRS})
-  list(APPEND CMAKE_REQUIRED_LIBRARIES ${MPI_Fortran_LIBRARIES})
+  list(APPEND CMAKE_REQUIRED_LIBRARIES MPI::MPI_Fortran)
 
   set(src "program test
   use hdf5
