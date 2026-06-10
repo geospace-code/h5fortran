@@ -852,11 +852,9 @@ macro(hdf5_msvc_workaround)
 # HDF5 bug #3663 for HDF5 1.14.2..2.1
 # https://github.com/HDFGroup/hdf5/issues/3663
 # we have it here too so that the link test works without the *targets.cmake files
-if(WIN32 AND CMAKE_Fortran_COMPILER_ID MATCHES "^Intel")
-if(HDF5_VERSION VERSION_GREATER_EQUAL 1.14.2 AND HDF5_VERSION VERSION_LESS 2.1.2)
-  message(DEBUG "HDF5: applying workaround for HDFGroup/HDF5 bug #3663 with Intel oneAPI on Windows")
+if(WIN32 AND CMAKE_Fortran_COMPILER_ID STREQUAL "IntelLLVM")
+  message(DEBUG "HDF5: applying workaround for HDFGroup/HDF5 bug Issue 3663 with Intel oneAPI on Windows")
   list(APPEND CMAKE_REQUIRED_LIBRARIES shlwapi)
-endif()
 endif()
 
 endmacro(hdf5_msvc_workaround)
