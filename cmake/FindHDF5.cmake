@@ -335,6 +335,7 @@ if(HDF5_ROOT)
   NAMES hdf5.mod
   NO_DEFAULT_PATH
   HINTS ${HDF5_C_INCLUDE_DIR} ${HDF5_ROOT}
+  PATH_SUFFIXES ${hdf5_msuf_hl}
   DOC "HDF5 Fortran module path"
   )
 
@@ -360,6 +361,7 @@ else()
         NAMES hdf5.mod
         NO_DEFAULT_PATH
         HINTS ${i}
+        PATH_SUFFIXES ${hdf5_msuf_hl}
         DOC "HDF5 Fortran module path"
         )
 
@@ -380,7 +382,7 @@ else()
       NAMES hdf5.mod
       HINTS ${HDF5_C_INCLUDE_DIR} ${hdf5_inc_dirs}
       PATHS ${hdf5_binpref}
-      PATH_SUFFIXES ${hdf5_msuf}
+      PATH_SUFFIXES ${hdf5_msuf} ${hdf5_msuf_hl}
       DOC "HDF5 Fortran module path"
       )
 
@@ -398,7 +400,7 @@ else()
     NAMES hdf5.mod
     HINTS ${HDF5_C_INCLUDE_DIR} ${hdf5_inc_dirs}
     PATHS ${hdf5_binpref}
-    PATH_SUFFIXES ${hdf5_msuf}
+    PATH_SUFFIXES ${hdf5_msuf} ${hdf5_msuf_hl}
     DOC "HDF5 Fortran module path"
     )
     if(HDF5_Fortran_INCLUDE_DIR)
