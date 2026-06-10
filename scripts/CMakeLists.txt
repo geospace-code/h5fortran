@@ -1,12 +1,15 @@
-cmake_minimum_required(VERSION 3.25...3.29)
+cmake_minimum_required(VERSION 3.26...3.29)
 # use max version to avoid deprecation warnings
+# CMake >= 3.26 to use HDF5 2.x
 
 project(HDF5_build
 LANGUAGES C Fortran
 )
 
 option(hdf5_parallel "build HDF5 parallel MPI")
-option(build_zlib "build zlib")
+option(BUILD_SHARED_LIBS "build shared libraries" OFF)
+
+set(FETCHCONTENT_QUIET OFF)
 
 # --- system checks
 message(STATUS "CMAKE_INSTALL_PREFIX: ${CMAKE_INSTALL_PREFIX}")
@@ -25,7 +28,7 @@ if(NOT MPI_ROOT AND DEFINED ENV{MPI_ROOT})
   set(MPI_ROOT $ENV{MPI_ROOT})
 endif()
 
-if(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND MPI_ROOT)
+if(LINUX AND IS_DIRECTORY "${MPI_ROOT}")
   set(ld_path $ENV{LD_LIBRARY_PATH})
   cmake_path(CONVERT "${ld_path}" TO_CMAKE_PATH_LIST ld_path NORMALIZE)
   cmake_path(CONVERT "${MPI_ROOT}" TO_CMAKE_PATH_LIST MPI_ROOT NORMALIZE)
@@ -33,7 +36,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND MPI_ROOT)
   if(NOT "${ld_path}" MATCHES "${MPI_ROOT}/lib")
     message(WARNING "${MPI_ROOT}/lib not found in LD_LIBRARY_PATH: $ENV{LD_LIBRARY_PATH}
     HDF5 build may fail due to bugs in HDF5 package CMake scripts.
-    Fix this by adding to ~/.bashrc or similar:
+    On Linux, fix this by adding to ~/.bashrc or similar:
       export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${MPI_ROOT}/lib")
   endif()
 endif()
@@ -62,7 +65,6 @@ if(_hdf5_libprior OR _hdf5_incprior OR _hdf5_binprior)
 endif()
 
 # --- commence HDF5 build/install
-set_property(DIRECTORY PROPERTY EP_UPDATE_DISCONNECTED true)
 
 if(hdf5_parallel)
   find_package(MPI COMPONENTS C REQUIRED)
@@ -73,10 +75,3 @@ endif()
 include(${PROJECT_SOURCE_DIR}/../cmake/hdf5.cmake)
 
 message(STATUS "Build / install HDF5 ${hdf5_tag} to ${CMAKE_INSTALL_PREFIX}")
-
-# --- features
-include(FeatureSummary)
-
-add_feature_info(HDF5parallel hdf5_parallel "HDF5 MPI layer")
-
-feature_summary(WHAT ENABLED_FEATURES DISABLED_FEATURES)

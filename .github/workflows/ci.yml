@@ -16,6 +16,7 @@ on:
       - ".github/workflows/**"
       - "!memcheck.cmake"
       - "!coverage.cmake"
+      - "!scripts/**"
   workflow_dispatch:
 
 # avoid wasted runs

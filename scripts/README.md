@@ -4,25 +4,28 @@ This folder can build HDF5 and ZLIB.
 Pick CMAKE_INSTALL_PREFIX to be the directory you wish to install HDF5 under.
 
 ```sh
-cmake -B build -DCMAKE_INSTALL_PREFIX=~/local
-cmake --build build
+cmake -B build --install-prefix=$HOME/local
 ```
 
 Optionally, build the MPI layer (parallel HDF5)
 
 ```sh
-cmake -B build -DCMAKE_INSTALL_PREFIX=~/local -Dhdf5_parallel=on
-cmake --build build
+cmake -B build --install-prefix=$HOME/local -Dhdf5_parallel=on
 ```
 
 Optionally, request a specific
-[HDF5 release URL source archive](https://github.com/HDFGroup/hdf5/releases)
-and/or ZLIB URL source archive URL:
+[HDF5 release URL source archive](https://github.com/HDFGroup/hdf5/releases):
 
 ```sh
 cmake -B build \
-  -Dhdf5_url=https://github.com/HDFGroup/hdf5/archive/refs/tags/hdf5_1.14.4.3.tar.gz \
-  -Dzlib_url=https://github.com/zlib-ng/zlib-ng/archive/refs/tags/2.2.1.tar.gz
+  -Dhdf5_url=https://github.com/HDFGroup/hdf5/archive/refs/tags/hdf5_1.14.4.3.tar.gz
+```
+
+Then, build and install:
+
+```sh
+cmake --build build
+cmake --install build
 ```
 
 ## compiler wrappers
