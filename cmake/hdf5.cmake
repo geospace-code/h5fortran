@@ -73,7 +73,10 @@ endif()
 
 
 set(HDF5_BUILD_FORTRAN ON CACHE BOOL "Build Fortran bindings" FORCE)
-set(HDF5_BUILD_TOOLS ON CACHE BOOL "Build HDF5 tools" FORCE)
+
+set(HDF5_BUILD_TOOLS OFF CACHE BOOL "Build HDF5 tools" FORCE)
+# don't need tools and they make configuration step shaky
+
 set(HDF5_BUILD_EXAMPLES OFF CACHE BOOL "Build HDF5 examples" FORCE)
 set(HDF5_BUILD_HL_LIB ON CACHE BOOL "Build HDF5 High-Level library" FORCE)
 set(HDF5_USE_GNU_DIRS ON CACHE BOOL "Use GNU install directories" FORCE)
