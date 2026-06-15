@@ -193,6 +193,8 @@ if(NOT TARGET HDF5::HDF5)
 elseif(HDF5_FOUND)
 
   # the factory HDF5::HDF5 target FindHDF5 is missing HL_Fortran, so let's just define it.
-  # set_property(TARGET HDF5::HDF5 PROPERTY INTERFACE_LINK_LIBRARIES hdf5::hdf5_hl_fortran hdf5::hdf5_fortran hdf5::hdf5_hl hdf5::hdf5)
+  if(h5fortran_find_hdf5_factory)
+    set_property(TARGET HDF5::HDF5 PROPERTY INTERFACE_LINK_LIBRARIES hdf5::hdf5_hl_fortran hdf5::hdf5_fortran hdf5::hdf5_hl hdf5::hdf5)
+  endif()
 
 endif()

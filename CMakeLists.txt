@@ -16,7 +16,9 @@ VERSION 4.13.0
 include(CTest)
 
 # to use our FindHDF5.cmake
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+if(NOT h5fortran_find_hdf5_factory)
+  list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+endif()
 
 # --- avoid Anaconda libraries
 if(h5fortran_python AND h5fortran_BUILD_TESTING)

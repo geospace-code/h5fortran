@@ -4,8 +4,6 @@ include(GNUInstallDirs)
 
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 
-set(FETCHCONTENT_QUIET OFF)
-
 option(h5fortran_hdf5_zlib "use Zlib when building HDF5" ON)
 
 option(h5fortran_warning_as_error "treat warnings as errors" OFF)
@@ -21,6 +19,9 @@ hdf5 libraries in a Conda environment." ON)
 
 option(h5fortran_BUILD_TESTING "build tests" ${h5fortran_IS_TOP_LEVEL})
 
+option(h5fortran_find_hdf5_factory "Use FindHDF5.cmake to find HDF5 instead of our custom FindHDF5")
+
+set(FETCHCONTENT_QUIET OFF)
 set(FETCHCONTENT_UPDATES_DISCONNECTED ON)
 
 option(h5fortran_ENABLE_RPATH "Enable RPATH in installed MUMPS libraries" OFF)
