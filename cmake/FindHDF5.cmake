@@ -88,7 +88,7 @@ if(code EQUAL 0)
   set(${outvar} ${ret} PARENT_SCOPE)
 endif()
 
-endfunction(hdf5_get_flags)
+endfunction()
 
 
 function(hdf5_pop_flag raw flag outvar)
@@ -103,26 +103,6 @@ endforeach()
 
 set(${outvar} ${_v} PARENT_SCOPE)
 
-endfunction(hdf5_pop_flag)
-
-
-function(hdf5_zlib_links _result path)
-  # check that the zlib library we found actually links
-  set(CMAKE_REQUIRED_INCLUDES ${ZLIB_INCLUDE_DIR})
-  set(CMAKE_REQUIRED_LIBRARIES ${path})
-
-  check_source_compiles(C
-  "#include <zlib.h>
-  int main(void) {
-    Bytef src[1] = {0};
-    Bytef dest[100];
-    uLongf dest_len = sizeof(dest);
-    compress(dest, &dest_len, src, sizeof(src));
-    return 0;
-  }"
-  ZLIB_links)
-
-  set(${_result} ${ZLIB_links} PARENT_SCOPE)
 endfunction()
 
 
@@ -138,7 +118,7 @@ else()
   find_package(MPI COMPONENTS ${mpi_comp})
 endif()
 
-endmacro(hdf5_find_mpi)
+endmacro()
 
 
 macro(hdf5_detect_config path)
@@ -159,9 +139,6 @@ if(NOT h5_conf)
   return()
 endif()
 
-# check HDF5 features that require link of external libraries.
-check_symbol_exists(H5_HAVE_FILTER_DEFLATE ${h5_conf} hdf5_have_zlib)
-
 # Always check for HDF5 MPI support because HDF5 link fails if MPI is linked into HDF5.
 check_symbol_exists(H5_HAVE_PARALLEL ${h5_conf} HDF5_IS_PARALLEL)
 
@@ -175,8 +152,7 @@ if(HDF5_IS_PARALLEL)
   set(HDF5_parallel_FOUND true)
 endif()
 
-# get version
-# from CMake/Modules/FindHDF5.cmake
+# get HDF5 version from factory CMake Modules/FindHDF5.cmake
 file(STRINGS ${h5_conf} _def
  REGEX "^[ \t]*#[ \t]*define[ \t]+H5_VERSION[ \t]+"
 )
@@ -187,50 +163,7 @@ if("${_def}" MATCHES "H5_VERSION[ \t]+\"([0-9]+\\.[0-9]+\\.[0-9]+)")
 endif()
 message(DEBUG "HDF5 version match 0, 1: ${CMAKE_MATCH_0}   ${CMAKE_MATCH_1}")
 
-if(hdf5_have_zlib)
-  # avoid picking up incompatible zlib over the desired zlib
-  if(NOT ZLIB_ROOT)
-    if(DEFINED HDF5_C_INCLUDE_DIR)
-      cmake_path(GET HDF5_C_INCLUDE_DIR PARENT_PATH ZLIB_ROOT)
-    elseif(DEFINED HDF5_Fortran_INCLUDE_DIR)
-      cmake_path(GET HDF5_Fortran_INCLUDE_DIR PARENT_PATH ZLIB_ROOT)
-    endif()
-    list(APPEND ZLIB_ROOT ${hdf5_root})
-  endif()
-
-  # DO NOT USE find_package(ZLIB) as it creates ZLIB::ZLIB target that makes namespace clashes even when building HDF5
-  find_path(ZLIB_INCLUDE_DIR
-  NAMES zlib.h
-  HINTS ${ZLIB_ROOT}
-  PATH_SUFFIXES include
-  DOC "ZLIB header"
-  )
-
-  if(ZLIB_INCLUDE_DIR)
-  find_library(ZLIB_LIBRARY
-  NAMES zlib z
-  HINTS ${ZLIB_ROOT}
-  DOC "ZLIB library"
-  VALIDATOR hdf5_zlib_links
-  )
-  endif()
-
-  if(ZLIB_LIBRARY)
-    list(APPEND CMAKE_REQUIRED_LIBRARIES ${ZLIB_LIBRARY})
-    list(APPEND CMAKE_REQUIRED_INCLUDES ${ZLIB_INCLUDE_DIR})
-  endif()
-endif()
-
-list(APPEND CMAKE_REQUIRED_LIBRARIES ${CMAKE_DL_LIBS})
-
-find_package(Threads)
-list(APPEND CMAKE_REQUIRED_LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
-
-if(UNIX)
-  list(APPEND CMAKE_REQUIRED_LIBRARIES m)
-endif()
-
-endmacro(hdf5_detect_config)
+endmacro()
 
 
 function(hdf5_find_fortran)
@@ -934,19 +867,6 @@ if(HDF5_FOUND)
     set_target_properties(HDF5::HDF5 PROPERTIES
       INTERFACE_LINK_LIBRARIES "${HDF5_LIBRARIES}"
       INTERFACE_INCLUDE_DIRECTORIES "${HDF5_INCLUDE_DIRS}")
-
-    if(hdf5_have_zlib)
-      if(ZLIB_LIBRARY)
-        target_link_libraries(HDF5::HDF5 INTERFACE ${ZLIB_LIBRARY})
-        target_include_directories(HDF5::HDF5 INTERFACE ${ZLIB_INCLUDE_DIR})
-      endif()
-    endif()
-
-    target_link_libraries(HDF5::HDF5 INTERFACE
-    ${CMAKE_THREAD_LIBS_INIT}
-    ${CMAKE_DL_LIBS}
-    $<$<BOOL:${UNIX}>:m>
-    )
   endif()
 
   if(NOT TARGET hdf5::hdf5_hl_fortran)
