@@ -160,7 +160,6 @@ if(NOT h5_conf)
 endif()
 
 # check HDF5 features that require link of external libraries.
-check_symbol_exists(H5_HAVE_FILTER_SZIP ${h5_conf} hdf5_have_szip)
 check_symbol_exists(H5_HAVE_FILTER_DEFLATE ${h5_conf} hdf5_have_zlib)
 
 # Always check for HDF5 MPI support because HDF5 link fails if MPI is linked into HDF5.
@@ -219,25 +218,6 @@ if(hdf5_have_zlib)
   if(ZLIB_LIBRARY)
     list(APPEND CMAKE_REQUIRED_LIBRARIES ${ZLIB_LIBRARY})
     list(APPEND CMAKE_REQUIRED_INCLUDES ${ZLIB_INCLUDE_DIR})
-  endif()
-endif()
-
-if(hdf5_have_szip)
-  find_library(SZIP_LIBRARY
-  NAMES szip sz
-  HINTS ${SZIP_ROOT} ${ZLIB_ROOT}
-  DOC "SZIP API"
-  )
-
-  find_path(SZIP_INCLUDE_DIR
-  NAMES szlib.h
-  HINTS ${SZIP_ROOT} ${ZLIB_ROOT}
-  PATH_SUFFIXES include
-  DOC "SZIP header"
-  )
-  if(SZIP_LIBRARY AND SZIP_INCLUDE_DIR)
-    list(APPEND CMAKE_REQUIRED_LIBRARIES ${SZIP_LIBRARY})
-    list(APPEND CMAKE_REQUIRED_INCLUDES ${SZIP_INCLUDE_DIR})
   endif()
 endif()
 
@@ -959,15 +939,6 @@ if(HDF5_FOUND)
       if(ZLIB_LIBRARY)
         target_link_libraries(HDF5::HDF5 INTERFACE ${ZLIB_LIBRARY})
         target_include_directories(HDF5::HDF5 INTERFACE ${ZLIB_INCLUDE_DIR})
-      endif()
-    endif()
-
-    if(hdf5_have_szip)
-      # If system HDF5 dynamically links libhdf5 with szip, our builds will fail if we don't also link szip.
-      # however, we don't require SZIP for this case as found HDF5 libraries may statically link SZIP.
-      if(SZIP_LIBRARY AND SZIP_INCLUDE_DIR)
-        target_link_libraries(HDF5::HDF5 INTERFACE ${SZIP_LIBRARY})
-        target_include_directories(HDF5::HDF5 INTERFACE ${SZIP_INCLUDE_DIR})
       endif()
     endif()
 
