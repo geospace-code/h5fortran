@@ -8,10 +8,19 @@ FindHDF5
 
 by SciVision www.scivision.dev
 
-Finds HDF5 library for C, CXX, Fortran. Serial or parallel HDF5.
+Finds HDF5 library for C, CXX, Fortran.
+Finds serial or parallel HDF5.
 
-Environment variable ``HDF5MPI_ROOT`` or CMake variable HDF5MPI_ROOT can
-specify the location of the HDF5-MPI parallel library.
+Hints
+^^^^^
+
+CMake variable ``HDF5_NO_FIND_WRAPPER`` can be set ``false`` (default ``true``)
+to not use the HDF5 compiler wrappers ``h5cc``, ``h5fc`` or similar, which can
+be useful if undesired compiler wrappers are present on the system.
+
+If parallel HDF5 is desired or acceptable, the environment variable
+``HDF5MPI_ROOT`` or CMake variable HDF5MPI_ROOT can specify the location of the
+HDF5-MPI parallel library.
 
 
 Result Variables
@@ -246,17 +255,17 @@ endmacro(hdf5_detect_config)
 
 function(hdf5_find_fortran)
 
-# NOTE: the "lib*" are for Windows Intel compiler, even for self-built HDF5.
-# CMake won't look for lib prefix automatically.
-
 if(parallel IN_LIST HDF5_FIND_COMPONENTS AND NOT HDF5_parallel_FOUND)
   # this avoids expensive Fortran find when MPI isn't linked properly
   return()
 endif()
 
-hdf5_fortran_wrap(hdf5_lib_dirs hdf5_inc_dirs)
-
-# "PATH" Env var is useful on HPC for finding HDF5 libraries
+if(HDF5_NO_FIND_WRAPPER)
+  set(hdf5_lib_dirs)
+  set(hdf5_inc_dirs)
+else()
+  hdf5_fortran_wrap(hdf5_lib_dirs hdf5_inc_dirs)
+endif()
 
 if(MSVC)
   set(CMAKE_FIND_LIBRARY_PREFIXES lib)
@@ -415,9 +424,12 @@ if(parallel IN_LIST HDF5_FIND_COMPONENTS AND NOT HDF5_parallel_FOUND)
   return()
 endif()
 
-hdf5_cxx_wrap(hdf5_lib_dirs hdf5_inc_dirs)
-
-# "PATH" Env var is useful on HPC for finding HDF5 libraries
+if(HDF5_NO_FIND_WRAPPER)
+  set(hdf5_lib_dirs)
+  set(hdf5_inc_dirs)
+else()
+  hdf5_cxx_wrap(hdf5_lib_dirs hdf5_inc_dirs)
+endif()
 
 if(MSVC)
   set(CMAKE_FIND_LIBRARY_PREFIXES lib)
@@ -481,7 +493,12 @@ endfunction(hdf5_find_cxx)
 
 function(hdf5_find_c)
 
-hdf5_c_wrap(hdf5_lib_dirs hdf5_inc_dirs)
+if(HDF5_NO_FIND_WRAPPER)
+  set(hdf5_lib_dirs)
+  set(hdf5_inc_dirs)
+else()
+  hdf5_c_wrap(hdf5_lib_dirs hdf5_inc_dirs)
+endif()
 
 # "PATH" Env var is useful on HPC for finding HDF5 libraries
 
@@ -605,7 +622,7 @@ set(lib_dirs)
 set(inc_dirs)
 
 if(HDF5_parallel_FOUND)
- set(wrapper_names h5c++.openmpi h5c++.mpich)
+  set(wrapper_names h5c++.openmpi h5c++.mpich)
 else()
   set(wrapper_names h5c++)
 endif()
@@ -822,6 +839,10 @@ endmacro(hdf5_msvc_workaround)
 
 unset(CMAKE_REQUIRED_LIBRARIES)
 
+if(NOT DEFINED HDF5_NO_FIND_WRAPPER)
+  set(HDF5_NO_FIND_WRAPPER false)
+endif()
+
 if(NOT HDF5MPI_ROOT AND DEFINED ENV{HDF5MPI_ROOT})
   set(HDF5MPI_ROOT $ENV{HDF5MPI_ROOT})
 endif()
@@ -930,8 +951,9 @@ if(HDF5_FOUND)
 
   if(NOT TARGET HDF5::HDF5)
     add_library(HDF5::HDF5 INTERFACE IMPORTED)
-    set_property(TARGET HDF5::HDF5 PROPERTY INTERFACE_LINK_LIBRARIES "${HDF5_LIBRARIES}")
-    set_property(TARGET HDF5::HDF5 PROPERTY INTERFACE_INCLUDE_DIRECTORIES "${HDF5_INCLUDE_DIRS}")
+    set_target_properties(HDF5::HDF5 PROPERTIES
+      INTERFACE_LINK_LIBRARIES "${HDF5_LIBRARIES}"
+      INTERFACE_INCLUDE_DIRECTORIES "${HDF5_INCLUDE_DIRS}")
 
     if(hdf5_have_zlib)
       if(ZLIB_LIBRARY)
@@ -954,6 +976,60 @@ if(HDF5_FOUND)
     ${CMAKE_DL_LIBS}
     $<$<BOOL:${UNIX}>:m>
     )
+  endif()
+
+  if(NOT TARGET hdf5::hdf5_hl_fortran)
+    if(HDF5_Fortran_HL_LIBRARY)
+      add_library(hdf5::hdf5_hl_fortran INTERFACE IMPORTED)
+      set_target_properties(hdf5::hdf5_hl_fortran PROPERTIES
+        INTERFACE_LINK_LIBRARIES "${HDF5_Fortran_HL_LIBRARY}"
+        INTERFACE_INCLUDE_DIRECTORIES "${HDF5_Fortran_HL_INCLUDE_DIR}")
+    endif()
+  endif()
+
+  if(NOT TARGET hdf5::hdf5_fortran)
+    if(HDF5_Fortran_LIBRARY)
+      add_library(hdf5::hdf5_fortran INTERFACE IMPORTED)
+      set_target_properties(hdf5::hdf5_fortran PROPERTIES
+        INTERFACE_LINK_LIBRARIES "${HDF5_Fortran_LIBRARY}"
+        INTERFACE_INCLUDE_DIRECTORIES "${HDF5_Fortran_INCLUDE_DIR}")
+    endif()
+  endif()
+
+  if(NOT TARGET hdf5::hdf5_hl)
+    if(HDF5_C_HL_LIBRARY)
+      add_library(hdf5::hdf5_hl INTERFACE IMPORTED)
+      set_target_properties(hdf5::hdf5_hl PROPERTIES
+        INTERFACE_LINK_LIBRARIES "${HDF5_C_HL_LIBRARY}"
+        INTERFACE_INCLUDE_DIRECTORIES "${HDF5_C_INCLUDE_DIR}")
+    endif()
+  endif()
+
+  if(NOT TARGET hdf5::hdf5)
+    if(HDF5_C_LIBRARY)
+      add_library(hdf5::hdf5 INTERFACE IMPORTED)
+      set_target_properties(hdf5::hdf5 PROPERTIES
+        INTERFACE_LINK_LIBRARIES "${HDF5_C_LIBRARY}"
+        INTERFACE_INCLUDE_DIRECTORIES "${HDF5_C_INCLUDE_DIR}")
+    endif()
+  endif()
+
+  if(NOT TARGET hdf5::hdf5_hl_cpp)
+    if(HDF5_CXX_HL_LIBRARY)
+      add_library(hdf5::hdf5_hl_cpp INTERFACE IMPORTED)
+      set_target_properties(hdf5::hdf5_hl_cpp PROPERTIES
+        INTERFACE_LINK_LIBRARIES "${HDF5_CXX_HL_LIBRARY}"
+        INTERFACE_INCLUDE_DIRECTORIES "${HDF5_CXX_INCLUDE_DIR}")
+    endif()
+  endif()
+
+  if(NOT TARGET hdf5::hdf5_cpp)
+    if(HDF5_CXX_LIBRARY)
+      add_library(hdf5::hdf5_cpp INTERFACE IMPORTED)
+      set_target_properties(hdf5::hdf5_cpp PROPERTIES
+        INTERFACE_LINK_LIBRARIES "${HDF5_CXX_LIBRARY}"
+        INTERFACE_INCLUDE_DIRECTORIES "${HDF5_CXX_INCLUDE_DIR}")
+    endif()
   endif()
 endif(HDF5_FOUND)
 
