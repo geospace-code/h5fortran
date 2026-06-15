@@ -23,6 +23,13 @@
     "FETCHCONTENT_TRY_FIND_PACKAGE_MODE": "NEVER"
   }
 },
+{ "name": "no-build", "inherits": "default",
+  "displayName": "Don't build HDF5 and ZLib from source with h5fortran if not found",
+  "cacheVariables": {
+    "FETCHCONTENT_TRY_FIND_PACKAGE_MODE": "ALWAYS",
+    "FETCHCONTENT_FULLY_DISCONNECTED": true
+  }
+},
 { "name": "debug", "inherits": "default",
   "binaryDir": "build-debug",
   "cacheVariables": {
