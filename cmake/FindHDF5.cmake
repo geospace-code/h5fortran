@@ -14,9 +14,17 @@ Finds serial or parallel HDF5.
 Hints
 ^^^^^
 
-CMake variable ``HDF5_NO_FIND_WRAPPER`` can be set ``false`` (default ``true``)
-to not use the HDF5 compiler wrappers ``h5cc``, ``h5fc`` or similar, which can
-be useful if undesired compiler wrappers are present on the system.
+``HDF5_NO_FIND_WRAPPER``
+  can be set ``false`` (default ``true``) to not use the HDF5 compiler wrappers
+  ``h5cc``, ``h5fc`` or similar, which can be useful if undesired compiler
+  wrappers are present on the system.
+
+``HDF5_USE_STATIC_LIBRARIES``
+  if set ``true``,  prefers static libraries. Default is ``false``.
+
+``HDF5_FIND_DEBUG_LIBRARIES``
+  if set ``true``, prefers debug versions of the libraries. Default is
+  ``false``.
 
 If parallel HDF5 is desired or acceptable, the environment variable
 ``HDF5MPI_ROOT`` or CMake variable HDF5MPI_ROOT can specify the location of the
@@ -76,7 +84,13 @@ include(CheckSourceCompiles)
 
 function(hdf5_get_flags exec outvar)
 
-execute_process(COMMAND ${exec} -show
+if(HDF5_USE_STATIC_LIBRARIES)
+  set(opt "-noshlib")
+else()
+  set(opt "-shlib")
+endif()
+
+execute_process(COMMAND ${exec} -show ${opt}
 OUTPUT_STRIP_TRAILING_WHITESPACE
 OUTPUT_VARIABLE ret
 RESULT_VARIABLE code
@@ -127,20 +141,20 @@ hdf5_msvc_workaround()
 
 set(CMAKE_REQUIRED_INCLUDES ${path} ${HDF5_C_INCLUDE_DIR})
 
-find_file(h5_conf
+find_file(HDF5_CONFIG_FILE
 NAMES H5pubconf.h H5pubconf-64.h
 HINTS ${CMAKE_REQUIRED_INCLUDES}
 PATH_SUFFIXES ${hdf5_isuf}
 NO_DEFAULT_PATH
 )
-message(VERBOSE "HDF5 config: ${h5_conf}")
+message(VERBOSE "HDF5 config: ${HDF5_CONFIG_FILE}")
 
-if(NOT h5_conf)
+if(NOT HDF5_CONFIG_FILE)
   return()
 endif()
 
 # Always check for HDF5 MPI support because HDF5 link fails if MPI is linked into HDF5.
-check_symbol_exists(H5_HAVE_PARALLEL ${h5_conf} HDF5_IS_PARALLEL)
+check_symbol_exists(H5_HAVE_PARALLEL ${HDF5_CONFIG_FILE} HDF5_IS_PARALLEL)
 
 set(HDF5_parallel_FOUND false)
 if(HDF5_IS_PARALLEL)
@@ -153,7 +167,7 @@ if(HDF5_IS_PARALLEL)
 endif()
 
 # get HDF5 version from factory CMake Modules/FindHDF5.cmake
-file(STRINGS ${h5_conf} _def
+file(STRINGS ${HDF5_CONFIG_FILE} _def
  REGEX "^[ \t]*#[ \t]*define[ \t]+H5_VERSION[ \t]+"
 )
 message(DEBUG "HDF5 version define: ${_def}")
@@ -162,6 +176,23 @@ if("${_def}" MATCHES "H5_VERSION[ \t]+\"([0-9]+\\.[0-9]+\\.[0-9]+)")
   set(HDF5_VERSION "${CMAKE_MATCH_1}")
 endif()
 message(DEBUG "HDF5 version match 0, 1: ${CMAKE_MATCH_0}   ${CMAKE_MATCH_1}")
+
+endmacro()
+
+
+macro(hdf5_lib_pref)
+
+if(MSVC)
+  # quirk of HDF5 1.x and 2.x packaging - they use a "lib" prefix even for MSVC-like.
+  list(PREPEND CMAKE_FIND_LIBRARY_PREFIXES lib)
+endif()
+
+if(HDF5_USE_STATIC_LIBRARIES)
+  # for MSVC, there is always a .lib, even for shared libraries, but the .lib points to a bin/.dll
+  if(NOT MSVC)
+    list(PREPEND CMAKE_FIND_LIBRARY_SUFFIXES .a)
+  endif()
+endif()
 
 endmacro()
 
@@ -180,9 +211,7 @@ else()
   hdf5_fortran_wrap(hdf5_lib_dirs hdf5_inc_dirs)
 endif()
 
-if(MSVC)
-  set(CMAKE_FIND_LIBRARY_PREFIXES lib)
-endif()
+hdf5_lib_pref()
 
 set(_names hdf5_fortran)
 set(_hl_names hdf5_hl_fortran hdf5hl_fortran)
@@ -199,6 +228,7 @@ else()
 endif()
 
 # Debug names
+if(HDF5_FIND_DEBUG_LIBRARIES)
 if(MSVC)
   list(APPEND _names hdf5_fortran_D)
   list(APPEND _hl_names hdf5_hl_fortran_D)
@@ -210,12 +240,12 @@ else()
   list(APPEND _hl_stub_names hdf5_hl_f90cstub_debug)
   list(APPEND _stub_names hdf5_f90cstub_debug)
 endif()
+endif()
 
 find_library(HDF5_Fortran_LIBRARY
 NAMES ${_names}
 HINTS ${hdf5_root} ${hdf5_lib_dirs}
 PATH_SUFFIXES ${hdf5_lsuf}
-NAMES_PER_DIR
 DOC "HDF5 Fortran API"
 ${_hdf5_nodef}
 )
@@ -276,7 +306,7 @@ if(HDF5_parallel_FOUND)
       HINTS ${HDF5_Fortran_INCLUDE_DIR}
       PATH_SUFFIXES ${hdf5_msuf_hl}
       DOC "HDF5 Fortran HL module path"
-      VALIDATOR hdf5_fortran_links
+      VALIDATOR hdf5_fortran_validate
       )
     endforeach()
   endif()
@@ -297,7 +327,7 @@ if(HDF5_parallel_FOUND)
     HINTS ${HDF5_Fortran_INCLUDE_DIR}
     PATH_SUFFIXES ${hdf5_msuf_hl}
     DOC "HDF5 Fortran HL module path"
-    VALIDATOR hdf5_fortran_links
+    VALIDATOR hdf5_fortran_validate
     )
   endif()
 else()
@@ -316,7 +346,7 @@ else()
     HINTS ${HDF5_Fortran_INCLUDE_DIR}
     PATH_SUFFIXES ${hdf5_msuf_hl}
     DOC "HDF5 Fortran HL module path"
-    VALIDATOR hdf5_fortran_links
+    VALIDATOR hdf5_fortran_validate
     )
   endif()
 endif()
@@ -344,9 +374,7 @@ else()
   hdf5_cxx_wrap(hdf5_lib_dirs hdf5_inc_dirs)
 endif()
 
-if(MSVC)
-  set(CMAKE_FIND_LIBRARY_PREFIXES lib)
-endif()
+hdf5_lib_pref()
 
 set(_names hdf5_cpp)
 set(_hl_names hdf5_hl_cpp)
@@ -361,6 +389,7 @@ else()
 endif()
 
 # Debug names
+if(HDF5_FIND_DEBUG_LIBRARIES)
 if(MSVC)
   list(APPEND _names hdf5_cpp_D)
   list(APPEND _hl_names hdf5_hl_cpp_D)
@@ -368,12 +397,12 @@ else()
   list(APPEND _names hdf5_cpp_debug)
   list(APPEND _hl_names hdf5_hl_cpp_debug)
 endif()
+endif()
 
 find_library(HDF5_CXX_LIBRARY
 NAMES ${_names}
 HINTS ${hdf5_root} ${hdf5_lib_dirs}
 PATH_SUFFIXES ${hdf5_lsuf}
-NAMES_PER_DIR
 DOC "HDF5 C++ API"
 ${_hdf5_nodef}
 )
@@ -410,10 +439,8 @@ if(HDF5_NO_FIND_WRAPPER)
   set(hdf5_lib_dirs)
   set(hdf5_inc_dirs)
 else()
-  hdf5_c_wrap(hdf5_lib_dirs hdf5_inc_dirs)
+  hdf5_c_wrap(hdf5_lib_dirs hdf5_inc_dirs support_libs)
 endif()
-
-# "PATH" Env var is useful on HPC for finding HDF5 libraries
 
 find_path(HDF5_C_INCLUDE_DIR
 NAMES hdf5.h
@@ -422,12 +449,18 @@ PATH_SUFFIXES ${hdf5_isuf}
 DOC "HDF5 C header"
 ${_hdf5_nodef}
 )
-if(NOT HDF5_C_INCLUDE_DIR)
-  return()
+if(HDF5_C_INCLUDE_DIR)
+  find_path(HDF5_C_HL_INCLUDE_DIR
+    NAMES hdf5_hl.h
+    NO_DEFAULT_PATH
+    HINTS ${HDF5_C_INCLUDE_DIR}
+    PATH_SUFFIXES ${hdf5_isuf}
+    DOC "HDF5 C HL header"
+  )
 endif()
 
-if(MSVC)
-  set(CMAKE_FIND_LIBRARY_PREFIXES lib)
+if(NOT HDF5_C_INCLUDE_DIR)
+  return()
 endif()
 
 set(_names hdf5)
@@ -443,6 +476,7 @@ else()
 endif()
 
 # debug names
+if(HDF5_FIND_DEBUG_LIBRARIES)
 if(MSVC)
   list(APPEND _names hdf5_D)
   list(APPEND _hl_names hdf5_hl_D)
@@ -450,14 +484,31 @@ else()
   list(APPEND _names hdf5_debug)
   list(APPEND _hl_names hdf5_hl_debug)
 endif()
+endif()
+
+message(DEBUG "HDF5 C library search suffixes: ${CMAKE_FIND_LIBRARY_SUFFIXES}")
+
+set(CMAKE_REQUIRED_LIBRARIES)
+foreach(_lib IN LISTS support_libs)
+  find_library(HDF5_C_LIBRARY_${_lib}
+  NAMES ${_lib}
+  DOC "HDF5 C library dependency ${_lib} from ${HDF5_C_COMPILER_EXECUTABLE} wrapper"
+  )
+  if(HDF5_C_LIBRARY_${_lib})
+    list(APPEND CMAKE_REQUIRED_LIBRARIES ${HDF5_C_LIBRARY_${_lib}})
+  endif()
+endforeach()
+
+# this must be AFTER finding the support_libs, as the support libs should be system default i.e. shared even if HDF5 is static.
+# if one REALLY wants all static, there are specific compiler flags etc. that are beyond the scope of a CMake Find module.
+hdf5_lib_pref()
 
 find_library(HDF5_C_LIBRARY
 NAMES ${_names}
 HINTS ${hdf5_root} ${hdf5_lib_dirs}
 PATH_SUFFIXES ${hdf5_lsuf}
-NAMES_PER_DIR
 DOC "HDF5 C library (necessary for all languages)"
-VALIDATOR hdf5_c_links
+VALIDATOR hdf5_c_validate
 ${_hdf5_nodef}
 )
 
@@ -472,13 +523,13 @@ DOC "HDF5 C high level interface"
 )
 endif()
 
-if(HDF5_C_HL_LIBRARY AND HDF5_C_LIBRARY AND HDF5_C_INCLUDE_DIR)
-  set(HDF5_C_LIBRARIES ${HDF5_C_HL_LIBRARY} ${HDF5_C_LIBRARY} PARENT_SCOPE)
+if(HDF5_C_HL_LIBRARY AND HDF5_C_LIBRARY)
+  set(HDF5_C_LIBRARIES ${HDF5_C_HL_LIBRARY} ${HDF5_C_LIBRARY} ${CMAKE_REQUIRED_LIBRARIES} PARENT_SCOPE)
   set(HDF5_C_FOUND true PARENT_SCOPE)
   set(HDF5_HL_FOUND true PARENT_SCOPE)
 endif()
 
-endfunction(hdf5_find_c)
+endfunction()
 
 
 function(hdf5_fortran_wrap lib_var inc_var)
@@ -494,7 +545,6 @@ endif()
 
 find_program(HDF5_Fortran_COMPILER_EXECUTABLE
 NAMES ${wrapper_names}
-NAMES_PER_DIR
 HINTS ${hdf5_root}
 PATHS ${hdf5_binpref}
 PATH_SUFFIXES ${hdf5_binsuf}
@@ -542,7 +592,6 @@ endif()
 
 find_program(HDF5_CXX_COMPILER_EXECUTABLE
 NAMES ${wrapper_names}
-NAMES_PER_DIR
 HINTS ${hdf5_root}
 PATHS ${hdf5_binpref}
 PATH_SUFFIXES ${hdf5_binsuf}
@@ -568,10 +617,10 @@ if(lib_dirs)
   set(${lib_var} ${lib_dirs} PARENT_SCOPE)
 endif()
 
-endfunction(hdf5_cxx_wrap)
+endfunction()
 
 
-function(hdf5_c_wrap lib_var inc_var)
+function(hdf5_c_wrap lib_var inc_var support_var)
 
 set(lib_dirs)
 set(inc_dirs)
@@ -584,7 +633,6 @@ endif()
 
 find_program(HDF5_C_COMPILER_EXECUTABLE
 NAMES ${wrapper_names}
-NAMES_PER_DIR
 HINTS ${hdf5_root}
 PATHS ${hdf5_binpref}
 PATH_SUFFIXES ${hdf5_binsuf}
@@ -598,36 +646,41 @@ endif()
 
 hdf5_get_flags(${HDF5_C_COMPILER_EXECUTABLE} c_raw)
 if(c_raw)
-  hdf5_pop_flag(${c_raw} -L lib_dirs)
-  hdf5_pop_flag(${c_raw} -I inc_dirs)
-  if(NOT inc_dirs AND parallel IN_LIST HDF5_FIND_COMPONENTS)
-    hdf5_get_flags(${MPI_C_COMPILER} c_raw)
-    if(c_raw)
-      hdf5_pop_flag(${c_raw} -I inc_dirs)
-    endif(c_raw)
-  endif()
-endif(c_raw)
 
-
-if(inc_dirs)
-  set(${inc_var} ${inc_dirs} PARENT_SCOPE)
-endif()
-
+hdf5_pop_flag(${c_raw} -L lib_dirs)
 if(lib_dirs)
   set(${lib_var} ${lib_dirs} PARENT_SCOPE)
 endif()
 
+hdf5_pop_flag(${c_raw} -l support_libs)
+list(FILTER support_libs EXCLUDE REGEX "^(hdf5|hdf5_hl)$")
+if(support_libs)
+  set(${support_var} ${support_libs} PARENT_SCOPE)
+endif()
 
-endfunction(hdf5_c_wrap)
+hdf5_pop_flag(${c_raw} -I inc_dirs)
+if(NOT inc_dirs AND parallel IN_LIST HDF5_FIND_COMPONENTS)
+  hdf5_get_flags(${MPI_C_COMPILER} c_raw)
+  if(c_raw)
+    hdf5_pop_flag(${c_raw} -I inc_dirs)
+  endif(c_raw)
+endif()
+if(inc_dirs)
+  set(${inc_var} ${inc_dirs} PARENT_SCOPE)
+endif()
+
+endif()
+
+endfunction()
 
 
-function(hdf5_c_links _result path)
-
-cmake_path(GET path PARENT_PATH ppath)
-hdf5_detect_config(${ppath})
+function(hdf5_c_validate _result path)
 
 list(PREPEND CMAKE_REQUIRED_LIBRARIES ${path})
 set(CMAKE_REQUIRED_INCLUDES ${HDF5_C_INCLUDE_DIR})
+
+cmake_path(GET path PARENT_PATH ppath)
+hdf5_detect_config(${ppath})
 
 if(HDF5_parallel_FOUND)
   hdf5_find_mpi()
@@ -665,26 +718,30 @@ else()
   ]=])
 endif(HDF5_parallel_FOUND)
 
-check_source_compiles(C "${src}" HDF5_C_links)
+string(MAKE_C_IDENTIFIER ${path} uniqpath)
 
-set(${_result} ${HDF5_C_links} PARENT_SCOPE)
+check_source_compiles(C "${src}" HDF5_C_${uniqpath}_links)
 
-message(DEBUG "HDF5 C link check: ${HDF5_C_links} ${CMAKE_REQUIRED_LIBRARIES} ${CMAKE_REQUIRED_INCLUDES}")
+set(${_result} ${HDF5_C_${uniqpath}_links} PARENT_SCOPE)
 
-endfunction(hdf5_c_links)
+message(DEBUG "HDF5 C link check: ${HDF5_C_${uniqpath}_links} ${CMAKE_REQUIRED_LIBRARIES} ${CMAKE_REQUIRED_INCLUDES}")
+
+endfunction()
 
 
-function(hdf5_fortran_links _result path)
+function(hdf5_fortran_validate _result path)
 
 cmake_path(GET path PARENT_PATH ppath)
-hdf5_detect_config(${ppath})
 
-list(PREPEND CMAKE_REQUIRED_LIBRARIES ${HDF5_Fortran_LIBRARIES} ${HDF5_C_LIBRARIES})
+set(CMAKE_REQUIRED_LIBRARIES ${HDF5_Fortran_LIBRARIES} ${HDF5_C_LIBRARIES})
 # C and C_HL library are always needed for Fortran_HL
 # use HDF5_Fortran_LIBRARIES as it has the stubs if needed
+
 set(CMAKE_REQUIRED_INCLUDES ${ppath} ${HDF5_Fortran_INCLUDE_DIR})
 # need HDF5_Fortran_INCLUDE_DIR because with HDF5 2.x, it may be distinct from HDF5_Fortran_HL_INCLUDE_DIR,
 # and the test program needs to include both hdf5.mod and h5lt.mod
+
+hdf5_detect_config(${ppath})
 
 if(HDF5_parallel_FOUND)
   hdf5_find_mpi()
@@ -727,13 +784,15 @@ else()
   end program")
 endif()
 
-check_source_compiles(Fortran ${src} HDF5_Fortran_links)
+string(MAKE_C_IDENTIFIER ${path} uniqpath)
 
-set(${_result} ${HDF5_Fortran_links} PARENT_SCOPE)
+check_source_compiles(Fortran ${src} HDF5_Fortran_${uniqpath}_links)
 
-message(DEBUG "HDF5 Fortran link check: ${HDF5_Fortran_links} ${CMAKE_REQUIRED_LIBRARIES} ${CMAKE_REQUIRED_INCLUDES}")
+set(${_result} ${HDF5_Fortran_${uniqpath}_links} PARENT_SCOPE)
 
-endfunction(hdf5_fortran_links)
+message(DEBUG "HDF5 Fortran link check: ${HDF5_Fortran_${uniqpath}_links} ${CMAKE_REQUIRED_LIBRARIES} ${CMAKE_REQUIRED_INCLUDES}")
+
+endfunction(hdf5_fortran_validate)
 
 
 macro(hdf5_msvc_workaround)
@@ -749,8 +808,6 @@ endif()
 endmacro(hdf5_msvc_workaround)
 
 # === main program
-
-unset(CMAKE_REQUIRED_LIBRARIES)
 
 if(NOT DEFINED HDF5_NO_FIND_WRAPPER)
   set(HDF5_NO_FIND_WRAPPER false)
@@ -786,15 +843,17 @@ if(NOT hdf5_root)
 endif()
 
 # --- include and modules suffixes
-
-if(BUILD_SHARED_LIBS)
-  set(hdf5_isuf shared include)
-  set(hdf5_msuf shared include)
-  set(hdf5_msuf_hl mod/shared)
-else()
-  set(hdf5_isuf static include)
-  set(hdf5_msuf static include)
+set(hdf5_isuf include)
+set(hdf5_msuf include)
+if(HDF5_USE_STATIC_LIBRARIES)
+  list(PREPEND hdf5_isuf static)
+  list(PREPEND hdf5_msuf static)
   set(hdf5_msuf_hl mod/static)
+else()
+  # have shared and static because on Windows it's ambiguous which library type is being used
+  list(PREPEND hdf5_isuf shared static)
+  list(PREPEND hdf5_msuf shared static)
+  set(hdf5_msuf_hl mod/shared mod/static)
 endif()
 
 # Ubuntu
@@ -892,7 +951,7 @@ if(HDF5_FOUND)
       add_library(hdf5::hdf5_hl INTERFACE IMPORTED)
       set_target_properties(hdf5::hdf5_hl PROPERTIES
         INTERFACE_LINK_LIBRARIES "${HDF5_C_HL_LIBRARY}"
-        INTERFACE_INCLUDE_DIRECTORIES "${HDF5_C_INCLUDE_DIR}")
+        INTERFACE_INCLUDE_DIRECTORIES "${HDF5_C_HL_INCLUDE_DIR}")
     endif()
   endif()
 
@@ -925,6 +984,7 @@ if(HDF5_FOUND)
 endif(HDF5_FOUND)
 
 mark_as_advanced(HDF5_Fortran_LIBRARY HDF5_Fortran_HL_LIBRARY
-HDF5_C_LIBRARY HDF5_C_HL_LIBRARY
-HDF5_CXX_LIBRARY HDF5_CXX_HL_LIBRARY
-HDF5_C_INCLUDE_DIR HDF5_CXX_INCLUDE_DIR HDF5_Fortran_INCLUDE_DIR HDF5_Fortran_HL_INCLUDE_DIR)
+HDF5_C_LIBRARY HDF5_C_HL_LIBRARY HDF5_C_INCLUDE_DIR HDF5_C_HL_INCLUDE_DIR
+HDF5_CXX_LIBRARY HDF5_CXX_HL_LIBRARY HDF5_CXX_INCLUDE_DIR
+HDF5_Fortran_INCLUDE_DIR HDF5_Fortran_HL_INCLUDE_DIR
+)

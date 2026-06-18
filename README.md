@@ -120,6 +120,12 @@ Optionally, set the version of HDF5 to build with h5fortran_hdf5_req (see cmake/
 cmake -B build -DFETCHCONTENT_TRY_FIND_PACKAGE_MODE=NEVER -Dh5fortran_hdf5_req=2.1
 ```
 
+To disable the auto-build of HDF5, set:
+
+```sh
+cmake -B build -DFETCHCONTENT_FULLY_DISCONNECTED=ON
+```
+
 see [cmake/libraries.json](./cmake/libraries.json) for supported HDF5 versions.
 
 For more details see [Install.md](./Install.md).
