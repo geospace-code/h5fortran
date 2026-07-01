@@ -23,11 +23,10 @@
     "FETCHCONTENT_TRY_FIND_PACKAGE_MODE": "NEVER"
   }
 },
-{ "name": "no-build", "inherits": "default",
-  "displayName": "Don't build HDF5 and ZLib from source with h5fortran if not found",
+{ "name": "no-build-hdf5", "inherits": "default",
+  "displayName": "Don't build HDF5 and ZLib from source if not found",
   "cacheVariables": {
-    "FETCHCONTENT_TRY_FIND_PACKAGE_MODE": "ALWAYS",
-    "FETCHCONTENT_FULLY_DISCONNECTED": true
+    "h5fortran_hdf5_nobuild": true
   }
 },
 { "name": "debug", "inherits": "default",
@@ -67,6 +66,7 @@
 "buildPresets": [
   { "name": "default", "configurePreset": "default" },
   { "name": "build", "configurePreset": "build", "inherits": "default" },
+  { "name": "no-build-hdf5", "configurePreset": "no-build-hdf5", "inherits": "default" },
   { "name": "shared",  "configurePreset": "shared", "inherits": "default" },
   {
     "name": "explain",
@@ -135,6 +135,14 @@
     "steps": [
       { "type": "configure", "name": "build" },
       { "type": "build", "name": "build" }
+    ]
+  },
+  {
+    "name": "no-build-hdf5",
+    "displayName": "Don't build HDF5 and ZLib from source if not found",
+    "steps": [
+      { "type": "configure", "name": "no-build-hdf5" },
+      { "type": "build", "name": "no-build-hdf5" }
     ]
   },
   {

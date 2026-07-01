@@ -110,10 +110,13 @@ endif()
 
 if(NOT TARGET HDF5::HDF5)
 
-FetchContent_Declare(HDF5 URL ${hdf5_url} FIND_PACKAGE_ARGS COMPONENTS HL Fortran C)
-# "C" as well so that link tests work and corner cases OK
-
-FetchContent_MakeAvailable(HDF5)
+if(h5fortran_hdf5_nobuild)
+  find_package(HDF5 REQUIRED COMPONENTS HL Fortran C)
+else()
+  FetchContent_Declare(HDF5 URL ${hdf5_url} FIND_PACKAGE_ARGS COMPONENTS HL Fortran C)
+  # "C" as well so that link tests work and corner cases OK
+  FetchContent_MakeAvailable(HDF5)
+endif()
 
 endif()
 

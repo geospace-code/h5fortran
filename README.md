@@ -36,7 +36,7 @@ h5fortran is designed for easy use using static or shared linking from your proj
 If using CMake, h5fortran will automatically build the HDF5 library (and Zlib if HDF5 2.x) from source if a compiler-compatible HDF5 is not found on the system.
 HDF5 auto-build options include:
 
-* To disable the auto-build of HDF5 use `cmake --preset no-build`
+* To disable the auto-build of HDF5 use `cmake --preset no-build-hdf5`
 * To always build HDF5 from source, set `cmake --preset build`
 * To use CMake factory FindHDF5 instead of our custom FindHDF5.cmake use `cmake -Dh5fortran_find_hdf5_factory=yes`
 * To disable the use of HDF5 compiler wrappers in finding HDF5 use `cmake -DHDF5_NO_FIND_WRAPPER=yes`
