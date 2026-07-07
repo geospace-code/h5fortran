@@ -81,19 +81,18 @@ jobs:
         include:
         - os: macos-latest
           gcc: 15
+        - os: ubuntu-26.04
+          gcc: 15
 
     runs-on: ${{ matrix.os }}
 
     env:
+      CC: gcc-${{ matrix.gcc }}
       FC: gfortran-${{ matrix.gcc }}
 
     steps:
     - &checkout
       uses: actions/checkout@v6
-
-    - name: GCC (Linux)
-      if: runner.os == 'Linux'
-      run: echo "CC=gcc-${{ matrix.gcc }}" >> $GITHUB_ENV
 
     - &pkg
       uses: ./.github/workflows/composite-pkg
@@ -126,7 +125,7 @@ jobs:
       run: cmake --workflow default
 
 
-  gcc-old:
+  ubuntu22:
     timeout-minutes: 15
 
     strategy:
@@ -153,28 +152,27 @@ jobs:
 
 
   linux-flang:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     timeout-minutes: 15
 
     strategy:
       matrix:
-        llvm-version: [21]
+        llvm-version: [22]
 
     env:
       CC: clang-${{ matrix.llvm-version }}
-      CXX: clang++-${{ matrix.llvm-version }}
       FC: flang-${{ matrix.llvm-version }}
 
     steps:
-    - name: Apt LLVM
-      run: |
-          wget https://apt.llvm.org/llvm.sh
-          chmod +x llvm.sh
-          sudo ./llvm.sh ${{ matrix.llvm-version }}
-          sudo apt-get update
+    # - name: Apt LLVM
+    #   run: |
+    #       wget https://apt.llvm.org/llvm.sh
+    #       chmod +x llvm.sh
+    #       sudo ./llvm.sh ${{ matrix.llvm-version }}
+    #       sudo apt-get update
 
     - name: install Flang
-      run: sudo apt install --no-install-recommends clang-${{ matrix.llvm-version }} flang-${{ matrix.llvm-version }}
+      run: sudo apt install --no-install-recommends flang-${{ matrix.llvm-version }}
 
     - *checkout
 
