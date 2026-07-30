@@ -19,7 +19,7 @@
 { "name": "build", "inherits": "default",
   "displayName": "Build HDF5 and ZLib from source with h5fortran",
   "cacheVariables": {
-    "h5fortran_BUILD_TESTING": false,
+    "h5fortran_BUILD_TESTING": true,
     "FETCHCONTENT_TRY_FIND_PACKAGE_MODE": "NEVER"
   }
 },
