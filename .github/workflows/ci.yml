@@ -32,15 +32,16 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-24.04, macos-latest]
+        os: [ubuntu-latest, macos-latest]
 
     runs-on: ${{ matrix.os }}
 
     steps:
     - &checkout
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
 
-    - name: GCC (macOS)
+    - &gcc-macos
+      name: GCC (macOS)
       if: runner.os == 'macos'
       run: |
         echo "CC=gcc-15" >> $GITHUB_ENV
@@ -71,13 +72,13 @@ jobs:
         path: example/build/CMakeFiles/CMakeConfigureLog.yaml
 
 
-  gcc-new:
+  gcc-linux:
     timeout-minutes: 15
 
     strategy:
       matrix:
-        os: [ubuntu-24.04]
-        gcc: [12, 13, 14]
+        os: [ubuntu-latest]
+        gcc: [9, 10, 11, 12, 13, 14]
         include:
         - os: macos-latest
           gcc: 15
@@ -91,11 +92,14 @@ jobs:
       FC: gfortran-${{ matrix.gcc }}
 
     steps:
-    - &checkout
-      uses: actions/checkout@v6
+    - *checkout
 
     - &pkg
       uses: ./.github/workflows/composite-pkg
+
+    - name: GCC APT (Ubuntu 24.04)
+      if: ${{ runner.os == 'Linux' && matrix.gcc < 12 }}
+      run: sudo apt install -y --no-install-recommends gfortran-${{ matrix.gcc }}
 
     - &unix
       uses: ./.github/workflows/composite-unix
@@ -107,12 +111,10 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
 
-    env:
-      CC: gcc-14
-      FC: gfortran-14
-
     steps:
     - *checkout
+
+    - *gcc-macos
 
     - name: Build shared library
       run: cmake --workflow shared
@@ -123,32 +125,6 @@ jobs:
     - name: example workflow
       working-directory: example
       run: cmake --workflow default
-
-
-  ubuntu22:
-    timeout-minutes: 15
-
-    strategy:
-      matrix:
-        gcc: [9, 10, 11]
-
-    runs-on: ubuntu-22.04
-    env:
-      CC: gcc-${{ matrix.gcc }}
-      FC: gfortran-${{ matrix.gcc }}
-
-    steps:
-    - *checkout
-
-    - name: GCC APT
-    # GCC 9 was removed from Ubuntu 22.04 in May 2024
-      if: matrix.gcc < 10
-      run: |
-        sudo apt update -y
-        sudo apt install -y --no-install-recommends gcc-${{ matrix.gcc }} g++-${{ matrix.gcc }} gfortran-${{ matrix.gcc }}
-
-    - *pkg
-    - *unix
 
 
   linux-flang:
@@ -184,7 +160,7 @@ jobs:
   valgrind-memory:
     if: false
     runs-on: ubuntu-latest
-    needs: gcc-new
+    needs: gcc-linux
     timeout-minutes: 10
 
     steps:
@@ -202,13 +178,13 @@ jobs:
 # issue with python loading writer.inc
   linux-coverage:
     if: false
-    needs: gcc-new
+    needs: gcc-linux
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
     steps:
     - *checkout
-    - uses: actions/setup-python@v6
+    - uses: actions/setup-python@v7
       with:
         python-version: '3.x'
 

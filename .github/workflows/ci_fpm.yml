@@ -27,6 +27,6 @@ jobs:
         sudo apt update
         sudo apt install --no-install-recommends libhdf5-dev
 
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
 
     - run: fpm build
