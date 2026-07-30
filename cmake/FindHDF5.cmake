@@ -182,11 +182,6 @@ endmacro()
 
 macro(hdf5_lib_pref)
 
-if(MSVC)
-  # quirk of HDF5 1.x and 2.x packaging - they use a "lib" prefix even for MSVC-like.
-  list(PREPEND CMAKE_FIND_LIBRARY_PREFIXES lib)
-endif()
-
 if(HDF5_USE_STATIC_LIBRARIES)
   # for MSVC, there is always a .lib, even for shared libraries, but the .lib points to a bin/.dll
   if(NOT MSVC)
