@@ -9,7 +9,7 @@ include(CheckSourceCompiles)
 
 
 if(NOT DEFINED h5fortran_hdf5_req)
-  set(h5fortran_hdf5_req "2.1patch")
+  set(h5fortran_hdf5_req "2.2")
 endif()
 # HDF5 2.x requires CMake >= 3.26, but the benefits are so great that this is worthwhile
 

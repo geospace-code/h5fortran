@@ -33,7 +33,10 @@ h5fortran is designed for easy use using static or shared linking from your proj
 * CMake + Git submodule
 * Fortran Package Manager (fpm)
 
-If using CMake, h5fortran will automatically build the HDF5 library (and Zlib if HDF5 2.x) from source if a compiler-compatible HDF5 is not found on the system.
+If using CMake, h5fortran will automatically build the HDF5 library and Zlib from source if a compiler-compatible HDF5 is not found on the system.
+The default version of HDF5 built if needed is 2.2.
+h5fortran needs at least HDF5 1.10.
+
 HDF5 auto-build options include:
 
 * To disable the auto-build of HDF5 use `cmake --preset no-build-hdf5`
