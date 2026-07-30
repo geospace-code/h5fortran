@@ -1,4 +1,6 @@
 # builds HDF5 library from scratch
+# Ref: https://support.hdfgroup.org/documentation/hdf5/latest/_l_b_compiling.html
+
 # note: the use of "lib" vs. CMAKE_*_LIBRARY_PREFIX is deliberate based on HDF5
 # across Intel Fortran on Windows (MSVC-like) vs. Gfortran on Windows vs. Linux.
 include(GNUInstallDirs)
@@ -21,8 +23,6 @@ file(READ ${CMAKE_CURRENT_LIST_DIR}/libraries.json json)
 # https://forum.hdfgroup.org/t/issues-when-using-hdf5-as-a-git-submodule-and-using-cmake-with-add-subdirectory/7189/2
 
 set(ZLIB_USE_LOCALCONTENT OFF)
-
-set(BUILD_STATIC_LIBS ON)
 
 set(HDF5_GENERATE_HEADERS OFF)
 set(HDF5_DISABLE_COMPILER_WARNINGS ON)
