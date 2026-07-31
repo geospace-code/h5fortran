@@ -70,7 +70,7 @@ else()
   set(CTEST_CMAKE_GENERATOR "Unix Makefiles" PARENT_SCOPE)
 endif()
 
-endfunction(find_generator)
+endfunction()
 
 find_generator()
 

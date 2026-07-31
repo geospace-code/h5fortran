@@ -352,7 +352,7 @@ if(HDF5_Fortran_LIBRARY AND HDF5_Fortran_HL_LIBRARY AND HDF5_Fortran_INCLUDE_DIR
   set(HDF5_HL_FOUND true PARENT_SCOPE)
 endif()
 
-endfunction(hdf5_find_fortran)
+endfunction()
 
 
 function(hdf5_find_cxx)
@@ -425,16 +425,21 @@ if(HDF5_CXX_LIBRARY AND HDF5_CXX_HL_LIBRARY AND HDF5_CXX_INCLUDE_DIR)
   set(HDF5_HL_FOUND true PARENT_SCOPE)
 endif()
 
-endfunction(hdf5_find_cxx)
+endfunction()
 
 
 function(hdf5_find_c)
 
-if(HDF5_NO_FIND_WRAPPER)
-  set(hdf5_lib_dirs)
-  set(hdf5_inc_dirs)
-else()
-  hdf5_c_wrap(hdf5_lib_dirs hdf5_inc_dirs support_libs)
+set(hdf5_lib_dirs)
+set(hdf5_inc_dirs)
+set(hdf5_support_libs)
+if(NOT HDF5_NO_FIND_WRAPPER)
+  hdf5_c_wrap(hdf5_lib_dirs hdf5_inc_dirs hdf5_support_libs)
+endif()
+
+if(NOT DEFINED hdf5_support_libs)
+  # we need an ansatz or users consuming h5fortran will have link errors that we don't see when building h5fortran itself.
+  set(hdf5_support_libs z m)
 endif()
 
 find_path(HDF5_C_INCLUDE_DIR
@@ -484,7 +489,7 @@ endif()
 message(DEBUG "HDF5 C library search suffixes: ${CMAKE_FIND_LIBRARY_SUFFIXES}")
 
 set(CMAKE_REQUIRED_LIBRARIES)
-foreach(_lib IN LISTS support_libs)
+foreach(_lib IN LISTS hdf5_support_libs)
   find_library(HDF5_C_LIBRARY_${_lib}
   NAMES ${_lib}
   DOC "HDF5 C library dependency ${_lib} from ${HDF5_C_COMPILER_EXECUTABLE} wrapper"
@@ -494,7 +499,7 @@ foreach(_lib IN LISTS support_libs)
   endif()
 endforeach()
 
-# this must be AFTER finding the support_libs, as the support libs should be system default i.e. shared even if HDF5 is static.
+# this must be AFTER finding hdf5_support_libs, as the support libs should be system default i.e. shared even if HDF5 is static.
 # if one REALLY wants all static, there are specific compiler flags etc. that are beyond the scope of a CMake Find module.
 hdf5_lib_pref()
 
@@ -571,7 +576,7 @@ if(lib_dirs)
   set(${lib_var} ${lib_dirs} PARENT_SCOPE)
 endif()
 
-endfunction(hdf5_fortran_wrap)
+endfunction()
 
 
 function(hdf5_cxx_wrap lib_var inc_var)
@@ -787,7 +792,7 @@ set(${_result} ${HDF5_Fortran_${uniqpath}_links} PARENT_SCOPE)
 
 message(DEBUG "HDF5 Fortran link check: ${HDF5_Fortran_${uniqpath}_links} ${CMAKE_REQUIRED_LIBRARIES} ${CMAKE_REQUIRED_INCLUDES}")
 
-endfunction(hdf5_fortran_validate)
+endfunction()
 
 
 macro(hdf5_msvc_workaround)
@@ -889,7 +894,8 @@ if(NOT hdf5_root AND parallel IN_LIST HDF5_FIND_COMPONENTS)
 endif()
 
 # ----
-# May not help, as we'd have to foreach() a priori names, like we already do with find_library()
+# check back for HDF5 2.3.0 ?
+# https://github.com/HDFGroup/hdf5/issues/6580
 # find_package(hdf5 CONFIG)
 # ----
 

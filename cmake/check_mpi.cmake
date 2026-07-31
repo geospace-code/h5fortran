@@ -46,4 +46,4 @@ if("${MPI_VERSION_STRING}" MATCHES "CMAKE_MPI_VERSION ([0-9]+\\.[0-9]+)")
   message(CHECK_PASS "${MPI_VERSION}")
 endif()
 
-endfunction(check_mpi_version)
+endfunction()

@@ -67,7 +67,7 @@ endif()
 
 endforeach()
 
-endfunction(setup_test)
+endfunction()
 
 # --- setup unit tests
 
