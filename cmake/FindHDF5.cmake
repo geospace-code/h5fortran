@@ -155,6 +155,8 @@ endif()
 
 # Always check for HDF5 MPI support because HDF5 link fails if MPI is linked into HDF5.
 check_symbol_exists(H5_HAVE_PARALLEL ${HDF5_CONFIG_FILE} HDF5_IS_PARALLEL)
+check_symbol_exists(H5_HAVE_LIBM ${HDF5_CONFIG_FILE} HDF5_HAVE_LIBM)
+check_symbol_exists(H5_HAVE_LIBZ ${HDF5_CONFIG_FILE} HDF5_HAVE_LIBZ)
 
 set(HDF5_parallel_FOUND false)
 if(HDF5_IS_PARALLEL)
@@ -437,11 +439,6 @@ if(NOT HDF5_NO_FIND_WRAPPER)
   hdf5_c_wrap(hdf5_lib_dirs hdf5_inc_dirs hdf5_support_libs)
 endif()
 
-if(NOT DEFINED hdf5_support_libs)
-  # we need an ansatz or users consuming h5fortran will have link errors that we don't see when building h5fortran itself.
-  set(hdf5_support_libs z m)
-endif()
-
 find_path(HDF5_C_INCLUDE_DIR
 NAMES hdf5.h
 HINTS ${hdf5_root} ${hdf5_inc_dirs}
@@ -461,6 +458,20 @@ endif()
 
 if(NOT HDF5_C_INCLUDE_DIR)
   return()
+endif()
+
+hdf5_detect_config(${HDF5_C_INCLUDE_DIR})
+
+if(NOT DEFINED hdf5_support_libs)
+  if(HDF5_HAVE_SZIP)
+    list(APPEND hdf5_support_libs sz)
+  endif()
+  if(HDF5_HAVE_LIBZ)
+    list(APPEND hdf5_support_libs z)
+  endif()
+  if(HDF5_HAVE_LIBM)
+    list(APPEND hdf5_support_libs m)
+  endif()
 endif()
 
 set(_names hdf5)
@@ -805,7 +816,7 @@ if(WIN32 AND CMAKE_Fortran_COMPILER_ID STREQUAL "IntelLLVM")
   list(APPEND CMAKE_REQUIRED_LIBRARIES shlwapi)
 endif()
 
-endmacro(hdf5_msvc_workaround)
+endmacro()
 
 # === main program
 
