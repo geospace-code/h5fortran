@@ -24,6 +24,7 @@ integer :: file_mode = -1
 logical :: debug = .false.
 logical :: fletcher32 = .false.
 logical :: shuffle = .false.
+logical :: swmr = .false.
 
 integer :: comp_lvl = 0
 !! compression level (1-9)  0: disable compression
@@ -38,7 +39,10 @@ procedure, public :: close => h5close
 procedure, public :: write_group => create_group !< legacy
 procedure, public :: create_group
 procedure, public :: create => hdf_create_user
-procedure, public :: flush => hdf_flush
+generic, public :: flush => hdf_flush, hdf_flush_dataset
+procedure, private :: hdf_flush
+procedure, private :: hdf_flush_dataset
+procedure, public :: refresh => hdf_refresh
 procedure, public :: filesize => hdf_filesize
 procedure, public :: ndim => hdf_get_ndim
 procedure, public :: ndims => hdf_get_ndim !< legacy
@@ -57,6 +61,8 @@ procedure, public :: softlink => create_softlink
 procedure, public :: is_open
 procedure, public :: delete_attr => attr_delete
 procedure, public :: exist_attr => attr_exist
+procedure, public :: iterate => hdf_iterate
+procedure, public :: visit => hdf_visit
 !! procedures without mapping
 
 !> below are procedure that need generic mapping (type or rank agnostic)
@@ -159,6 +165,12 @@ module subroutine hdf_flush(self)
 !! request operating system flush data to disk.
 !! The operating system can do this when it desires, which might be a while.
 class(hdf5_file), intent(in) :: self
+end subroutine
+
+module subroutine hdf_flush_dataset(self, dname)
+!! request HDF5 to flush dataset to disk.
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: dname
 end subroutine
 
 end interface
@@ -396,6 +408,11 @@ module logical function hdf_check_exist(self, obj_name)
 class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: obj_name
 end function
+
+module subroutine hdf_refresh(self, dname)
+class(hdf5_file), intent(in) :: self
+character(*), intent(in) :: dname
+end subroutine
 
 end interface
 
@@ -649,6 +666,58 @@ class(hdf5_file), intent(in) :: self
 character(*), intent(in) :: obj_name, attr_name
 end function
 
+module subroutine hdf_iterate(self, group_name, callback)
+ !! Opens the HDF5 file and the specified group, then iterates over
+ !! all members of the group. For each member the user‐provided
+ !! callback is invoked with:
+ !!
+ !!   group_name - name of the group
+ !!   object_name - name of the member object
+ !!   object_type - a short string indicating type ("group", "dataset",
+ !!                 "datatype", or "other")
+ class(hdf5_file), intent(in) :: self
+ character(len=*), intent(in) :: group_name
+  interface
+    subroutine user_callback_interface(group_name, object_name, object_type)
+      character(len=*), intent(in) :: group_name
+        !! The name of the group being traversed.
+      character(len=*), intent(in) :: object_name
+        !! The name of the object encountered.
+      character(len=*), intent(in) :: object_type
+        !!A short description such as "group", "dataset",
+        !!                            "datatype", or "other"
+    end subroutine
+  end interface
+
+ procedure(user_callback_interface) :: callback
+end subroutine
+
+module subroutine hdf_visit(self, group_name, callback)
+ !! Opens the HDF5 file and the specified group, then visits recursively
+ !! all members of the group. For each member the user‐provided
+ !! callback is invoked with:
+ !!
+ !!   group_name - name of the group
+ !!   object_name - name of the member object
+ !!   object_type - a short string indicating type ("group", "dataset",
+ !!                 "datatype", or "other")
+ class(hdf5_file), intent(in) :: self
+ character(len=*), intent(in) :: group_name
+  interface
+    subroutine user_callback_interface(group_name, object_name, object_type)
+      character(len=*), intent(in) :: group_name
+        !! The name of the group being traversed.
+      character(len=*), intent(in) :: object_name
+        !! The name of the object encountered.
+      character(len=*), intent(in) :: object_type
+        !!A short description such as "group", "dataset",
+        !!                            "datatype", or "other"
+    end subroutine
+  end interface
+
+ procedure(user_callback_interface) :: callback
+end subroutine
+
 end interface
 
 
@@ -660,7 +729,7 @@ integer(HID_T), intent(in) :: id
 character(:), allocatable :: id2name
 end function
 
-module subroutine h5open(self, filename, action, comp_lvl, shuffle, fletcher32, debug, ok)
+module subroutine h5open(self, filename, action, comp_lvl, shuffle, fletcher32, debug, swmr, ok)
 !! open/create file
 !!
 !! PARAMETERS:
@@ -676,6 +745,7 @@ integer, intent(in), optional :: comp_lvl
 logical, intent(in), optional :: shuffle
 logical, intent(in), optional :: fletcher32
 logical, intent(in), optional :: debug
+logical, intent(in), optional :: swmr
 logical, intent(out), optional :: ok
 
 end subroutine
