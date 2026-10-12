@@ -95,14 +95,14 @@ jobs:
     - *checkout
 
     - &pkg
-      uses: ./.github/workflows/composite-pkg
+      uses: ./.github/actions/composite-pkg
 
     - name: GCC APT (Ubuntu 24.04)
       if: ${{ runner.os == 'Linux' && matrix.gcc < 12 }}
       run: sudo apt install -y --no-install-recommends gfortran-${{ matrix.gcc }}
 
     - &unix
-      uses: ./.github/workflows/composite-unix
+      uses: ./.github/actions/composite-unix
 
   shared:
     runs-on: ${{ matrix.os }}
@@ -215,7 +215,7 @@ jobs:
 
     strategy:
       matrix:
-        cmake_version: ["3.25.3"]
+        cmake_version: ["3.26.6"]
 
     steps:
 
@@ -226,7 +226,7 @@ jobs:
         sudo apt-get update
         sudo apt install --no-install-recommends libhdf5-dev
 
-    - uses: ./.github/workflows/composite-cmake
+    - uses: ./.github/actions/composite-cmake
 
     - name: configure
       run: $CMAKE -Bbuild --install-prefix=${{ github.workspace }}/build/local --debug-find-pkg=HDF5

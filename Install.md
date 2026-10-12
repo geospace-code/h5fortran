@@ -39,7 +39,7 @@ cmake -B build -Dh5fortran_ROOT=$HOME/h5fortran/
 and in your CMakeLists.txt
 
 ```cmake
-cmake_minimum_required(VERSION 3.25)
+cmake_minimum_required(VERSION 3.26)
 project(myProject LANGUAGES Fortran)
 
 find_package(h5fortran)
