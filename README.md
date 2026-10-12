@@ -5,7 +5,6 @@
 
 [![ci](https://github.com/geospace-code/h5fortran/actions/workflows/ci.yml/badge.svg)](https://github.com/geospace-code/h5fortran/actions/workflows/ci.yml)
 [![ci_windows](https://github.com/geospace-code/h5fortran/actions/workflows/ci_windows.yml/badge.svg)](https://github.com/geospace-code/h5fortran/actions/workflows/ci_windows.yml)
-[![oneapi-linux](https://github.com/geospace-code/h5fortran/actions/workflows/oneapi-linux.yml/badge.svg)](https://github.com/geospace-code/h5fortran/actions/workflows/oneapi-linux.yml)
 [![ci_fpm](https://github.com/geospace-code/h5fortran/actions/workflows/ci_fpm.yml/badge.svg)](https://github.com/geospace-code/h5fortran/actions/workflows/ci_fpm.yml)
 
 Simple, robust, thin HDF5 polymorphic Fortran read/write interface.
